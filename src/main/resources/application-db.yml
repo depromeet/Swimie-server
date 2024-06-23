@@ -1,0 +1,14 @@
+spring:
+  config:
+    activate:
+      on-profile: db
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url:
+    username:
+    password:
+
+logging:
+  level:
+    org.springframework.orm.jpa: DEBUG
+    org.springframework.transaction: DEBUG
