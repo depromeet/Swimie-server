@@ -38,7 +38,7 @@ dependencies {
 //    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
     // security
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    // implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
     // swagger

@@ -4,9 +4,9 @@ spring:
       on-profile: db
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url:
-    username:
-    password:
+    url: ${MYSQL_URL} # 환경변수에 값 추가하시면 됩니다.
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
 
 logging:
   level:
