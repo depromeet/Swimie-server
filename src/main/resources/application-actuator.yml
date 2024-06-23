@@ -9,13 +9,17 @@ management:
   endpoints:
     web:
       exposure:
-        include: health # include specific endpoint
-      base-path: /depromeet-actuator # change webBase path
-    enabled-by-default: false # endpoint all disable
+        # include specific endpoint
+        include: health
+        # change webBase path
+      base-path: /depromeet-actuator
     jmx:
       exposure:
-        exclude: * # exclude all jmx endpoint
+        exclude: "*"
+    # endpoint all disable
+    enabled-by-default: false
   endpoint:
     health:
-      enabled: true # enable specific endpoint
+      # enable specific endpoint
+      enabled: true
 
