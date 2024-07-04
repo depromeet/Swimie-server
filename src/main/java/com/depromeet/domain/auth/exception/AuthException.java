@@ -4,7 +4,7 @@ import com.depromeet.global.exception.BaseException;
 import com.depromeet.global.exception.ExceptionType;
 
 public class AuthException extends BaseException {
-    public AuthException(ExceptionType exceptionType) {
-        super(exceptionType);
-    }
+	public AuthException(ExceptionType exceptionType) {
+		super(exceptionType);
+	}
 }

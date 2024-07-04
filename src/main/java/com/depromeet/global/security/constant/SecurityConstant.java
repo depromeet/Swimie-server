@@ -1,18 +1,16 @@
 package com.depromeet.global.security.constant;
 
+import lombok.Getter;
+
+@Getter
 public enum SecurityConstant {
 
-    ACCESS_HEADER("Authentication")
-    ,REFRESH_HEADER("refresh")
-    ;
+	ACCESS_HEADER("Authorization"), REFRESH_HEADER("refresh"), BEARER_PREFIX("Bearer ");
 
-    private String value;
+	private String value;
 
-    SecurityConstant(String value) {
-        this.value = value;
-    }
+	SecurityConstant(String value) {
+		this.value = value;
+	}
 
-    public String getValue() {
-        return value;
-    }
 }

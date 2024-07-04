@@ -29,8 +29,8 @@ public class SwaggerConfig {
 
         return new OpenAPI()
                 .info(info)
-//                .addSecurityItem(getSecurityRequirement())
-//                .components(getAuthComponent())
+                .addSecurityItem(getSecurityRequirement())
+                .components(getAuthComponent())
                 ;
     }
 
