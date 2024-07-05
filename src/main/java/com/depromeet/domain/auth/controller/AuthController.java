@@ -1,13 +1,6 @@
 package com.depromeet.domain.auth.controller;
 
-import com.depromeet.domain.auth.dto.request.LoginDto;
-import com.depromeet.domain.auth.dto.response.JwtTokenResponseDto;
-import com.depromeet.domain.auth.service.AuthService;
-import com.depromeet.domain.member.controller.port.MemberService;
-import com.depromeet.domain.member.dto.request.MemberCreateDto;
-
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+import static com.depromeet.global.security.constant.SecurityConstant.*;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +9,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.net.http.HttpResponse;
+import com.depromeet.domain.auth.dto.request.LoginDto;
+import com.depromeet.domain.auth.dto.response.JwtTokenResponseDto;
+import com.depromeet.domain.auth.service.AuthService;
+import com.depromeet.domain.member.dto.request.MemberCreateDto;
 
-import static com.depromeet.global.security.constant.SecurityConstant.ACCESS_HEADER;
-import static com.depromeet.global.security.constant.SecurityConstant.REFRESH_HEADER;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 
 @Tag(name = "로그인/회원가입")
 @RequestMapping("/api/v1/auth")

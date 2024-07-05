@@ -1,9 +1,9 @@
 package com.depromeet.global.converter;
 
-import jakarta.persistence.AttributeConverter;
-
 import java.util.Arrays;
 import java.util.Objects;
+
+import jakarta.persistence.AttributeConverter;
 
 public abstract class AbstractCodedEnumConverter<T extends Enum<T> & CodedEnum<E>, E>
 	implements AttributeConverter<T, E> {

@@ -1,5 +1,14 @@
 package com.depromeet.domain.auth.service;
 
+import static com.depromeet.domain.auth.exception.AuthErrorCode.*;
+import static com.depromeet.domain.member.exception.MemberErrorCode.*;
+import static com.depromeet.global.security.constant.SecurityConstant.*;
+
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.depromeet.domain.auth.dto.response.JwtTokenResponseDto;
 import com.depromeet.domain.auth.exception.AuthException;
 import com.depromeet.domain.member.domain.Member;
@@ -7,25 +16,15 @@ import com.depromeet.domain.member.domain.MemberRole;
 import com.depromeet.domain.member.exception.MemberException;
 import com.depromeet.domain.member.service.port.MemberRepository;
 import com.depromeet.global.security.jwt.util.AccessTokenDto;
-import com.depromeet.global.security.jwt.util.AccessTokenReissueDto;
 import com.depromeet.global.security.jwt.util.JwtUtils;
 import com.depromeet.global.security.jwt.util.RefreshTokenDto;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
-
-import static com.depromeet.domain.auth.exception.AuthErrorCode.REFRESH_TOKEN_NOT_MATCH;
-import static com.depromeet.domain.member.exception.MemberErrorCode.MEMBER_NOT_FOUND;
-import static com.depromeet.global.security.constant.SecurityConstant.BEARER_PREFIX;
-
-@RequiredArgsConstructor
-@Transactional
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class JwtTokenService {
 	private final JwtUtils jwtUtils;
 	private final MemberRepository memberRepository;

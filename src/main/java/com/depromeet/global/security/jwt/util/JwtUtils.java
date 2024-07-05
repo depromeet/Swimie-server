@@ -12,6 +12,7 @@ import com.depromeet.domain.member.domain.MemberRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -54,38 +55,24 @@ public class JwtUtils {
 	}
 
 	public Optional<AccessTokenDto> parseAccessToken(String token) {
-		try {
-			Jws<Claims> claims = Jwts.parser()
-				.requireIssuer(jwtProperties.issuer())
-				.verifyWith(getJwtTokenKey(jwtProperties.accessTokenSecret()))
-				.build()
-				.parseSignedClaims(token);
-			Long memberId = Long.valueOf(claims.getPayload().getSubject());
-			MemberRole memberRole = MemberRole.findByValue(claims.getPayload().get("role").toString());
-			return Optional.of(new AccessTokenDto(memberId, memberRole, token));
-		} catch (ExpiredJwtException e) {
-			log.info("expiredJwtException: {}", e.getMessage());
-			throw e;
-		} catch (Exception e) {
-			log.info("exception: {}", e.getMessage());
-			return Optional.empty();
-		}
+		Jws<Claims> claims = Jwts.parser()
+			.requireIssuer(jwtProperties.issuer())
+			.verifyWith(getJwtTokenKey(jwtProperties.accessTokenSecret()))
+			.build()
+			.parseSignedClaims(token);
+		Long memberId = Long.valueOf(claims.getPayload().getSubject());
+		MemberRole memberRole = MemberRole.findByValue(claims.getPayload().get("role").toString());
+		return Optional.of(new AccessTokenDto(memberId, memberRole, token));
 	}
 
 	public Optional<RefreshTokenDto> parseRefreshToken(String token) {
-		try {
-			Jws<Claims> claims = Jwts.parser()
-				.requireIssuer(jwtProperties.issuer())
-				.verifyWith(getJwtTokenKey(jwtProperties.refreshTokenSecret()))
-				.build()
-				.parseSignedClaims(token);
-			Long memberId = Long.valueOf(claims.getPayload().getSubject());
-			return Optional.of(new RefreshTokenDto(memberId, token));
-		} catch (ExpiredJwtException e) {
-			throw e;
-		} catch (Exception e) {
-			return Optional.empty();
-		}
+		Jws<Claims> claims = Jwts.parser()
+			.requireIssuer(jwtProperties.issuer())
+			.verifyWith(getJwtTokenKey(jwtProperties.refreshTokenSecret()))
+			.build()
+			.parseSignedClaims(token);
+		Long memberId = Long.valueOf(claims.getPayload().getSubject());
+		return Optional.of(new RefreshTokenDto(memberId, token));
 	}
 
 	private SecretKey getJwtTokenKey(String tokenKey) {

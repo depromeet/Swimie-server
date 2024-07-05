@@ -1,16 +1,10 @@
 package com.depromeet.global.security.filter;
 
-import com.depromeet.domain.auth.service.JwtTokenService;
-import com.depromeet.global.security.PrincipalDetails;
-import com.depromeet.global.security.jwt.util.AccessTokenDto;
-import com.depromeet.global.security.jwt.util.RefreshTokenDto;
+import static com.depromeet.domain.auth.exception.AuthErrorCode.*;
+import static com.depromeet.global.security.constant.SecurityConstant.*;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.util.Optional;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,10 +12,19 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
-import java.util.Optional;
+import com.depromeet.domain.auth.exception.AuthException;
+import com.depromeet.domain.auth.service.JwtTokenService;
+import com.depromeet.global.security.PrincipalDetails;
+import com.depromeet.global.security.jwt.util.AccessTokenDto;
+import com.depromeet.global.security.jwt.util.RefreshTokenDto;
 
-import static com.depromeet.global.security.constant.SecurityConstant.*;
+import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -35,53 +38,103 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		log.info("start jwt filter");
 		Optional<String> optionalAccessToken = Optional.ofNullable(request.getHeader(ACCESS_HEADER.getValue()));
 
-		if (optionalAccessToken.isPresent()
-			&& optionalAccessToken.get().startsWith(BEARER_PREFIX.getValue())) {
-			String accessToken = optionalAccessToken.get();
-			accessToken = accessToken.substring(7);
-			Optional<AccessTokenDto> optionalAccessTokenDto = jwtTokenService.parseAccessToken(accessToken);
+		if (optionalAccessToken.isEmpty()) {
+			log.info("access token is empty");
+			filterChain.doFilter(request, response);
+		}
+		String accessToken = optionalAccessToken.get();
+		if (!accessToken.startsWith(BEARER_PREFIX.getValue())) {
+			log.info("not starts with bearer ");
+			filterChain.doFilter(request, response);
+		}
 
-			if (optionalAccessTokenDto.isPresent()) {
-				AccessTokenDto accessTokenDto = optionalAccessTokenDto.get();
-				setAuthentication(accessTokenDto);
+		accessToken = accessToken.substring(7);
 
-			} else {
-				// 클라이언트에서 refreshToken을 쿠키에 추가할 경우
+		Optional<AccessTokenDto> optionalAccessTokenDto = parseAccessToken(
+			accessToken);
+
+		if (optionalAccessTokenDto.isPresent()) {
+			AccessTokenDto accessTokenDto = optionalAccessTokenDto.get();
+			setAuthentication(accessTokenDto);
+
+		} else {
+			// 클라이언트에서 refreshToken을 쿠키에 추가할 경우
                 /* Optional<String> optionalRefreshToken = Optional.ofNullable(WebUtils.getCookie(request, REFRESH_HEADER.getValue()))
                         .map(Cookie::getValue);
                 */
-				// 그냥 헤더에 추가해서 보내줄 경우
-				Optional<String> optionalRefreshToken = Optional.ofNullable(
-					request.getHeader(REFRESH_HEADER.getValue()));
-				if (optionalRefreshToken.isPresent()) {
-					String refreshToken = optionalRefreshToken.get();
-					Optional<RefreshTokenDto> optionalRefreshTokenDto = jwtTokenService.parseRefreshToken(refreshToken);
-					if (optionalRefreshTokenDto.isPresent()) {
-						RefreshTokenDto refreshTokenDto = optionalRefreshTokenDto.get();
+			// 그냥 헤더에 추가해서 보내줄 경우
+			Optional<String> optionalRefreshToken = Optional.ofNullable(
+				request.getHeader(REFRESH_HEADER.getValue()));
 
-						jwtTokenService.retrieveRefreshToken(refreshTokenDto, refreshToken);
-						AccessTokenDto reissuedAccessToken = jwtTokenService.reissueAccessToken(accessToken);
-						RefreshTokenDto reissuedRefreshToken = jwtTokenService.reissueRefreshToken(refreshToken);
-						log.info("reissued access token: {}", reissuedAccessToken.accessToken());
-						log.info("reissued refreshToken token: {}", reissuedRefreshToken.refreshToken());
+			if (optionalRefreshToken.isEmpty()) {
+				log.info("failed to find refresh token");
+				filterChain.doFilter(request, response);
+			}
+			String refreshToken = optionalRefreshToken.get();
 
-						response.setHeader(ACCESS_HEADER.getValue(), reissuedAccessToken.accessToken());
-						response.setHeader(REFRESH_HEADER.getValue(), reissuedRefreshToken.refreshToken());
+			Optional<RefreshTokenDto> optionalRefreshTokenDto = parseRefreshToken(
+				refreshToken);
 
-						setAuthentication(reissuedAccessToken);
-
-					}
-				} else {
-					log.info("failed to find refresh token");
-					filterChain.doFilter(request, response);
-				}
-
+			if (optionalRefreshTokenDto.isEmpty()) {
+				log.info("failed to parse refresh token");
+				filterChain.doFilter(request, response);
 			}
 
-		} else {
-			log.info("failed to find access token");
-			filterChain.doFilter(request, response);
+			RefreshTokenDto refreshTokenDto = optionalRefreshTokenDto.get();
+
+			jwtTokenService.retrieveRefreshToken(refreshTokenDto, refreshToken);
+			AccessTokenDto reissuedAccessToken = addReissuedJwtTokenToHeader(response, accessToken,
+				refreshToken);
+
+			setAuthentication(reissuedAccessToken);
+
 		}
+	}
+
+	private Optional<AccessTokenDto> parseAccessToken(String accessToken) {
+		Optional<AccessTokenDto> optionalAccessTokenDto;
+		try {
+			optionalAccessTokenDto = jwtTokenService.parseAccessToken(accessToken);
+		} catch (IllegalArgumentException e) {
+			log.error(e.getMessage());
+			throw new AuthException(INVALID_JWT_TOKEN);
+		} catch (ExpiredJwtException e) {
+			log.error(e.getMessage());
+			throw new AuthException(EXPIRED_JWT_TOKEN);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw e;
+		}
+		return optionalAccessTokenDto;
+	}
+
+	private Optional<RefreshTokenDto> parseRefreshToken(String refreshToken) {
+		Optional<RefreshTokenDto> optionalRefreshTokenDto;
+		try {
+			optionalRefreshTokenDto = jwtTokenService.parseRefreshToken(refreshToken);
+		} catch (IllegalArgumentException e) {
+			log.error(e.getMessage());
+			throw new AuthException(INVALID_JWT_TOKEN);
+		} catch (ExpiredJwtException e) {
+			log.error(e.getMessage());
+			throw new AuthException(EXPIRED_JWT_TOKEN);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			throw e;
+		}
+		return optionalRefreshTokenDto;
+	}
+
+	private AccessTokenDto addReissuedJwtTokenToHeader(HttpServletResponse response, String accessToken,
+		String refreshToken) {
+		AccessTokenDto reissuedAccessToken = jwtTokenService.reissueAccessToken(accessToken);
+		RefreshTokenDto reissuedRefreshToken = jwtTokenService.reissueRefreshToken(refreshToken);
+		log.info("reissued access token: {}", reissuedAccessToken.accessToken());
+		log.info("reissued refreshToken token: {}", reissuedRefreshToken.refreshToken());
+
+		response.setHeader(ACCESS_HEADER.getValue(), reissuedAccessToken.accessToken());
+		response.setHeader(REFRESH_HEADER.getValue(), reissuedRefreshToken.refreshToken());
+		return reissuedAccessToken;
 	}
 
 	private void setAuthentication(AccessTokenDto reissuedAccessToken) {

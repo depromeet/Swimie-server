@@ -33,6 +33,14 @@ public class Member {
 			.build();
 	}
 
+	public static Member from(String nickname, String email) {
+		return Member.builder()
+			.name(nickname)
+			.email(email)
+			.role(MemberRole.USER)
+			.build();
+	}
+
 	public Member update(MemberUpdateDto memberUpdate) {
 		return Member.builder()
 			.id(id)

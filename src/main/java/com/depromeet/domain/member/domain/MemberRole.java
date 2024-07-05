@@ -1,12 +1,12 @@
 package com.depromeet.domain.member.domain;
 
-import com.depromeet.domain.member.exception.MemberException;
-import com.depromeet.global.converter.AbstractCodedEnumConverter;
-import com.depromeet.global.converter.CodedEnum;
+import static com.depromeet.domain.member.exception.MemberErrorCode.*;
 
 import java.util.Arrays;
 
-import static com.depromeet.domain.member.exception.MemberErrorCode.MEMBER_ROLE_NOT_FOUND;
+import com.depromeet.domain.member.exception.MemberException;
+import com.depromeet.global.converter.AbstractCodedEnumConverter;
+import com.depromeet.global.converter.CodedEnum;
 
 public enum MemberRole implements CodedEnum<String> {
 

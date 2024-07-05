@@ -1,13 +1,13 @@
 package com.depromeet.domain.member.repository;
 
+import java.util.Optional;
+
+import org.springframework.stereotype.Repository;
+
 import com.depromeet.domain.member.domain.Member;
 import com.depromeet.domain.member.service.port.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor

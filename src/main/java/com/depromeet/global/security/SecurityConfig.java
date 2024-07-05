@@ -1,12 +1,10 @@
 package com.depromeet.global.security;
 
-import com.depromeet.domain.auth.service.JwtTokenService;
-import com.depromeet.global.security.filter.JwtAuthenticationFilter;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -21,7 +19,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
+import com.depromeet.domain.auth.service.JwtTokenService;
+import com.depromeet.global.security.filter.JwtAuthenticationFilter;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
@@ -48,7 +49,8 @@ public class SecurityConfig {
 			.exceptionHandling(
 				exception -> exception.authenticationEntryPoint(
 					(request, response, authException) -> response.setStatus(401)))
-			.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+			.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+			.oauth2Login(Customizer.withDefaults());
 
 		return http.build();
 	}

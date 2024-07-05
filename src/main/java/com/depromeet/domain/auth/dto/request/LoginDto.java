@@ -1,8 +1,8 @@
 package com.depromeet.domain.auth.dto.request;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.util.Objects;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 // 임시
 @Schema(name = "login")

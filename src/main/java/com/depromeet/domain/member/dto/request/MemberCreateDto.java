@@ -1,8 +1,8 @@
 package com.depromeet.domain.member.dto.request;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.util.Objects;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 //임시
 @Schema(name = "회원가입 정보 입력")
