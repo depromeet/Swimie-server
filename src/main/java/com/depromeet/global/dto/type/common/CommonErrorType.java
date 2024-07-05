@@ -11,7 +11,6 @@ public enum CommonErrorType implements ErrorType {
 	INTERNAL_SERVER("COMMON_6", "알 수 없는 서버 에러가 발생했습니다");
 
 	private final String code;
-
 	private final String message;
 
 	CommonErrorType(String code, String message) {
