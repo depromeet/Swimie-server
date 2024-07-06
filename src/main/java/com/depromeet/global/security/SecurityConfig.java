@@ -43,14 +43,14 @@ public class SecurityConfig {
 					authorize
 						.requestMatchers("/h2/**").permitAll()
 						.requestMatchers("/depromeet-actuator/**").permitAll() // actuator
-						.requestMatchers("/swagger-ui/**", "/v3/**").permitAll() //swagger
+						.requestMatchers("/swagger-ui/**", "/v3/**", "/favicon.ico").permitAll() //swagger
 						.requestMatchers("/api/v1/auth/**").permitAll() //로그인 및 회원가입
 						.anyRequest().authenticated())
 			.exceptionHandling(
 				exception -> exception.authenticationEntryPoint(
 					(request, response, authException) -> response.setStatus(401)))
-			.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-			.oauth2Login(Customizer.withDefaults());
+			.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+			// .oauth2Login(Customizer.withDefaults());
 
 		return http.build();
 	}

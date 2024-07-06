@@ -1,7 +1,7 @@
 package com.depromeet.domain.auth.service;
 
-import static com.depromeet.domain.auth.exception.AuthErrorCode.*;
-import static com.depromeet.domain.member.exception.MemberErrorCode.*;
+import static com.depromeet.global.dto.type.auth.AuthErrorType.*;
+import static com.depromeet.global.dto.type.member.MemberErrorType.*;
 import static com.depromeet.global.security.constant.SecurityConstant.*;
 
 import java.util.Optional;
@@ -10,16 +10,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.depromeet.domain.auth.dto.response.JwtTokenResponseDto;
-import com.depromeet.domain.auth.exception.AuthException;
 import com.depromeet.domain.member.domain.Member;
 import com.depromeet.domain.member.domain.MemberRole;
-import com.depromeet.domain.member.exception.MemberException;
 import com.depromeet.domain.member.service.port.MemberRepository;
+import com.depromeet.global.exception.ForbiddenException;
+import com.depromeet.global.exception.NotFoundException;
 import com.depromeet.global.security.jwt.util.AccessTokenDto;
 import com.depromeet.global.security.jwt.util.JwtUtils;
 import com.depromeet.global.security.jwt.util.RefreshTokenDto;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -66,7 +67,7 @@ public class JwtTokenService {
 
 			RefreshTokenDto refreshTokenDto = jwtUtils.generateRefreshToken(memberId);
 			Member member = memberRepository.findById(memberId)
-				.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
 			member.updateRefreshToken(refreshTokenDto.refreshToken());
 			memberRepository.save(member);
 
@@ -76,10 +77,10 @@ public class JwtTokenService {
 
 	public RefreshTokenDto retrieveRefreshToken(RefreshTokenDto refreshTokenDto, String refreshToken) {
 		Member member = memberRepository.findById(refreshTokenDto.memberId())
-			.orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+			.orElseThrow(() -> new NotFoundException(NOT_FOUND));
 		if (member.getRefreshToken().equals(refreshToken)) {
 			return refreshTokenDto;
 		}
-		throw new AuthException(REFRESH_TOKEN_NOT_MATCH);
+		throw new ForbiddenException(REFRESH_TOKEN_NOT_MATCH);
 	}
 }
