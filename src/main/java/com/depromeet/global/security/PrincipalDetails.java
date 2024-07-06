@@ -1,15 +1,12 @@
 package com.depromeet.global.security;
 
+import com.depromeet.domain.member.domain.MemberRole;
 import java.util.Collection;
 import java.util.List;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import com.depromeet.domain.member.domain.MemberRole;
-
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class PrincipalDetails implements UserDetails {

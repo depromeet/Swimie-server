@@ -1,12 +1,11 @@
 package com.depromeet.global.converter;
 
+import jakarta.persistence.AttributeConverter;
 import java.util.Arrays;
 import java.util.Objects;
 
-import jakarta.persistence.AttributeConverter;
-
 public abstract class AbstractCodedEnumConverter<T extends Enum<T> & CodedEnum<E>, E>
-	implements AttributeConverter<T, E> {
+		implements AttributeConverter<T, E> {
 	private final Class<T> clazz;
 
 	public AbstractCodedEnumConverter(Class<T> clazz) {
@@ -24,8 +23,8 @@ public abstract class AbstractCodedEnumConverter<T extends Enum<T> & CodedEnum<E
 			return null;
 		}
 		return Arrays.stream(clazz.getEnumConstants())
-			.filter(e -> e.getValue().equals(dbData))
-			.findFirst()
-			.orElseThrow(() -> new IllegalArgumentException("Unknown code: " + dbData));
+				.filter(e -> e.getValue().equals(dbData))
+				.findFirst()
+				.orElseThrow(() -> new IllegalArgumentException("Unknown code: " + dbData));
 	}
 }

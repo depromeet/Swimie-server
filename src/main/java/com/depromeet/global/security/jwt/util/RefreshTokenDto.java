@@ -1,4 +1,3 @@
 package com.depromeet.global.security.jwt.util;
 
-public record RefreshTokenDto(Long memberId, String refreshToken) {
-}
+public record RefreshTokenDto(Long memberId, String refreshToken) {}

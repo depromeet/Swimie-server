@@ -4,6 +4,5 @@ import lombok.Builder;
 
 public record MemberFindOneResponseDto(Long id, String name, String email) {
 	@Builder
-	public MemberFindOneResponseDto {
-	}
+	public MemberFindOneResponseDto {}
 }

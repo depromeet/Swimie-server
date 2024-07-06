@@ -5,6 +5,4 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationPropertiesScan(basePackages = "com.depromeet")
-public class ScanningPropertiesConfiguration {
-
-}
+public class ScanningPropertiesConfiguration {}

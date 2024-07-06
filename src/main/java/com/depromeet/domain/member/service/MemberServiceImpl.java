@@ -1,9 +1,5 @@
 package com.depromeet.domain.member.service;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.depromeet.domain.member.controller.port.MemberService;
 import com.depromeet.domain.member.domain.Member;
 import com.depromeet.domain.member.dto.request.MemberCreateDto;
@@ -11,8 +7,10 @@ import com.depromeet.domain.member.dto.response.MemberFindOneResponseDto;
 import com.depromeet.domain.member.service.port.MemberRepository;
 import com.depromeet.global.dto.type.member.MemberErrorType;
 import com.depromeet.global.exception.NotFoundException;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Transactional
@@ -30,25 +28,29 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public MemberFindOneResponseDto findOneMemberResponseById(Long id) {
-		Member member = memberRepository.findById(id)
-			.orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
+		Member member =
+				memberRepository
+						.findById(id)
+						.orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
 		return MemberFindOneResponseDto.builder()
-			.id(member.getId())
-			.name(member.getName())
-			.email(member.getEmail())
-			.build();
+				.id(member.getId())
+				.name(member.getName())
+				.email(member.getEmail())
+				.build();
 	}
 
 	@Override
 	public Member findById(Long id) {
-		return memberRepository.findById(id)
-			.orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
+		return memberRepository
+				.findById(id)
+				.orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
 	}
 
 	@Override
 	public Member findByEmail(String email) {
-		return memberRepository.findByEmail(email)
-			.orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
+		return memberRepository
+				.findByEmail(email)
+				.orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
 	}
 
 	@Override

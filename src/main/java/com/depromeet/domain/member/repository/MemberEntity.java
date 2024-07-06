@@ -2,7 +2,6 @@ package com.depromeet.domain.member.repository;
 
 import com.depromeet.domain.member.domain.Member;
 import com.depromeet.domain.member.domain.MemberRole;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,8 +34,7 @@ public class MemberEntity {
 	@Column(name = "role")
 	private MemberRole role;
 
-	@Column
-	private String refreshToken;
+	@Column private String refreshToken;
 
 	@Builder
 	private MemberEntity(Long id, String name, String email, String password, MemberRole role) {
@@ -49,22 +47,21 @@ public class MemberEntity {
 
 	public static MemberEntity from(Member member) {
 		return MemberEntity.builder()
-			.id(member.getId())
-			.name(member.getName())
-			.email(member.getEmail())
-			.password(member.getPassword())
-			.role(member.getRole())
-			.build();
+				.id(member.getId())
+				.name(member.getName())
+				.email(member.getEmail())
+				.password(member.getPassword())
+				.role(member.getRole())
+				.build();
 	}
 
 	public Member toModel() {
 		return Member.builder()
-			.id(id)
-			.name(name)
-			.email(email)
-			.password(password)
-			.role(role)
-			.build();
+				.id(id)
+				.name(name)
+				.email(email)
+				.password(password)
+				.role(role)
+				.build();
 	}
-
 }

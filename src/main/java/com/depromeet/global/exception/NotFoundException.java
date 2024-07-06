@@ -1,8 +1,7 @@
 package com.depromeet.global.exception;
 
-import org.springframework.http.HttpStatus;
-
 import com.depromeet.global.dto.type.ErrorType;
+import org.springframework.http.HttpStatus;
 
 public class NotFoundException extends BaseException {
 	public NotFoundException(ErrorType errorType) {

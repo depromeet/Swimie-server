@@ -2,7 +2,6 @@ package com.depromeet.domain.member.domain;
 
 import com.depromeet.domain.member.dto.request.MemberCreateDto;
 import com.depromeet.domain.member.dto.request.MemberUpdateDto;
-
 import lombok.Builder;
 import lombok.Getter;
 
@@ -26,29 +25,25 @@ public class Member {
 
 	public static Member from(MemberCreateDto memberCreate) {
 		return Member.builder()
-			.name(memberCreate.name())
-			.email(memberCreate.email())
-			.password(memberCreate.password())
-			.role(MemberRole.USER)
-			.build();
+				.name(memberCreate.name())
+				.email(memberCreate.email())
+				.password(memberCreate.password())
+				.role(MemberRole.USER)
+				.build();
 	}
 
 	public static Member from(String nickname, String email) {
-		return Member.builder()
-			.name(nickname)
-			.email(email)
-			.role(MemberRole.USER)
-			.build();
+		return Member.builder().name(nickname).email(email).role(MemberRole.USER).build();
 	}
 
 	public Member update(MemberUpdateDto memberUpdate) {
 		return Member.builder()
-			.id(id)
-			.name(memberUpdate.name() == null ? name : memberUpdate.name())
-			.email(email)
-			.password(memberUpdate.password() == null ? password : memberUpdate.password())
-			.role(role)
-			.build();
+				.id(id)
+				.name(memberUpdate.name() == null ? name : memberUpdate.name())
+				.email(email)
+				.password(memberUpdate.password() == null ? password : memberUpdate.password())
+				.role(role)
+				.build();
 	}
 
 	public void encodePassword(String password) {

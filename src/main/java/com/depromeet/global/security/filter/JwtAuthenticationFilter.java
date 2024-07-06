@@ -3,28 +3,25 @@ package com.depromeet.global.security.filter;
 import static com.depromeet.global.dto.type.auth.AuthErrorType.*;
 import static com.depromeet.global.security.constant.SecurityConstant.*;
 
-import java.io.IOException;
-import java.util.Optional;
-
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.filter.OncePerRequestFilter;
-
 import com.depromeet.domain.auth.service.JwtTokenService;
 import com.depromeet.global.exception.UnauthorizedException;
 import com.depromeet.global.security.PrincipalDetails;
 import com.depromeet.global.security.jwt.util.AccessTokenDto;
 import com.depromeet.global.security.jwt.util.RefreshTokenDto;
-
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,18 +30,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private final JwtTokenService jwtTokenService;
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-		FilterChain filterChain) throws ServletException, IOException {
+	protected void doFilterInternal(
+			HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
 		log.info("start jwt filter");
 		String url = request.getRequestURI();
-		if(url.startsWith("/swagger-ui")
-			|| url.startsWith("/v3")
-			|| url.startsWith("/favicon")
-			|| url.startsWith("/api/v1/auth")) {
+		if (url.startsWith("/swagger-ui")
+				|| url.startsWith("/v3")
+				|| url.startsWith("/favicon")
+				|| url.startsWith("/api/v1/auth")) {
 			filterChain.doFilter(request, response);
 			return;
 		}
-		Optional<String> optionalAccessToken = Optional.ofNullable(request.getHeader(ACCESS_HEADER.getValue()));
+		Optional<String> optionalAccessToken =
+				Optional.ofNullable(request.getHeader(ACCESS_HEADER.getValue()));
 
 		if (optionalAccessToken.isEmpty()) {
 
@@ -61,8 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		accessToken = accessToken.substring(7);
 
-		Optional<AccessTokenDto> optionalAccessTokenDto = parseAccessToken(
-			accessToken);
+		Optional<AccessTokenDto> optionalAccessTokenDto = parseAccessToken(accessToken);
 
 		if (optionalAccessTokenDto.isPresent()) {
 			AccessTokenDto accessTokenDto = optionalAccessTokenDto.get();
@@ -70,12 +68,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			return;
 		} else {
 			// 클라이언트에서 refreshToken을 쿠키에 추가할 경우
-                /* Optional<String> optionalRefreshToken = Optional.ofNullable(WebUtils.getCookie(request, REFRESH_HEADER.getValue()))
-                        .map(Cookie::getValue);
-                */
+			/* Optional<String> optionalRefreshToken = Optional.ofNullable(WebUtils.getCookie(request, REFRESH_HEADER.getValue()))
+					.map(Cookie::getValue);
+			*/
 			// 그냥 헤더에 추가해서 보내줄 경우
-			Optional<String> optionalRefreshToken = Optional.ofNullable(
-				request.getHeader(REFRESH_HEADER.getValue()));
+			Optional<String> optionalRefreshToken =
+					Optional.ofNullable(request.getHeader(REFRESH_HEADER.getValue()));
 
 			if (optionalRefreshToken.isEmpty()) {
 				log.info("failed to find refresh token");
@@ -84,8 +82,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			}
 			String refreshToken = optionalRefreshToken.get();
 
-			Optional<RefreshTokenDto> optionalRefreshTokenDto = parseRefreshToken(
-				refreshToken);
+			Optional<RefreshTokenDto> optionalRefreshTokenDto = parseRefreshToken(refreshToken);
 
 			if (optionalRefreshTokenDto.isEmpty()) {
 				log.info("failed to parse refresh token");
@@ -96,8 +93,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			RefreshTokenDto refreshTokenDto = optionalRefreshTokenDto.get();
 
 			jwtTokenService.retrieveRefreshToken(refreshTokenDto, refreshToken);
-			AccessTokenDto reissuedAccessToken = addReissuedJwtTokenToHeader(response, accessToken,
-				refreshToken);
+			AccessTokenDto reissuedAccessToken =
+					addReissuedJwtTokenToHeader(response, accessToken, refreshToken);
 			setAuthentication(reissuedAccessToken);
 		}
 	}
@@ -136,8 +133,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		return optionalRefreshTokenDto;
 	}
 
-	private AccessTokenDto addReissuedJwtTokenToHeader(HttpServletResponse response, String accessToken,
-		String refreshToken) {
+	private AccessTokenDto addReissuedJwtTokenToHeader(
+			HttpServletResponse response, String accessToken, String refreshToken) {
 		AccessTokenDto reissuedAccessToken = jwtTokenService.reissueAccessToken(accessToken);
 		RefreshTokenDto reissuedRefreshToken = jwtTokenService.reissueRefreshToken(refreshToken);
 		log.info("reissued access token: {}", reissuedAccessToken.accessToken());
@@ -149,10 +146,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	}
 
 	private void setAuthentication(AccessTokenDto reissuedAccessToken) {
-		UserDetails userDetails = new PrincipalDetails(reissuedAccessToken.memberId(),
-			reissuedAccessToken.memberRole());
-		Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
-			userDetails.getAuthorities());
+		UserDetails userDetails =
+				new PrincipalDetails(
+						reissuedAccessToken.memberId(), reissuedAccessToken.memberRole());
+		Authentication authentication =
+				new UsernamePasswordAuthenticationToken(
+						userDetails, null, userDetails.getAuthorities());
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
 }

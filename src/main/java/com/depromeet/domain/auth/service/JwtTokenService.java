@@ -4,11 +4,6 @@ import static com.depromeet.global.dto.type.auth.AuthErrorType.*;
 import static com.depromeet.global.dto.type.member.MemberErrorType.*;
 import static com.depromeet.global.security.constant.SecurityConstant.*;
 
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.depromeet.domain.auth.dto.response.JwtTokenResponseDto;
 import com.depromeet.domain.member.domain.Member;
 import com.depromeet.domain.member.domain.MemberRole;
@@ -18,10 +13,11 @@ import com.depromeet.global.exception.NotFoundException;
 import com.depromeet.global.security.jwt.util.AccessTokenDto;
 import com.depromeet.global.security.jwt.util.JwtUtils;
 import com.depromeet.global.security.jwt.util.RefreshTokenDto;
-
 import io.jsonwebtoken.ExpiredJwtException;
-import jakarta.security.auth.message.AuthException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -34,8 +30,9 @@ public class JwtTokenService {
 		AccessTokenDto accessToken = jwtUtils.generateAccessToken(memberId, memberRole);
 		RefreshTokenDto refreshToken = jwtUtils.generateRefreshToken(memberId);
 
-		return new JwtTokenResponseDto(BEARER_PREFIX.getValue() + accessToken.accessToken(),
-			BEARER_PREFIX.getValue() + refreshToken.refreshToken());
+		return new JwtTokenResponseDto(
+				BEARER_PREFIX.getValue() + accessToken.accessToken(),
+				BEARER_PREFIX.getValue() + refreshToken.refreshToken());
 	}
 
 	public Optional<AccessTokenDto> parseAccessToken(String token) {
@@ -66,8 +63,10 @@ public class JwtTokenService {
 			Long memberId = Long.parseLong(e.getClaims().getSubject());
 
 			RefreshTokenDto refreshTokenDto = jwtUtils.generateRefreshToken(memberId);
-			Member member = memberRepository.findById(memberId)
-				.orElseThrow(() -> new NotFoundException(NOT_FOUND));
+			Member member =
+					memberRepository
+							.findById(memberId)
+							.orElseThrow(() -> new NotFoundException(NOT_FOUND));
 			member.updateRefreshToken(refreshTokenDto.refreshToken());
 			memberRepository.save(member);
 
@@ -75,9 +74,12 @@ public class JwtTokenService {
 		}
 	}
 
-	public RefreshTokenDto retrieveRefreshToken(RefreshTokenDto refreshTokenDto, String refreshToken) {
-		Member member = memberRepository.findById(refreshTokenDto.memberId())
-			.orElseThrow(() -> new NotFoundException(NOT_FOUND));
+	public RefreshTokenDto retrieveRefreshToken(
+			RefreshTokenDto refreshTokenDto, String refreshToken) {
+		Member member =
+				memberRepository
+						.findById(refreshTokenDto.memberId())
+						.orElseThrow(() -> new NotFoundException(NOT_FOUND));
 		if (member.getRefreshToken().equals(refreshToken)) {
 			return refreshTokenDto;
 		}

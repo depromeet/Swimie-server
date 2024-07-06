@@ -2,18 +2,16 @@ package com.depromeet.domain.auth.service;
 
 import static com.depromeet.global.dto.type.auth.AuthErrorType.*;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.depromeet.domain.auth.dto.request.LoginDto;
 import com.depromeet.domain.auth.dto.response.JwtTokenResponseDto;
 import com.depromeet.domain.member.controller.port.MemberService;
 import com.depromeet.domain.member.domain.Member;
 import com.depromeet.domain.member.dto.request.MemberCreateDto;
 import com.depromeet.global.exception.ForbiddenException;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Transactional
