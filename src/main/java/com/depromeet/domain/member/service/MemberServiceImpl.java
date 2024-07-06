@@ -50,4 +50,9 @@ public class MemberServiceImpl implements MemberService {
 		return memberRepository.findByEmail(email)
 			.orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
 	}
+
+	@Override
+	public boolean matchPassword(String rawPassword, String encodedPassword) {
+		return passwordEncoder.matches(rawPassword, encodedPassword);
+	}
 }
