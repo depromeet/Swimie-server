@@ -20,24 +20,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
-	private final AuthService authService;
+    private final AuthService authService;
 
-	// 임시
-	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
-		JwtTokenResponseDto jwtTokenResponseDto = authService.login(loginDto);
+    // 임시
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
+        JwtTokenResponseDto jwtTokenResponseDto = authService.login(loginDto);
 
-		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.add(REFRESH_HEADER.getValue(), jwtTokenResponseDto.refreshToken());
-		httpHeaders.add(ACCESS_HEADER.getValue(), jwtTokenResponseDto.accessToken());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(REFRESH_HEADER.getValue(), jwtTokenResponseDto.refreshToken());
+        httpHeaders.add(ACCESS_HEADER.getValue(), jwtTokenResponseDto.accessToken());
 
-		return ResponseEntity.ok(jwtTokenResponseDto);
-	}
+        return ResponseEntity.ok(jwtTokenResponseDto);
+    }
 
-	@PostMapping
-	public ResponseEntity<?> signUp(@RequestBody MemberCreateDto memberCreate) {
-		authService.signUp(memberCreate);
+    @PostMapping
+    public ResponseEntity<?> signUp(@RequestBody MemberCreateDto memberCreate) {
+        authService.signUp(memberCreate);
 
-		return ResponseEntity.ok().build();
-	}
+        return ResponseEntity.ok().build();
+    }
 }

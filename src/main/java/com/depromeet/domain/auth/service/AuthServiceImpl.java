@@ -18,23 +18,23 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class AuthServiceImpl implements AuthService {
-	private final MemberService memberService;
-	private final JwtTokenService jwtTokenService;
+    private final MemberService memberService;
+    private final JwtTokenService jwtTokenService;
 
-	@Override
-	public JwtTokenResponseDto login(LoginDto loginDto) {
-		Member member = memberService.findByEmail(loginDto.email());
-		boolean pwMatch = memberService.matchPassword(loginDto.password(), member.getPassword());
+    @Override
+    public JwtTokenResponseDto login(LoginDto loginDto) {
+        Member member = memberService.findByEmail(loginDto.email());
+        boolean pwMatch = memberService.matchPassword(loginDto.password(), member.getPassword());
 
-		if (!pwMatch) {
-			throw new ForbiddenException(LOGIN_FAILED);
-		}
+        if (!pwMatch) {
+            throw new ForbiddenException(LOGIN_FAILED);
+        }
 
-		return jwtTokenService.generateToken(member.getId(), member.getRole());
-	}
+        return jwtTokenService.generateToken(member.getId(), member.getRole());
+    }
 
-	@Override
-	public void signUp(MemberCreateDto memberCreateDto) {
-		Member member = memberService.save(memberCreateDto);
-	}
+    @Override
+    public void signUp(MemberCreateDto memberCreateDto) {
+        Member member = memberService.save(memberCreateDto);
+    }
 }

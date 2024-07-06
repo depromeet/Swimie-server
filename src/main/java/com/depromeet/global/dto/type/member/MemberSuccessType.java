@@ -3,24 +3,24 @@ package com.depromeet.global.dto.type.member;
 import com.depromeet.global.dto.type.SuccessType;
 
 public enum MemberSuccessType implements SuccessType {
-	GET_SUCCESS("MEMBER_1", "멤버 조회에 성공하였습니다");
+    GET_SUCCESS("MEMBER_1", "멤버 조회에 성공하였습니다");
 
-	private final String code;
+    private final String code;
 
-	private final String message;
+    private final String message;
 
-	MemberSuccessType(String code, String message) {
-		this.code = code;
-		this.message = message;
-	}
+    MemberSuccessType(String code, String message) {
+        this.code = code;
+        this.message = message;
+    }
 
-	@Override
-	public String getCode() {
-		return this.code;
-	}
+    @Override
+    public String getCode() {
+        return this.code;
+    }
 
-	@Override
-	public String getMessage() {
-		return this.message;
-	}
+    @Override
+    public String getMessage() {
+        return this.message;
+    }
 }
