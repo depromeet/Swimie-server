@@ -5,7 +5,7 @@ import com.depromeet.domain.auth.dto.response.JwtTokenResponseDto;
 import com.depromeet.domain.member.dto.request.MemberCreateDto;
 
 public interface AuthService {
-	JwtTokenResponseDto login(LoginDto loginDto);
+    JwtTokenResponseDto login(LoginDto loginDto);
 
-	void signUp(MemberCreateDto memberCreateDto);
+    void signUp(MemberCreateDto memberCreateDto);
 }

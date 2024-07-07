@@ -1,10 +1,11 @@
 package com.depromeet.global.security;
 
+import com.depromeet.domain.auth.service.JwtTokenService;
+import com.depromeet.global.security.filter.JwtAuthenticationFilter;
 import java.util.List;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -19,61 +20,64 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.depromeet.domain.auth.service.JwtTokenService;
-import com.depromeet.global.security.filter.JwtAuthenticationFilter;
-
-import lombok.RequiredArgsConstructor;
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-	private final JwtTokenService jwtTokenService;
+    private final JwtTokenService jwtTokenService;
 
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http
-			.httpBasic(HttpBasicConfigurer::disable)
-			.formLogin(FormLoginConfigurer::disable)
-			.cors(cors -> corsConfigurationSource())
-			.csrf(CsrfConfigurer::disable)
-			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.authorizeHttpRequests(
-				authorize ->
-					authorize
-						.requestMatchers("/h2/**").permitAll()
-						.requestMatchers("/depromeet-actuator/**").permitAll() // actuator
-						.requestMatchers("/swagger-ui/**", "/v3/**", "/favicon.ico").permitAll() //swagger
-						.requestMatchers("/api/v1/auth/**").permitAll() //로그인 및 회원가입
-						.anyRequest().authenticated())
-			.exceptionHandling(
-				exception -> exception.authenticationEntryPoint(
-					(request, response, authException) -> response.setStatus(401)))
-			.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-			// .oauth2Login(Customizer.withDefaults());
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.httpBasic(HttpBasicConfigurer::disable)
+                .formLogin(FormLoginConfigurer::disable)
+                .cors(cors -> corsConfigurationSource())
+                .csrf(CsrfConfigurer::disable)
+                .sessionManagement(
+                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(
+                        authorize ->
+                                authorize
+                                        .requestMatchers("/h2/**")
+                                        .permitAll()
+                                        .requestMatchers("/depromeet-actuator/**")
+                                        .permitAll() // actuator
+                                        .requestMatchers("/swagger-ui/**", "/v3/**", "/favicon.ico")
+                                        .permitAll() // swagger
+                                        .requestMatchers("/api/v1/auth/**")
+                                        .permitAll() // 로그인 및 회원가입
+                                        .anyRequest()
+                                        .authenticated())
+                .exceptionHandling(
+                        exception ->
+                                exception.authenticationEntryPoint(
+                                        (request, response, authException) ->
+                                                response.setStatus(401)))
+                .addFilterBefore(
+                        jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        // .oauth2Login(Customizer.withDefaults());
 
-		return http.build();
-	}
+        return http.build();
+    }
 
-	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(List.of("http://localhost:3000"));
-		configuration.setAllowedMethods(List.of("*"));
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedMethods(List.of("*"));
 
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", configuration);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
 
-		return source;
-	}
+        return source;
+    }
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-	@Bean
-	public JwtAuthenticationFilter jwtAuthenticationFilter() {
-		return new JwtAuthenticationFilter(jwtTokenService);
-	}
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(jwtTokenService);
+    }
 }
