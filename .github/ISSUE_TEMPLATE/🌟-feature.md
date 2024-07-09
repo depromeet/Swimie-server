@@ -1,13 +1,11 @@
 ---
-name: "\U0001F31F Feature"
+name: "\U0001F31F feature"
 about: 기능 추가 이슈 템플릿
-title: 'Feature : [Account] 이슈 제목'
+title: '\U0001F31F '
 labels: ''
 assignees: ''
 
 ---
-
-## (Insert your title)
 
 ### Description
 

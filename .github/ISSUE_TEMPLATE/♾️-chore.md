@@ -1,12 +1,10 @@
 ---
-name: "♾️ Chore"
+name: "♾️ chore"
 about: 빌드 및 CI/CD 이슈 템플릿
-title: 'Chore : [Account] 이슈 제목'
+title: '♾️ '
 labels: ''
 assignees: ''
 
 ---
-
-## (Insert your title)
 
 ### Description
