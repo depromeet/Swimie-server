@@ -1,12 +1,10 @@
 ---
-name: "\U0001F4DC Docs"
+name: "\U0001F4DC docs"
 about: 문서 작성 이슈 템플릿
-title: ''
+title: '\U0001F4DC '
 labels: ''
 assignees: ''
 
 ---
-
-## (Insert your title)
 
 ### Description
