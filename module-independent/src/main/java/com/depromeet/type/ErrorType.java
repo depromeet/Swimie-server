@@ -1,7 +1,7 @@
 package com.depromeet.type;
 
 public interface ErrorType {
-    String getCode();
+  String getCode();
 
-    String getMessage();
+  String getMessage();
 }

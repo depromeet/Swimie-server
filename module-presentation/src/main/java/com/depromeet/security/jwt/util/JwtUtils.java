@@ -16,63 +16,63 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class JwtUtils {
-    private final JwtProperties jwtProperties;
+  private final JwtProperties jwtProperties;
 
-    public AccessTokenDto generateAccessToken(Long memberId, MemberRole memberRole) {
-        Date now = new Date();
-        Date exp = new Date(now.getTime() + jwtProperties.accessTokenExpirationTime());
+  public AccessTokenDto generateAccessToken(Long memberId, MemberRole memberRole) {
+    Date now = new Date();
+    Date exp = new Date(now.getTime() + jwtProperties.accessTokenExpirationTime());
 
-        String accessToken =
-                Jwts.builder()
-                        .issuer(jwtProperties.issuer())
-                        .subject(memberId.toString())
-                        .claim("role", memberRole.getValue())
-                        .issuedAt(now)
-                        .expiration(exp)
-                        .signWith(getJwtTokenKey(jwtProperties.accessTokenSecret()))
-                        .compact();
-        return new AccessTokenDto(memberId, memberRole, accessToken);
-    }
+    String accessToken =
+        Jwts.builder()
+            .issuer(jwtProperties.issuer())
+            .subject(memberId.toString())
+            .claim("role", memberRole.getValue())
+            .issuedAt(now)
+            .expiration(exp)
+            .signWith(getJwtTokenKey(jwtProperties.accessTokenSecret()))
+            .compact();
+    return new AccessTokenDto(memberId, memberRole, accessToken);
+  }
 
-    public RefreshTokenDto generateRefreshToken(Long memberId) {
-        Date now = new Date();
-        Date exp = new Date(now.getTime() + jwtProperties.refreshTokenExpirationTime());
+  public RefreshTokenDto generateRefreshToken(Long memberId) {
+    Date now = new Date();
+    Date exp = new Date(now.getTime() + jwtProperties.refreshTokenExpirationTime());
 
-        String refreshToken =
-                Jwts.builder()
-                        .issuer(jwtProperties.issuer())
-                        .subject(memberId.toString())
-                        .issuedAt(now)
-                        .expiration(exp)
-                        .signWith(getJwtTokenKey(jwtProperties.refreshTokenSecret()))
-                        .compact();
-        return new RefreshTokenDto(memberId, refreshToken);
-    }
+    String refreshToken =
+        Jwts.builder()
+            .issuer(jwtProperties.issuer())
+            .subject(memberId.toString())
+            .issuedAt(now)
+            .expiration(exp)
+            .signWith(getJwtTokenKey(jwtProperties.refreshTokenSecret()))
+            .compact();
+    return new RefreshTokenDto(memberId, refreshToken);
+  }
 
-    public Optional<AccessTokenDto> parseAccessToken(String token) {
-        Jws<Claims> claims =
-                Jwts.parser()
-                        .requireIssuer(jwtProperties.issuer())
-                        .verifyWith(getJwtTokenKey(jwtProperties.accessTokenSecret()))
-                        .build()
-                        .parseSignedClaims(token);
-        Long memberId = Long.valueOf(claims.getPayload().getSubject());
-        MemberRole memberRole = MemberRole.findByValue(claims.getPayload().get("role").toString());
-        return Optional.of(new AccessTokenDto(memberId, memberRole, token));
-    }
+  public Optional<AccessTokenDto> parseAccessToken(String token) {
+    Jws<Claims> claims =
+        Jwts.parser()
+            .requireIssuer(jwtProperties.issuer())
+            .verifyWith(getJwtTokenKey(jwtProperties.accessTokenSecret()))
+            .build()
+            .parseSignedClaims(token);
+    Long memberId = Long.valueOf(claims.getPayload().getSubject());
+    MemberRole memberRole = MemberRole.findByValue(claims.getPayload().get("role").toString());
+    return Optional.of(new AccessTokenDto(memberId, memberRole, token));
+  }
 
-    public Optional<RefreshTokenDto> parseRefreshToken(String token) {
-        Jws<Claims> claims =
-                Jwts.parser()
-                        .requireIssuer(jwtProperties.issuer())
-                        .verifyWith(getJwtTokenKey(jwtProperties.refreshTokenSecret()))
-                        .build()
-                        .parseSignedClaims(token);
-        Long memberId = Long.valueOf(claims.getPayload().getSubject());
-        return Optional.of(new RefreshTokenDto(memberId, token));
-    }
+  public Optional<RefreshTokenDto> parseRefreshToken(String token) {
+    Jws<Claims> claims =
+        Jwts.parser()
+            .requireIssuer(jwtProperties.issuer())
+            .verifyWith(getJwtTokenKey(jwtProperties.refreshTokenSecret()))
+            .build()
+            .parseSignedClaims(token);
+    Long memberId = Long.valueOf(claims.getPayload().getSubject());
+    return Optional.of(new RefreshTokenDto(memberId, token));
+  }
 
-    private SecretKey getJwtTokenKey(String tokenKey) {
-        return Keys.hmacShaKeyFor(tokenKey.getBytes());
-    }
+  private SecretKey getJwtTokenKey(String tokenKey) {
+    return Keys.hmacShaKeyFor(tokenKey.getBytes());
+  }
 }

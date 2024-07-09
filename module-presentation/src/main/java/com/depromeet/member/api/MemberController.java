@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/member")
 @RequiredArgsConstructor
 public class MemberController {
-    private final MemberService memberService;
+  private final MemberService memberService;
 
-    @Operation(summary = "id로 member 단일 검색")
-    @GetMapping("/{id}")
-    public MemberFindOneResponseDto getMember(@PathVariable Long id) {
-        return memberService.findOneMemberResponseById(id);
-    }
+  @Operation(summary = "id로 member 단일 검색")
+  @GetMapping("/{id}")
+  public MemberFindOneResponseDto getMember(@PathVariable Long id) {
+    return memberService.findOneMemberResponseById(id);
+  }
 }

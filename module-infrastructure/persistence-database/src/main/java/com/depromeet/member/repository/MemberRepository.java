@@ -4,9 +4,9 @@ import com.depromeet.member.Member;
 import java.util.Optional;
 
 public interface MemberRepository {
-    Optional<Member> findByEmail(String email);
+  Optional<Member> findByEmail(String email);
 
-    Optional<Member> findById(Long id);
+  Optional<Member> findById(Long id);
 
-    Member save(Member member);
+  Member save(Member member);
 }

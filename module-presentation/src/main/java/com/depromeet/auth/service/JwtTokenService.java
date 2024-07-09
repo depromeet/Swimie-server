@@ -22,66 +22,66 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class JwtTokenService {
-    private final JwtUtils jwtUtils;
-    private final MemberRepository memberRepository;
+  private final JwtUtils jwtUtils;
+  private final MemberRepository memberRepository;
 
-    public JwtTokenResponseDto generateToken(Long memberId, MemberRole memberRole) {
-        AccessTokenDto accessToken = jwtUtils.generateAccessToken(memberId, memberRole);
-        RefreshTokenDto refreshToken = jwtUtils.generateRefreshToken(memberId);
+  public JwtTokenResponseDto generateToken(Long memberId, MemberRole memberRole) {
+    AccessTokenDto accessToken = jwtUtils.generateAccessToken(memberId, memberRole);
+    RefreshTokenDto refreshToken = jwtUtils.generateRefreshToken(memberId);
 
-        return new JwtTokenResponseDto(
-                SecurityConstant.BEARER_PREFIX.getValue() + accessToken.accessToken(),
-                SecurityConstant.BEARER_PREFIX.getValue() + refreshToken.refreshToken());
+    return new JwtTokenResponseDto(
+        SecurityConstant.BEARER_PREFIX.getValue() + accessToken.accessToken(),
+        SecurityConstant.BEARER_PREFIX.getValue() + refreshToken.refreshToken());
+  }
+
+  public Optional<AccessTokenDto> parseAccessToken(String token) {
+    return jwtUtils.parseAccessToken(token);
+  }
+
+  public Optional<RefreshTokenDto> parseRefreshToken(String token) {
+    return jwtUtils.parseRefreshToken(token);
+  }
+
+  public AccessTokenDto reissueAccessToken(String token) {
+    try {
+      parseAccessToken(token);
+      return null;
+    } catch (ExpiredJwtException e) {
+      Long memberId = Long.parseLong(e.getClaims().getSubject());
+      MemberRole memberRole = MemberRole.findByValue(e.getClaims().get("role", String.class));
+
+      return jwtUtils.generateAccessToken(memberId, memberRole);
     }
+  }
 
-    public Optional<AccessTokenDto> parseAccessToken(String token) {
-        return jwtUtils.parseAccessToken(token);
+  public RefreshTokenDto reissueRefreshToken(String token) {
+    try {
+      parseRefreshToken(token);
+      return null;
+    } catch (ExpiredJwtException e) {
+      Long memberId = Long.parseLong(e.getClaims().getSubject());
+
+      RefreshTokenDto refreshTokenDto = jwtUtils.generateRefreshToken(memberId);
+      Member member =
+          memberRepository
+              .findById(memberId)
+              .orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
+      member.updateRefreshToken(refreshTokenDto.refreshToken());
+      memberRepository.save(member);
+
+      return refreshTokenDto;
     }
+  }
 
-    public Optional<RefreshTokenDto> parseRefreshToken(String token) {
-        return jwtUtils.parseRefreshToken(token);
+  public RefreshTokenDto retrieveRefreshToken(
+      RefreshTokenDto refreshTokenDto, String refreshToken) {
+    Member member =
+        memberRepository
+            .findById(refreshTokenDto.memberId())
+            .orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
+    if (member.getRefreshToken().equals(refreshToken)) {
+      return refreshTokenDto;
     }
-
-    public AccessTokenDto reissueAccessToken(String token) {
-        try {
-            parseAccessToken(token);
-            return null;
-        } catch (ExpiredJwtException e) {
-            Long memberId = Long.parseLong(e.getClaims().getSubject());
-            MemberRole memberRole = MemberRole.findByValue(e.getClaims().get("role", String.class));
-
-            return jwtUtils.generateAccessToken(memberId, memberRole);
-        }
-    }
-
-    public RefreshTokenDto reissueRefreshToken(String token) {
-        try {
-            parseRefreshToken(token);
-            return null;
-        } catch (ExpiredJwtException e) {
-            Long memberId = Long.parseLong(e.getClaims().getSubject());
-
-            RefreshTokenDto refreshTokenDto = jwtUtils.generateRefreshToken(memberId);
-            Member member =
-                    memberRepository
-                            .findById(memberId)
-                            .orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
-            member.updateRefreshToken(refreshTokenDto.refreshToken());
-            memberRepository.save(member);
-
-            return refreshTokenDto;
-        }
-    }
-
-    public RefreshTokenDto retrieveRefreshToken(
-            RefreshTokenDto refreshTokenDto, String refreshToken) {
-        Member member =
-                memberRepository
-                        .findById(refreshTokenDto.memberId())
-                        .orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
-        if (member.getRefreshToken().equals(refreshToken)) {
-            return refreshTokenDto;
-        }
-        throw new ForbiddenException(AuthErrorType.REFRESH_TOKEN_NOT_MATCH);
-    }
+    throw new ForbiddenException(AuthErrorType.REFRESH_TOKEN_NOT_MATCH);
+  }
 }

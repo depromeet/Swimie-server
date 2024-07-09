@@ -1,7 +1,7 @@
 package com.depromeet.type;
 
 public interface SuccessType {
-    String getCode();
+  String getCode();
 
-    String getMessage();
+  String getMessage();
 }
