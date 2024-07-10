@@ -49,6 +49,7 @@ public class MemoryEntity {
 
     @NotNull private LocalTime endTime;
 
+    @Column(columnDefinition = "TEXT")
     private String diary;
 
     @Builder
