@@ -22,11 +22,15 @@ public class CustomOAuth2User implements OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(memberDto.memberRole().getValue()));
+        return List.of(new SimpleGrantedAuthority(memberDto.getMemberRole().getValue()));
     }
 
     @Override
     public String getName() {
-        return memberDto.email();
+        return memberDto.getName();
+    }
+
+    public String getEmail() {
+        return memberDto.getEmail();
     }
 }
