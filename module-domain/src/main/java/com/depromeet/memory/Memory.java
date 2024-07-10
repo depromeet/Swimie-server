@@ -12,6 +12,7 @@ public class Memory {
     private Long id;
     private Member member;
     private Pool pool;
+    private MemoryDetail memoryDetail;
     private LocalDate recordAt;
     private LocalTime startTime;
     private LocalTime endTime;
@@ -22,6 +23,7 @@ public class Memory {
             Long id,
             Member member,
             Pool pool,
+            MemoryDetail memoryDetail,
             LocalDate recordAt,
             LocalTime startTime,
             LocalTime endTime,
@@ -29,6 +31,7 @@ public class Memory {
         this.id = id;
         this.member = member;
         this.pool = pool;
+        this.memoryDetail = memoryDetail;
         this.recordAt = recordAt;
         this.startTime = startTime;
         this.endTime = endTime;
