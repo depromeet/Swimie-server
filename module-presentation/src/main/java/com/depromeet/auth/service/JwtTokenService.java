@@ -45,7 +45,7 @@ public class JwtTokenService {
     public AccessTokenDto reissueAccessToken(String token) {
         try {
             parseAccessToken(token);
-            return null;
+            return null; // 여기 왜 항상 null을 보내는 건지 확인
         } catch (ExpiredJwtException e) {
             Long memberId = Long.parseLong(e.getClaims().getSubject());
             MemberRole memberRole = MemberRole.findByValue(e.getClaims().get("role", String.class));
