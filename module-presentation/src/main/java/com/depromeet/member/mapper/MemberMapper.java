@@ -6,12 +6,7 @@ import com.depromeet.member.dto.request.MemberCreateDto;
 
 public class MemberMapper {
     public static Member from(MemberCreateDto dto) {
-        return Member.builder()
-                .name(dto.name())
-                .email(dto.email())
-                .password(dto.password())
-                .role(MemberRole.USER)
-                .build();
+        return Member.builder().name(dto.name()).email(dto.email()).role(MemberRole.USER).build();
     }
 
     public static Member from(String nickname, String email) {

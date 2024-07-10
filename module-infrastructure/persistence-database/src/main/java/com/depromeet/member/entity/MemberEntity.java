@@ -28,20 +28,16 @@ public class MemberEntity {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "password", nullable = false)
-    private String password;
-
     @Column(name = "role")
     private MemberRole role;
 
     @Column private String refreshToken;
 
     @Builder
-    private MemberEntity(Long id, String name, String email, String password, MemberRole role) {
+    private MemberEntity(Long id, String name, String email, MemberRole role) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.password = password;
         this.role = role;
     }
 
@@ -50,18 +46,11 @@ public class MemberEntity {
                 .id(member.getId())
                 .name(member.getName())
                 .email(member.getEmail())
-                .password(member.getPassword())
                 .role(member.getRole())
                 .build();
     }
 
     public Member toModel() {
-        return Member.builder()
-                .id(id)
-                .name(name)
-                .email(email)
-                .password(password)
-                .role(role)
-                .build();
+        return Member.builder().id(id).name(name).email(email).role(role).build();
     }
 }

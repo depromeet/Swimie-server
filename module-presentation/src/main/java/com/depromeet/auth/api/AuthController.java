@@ -5,6 +5,7 @@ import com.depromeet.auth.dto.response.JwtTokenResponseDto;
 import com.depromeet.auth.service.AuthService;
 import com.depromeet.member.dto.request.MemberCreateDto;
 import com.depromeet.security.constant.SecurityConstant;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -22,6 +23,8 @@ public class AuthController {
     private final AuthService authService;
 
     // 임시
+    @Deprecated
+    @Hidden
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
         JwtTokenResponseDto jwtTokenResponseDto = authService.login(loginDto);
@@ -35,6 +38,8 @@ public class AuthController {
         return ResponseEntity.ok(jwtTokenResponseDto);
     }
 
+    @Deprecated
+    @Hidden
     @PostMapping
     public ResponseEntity<?> signUp(@RequestBody MemberCreateDto memberCreate) {
         authService.signUp(memberCreate);
