@@ -55,8 +55,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         RefreshTokenDto refreshTokenDto = jwtUtils.generateRefreshToken(member.getId());
 
         addTokenToResponse(response, accessTokenDto, refreshTokenDto);
-
-        response.sendRedirect("http://localhost:3000/");
     }
 
     private void addTokenToResponse(
