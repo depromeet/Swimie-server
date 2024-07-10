@@ -3,6 +3,7 @@ package com.depromeet.security.oauth.handler;
 import static com.depromeet.security.constant.SecurityConstant.*;
 import static com.depromeet.type.member.MemberErrorType.NOT_FOUND;
 
+import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.member.Member;
 import com.depromeet.member.MemberRole;
@@ -11,6 +12,9 @@ import com.depromeet.security.jwt.util.AccessTokenDto;
 import com.depromeet.security.jwt.util.JwtUtils;
 import com.depromeet.security.jwt.util.RefreshTokenDto;
 import com.depromeet.security.oauth.CustomOAuth2User;
+import com.depromeet.security.oauth.dto.LoginResponse;
+import com.depromeet.type.auth.AuthSuccessType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,6 +34,7 @@ import org.springframework.stereotype.Component;
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JwtUtils jwtUtils;
     private final MemberRepository memberRepository;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void onAuthenticationSuccess(
@@ -38,7 +43,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         log.info("start oauth success handler");
 
         CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
-        String email = customOAuth2User.getName();
+        String email = customOAuth2User.getEmail();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -54,9 +59,17 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         AccessTokenDto accessTokenDto = jwtUtils.generateAccessToken(member.getId(), memberRole);
         RefreshTokenDto refreshTokenDto = jwtUtils.generateRefreshToken(member.getId());
 
+        LoginResponse loginResponse = new LoginResponse(accessTokenDto, refreshTokenDto);
+
         addTokenToResponse(response, accessTokenDto, refreshTokenDto);
 
-        response.sendRedirect("http://localhost:3000/");
+        response.addHeader("Content-Type", "application/json; charset=UTF-8");
+
+        response.getWriter()
+                .write(
+                        objectMapper.writeValueAsString(
+                                ApiResponse.success(
+                                        AuthSuccessType.LOGIN_SUCCESS, loginResponse))); // json 응답
     }
 
     private void addTokenToResponse(
