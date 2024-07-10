@@ -38,6 +38,16 @@ public class MemoryDetailEntity {
         this.kcal = kcal;
     }
 
+    public static MemoryDetailEntity from(MemoryDetail memoryDetail) {
+        return MemoryDetailEntity.builder()
+                .id(memoryDetail.getId())
+                .item(memoryDetail.getItem())
+                .heartRate(memoryDetail.getHeartRate())
+                .pace(memoryDetail.getPace())
+                .kcal(memoryDetail.getKcal())
+                .build();
+    }
+
     public MemoryDetail toModel() {
         return MemoryDetail.builder()
                 .id(this.id)

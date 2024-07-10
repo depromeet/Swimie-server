@@ -31,6 +31,14 @@ public class PoolEntity {
         this.lane = lane;
     }
 
+    public static PoolEntity from(Pool pool) {
+        return PoolEntity.builder()
+                .id(pool.getId())
+                .name(pool.getName())
+                .lane(pool.getLane())
+                .build();
+    }
+
     public Pool toModel() {
         return Pool.builder().id(this.id).name(this.name).lane(this.lane).build();
     }

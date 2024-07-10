@@ -71,6 +71,19 @@ public class MemoryEntity {
         this.diary = diary;
     }
 
+    public static MemoryEntity from(Memory memory) {
+        return MemoryEntity.builder()
+                .id(memory.getId())
+                .member(MemberEntity.from(memory.getMember()))
+                .pool(PoolEntity.from(memory.getPool()))
+                .memoryDetail(MemoryDetailEntity.from(memory.getMemoryDetail()))
+                .recordAt(memory.getRecordAt())
+                .startTime(memory.getStartTime())
+                .endTime(memory.getEndTime())
+                .diary(memory.getDiary())
+                .build();
+    }
+
     public Memory toModel() {
         return Memory.builder()
                 .id(this.id)

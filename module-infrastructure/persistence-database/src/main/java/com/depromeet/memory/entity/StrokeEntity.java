@@ -44,6 +44,16 @@ public class StrokeEntity {
         this.meter = meter;
     }
 
+    public static StrokeEntity from(Stroke stroke) {
+        return StrokeEntity.builder()
+                .id(stroke.getId())
+                .memory(MemoryEntity.from(stroke.getMemory()))
+                .name(stroke.getName())
+                .laps(stroke.getLaps())
+                .meter(stroke.getMeter())
+                .build();
+    }
+
     public Stroke toModel() {
         return Stroke.builder()
                 .id(this.id)
