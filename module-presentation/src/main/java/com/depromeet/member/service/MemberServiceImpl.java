@@ -19,10 +19,10 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Deprecated
     @Override
     public Member save(MemberCreateDto memberCreate) {
         Member member = MemberMapper.from(memberCreate);
-        member.encodePassword(passwordEncoder.encode(member.getPassword()));
         return memberRepository.save(member);
     }
 
@@ -53,6 +53,7 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
     }
 
+    @Deprecated
     @Override
     public boolean matchPassword(String rawPassword, String encodedPassword) {
         return passwordEncoder.matches(rawPassword, encodedPassword);

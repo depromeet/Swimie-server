@@ -14,16 +14,16 @@ public enum MemberRole implements CodedEnum<String> {
         this.value = value;
     }
 
-    @Override
-    public String getValue() {
-        return this.value;
-    }
-
     public static MemberRole findByValue(String value) {
         return Arrays.stream(MemberRole.values())
                 .filter(m -> m.value.equals(value))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("변환할 수 없습니다"));
+    }
+
+    @Override
+    public String getValue() {
+        return this.value;
     }
 
     @jakarta.persistence.Converter(autoApply = true)

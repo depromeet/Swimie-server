@@ -7,11 +7,9 @@ import java.util.Objects;
 @Schema(name = "회원가입 정보 입력")
 public record MemberCreateDto(
         @Schema(defaultValue = "user") String name,
-        @Schema(defaultValue = "user@gmail.com") String email,
-        @Schema(defaultValue = "password") String password) {
+        @Schema(defaultValue = "user@gmail.com") String email) {
 
     public MemberCreateDto {
         Objects.requireNonNull(email);
-        Objects.requireNonNull(password);
     }
 }

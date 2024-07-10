@@ -8,7 +8,6 @@ public class Member {
     private Long id;
     private String name;
     private String email;
-    private String password;
     private MemberRole role;
     private String refreshToken;
 
@@ -17,14 +16,7 @@ public class Member {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.password = password;
         this.role = role;
-    }
-
-    public void encodePassword(String password) {
-        if (password != null) {
-            this.password = password;
-        }
     }
 
     public void updateRefreshToken(String refreshToken) {
