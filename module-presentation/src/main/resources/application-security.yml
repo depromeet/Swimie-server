@@ -1,7 +1,7 @@
 spring:
   config:
     activate:
-      on-profile: actuator
+      on-profile: security
 
   security:
     oauth2:
@@ -12,12 +12,11 @@ spring:
             client-secret: ${KAKAO_CLIENT_SECRET}
             redirect-uri: ${KAKAO_REDIRECT_URL}
             authorization-grant-type: authorization_code
-            client-authentication-method: POST
+            client-authentication-method: client_secret_post
             client-name: Kakao
             scope:
               - profile_nickname
-              - profile_image
-              - email
+              - account_email
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
