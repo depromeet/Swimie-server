@@ -3,6 +3,7 @@ package com.depromeet.security.oauth;
 import com.depromeet.member.Member;
 import com.depromeet.member.mapper.MemberMapper;
 import com.depromeet.member.repository.MemberRepository;
+import com.depromeet.security.oauth.dto.GoogleResponse;
 import com.depromeet.security.oauth.dto.KakaoResponse;
 import com.depromeet.security.oauth.dto.MemberDto;
 import com.depromeet.security.oauth.dto.OAuth2Response;
@@ -29,6 +30,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2Response oAuth2Response;
         if (registrationId.equals("kakao")) {
             oAuth2Response = new KakaoResponse(oAuth2User.getAttributes());
+        } else if (registrationId.equals("google")) {
+            oAuth2Response = new GoogleResponse(oAuth2User.getAttributes());
         } else {
             throw new OAuth2AuthenticationException(
                     "failed to resolve registration id " + registrationId);
@@ -38,7 +41,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String email = oAuth2Response.getEmail();
 
         Member member = findByEmailOrSave(email, nickname);
-        return new CustomOAuth2User(new MemberDto(email, member.getRole()));
+
+        MemberDto memberDto =
+                MemberDto.builder()
+                        .id(member.getId())
+                        .name(nickname)
+                        .email(email)
+                        .memberRole(member.getRole())
+                        .build();
+        return new CustomOAuth2User(memberDto);
     }
 
     private Member findByEmailOrSave(String email, String nickname) {
