@@ -39,6 +39,8 @@ public class MemoryDetailEntity {
     }
 
     public static MemoryDetailEntity from(MemoryDetail memoryDetail) {
+        if (memoryDetail == null) return null;
+
         return MemoryDetailEntity.builder()
                 .id(memoryDetail.getId())
                 .item(memoryDetail.getItem())

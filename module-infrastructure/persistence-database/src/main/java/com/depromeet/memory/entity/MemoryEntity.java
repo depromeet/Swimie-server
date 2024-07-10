@@ -35,8 +35,8 @@ public class MemoryEntity {
     private MemberEntity member;
 
     @NotNull
-    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pool_id")
+    @OneToOne(fetch = FetchType.LAZY)
     private PoolEntity pool;
 
     @OneToOne(fetch = FetchType.LAZY)
