@@ -1,7 +1,8 @@
 package com.depromeet.security.filter;
 
 import static com.depromeet.security.constant.SecurityConstant.*;
-import static com.depromeet.type.auth.AuthErrorType.*;
+import static com.depromeet.type.auth.AuthErrorType.INVALID_JWT_TOKEN;
+import static com.depromeet.type.auth.AuthErrorType.JWT_TOKEN_EXPIRED;
 
 import com.depromeet.auth.service.JwtTokenService;
 import com.depromeet.exception.UnauthorizedException;
@@ -43,7 +44,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Optional.ofNullable(request.getHeader(ACCESS_HEADER.getValue()));
 
         if (optionalAccessToken.isEmpty()) {
-
             log.info("access token is empty");
             filterChain.doFilter(request, response);
             return;
@@ -151,9 +151,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void setAuthentication(AccessTokenDto reissuedAccessToken) {
         CustomOAuth2User customOAuth2User =
                 new CustomOAuth2User(
-                        new MemberDto(
-                                reissuedAccessToken.accessToken(),
-                                reissuedAccessToken.memberRole()));
+                        MemberDto.builder()
+                                .id(reissuedAccessToken.memberId())
+                                .memberRole(reissuedAccessToken.memberRole())
+                                .build());
 
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(
