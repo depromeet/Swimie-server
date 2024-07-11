@@ -3,7 +3,6 @@ package com.depromeet.security;
 import com.depromeet.auth.service.JwtTokenService;
 import com.depromeet.member.repository.MemberRepository;
 import com.depromeet.security.filter.JwtAuthenticationFilter;
-import com.depromeet.security.jwt.util.JwtUtils;
 import com.depromeet.security.oauth.CustomOAuth2UserService;
 import com.depromeet.security.oauth.handler.OAuth2FailureHandler;
 import com.depromeet.security.oauth.handler.OAuth2SuccessHandler;
@@ -30,7 +29,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtUtils jwtUtils;
     private final JwtTokenService jwtTokenService;
     private final MemberRepository memberRepository;
 
@@ -119,7 +117,7 @@ public class SecurityConfig {
 
     @Bean
     public OAuth2SuccessHandler oAuth2SuccessHandler() {
-        return new OAuth2SuccessHandler(jwtUtils, memberRepository);
+        return new OAuth2SuccessHandler(jwtTokenService, memberRepository);
     }
 
     @Bean
