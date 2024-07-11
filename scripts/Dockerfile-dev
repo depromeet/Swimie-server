@@ -1,0 +1,7 @@
+FROM amazoncorretto:21
+
+WORKDIR /app
+
+COPY module-presentation/build/libs/module-presentation.jar /app/appu.jar
+
+CMD ["java", "-Duser.timezone=Asia/Seoul", "-jar", "-Dspring.profiles.active=dev", "appu.jar"]
