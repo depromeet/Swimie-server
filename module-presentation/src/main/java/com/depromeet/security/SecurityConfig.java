@@ -3,7 +3,6 @@ package com.depromeet.security;
 import com.depromeet.auth.service.JwtTokenService;
 import com.depromeet.member.repository.MemberRepository;
 import com.depromeet.security.filter.JwtAuthenticationFilter;
-import com.depromeet.security.jwt.util.JwtUtils;
 import com.depromeet.security.oauth.CustomOAuth2UserService;
 import com.depromeet.security.oauth.handler.OAuth2FailureHandler;
 import com.depromeet.security.oauth.handler.OAuth2SuccessHandler;
@@ -21,7 +20,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -30,53 +28,61 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JwtUtils jwtUtils;
     private final JwtTokenService jwtTokenService;
     private final MemberRepository memberRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.httpBasic(HttpBasicConfigurer::disable)
-                .formLogin(FormLoginConfigurer::disable)
-                .cors(cors -> corsConfigurationSource())
-                .csrf(CsrfConfigurer::disable)
-                .sessionManagement(
-                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(
-                        authorize ->
-                                authorize
-                                        .requestMatchers("/h2/**")
-                                        .permitAll()
-                                        .requestMatchers("/depromeet-actuator/**")
-                                        .permitAll() // actuator
-                                        .requestMatchers("/oauth2/**", "/login/**")
-                                        .permitAll() // oauth2
-                                        .requestMatchers("/swagger-ui/**", "/v3/**", "/favicon.ico")
-                                        .permitAll() // swagger
-                                        .requestMatchers("/api/v1/auth/**")
-                                        .permitAll() // 로그인 및 회원가입
-                                        .anyRequest()
-                                        .authenticated())
-                .exceptionHandling(
-                        exception ->
-                                exception.authenticationEntryPoint(
-                                        (request, response, authException) ->
-                                                response.setStatus(401)))
-                .addFilterBefore(
-                        jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(jwtAuthenticationFilter(), OAuth2LoginAuthenticationFilter.class)
-                .oauth2Login(
-                        oauth2 ->
-                                oauth2.userInfoEndpoint(
-                                                userInfoEndpointConfig ->
-                                                        userInfoEndpointConfig.userService(
-                                                                customOAuth2UserService()))
-                                        .redirectionEndpoint(
-                                                redirectionEndpointConfig ->
-                                                        redirectionEndpointConfig.baseUri(
-                                                                "/oauth2/callback/*"))
-                                        .successHandler(oAuth2SuccessHandler())
-                                        .failureHandler(oAuth2FailureHandler()));
+        http.cors(cors -> corsConfigurationSource());
+
+        // csrf disable
+        http.csrf(CsrfConfigurer::disable);
+
+        // From 로그인 방식 disable
+        http.formLogin(FormLoginConfigurer::disable);
+
+        // HTTP Basic 인증 방식 disable
+        http.httpBasic(HttpBasicConfigurer::disable);
+
+        // JWTFilter 추가
+        http.addFilterAfter(jwtAuthenticationFilter(), OAuth2LoginAuthenticationFilter.class);
+
+        // oauth2
+        http.oauth2Login(
+                oauth2 ->
+                        oauth2.userInfoEndpoint(
+                                        userInfoEndpointConfig ->
+                                                userInfoEndpointConfig.userService(
+                                                        customOAuth2UserService()))
+                                .successHandler(oAuth2SuccessHandler())
+                                .failureHandler(oAuth2FailureHandler()));
+
+        // 경로별 인가 작업
+        http.authorizeHttpRequests(
+                authorize ->
+                        authorize
+                                .requestMatchers("/h2/**")
+                                .permitAll()
+                                .requestMatchers("/depromeet-actuator/**")
+                                .permitAll() // actuator
+                                .requestMatchers("/oauth2/**", "/login/**")
+                                .permitAll() // oauth2
+                                .requestMatchers("/swagger-ui/**", "/v3/**", "/favicon.ico")
+                                .permitAll() // swagger
+                                .requestMatchers("/api/v1/auth/**")
+                                .permitAll() // 로그인 및 회원가입
+                                .anyRequest()
+                                .authenticated());
+
+        // 세션 설정 : STATELESS
+        http.sessionManagement(
+                session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        // 예외 처리
+        http.exceptionHandling(
+                exception ->
+                        exception.authenticationEntryPoint(
+                                (request, response, authException) -> response.setStatus(401)));
 
         return http.build();
     }
@@ -110,7 +116,7 @@ public class SecurityConfig {
 
     @Bean
     public OAuth2SuccessHandler oAuth2SuccessHandler() {
-        return new OAuth2SuccessHandler(jwtUtils, memberRepository);
+        return new OAuth2SuccessHandler(jwtTokenService, memberRepository);
     }
 
     @Bean

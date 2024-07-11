@@ -1,5 +1,14 @@
 package com.depromeet.security.oauth.dto;
 
 import com.depromeet.member.MemberRole;
+import lombok.Builder;
+import lombok.Getter;
 
-public record MemberDto(String email, MemberRole memberRole) {}
+@Getter
+@Builder
+public class MemberDto {
+    private Long id;
+    private String name;
+    private String email;
+    private MemberRole memberRole;
+}

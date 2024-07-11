@@ -3,6 +3,7 @@ package com.depromeet.auth.service;
 import com.depromeet.auth.dto.response.JwtTokenResponseDto;
 import com.depromeet.exception.ForbiddenException;
 import com.depromeet.exception.NotFoundException;
+import com.depromeet.exception.UnauthorizedException;
 import com.depromeet.member.Member;
 import com.depromeet.member.MemberRole;
 import com.depromeet.member.repository.MemberRepository;
@@ -30,6 +31,7 @@ public class JwtTokenService {
         RefreshTokenDto refreshToken = jwtUtils.generateRefreshToken(memberId);
 
         return new JwtTokenResponseDto(
+                memberId,
                 SecurityConstant.BEARER_PREFIX.getValue() + accessToken.accessToken(),
                 SecurityConstant.BEARER_PREFIX.getValue() + refreshToken.refreshToken());
     }
@@ -44,8 +46,8 @@ public class JwtTokenService {
 
     public AccessTokenDto reissueAccessToken(String token) {
         try {
-            parseAccessToken(token);
-            return null;
+            return parseAccessToken(token)
+                    .orElseThrow(() -> new UnauthorizedException(AuthErrorType.INVALID_JWT_TOKEN));
         } catch (ExpiredJwtException e) {
             Long memberId = Long.parseLong(e.getClaims().getSubject());
             MemberRole memberRole = MemberRole.findByValue(e.getClaims().get("role", String.class));
@@ -56,8 +58,8 @@ public class JwtTokenService {
 
     public RefreshTokenDto reissueRefreshToken(String token) {
         try {
-            parseRefreshToken(token);
-            return null;
+            return parseRefreshToken(token)
+                    .orElseThrow(() -> new UnauthorizedException(AuthErrorType.INVALID_JWT_TOKEN));
         } catch (ExpiredJwtException e) {
             Long memberId = Long.parseLong(e.getClaims().getSubject());
 

@@ -17,6 +17,15 @@ spring:
             scope:
               - profile_nickname
               - account_email
+          google:
+            client-name: google
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            redirect-uri: ${GOOGLE_REDIRECT_URL}
+            authorization-code: ${GOOGLE_AUTH_CODE}
+            scope: profile,email
+            access-token-url: https://oauth2.googleapis.com/token
+            profile-url: https://www.googleapis.com/userinfo/v2/me
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
