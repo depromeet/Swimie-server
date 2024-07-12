@@ -36,9 +36,7 @@ pipeline {
         stage('Docker 이미지 빌드') {
             steps {
                 script {
-                    sh 'pwd'
                     sh 'cp ./module-presentation/build/libs/module-presentation.jar .'
-                    sh 'pwd'
                     dockerImage = docker.build(repository + ":latest", "-f ./scripts/Dockerfile-prod .")
                 }
             }
