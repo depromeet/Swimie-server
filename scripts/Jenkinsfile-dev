@@ -1,0 +1,72 @@
+pipeline {
+    agent any
+    tools {
+        gradle 'gradle'
+        jdk("JDK 21")
+    }
+    triggers {
+        githubPush()
+    }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '3'))
+    }
+    environment {
+        docker_usr = credentials('DOCKERHUB_CREDENTIALS_USR')
+        docker_psw = credentials('DOCKERHUB_CREDENTIALS_PSW')
+        repository = credentials('DOCKERHUB_REPOSITORY')
+        TARGET_HOST = credentials('DEV_SERVER_ADDR')
+        dockerImage = ''
+    }
+    stages {
+        stage('저장소 복제') {
+            steps {
+                git branch: 'develop', credentialsId: 'GITHUB_ACCESS_TOKEN', url: 'https://github.com/depromeet/15th-team2-BE'
+            }
+        }
+
+        stage('빌드') {
+            steps {
+                sh 'chmod u+w ./module-presentation/src/main/resources/'
+                sh 'cp ~/application-secret.properties ./module-presentation/src/main/resources/'
+                sh 'chmod +x ./gradlew'
+                sh ' ./gradlew :module-presentation:build'
+            }
+        }
+
+        stage('Docker 이미지 빌드') {
+            steps {
+                script {
+                    sh 'cp ./module-presentation/build/libs/module-presentation.jar .'
+                    dockerImage = docker.build(repository + ":latest", "-f ./scripts/Dockerfile-dev .")
+                }
+            }
+        }
+
+        stage('Dockerhub 로그인') {
+            steps {
+                sh 'echo $docker_psw | docker login -u $docker_usr --password-stdin'
+            }
+        }
+
+        stage('Dockerhub에 Push') {
+            steps {
+                sh 'docker push ${repository}:latest'
+            }
+        }
+
+        stage('원격 서버에 접속하여 deploy 스크립트 실행') {
+            steps {
+                script {
+                    def remoteCommands = """
+                        cd ~ &&
+                        ./deploy.sh
+                    """
+
+                    sshagent (credentials: ['jenkins-ssh']) {
+                        sh "ssh -o StrictHostKeyChecking=no ${TARGET_HOST} '${remoteCommands}'"
+                    }
+                }
+            }
+        }
+    }
+}
