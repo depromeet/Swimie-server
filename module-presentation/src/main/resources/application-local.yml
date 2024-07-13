@@ -10,6 +10,15 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 20MB
+  cloud:
+    aws:
+      s3:
+        bucket: ${AWS_BUCKET}
 
 
 swagger.version: "v0.1"
