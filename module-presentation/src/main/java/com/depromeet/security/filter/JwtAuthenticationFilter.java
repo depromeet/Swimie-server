@@ -93,6 +93,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     addReissuedJwtTokenToHeader(response, accessToken, refreshToken);
             setAuthentication(reissuedAccessToken);
         }
+        filterChain.doFilter(request, response);
     }
 
     private boolean noAuthentication(String url) {
