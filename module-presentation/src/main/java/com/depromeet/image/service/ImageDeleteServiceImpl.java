@@ -29,6 +29,7 @@ public class ImageDeleteServiceImpl implements ImageDeleteService {
                         .orElseThrow(() -> new NoSuchElementException("Image not found"));
 
         deleteImageFromS3(image);
+        imageRepository.deleteById(imageId);
     }
 
     @Override
@@ -38,6 +39,7 @@ public class ImageDeleteServiceImpl implements ImageDeleteService {
         for (Image image : images) {
             deleteImageFromS3(image);
         }
+        imageRepository.deleteAllByMemoryId(memoryId);
     }
 
     private void deleteImageFromS3(Image image) {

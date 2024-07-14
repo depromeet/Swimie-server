@@ -7,5 +7,5 @@ import org.springframework.web.multipart.MultipartFile;
 public interface ImageUploadService {
     List<Long> uploadMemoryImages(List<MultipartFile> files);
 
-    void addMemoryIdToImages(ImagesMemoryIdDto inputImagesMemoryIdDto);
+    void addMemoryIdToImages(Long memoryId, ImagesMemoryIdDto inputImagesMemoryIdDto);
 }

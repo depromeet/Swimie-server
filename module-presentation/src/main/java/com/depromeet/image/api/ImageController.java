@@ -28,7 +28,7 @@ public class ImageController {
     private final ImageGetService imageGetService;
     private final ImageDeleteService imageDeleteService;
 
-    @Operation(summary = "Upload images to s3", description = "수영 기록 이미지 s3로 업로드")
+    @Operation(summary = "수영 기록 이미지 s3에 업로드")
     @PostMapping
     public ResponseEntity<ApiResponse<?>> uploadImages(@RequestPart List<MultipartFile> images) {
         List<Long> imageIds = imageUploadService.uploadMemoryImages(images);
@@ -36,28 +36,30 @@ public class ImageController {
         return ResponseEntity.ok(ApiResponse.success(UPLOAD_IMAGES_SUCCESS, imageIds));
     }
 
-    @Operation(summary = "Add memoryId to uploded images", description = "업로드 된 이미지에 memoryId 추가")
-    @PatchMapping("/memoryId")
+    @Operation(summary = "업로드 된 이미지에 memoryId 추가")
+    @PatchMapping("/memory") // 임시로 작성하긴 했는데 직관적이지 않네요 api 작명 추천 받습니다.
     public ResponseEntity<ApiResponse<?>> addMemoryToImages(
+            @RequestParam(name = "memoryId") Long memoryId,
             @RequestBody ImagesMemoryIdDto imagesMemoryIdDto) {
-        imageUploadService.addMemoryIdToImages(imagesMemoryIdDto);
+        imageUploadService.addMemoryIdToImages(memoryId, imagesMemoryIdDto);
 
         return ResponseEntity.ok(ApiResponse.success(UPLOAD_IMAGES_SUCCESS));
     }
 
-    @Operation(summary = "update images", description = "수영 기록의 이미지 수정")
+    @Operation(summary = "수영 기록의 이미지 수정")
     @PatchMapping
     public ResponseEntity<ApiResponse<?>> updateImages(
-            @PathVariable(name = "memoryId") Long memoryId,
+            @RequestParam(name = "memoryId") Long memoryId,
             @RequestPart List<MultipartFile> images) {
         imageUpdateService.updateImages(memoryId, images);
 
         return ResponseEntity.ok(ApiResponse.success(UPLOAD_IMAGES_SUCCESS));
     }
 
-    @GetMapping("/{memoryId}")
+    @Operation(summary = "수영 기록의 이미지 조회")
+    @GetMapping
     public ResponseEntity<ApiResponse<?>> findImages(
-            @PathVariable(name = "memoryId") Long memoryId) {
+            @RequestParam(name = "memoryId") Long memoryId) {
         List<MemoryImagesDto> memoryImages = imageGetService.findImagesByMemoryId(memoryId);
 
         return ResponseEntity.ok(ApiResponse.success(UPLOAD_IMAGES_SUCCESS, memoryImages));
@@ -66,7 +68,7 @@ public class ImageController {
     @Operation(summary = "Delete images belongs to memory", description = "수영 기록의 이미지 삭제")
     @DeleteMapping
     public ResponseEntity<ApiResponse<?>> deleteImages(
-            @PathVariable(value = "memoryId") Long memoryId) {
+            @RequestParam(value = "memoryId") Long memoryId) {
         imageDeleteService.deleteAllImagesByMemoryId(memoryId);
 
         return ResponseEntity.ok(ApiResponse.success(DELETE_IMAGES_SUCCESS));

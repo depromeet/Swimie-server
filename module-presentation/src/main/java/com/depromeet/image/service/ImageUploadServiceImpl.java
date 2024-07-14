@@ -32,17 +32,14 @@ public class ImageUploadServiceImpl implements ImageUploadService {
     private String bucketName;
 
     @Override
-    public List<Long> uploadMemoryImages(List<MultipartFile> files) {
-        //        List<MultipartFile> memoryImages = imageUploadDto.images();
-        List<MultipartFile> memoryImages = files; // 임시
+    public List<Long> uploadMemoryImages(List<MultipartFile> memoryImages) {
         List<Image> images = uploadImagesAndGetImages(memoryImages);
 
         return imageRepository.saveAll(images);
     }
 
     @Override
-    public void addMemoryIdToImages(ImagesMemoryIdDto inputImagesMemoryIdDto) {
-        Long memoryId = inputImagesMemoryIdDto.memoryId();
+    public void addMemoryIdToImages(Long memoryId, ImagesMemoryIdDto inputImagesMemoryIdDto) {
         Memory memory =
                 memoryRepository
                         .findById(memoryId)
