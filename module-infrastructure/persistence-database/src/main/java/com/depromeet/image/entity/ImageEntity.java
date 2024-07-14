@@ -4,6 +4,7 @@ import com.depromeet.image.Image;
 import com.depromeet.memory.entity.MemoryEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -51,25 +52,25 @@ public class ImageEntity {
     public Image toModel() {
         return Image.builder()
                 .id(this.id)
-                .memory(this.memory.toModel())
+                .memory(this.memory == null ? null : this.memory.toModel())
                 .imageName(this.imageName)
                 .imageUrl(this.imageUrl)
                 .build();
     }
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
-    public MemoryEntity getMemory() {
-        return memory;
+    public Optional<MemoryEntity> getMemory() {
+        return Optional.ofNullable(this.memory);
     }
 
     public String getImageName() {
-        return imageName;
+        return this.imageName;
     }
 
-    public @NotNull String getImageUrl() {
-        return imageUrl;
+    public String getImageUrl() {
+        return this.imageUrl;
     }
 }
