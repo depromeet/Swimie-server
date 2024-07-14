@@ -18,4 +18,6 @@ public interface ImageRepository {
     void deleteById(Long id);
 
     void deleteAllByIds(List<Long> ids);
+
+    void deleteAllByMemoryId(Long memoryId);
 }

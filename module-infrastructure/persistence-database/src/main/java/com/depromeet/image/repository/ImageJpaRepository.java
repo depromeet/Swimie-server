@@ -6,13 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface ImageJpaRepository extends JpaRepository<ImageEntity, Long> {
-    List<ImageEntity> findByMemoryId(Long memoryImageId);
+    List<ImageEntity> findByMemoryId(Long memoryId);
 
-    @Query(
-            value =
-                    """
-            select image \
-            from ImageEntity image \
-            where image.id = :ids""")
+    @Query(value = """
+    select i from ImageEntity i where i.id in :ids
+    """)
     List<ImageEntity> findAllByIds(List<Long> ids);
+
+    void deleteAllByMemoryId(Long memoryId);
 }
