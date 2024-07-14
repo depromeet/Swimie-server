@@ -23,6 +23,5 @@ public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler 
         log.error(exception.getMessage());
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.sendRedirect("http://localhost:3000/");
     }
 }

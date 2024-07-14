@@ -13,7 +13,7 @@ spring:
             redirect-uri: ${KAKAO_REDIRECT_URL}
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
-            client-name: Kakao
+            client-name: kakao
             scope:
               - profile_nickname
               - account_email

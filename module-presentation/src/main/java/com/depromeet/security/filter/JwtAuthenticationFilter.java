@@ -101,6 +101,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 || url.startsWith("/favicon.ico")
                 || url.startsWith("/oauth2")
                 || url.startsWith("/login")
+                || url.startsWith("/depromeet-actuator")
                 || url.startsWith("/api/v1/auth");
     }
 
