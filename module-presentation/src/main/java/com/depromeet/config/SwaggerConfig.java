@@ -25,10 +25,20 @@ public class SwaggerConfig {
                         .title(API_TITLE)
                         .description(API_DESCRIPTION);
 
+        SecurityScheme apiKey =
+                new SecurityScheme()
+                        .type(SecurityScheme.Type.APIKEY)
+                        .in(SecurityScheme.In.HEADER)
+                        .name("Authorization");
+
+        SecurityRequirement securityRequirement = new SecurityRequirement().addList("Bearer Token");
+
         return new OpenAPI()
                 .info(info)
                 .addSecurityItem(getSecurityRequirement())
-                .components(getAuthComponent());
+                .components(getAuthComponent())
+                .components(new Components().addSecuritySchemes("Bearer Token", apiKey))
+                .addSecurityItem(securityRequirement);
     }
 
     private SecurityRequirement getSecurityRequirement() {
