@@ -17,9 +17,9 @@ public class PoolRepositoryImpl implements PoolRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Pool> findPoolsByName(String query) {
+    public List<Pool> findPoolsByName(String nameQuery) {
         List<PoolEntity> findPools =
-                queryFactory.selectFrom(poolEntity).where(nameLike(query)).limit(3).fetch();
+                queryFactory.selectFrom(poolEntity).where(nameLike(nameQuery)).limit(3).fetch();
 
         return findPools.stream().map(PoolEntity::toModel).toList();
     }

@@ -15,8 +15,8 @@ public class PoolServiceImpl implements PoolService {
     private final PoolRepository poolRepository;
 
     @Override
-    public PoolResponseDto findPoolsByName(String query) {
-        List<Pool> findPools = poolRepository.findPoolsByName(query);
+    public PoolResponseDto findPoolsByName(String nameQuery) {
+        List<Pool> findPools = poolRepository.findPoolsByName(nameQuery);
         return PoolResponseDto.of(findPools);
     }
 }

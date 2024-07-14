@@ -18,8 +18,8 @@ public class PoolController {
 
     @GetMapping("/search")
     public ApiResponse<PoolResponseDto> searchPoolsByName(
-            @RequestParam(required = false) String query) {
+            @RequestParam(required = false) String nameQuery) {
         return ApiResponse.success(
-                PoolSuccessType.SEARCH_SUCCESS, poolService.findPoolsByName(query));
+                PoolSuccessType.SEARCH_SUCCESS, poolService.findPoolsByName(nameQuery));
     }
 }
