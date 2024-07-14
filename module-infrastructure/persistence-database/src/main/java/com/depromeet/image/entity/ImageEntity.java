@@ -21,13 +21,9 @@ public class ImageEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private MemoryEntity memory;
 
-    @NotNull
-    @Column(name = "image_name")
-    private String imageName;
+    @NotNull private String imageName;
 
-    @NotNull
-    @Column(name = "image_url")
-    private String imageUrl;
+    @NotNull private String imageUrl;
 
     @Builder
     public ImageEntity(Long id, MemoryEntity memory, String imageName, String imageUrl) {

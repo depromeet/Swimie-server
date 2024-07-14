@@ -37,12 +37,9 @@ public class ImageUpdateServiceImpl implements ImageUpdateService {
 
     public void updateImages(Long memoryId, List<MultipartFile> images) {
         try {
-            // 기존의 이미지
             List<Image> existingImages = imageRepository.findImagesByMemoryId(memoryId);
-            // 기존 이미지의 이미지 이름 리스트
             List<String> existingImageNames = getExistingImageNames(existingImages);
 
-            // 새로 들어온 이미지 이름 리스트
             List<String> updatedImageNames = updateNewImages(memoryId, images, existingImageNames);
             deleteNonUpdatedImages(existingImages, updatedImageNames);
         } catch (IOException e) {
@@ -63,15 +60,11 @@ public class ImageUpdateServiceImpl implements ImageUpdateService {
         List<String> updatedImageNames = new ArrayList<>();
 
         for (MultipartFile image : images) {
-            // 새로운 이미지의 이름 생성
             String imageName = generateImageName(image);
-            // 새로운 이미지의 이름 리스트에 추가
             updatedImageNames.add(imageName);
 
-            // 만약 기존의 이미지 리스트에 새로운 이미지 이름 존재시 넘어감
             if (existImagesName.contains(imageName)) continue;
 
-            // 만약 없다면 s3에 업로드 후 저장
             String imageUrl = upload(imageName, image);
             saveNewImage(imageName, imageUrl, memory);
         }

@@ -62,7 +62,6 @@ public class ImageUploadServiceImpl implements ImageUploadService {
         List<Image> images = new ArrayList<>();
         try {
             for (MultipartFile multipartFile : memoryImages) {
-
                 String originalImageName = multipartFile.getOriginalFilename();
                 String contentType = multipartFile.getContentType();
                 long imageSize = multipartFile.getSize();

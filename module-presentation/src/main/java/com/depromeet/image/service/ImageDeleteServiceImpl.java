@@ -1,10 +1,9 @@
 package com.depromeet.image.service;
 
-import static com.depromeet.type.image.ImageErrorType.NOT_FOUND;
-
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.image.Image;
 import com.depromeet.image.repository.ImageRepository;
+import com.depromeet.type.image.ImageErrorType;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +27,7 @@ public class ImageDeleteServiceImpl implements ImageDeleteService {
         Image image =
                 imageRepository
                         .findById(imageId)
-                        .orElseThrow(() -> new NotFoundException(NOT_FOUND));
+                        .orElseThrow(() -> new NotFoundException(ImageErrorType.NOT_FOUND));
 
         deleteImageFromS3(image);
         imageRepository.deleteById(imageId);
