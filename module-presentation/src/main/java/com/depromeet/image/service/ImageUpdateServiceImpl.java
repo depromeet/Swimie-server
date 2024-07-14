@@ -1,5 +1,9 @@
 package com.depromeet.image.service;
 
+import static com.depromeet.type.common.CommonErrorType.INTERNAL_SERVER;
+
+import com.depromeet.exception.InternalServerException;
+import com.depromeet.exception.NotFoundException;
 import com.depromeet.image.Image;
 import com.depromeet.image.repository.ImageRepository;
 import com.depromeet.memory.Memory;
@@ -8,8 +12,8 @@ import com.depromeet.util.ImageNameUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +23,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -41,7 +46,8 @@ public class ImageUpdateServiceImpl implements ImageUpdateService {
             List<String> updatedImageNames = updateNewImages(memoryId, images, existingImageNames);
             deleteNonUpdatedImages(existingImages, updatedImageNames);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error(e.getMessage());
+            throw new InternalServerException(INTERNAL_SERVER);
         }
     }
 
@@ -75,7 +81,7 @@ public class ImageUpdateServiceImpl implements ImageUpdateService {
     private Memory getMemory(Long memoryId) {
         return memoryRepository
                 .findById(memoryId)
-                .orElseThrow(() -> new NoSuchElementException("Memory not found"));
+                .orElseThrow(() -> new NotFoundException(INTERNAL_SERVER)); // 임시
     }
 
     private String generateImageName(MultipartFile image) {

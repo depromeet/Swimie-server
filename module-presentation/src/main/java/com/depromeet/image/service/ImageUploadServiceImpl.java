@@ -1,5 +1,8 @@
 package com.depromeet.image.service;
 
+import static com.depromeet.type.common.CommonErrorType.INTERNAL_SERVER;
+
+import com.depromeet.exception.InternalServerException;
 import com.depromeet.image.Image;
 import com.depromeet.image.dto.request.ImagesMemoryIdDto;
 import com.depromeet.image.repository.ImageRepository;
@@ -11,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +24,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -72,7 +77,8 @@ public class ImageUploadServiceImpl implements ImageUploadService {
                 images.add(image);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error(e.getMessage());
+            throw new InternalServerException(INTERNAL_SERVER);
         }
         return images;
     }

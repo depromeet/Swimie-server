@@ -1,9 +1,11 @@
 package com.depromeet.image.service;
 
+import static com.depromeet.type.image.ImageErrorType.NOT_FOUND;
+
+import com.depromeet.exception.NotFoundException;
 import com.depromeet.image.Image;
 import com.depromeet.image.repository.ImageRepository;
 import java.util.List;
-import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -26,7 +28,7 @@ public class ImageDeleteServiceImpl implements ImageDeleteService {
         Image image =
                 imageRepository
                         .findById(imageId)
-                        .orElseThrow(() -> new NoSuchElementException("Image not found"));
+                        .orElseThrow(() -> new NotFoundException(NOT_FOUND));
 
         deleteImageFromS3(image);
         imageRepository.deleteById(imageId);
@@ -44,10 +46,7 @@ public class ImageDeleteServiceImpl implements ImageDeleteService {
 
     private void deleteImageFromS3(Image image) {
         DeleteObjectRequest deleteObjectRequest =
-                DeleteObjectRequest.builder()
-                        .bucket(bucketName)
-                        .key(image.getImageUrl()) // Todo: 수정 필요
-                        .build();
+                DeleteObjectRequest.builder().bucket(bucketName).key(image.getImageName()).build();
 
         s3Client.deleteObject(deleteObjectRequest);
     }
