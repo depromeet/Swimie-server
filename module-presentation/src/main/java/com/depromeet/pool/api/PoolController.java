@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/pool")
-public class PoolController {
+public class PoolController implements PoolApi {
     private final PoolService poolService;
 
     @GetMapping("/search")
