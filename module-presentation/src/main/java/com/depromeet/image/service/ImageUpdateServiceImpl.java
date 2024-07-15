@@ -62,13 +62,14 @@ public class ImageUpdateServiceImpl implements ImageUpdateService {
         List<String> updatedImageNames = new ArrayList<>();
 
         for (MultipartFile image : images) {
-            String imageName = generateImageName(image);
+            String originImageName = image.getOriginalFilename();
+            String imageName = generateImageName(originImageName);
             updatedImageNames.add(imageName);
 
             if (existImagesName.contains(imageName)) continue;
 
             String imageUrl = upload(imageName, image);
-            saveNewImage(imageName, imageUrl, memory);
+            saveNewImage(originImageName, imageName, imageUrl, memory);
         }
         return updatedImageNames;
     }
@@ -79,8 +80,7 @@ public class ImageUpdateServiceImpl implements ImageUpdateService {
                 .orElseThrow(() -> new NotFoundException(INTERNAL_SERVER)); // 임시
     }
 
-    private String generateImageName(MultipartFile image) {
-        String originImageName = image.getOriginalFilename();
+    private String generateImageName(String originImageName) {
         if (originImageName == null || originImageName.isEmpty()) {
             throw new BadRequestException(ImageErrorType.INVALID_IMAGE_NAME);
         }
@@ -88,9 +88,15 @@ public class ImageUpdateServiceImpl implements ImageUpdateService {
         return ImageNameUtil.createImageName(originImageName);
     }
 
-    private void saveNewImage(String imageName, String imageUrl, Memory memory) {
+    private void saveNewImage(
+            String originImageName, String imageName, String imageUrl, Memory memory) {
         Image newImage =
-                Image.builder().imageName(imageName).imageUrl(imageUrl).memory(memory).build();
+                Image.builder()
+                        .originImageName(originImageName)
+                        .imageName(imageName)
+                        .imageUrl(imageUrl)
+                        .memory(memory)
+                        .build();
         imageRepository.save(newImage);
     }
 
