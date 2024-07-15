@@ -4,7 +4,6 @@ import static com.depromeet.type.image.ImageSuccessType.DELETE_IMAGES_SUCCESS;
 import static com.depromeet.type.image.ImageSuccessType.UPLOAD_IMAGES_SUCCESS;
 
 import com.depromeet.dto.response.ApiResponse;
-import com.depromeet.image.dto.request.ImagesMemoryIdDto;
 import com.depromeet.image.dto.response.MemoryImagesDto;
 import com.depromeet.image.service.ImageDeleteService;
 import com.depromeet.image.service.ImageGetService;
@@ -20,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "이미지(images)")
 @RestController
-@RequestMapping("/api/v1/image")
+@RequestMapping("/api/image")
 @RequiredArgsConstructor
 public class ImageController {
     private final ImageUploadService imageUploadService;
@@ -28,36 +27,26 @@ public class ImageController {
     private final ImageGetService imageGetService;
     private final ImageDeleteService imageDeleteService;
 
-    @Operation(summary = "수영 기록 이미지 s3에 업로드")
     @PostMapping
+    @Operation(summary = "수영 기록 이미지 s3에 업로드")
     public ResponseEntity<ApiResponse<?>> uploadImages(@RequestPart List<MultipartFile> images) {
         List<Long> imageIds = imageUploadService.uploadMemoryImages(images);
 
         return ResponseEntity.ok(ApiResponse.success(UPLOAD_IMAGES_SUCCESS, imageIds));
     }
 
-    @Operation(summary = "업로드 된 이미지에 memoryId 추가")
-    @PatchMapping("/memory") // 임시로 작성하긴 했는데 직관적이지 않네요 api 작명 추천 받습니다.
-    public ResponseEntity<ApiResponse<?>> addMemoryToImages(
-            @RequestParam(name = "memoryId") Long memoryId,
-            @RequestBody ImagesMemoryIdDto imagesMemoryIdDto) {
-        imageUploadService.addMemoryIdToImages(memoryId, imagesMemoryIdDto);
-
-        return ResponseEntity.ok(ApiResponse.success(UPLOAD_IMAGES_SUCCESS));
-    }
-
+    @PatchMapping("/memory/{memoryId}")
     @Operation(summary = "수영 기록의 이미지 수정")
-    @PatchMapping
     public ResponseEntity<ApiResponse<?>> updateImages(
-            @RequestParam(name = "memoryId") Long memoryId,
+            @PathVariable Long memoryId,
             @RequestPart List<MultipartFile> images) {
         imageUpdateService.updateImages(memoryId, images);
 
         return ResponseEntity.ok(ApiResponse.success(UPLOAD_IMAGES_SUCCESS));
     }
 
-    @Operation(summary = "수영 기록의 이미지 조회")
     @GetMapping
+    @Operation(summary = "수영 기록의 이미지 조회")
     public ResponseEntity<ApiResponse<?>> findImages(
             @RequestParam(name = "memoryId") Long memoryId) {
         List<MemoryImagesDto> memoryImages = imageGetService.findImagesByMemoryId(memoryId);
@@ -65,8 +54,8 @@ public class ImageController {
         return ResponseEntity.ok(ApiResponse.success(UPLOAD_IMAGES_SUCCESS, memoryImages));
     }
 
-    @Operation(summary = "Delete images belongs to memory", description = "수영 기록의 이미지 삭제")
     @DeleteMapping
+    @Operation(summary = "Delete images belongs to memory", description = "수영 기록의 이미지 삭제")
     public ResponseEntity<ApiResponse<?>> deleteImages(
             @RequestParam(value = "memoryId") Long memoryId) {
         imageDeleteService.deleteAllImagesByMemoryId(memoryId);

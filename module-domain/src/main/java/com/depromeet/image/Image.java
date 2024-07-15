@@ -3,7 +3,9 @@ package com.depromeet.image;
 import com.depromeet.memory.Memory;
 import java.util.Optional;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class Image {
     private Long id;
     private Memory memory;
@@ -24,19 +26,7 @@ public class Image {
         }
     }
 
-    public Long getId() {
-        return this.id;
-    }
-
     public Optional<Memory> getMemory() {
         return Optional.ofNullable(this.memory);
-    }
-
-    public String getImageName() {
-        return this.imageName;
-    }
-
-    public String getImageUrl() {
-        return this.imageUrl;
     }
 }
