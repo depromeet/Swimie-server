@@ -7,9 +7,11 @@ import java.time.LocalTime;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Getter
+@NoArgsConstructor
 public class MemoryCreateRequest {
     private Long poolId; // 수영장 정보
     // MemoryDetail
