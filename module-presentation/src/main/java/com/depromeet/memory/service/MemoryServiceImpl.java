@@ -31,11 +31,9 @@ public class MemoryServiceImpl implements MemoryService {
                         .findById(loginId)
                         .orElseThrow(() -> new UnauthorizedException(MemberErrorType.NOT_FOUND));
         MemoryDetail memoryDetail = getMemoryDetail(memoryCreateRequest);
-        // memoryDetail 저장
         if (memoryDetail != null) {
             memoryDetailRepository.save(memoryDetail);
         }
-        // memory 저장
         Memory memory =
                 Memory.builder()
                         .member(writer)
