@@ -62,7 +62,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (optionalAccessTokenDto.isPresent()) {
             AccessTokenDto accessTokenDto = optionalAccessTokenDto.get();
             setAuthentication(accessTokenDto);
-            filterChain.doFilter(request, response);
         } else {
             // 클라이언트에서 refreshToken을 쿠키에 추가할 경우
             /* Optional<String> optionalRefreshToken = Optional.ofNullable(WebUtils.getCookie(request, REFRESH_HEADER.getValue()))
