@@ -6,15 +6,19 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create # 실제 서버에서 사용시 모든 데이터가 다 날아가므로 주의
+    defer-datasource-initialization: false
     properties:
       hibernate:
         format_sql: true
     show-sql: true
+  sql:
+    init:
+      mode: never
   servlet:
     multipart:
       enabled: true
-      max-file-size: 5MB
-      max-request-size: 20MB
+      max-file-size: 10MB
+      max-request-size: 100MB
   cloud:
     aws:
       credentials:

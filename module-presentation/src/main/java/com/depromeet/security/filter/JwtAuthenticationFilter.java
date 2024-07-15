@@ -95,6 +95,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             setAuthentication(reissuedAccessToken);
             filterChain.doFilter(request, response);
         }
+        filterChain.doFilter(request, response);
     }
 
     private boolean noAuthentication(String url) {

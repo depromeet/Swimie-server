@@ -55,6 +55,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private Member findByEmailOrSave(String email, String nickname) {
         return memberRepository
                 .findByEmail(email)
-                .orElse(memberRepository.save(MemberMapper.from(nickname, email)));
+                .orElseGet(() -> memberRepository.save(MemberMapper.from(nickname, email)));
     }
 }

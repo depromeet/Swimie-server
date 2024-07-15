@@ -16,6 +16,7 @@ public class Memory {
     private LocalDate recordAt;
     private LocalTime startTime;
     private LocalTime endTime;
+    private Short lane;
     private String diary;
 
     @Builder
@@ -27,6 +28,7 @@ public class Memory {
             LocalDate recordAt,
             LocalTime startTime,
             LocalTime endTime,
+            Short lane,
             String diary) {
         this.id = id;
         this.member = member;
@@ -35,6 +37,7 @@ public class Memory {
         this.recordAt = recordAt;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.lane = lane;
         this.diary = diary;
     }
 }

@@ -1,7 +1,8 @@
 package com.depromeet.pool.repository;
 
 import com.depromeet.pool.Pool;
+import java.util.List;
 
 public interface PoolRepository {
-    Pool save(Pool pool);
+    List<Pool> findPoolsByName(String nameQuery);
 }
