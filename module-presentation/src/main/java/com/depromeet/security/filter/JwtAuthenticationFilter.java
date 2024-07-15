@@ -92,7 +92,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             AccessTokenDto reissuedAccessToken =
                     addReissuedJwtTokenToHeader(response, accessToken, refreshToken);
             setAuthentication(reissuedAccessToken);
-            filterChain.doFilter(request, response);
         }
         filterChain.doFilter(request, response);
     }
