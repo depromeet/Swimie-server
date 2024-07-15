@@ -3,15 +3,7 @@ package com.depromeet.memory.entity;
 import com.depromeet.member.entity.MemberEntity;
 import com.depromeet.memory.Memory;
 import com.depromeet.pool.entity.PoolEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -34,7 +26,6 @@ public class MemoryEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private MemberEntity member;
 
-    @NotNull
     @JoinColumn(name = "pool_id")
     @OneToOne(fetch = FetchType.LAZY)
     private PoolEntity pool;
@@ -49,6 +40,8 @@ public class MemoryEntity {
 
     @NotNull private LocalTime endTime;
 
+    private Short lane;
+
     @Column(columnDefinition = "TEXT")
     private String diary;
 
@@ -61,6 +54,7 @@ public class MemoryEntity {
             LocalDate recordAt,
             LocalTime startTime,
             LocalTime endTime,
+            Short lane,
             String diary) {
         this.id = id;
         this.member = member;
@@ -69,6 +63,7 @@ public class MemoryEntity {
         this.recordAt = recordAt;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.lane = lane;
         this.diary = diary;
     }
 
@@ -76,11 +71,15 @@ public class MemoryEntity {
         return MemoryEntity.builder()
                 .id(memory.getId())
                 .member(MemberEntity.from(memory.getMember()))
-                .pool(PoolEntity.from(memory.getPool()))
-                .memoryDetail(MemoryDetailEntity.from(memory.getMemoryDetail()))
+                .pool(memory.getPool() != null ? PoolEntity.from(memory.getPool()) : null)
+                .memoryDetail(
+                        memory.getMemoryDetail() != null
+                                ? MemoryDetailEntity.from(memory.getMemoryDetail())
+                                : null)
                 .recordAt(memory.getRecordAt())
                 .startTime(memory.getStartTime())
                 .endTime(memory.getEndTime())
+                .lane(memory.getLane())
                 .diary(memory.getDiary())
                 .build();
     }
@@ -89,11 +88,12 @@ public class MemoryEntity {
         return Memory.builder()
                 .id(this.id)
                 .member(this.member.toModel())
-                .pool(this.pool.toModel())
-                .memoryDetail(this.memoryDetail.toModel())
+                .pool(this.pool != null ? this.pool.toModel() : null)
+                .memoryDetail(this.memoryDetail != null ? this.memoryDetail.toModel() : null)
                 .recordAt(this.recordAt)
                 .startTime(this.startTime)
                 .endTime(this.endTime)
+                .lane(this.lane)
                 .diary(this.diary)
                 .build();
     }
