@@ -22,6 +22,8 @@ spring:
         secret-key: ${AWS_SECRET_ACCESS_KEY}
       s3:
         bucket: ${AWS_BUCKET}
+      region:
+        static: ${AWS_REGION}
 
 
 swagger.version: "v0.1"
