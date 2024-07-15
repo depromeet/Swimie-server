@@ -11,14 +11,16 @@ import com.depromeet.image.service.ImageUpdateService;
 import com.depromeet.image.service.ImageUploadService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "이미지(images)")
 @RestController
-@RequestMapping("/api/v1/image")
+@RequestMapping("/api/image")
 @RequiredArgsConstructor
 public class ImageController {
     private final ImageUploadService imageUploadService;
@@ -28,7 +30,7 @@ public class ImageController {
 
     @PostMapping
     @Operation(summary = "수영 기록 이미지 s3에 업로드")
-    public ApiResponse<?> uploadImages(@RequestPart List<MultipartFile> images) {
+    public ApiResponse<?> uploadImages(@RequestPart @NotNull List<MultipartFile> images) {
         List<Long> imageIds = imageUploadService.uploadMemoryImages(images);
 
         return ApiResponse.success(UPLOAD_IMAGES_SUCCESS, imageIds);
@@ -64,9 +66,9 @@ public class ImageController {
 
     @DeleteMapping
     @Operation(summary = "Delete images belongs to memory", description = "수영 기록의 이미지 삭제")
-    public ApiResponse<?> deleteImages(@RequestParam(value = "memoryId") Long memoryId) {
+    public ResponseEntity<?> deleteImages(@RequestParam(value = "memoryId") Long memoryId) {
         imageDeleteService.deleteAllImagesByMemoryId(memoryId);
 
-        return ApiResponse.success(DELETE_IMAGES_SUCCESS);
+        return ResponseEntity.noContent().build();
     }
 }

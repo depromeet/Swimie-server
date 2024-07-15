@@ -72,7 +72,7 @@ public class ImageEntity {
         return Optional.ofNullable(this.memory);
     }
 
-    public @NotNull String getOriginImageName() {
+    public String getOriginImageName() {
         return originImageName;
     }
 

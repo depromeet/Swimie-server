@@ -44,9 +44,8 @@ public class ImageUploadServiceImpl implements ImageUploadService {
 
     @Override
     public List<Long> uploadMemoryImages(List<MultipartFile> memoryImages) {
-        if (memoryImages == null || memoryImages.isEmpty()) {
-            log.info("images is null");
-            return null;
+        if (memoryImages.isEmpty()) {
+            throw new BadRequestException(ImageErrorType.IMAGES_CANNOT_BE_NULL);
         }
         List<Image> images = uploadImagesAndGetImages(memoryImages);
 
