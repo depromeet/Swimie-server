@@ -42,6 +42,8 @@ public class MemoryCreateRequest {
     private String diary;
     // Stroke
     private List<StrokeCreateRequest> strokes;
+    // Images
+    private List<Long> imageIdList;
 
     @Builder
     public MemoryCreateRequest(
@@ -55,7 +57,8 @@ public class MemoryCreateRequest {
             LocalTime endTime,
             Short lane,
             String diary,
-            List<StrokeCreateRequest> strokes) {
+            List<StrokeCreateRequest> strokes,
+            List<Long> imageIdList) {
         this.poolId = poolId;
         this.item = item;
         this.heartRate = heartRate;
@@ -67,5 +70,6 @@ public class MemoryCreateRequest {
         this.lane = lane;
         this.diary = diary;
         this.strokes = strokes;
+        this.imageIdList = imageIdList;
     }
 }
