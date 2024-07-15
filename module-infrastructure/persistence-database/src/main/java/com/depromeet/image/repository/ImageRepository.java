@@ -7,7 +7,7 @@ import java.util.Optional;
 public interface ImageRepository {
     Long save(Image image);
 
-    List<Long> saveAll(List<Image> images);
+    List<Image> saveAll(List<Image> images);
 
     Optional<Image> findById(Long id);
 

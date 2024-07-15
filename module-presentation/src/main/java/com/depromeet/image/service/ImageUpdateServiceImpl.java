@@ -2,12 +2,14 @@ package com.depromeet.image.service;
 
 import static com.depromeet.type.common.CommonErrorType.INTERNAL_SERVER;
 
+import com.depromeet.exception.BadRequestException;
 import com.depromeet.exception.InternalServerException;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.image.Image;
 import com.depromeet.image.repository.ImageRepository;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.repository.MemoryRepository;
+import com.depromeet.type.image.ImageErrorType;
 import com.depromeet.util.ImageNameUtil;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -78,8 +80,12 @@ public class ImageUpdateServiceImpl implements ImageUpdateService {
     }
 
     private String generateImageName(MultipartFile image) {
-        return ImageNameUtil.createImageName(
-                image.getOriginalFilename(), image.getContentType(), image.getSize());
+        String originImageName = image.getOriginalFilename();
+        if (originImageName == null || originImageName.isEmpty()) {
+            throw new BadRequestException(ImageErrorType.INVALID_IMAGE_NAME);
+        }
+
+        return ImageNameUtil.createImageName(originImageName);
     }
 
     private void saveNewImage(String imageName, String imageUrl, Memory memory) {

@@ -20,6 +20,7 @@ public class ImageGetServiceImpl implements ImageGetService {
                         image ->
                                 MemoryImagesDto.builder()
                                         .id(image.getId())
+                                        .originImageName(image.getOriginImageName())
                                         .imageName(image.getImageName())
                                         .url(image.getImageUrl())
                                         .build())
