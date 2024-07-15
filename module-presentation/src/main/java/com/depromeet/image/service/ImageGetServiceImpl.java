@@ -4,6 +4,7 @@ import com.depromeet.image.dto.response.MemoryImagesDto;
 import com.depromeet.image.repository.ImageRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ImageGetServiceImpl implements ImageGetService {
     private final ImageRepository imageRepository;
+
+    @Value("${cloud-front.domain}")
+    private String domain;
 
     @Override
     public List<MemoryImagesDto> findImagesByMemoryId(Long memoryId) {
@@ -22,7 +26,7 @@ public class ImageGetServiceImpl implements ImageGetService {
                                         .id(image.getId())
                                         .originImageName(image.getOriginImageName())
                                         .imageName(image.getImageName())
-                                        .url(image.getImageUrl())
+                                        .url(domain + "/" + image.getImageName())
                                         .build())
                 .toList();
     }

@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @Slf4j
@@ -39,6 +38,9 @@ public class ImageUploadServiceImpl implements ImageUploadService {
 
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucketName;
+
+    @Value("${cloud-front.domain}")
+    private String domain;
 
     @Override
     public List<Long> uploadMemoryImages(List<MultipartFile> memoryImages) {
@@ -81,7 +83,7 @@ public class ImageUploadServiceImpl implements ImageUploadService {
                 String imageName = ImageNameUtil.createImageName(originImageName);
                 uploadImage(multipartFile, contentType, imageSize, imageName);
 
-                String imageUrl = getImageUrl(imageName);
+                String imageUrl = generateImageUrl(imageName);
 
                 Image image =
                         Image.builder()
@@ -115,10 +117,7 @@ public class ImageUploadServiceImpl implements ImageUploadService {
         s3Client.putObject(putObjectRequest, requestBody);
     }
 
-    private String getImageUrl(String imageName) {
-        GetUrlRequest getUrlRequest =
-                GetUrlRequest.builder().bucket(bucketName).key(imageName).build();
-
-        return s3Client.utilities().getUrl(getUrlRequest).toString();
+    private String generateImageUrl(String imageName) {
+        return domain + "/" + imageName;
     }
 }

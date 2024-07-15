@@ -29,6 +29,8 @@ spring:
       region:
         static: ${AWS_REGION}
 
+cloud-front:
+  domain: ${AWS_CLOUD_FRONT_DOMAIN}
 
 swagger.version: "v0.1"
 

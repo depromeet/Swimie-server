@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @Slf4j
@@ -36,6 +35,9 @@ public class ImageUpdateServiceImpl implements ImageUpdateService {
 
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucketName;
+
+    @Value("${cloud-front.domain}")
+    private String domain;
 
     public void updateImages(Long memoryId, List<MultipartFile> images) {
         try {
@@ -113,9 +115,7 @@ public class ImageUpdateServiceImpl implements ImageUpdateService {
 
         s3Client.putObject(putObjectRequest, requestBody);
 
-        GetUrlRequest getUrlRequest =
-                GetUrlRequest.builder().bucket(bucketName).key(imageName).build();
-        return s3Client.utilities().getUrl(getUrlRequest).toString();
+        return domain + "/" + imageName;
     }
 
     private void deleteNonUpdatedImages(List<Image> existImages, List<String> updatedImageNames) {
