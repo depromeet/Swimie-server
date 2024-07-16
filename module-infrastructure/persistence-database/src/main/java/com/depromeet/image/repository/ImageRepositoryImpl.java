@@ -19,11 +19,11 @@ public class ImageRepositoryImpl implements ImageRepository {
     }
 
     @Override
-    public List<Long> saveAll(List<Image> images) {
+    public List<Image> saveAll(List<Image> images) {
         List<ImageEntity> memoryImageEntities = images.stream().map(ImageEntity::from).toList();
 
         return imageJpaRepository.saveAll(memoryImageEntities).stream()
-                .map(ImageEntity::getId)
+                .map(ImageEntity::toModel)
                 .toList();
     }
 
