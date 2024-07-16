@@ -2,12 +2,14 @@ package com.depromeet.image.service;
 
 import static com.depromeet.type.common.CommonErrorType.INTERNAL_SERVER;
 
+import com.depromeet.exception.BadRequestException;
 import com.depromeet.exception.InternalServerException;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.image.Image;
 import com.depromeet.image.repository.ImageRepository;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.repository.MemoryRepository;
+import com.depromeet.type.image.ImageErrorType;
 import com.depromeet.util.ImageNameUtil;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @Slf4j
@@ -34,6 +35,9 @@ public class ImageUpdateServiceImpl implements ImageUpdateService {
 
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucketName;
+
+    @Value("${cloud-front.domain}")
+    private String domain;
 
     public void updateImages(Long memoryId, List<MultipartFile> images) {
         try {
@@ -60,13 +64,14 @@ public class ImageUpdateServiceImpl implements ImageUpdateService {
         List<String> updatedImageNames = new ArrayList<>();
 
         for (MultipartFile image : images) {
-            String imageName = generateImageName(image);
+            String originImageName = image.getOriginalFilename();
+            String imageName = generateImageName(originImageName);
             updatedImageNames.add(imageName);
 
             if (existImagesName.contains(imageName)) continue;
 
             String imageUrl = upload(imageName, image);
-            saveNewImage(imageName, imageUrl, memory);
+            saveNewImage(originImageName, imageName, imageUrl, memory);
         }
         return updatedImageNames;
     }
@@ -77,14 +82,23 @@ public class ImageUpdateServiceImpl implements ImageUpdateService {
                 .orElseThrow(() -> new NotFoundException(INTERNAL_SERVER)); // 임시
     }
 
-    private String generateImageName(MultipartFile image) {
-        return ImageNameUtil.createImageName(
-                image.getOriginalFilename(), image.getContentType(), image.getSize());
+    private String generateImageName(String originImageName) {
+        if (originImageName == null || originImageName.isEmpty()) {
+            throw new BadRequestException(ImageErrorType.INVALID_IMAGE_NAME);
+        }
+
+        return ImageNameUtil.createImageName(originImageName);
     }
 
-    private void saveNewImage(String imageName, String imageUrl, Memory memory) {
+    private void saveNewImage(
+            String originImageName, String imageName, String imageUrl, Memory memory) {
         Image newImage =
-                Image.builder().imageName(imageName).imageUrl(imageUrl).memory(memory).build();
+                Image.builder()
+                        .originImageName(originImageName)
+                        .imageName(imageName)
+                        .imageUrl(imageUrl)
+                        .memory(memory)
+                        .build();
         imageRepository.save(newImage);
     }
 
@@ -101,9 +115,7 @@ public class ImageUpdateServiceImpl implements ImageUpdateService {
 
         s3Client.putObject(putObjectRequest, requestBody);
 
-        GetUrlRequest getUrlRequest =
-                GetUrlRequest.builder().bucket(bucketName).key(imageName).build();
-        return s3Client.utilities().getUrl(getUrlRequest).toString();
+        return domain + "/" + imageName;
     }
 
     private void deleteNonUpdatedImages(List<Image> existImages, List<String> updatedImageNames) {

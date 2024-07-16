@@ -7,13 +7,16 @@ import lombok.Builder;
 public class Image {
     private Long id;
     private Memory memory;
+    private String originImageName;
     private String imageName;
     private String imageUrl;
 
     @Builder
-    public Image(Long id, Memory memory, String imageName, String imageUrl) {
+    public Image(
+            Long id, Memory memory, String originImageName, String imageName, String imageUrl) {
         this.id = id;
         this.memory = memory;
+        this.originImageName = originImageName;
         this.imageName = imageName;
         this.imageUrl = imageUrl;
     }
@@ -30,6 +33,10 @@ public class Image {
 
     public Optional<Memory> getMemory() {
         return Optional.ofNullable(this.memory);
+    }
+
+    public String getOriginImageName() {
+        return originImageName;
     }
 
     public String getImageName() {

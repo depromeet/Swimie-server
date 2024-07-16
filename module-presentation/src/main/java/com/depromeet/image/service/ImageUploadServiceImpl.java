@@ -2,14 +2,18 @@ package com.depromeet.image.service;
 
 import static com.depromeet.type.common.CommonErrorType.INTERNAL_SERVER;
 
+import com.depromeet.exception.BadRequestException;
 import com.depromeet.exception.InternalServerException;
 import com.depromeet.image.Image;
 import com.depromeet.image.dto.request.ImagesMemoryIdDto;
 import com.depromeet.image.repository.ImageRepository;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.repository.MemoryRepository;
+import com.depromeet.type.image.ImageErrorType;
 import com.depromeet.util.ImageNameUtil;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -21,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @Slf4j
@@ -36,11 +39,17 @@ public class ImageUploadServiceImpl implements ImageUploadService {
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucketName;
 
+    @Value("${cloud-front.domain}")
+    private String domain;
+
     @Override
     public List<Long> uploadMemoryImages(List<MultipartFile> memoryImages) {
+        if (memoryImages.isEmpty()) {
+            throw new BadRequestException(ImageErrorType.IMAGES_CANNOT_BE_NULL);
+        }
         List<Image> images = uploadImagesAndGetImages(memoryImages);
 
-        return imageRepository.saveAll(images);
+        return imageRepository.saveAll(images).stream().map(Image::getId).toList();
     }
 
     @Override
@@ -62,17 +71,25 @@ public class ImageUploadServiceImpl implements ImageUploadService {
         List<Image> images = new ArrayList<>();
         try {
             for (MultipartFile multipartFile : memoryImages) {
-                String originalImageName = multipartFile.getOriginalFilename();
+                String originImageName = multipartFile.getOriginalFilename();
+                if (originImageName == null || originImageName.isEmpty()) {
+                    throw new BadRequestException(ImageErrorType.INVALID_IMAGE_NAME);
+                }
+
                 String contentType = multipartFile.getContentType();
                 long imageSize = multipartFile.getSize();
 
-                String imageName =
-                        ImageNameUtil.createImageName(originalImageName, contentType, imageSize);
+                String imageName = ImageNameUtil.createImageName(originImageName);
                 uploadImage(multipartFile, contentType, imageSize, imageName);
 
-                String imageUrl = getImageUrl(imageName);
+                String imageUrl = generateImageUrl(imageName);
 
-                Image image = Image.builder().imageName(imageName).imageUrl(imageUrl).build();
+                Image image =
+                        Image.builder()
+                                .originImageName(originImageName)
+                                .imageName(imageName)
+                                .imageUrl(imageUrl)
+                                .build();
                 images.add(image);
             }
         } catch (IOException e) {
@@ -88,20 +105,18 @@ public class ImageUploadServiceImpl implements ImageUploadService {
         PutObjectRequest putObjectRequest =
                 PutObjectRequest.builder()
                         .bucket(bucketName)
-                        .contentType(contentType)
                         .contentLength(imageSize)
+                        .contentType(contentType)
                         .key(imageName)
                         .build();
 
-        RequestBody requestBody = RequestBody.fromBytes(multipartFile.getBytes());
-
+        byte[] imageByte = multipartFile.getBytes();
+        InputStream inputStream = new ByteArrayInputStream(imageByte);
+        RequestBody requestBody = RequestBody.fromInputStream(inputStream, imageByte.length);
         s3Client.putObject(putObjectRequest, requestBody);
     }
 
-    private String getImageUrl(String imageName) {
-        GetUrlRequest getUrlRequest =
-                GetUrlRequest.builder().bucket(bucketName).key(imageName).build();
-
-        return s3Client.utilities().getUrl(getUrlRequest).toString();
+    private String generateImageUrl(String imageName) {
+        return domain + "/" + imageName;
     }
 }

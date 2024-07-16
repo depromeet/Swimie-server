@@ -3,11 +3,13 @@ package com.depromeet.util;
 import java.util.UUID;
 
 public class ImageNameUtil {
-    public static String createImageName(
-            String originalImageName, String contentType, Long fileSize) {
-        String imageName = originalImageName + "_" + contentType + "_" + fileSize;
-        UUID imageUUID = UUID.nameUUIDFromBytes(imageName.getBytes());
+    public static String createImageName(String originalImageName) {
 
-        return imageUUID.toString();
+        int extensionIdx = originalImageName.lastIndexOf(".") + 1;
+        String extension = originalImageName.substring(extensionIdx).toLowerCase();
+
+        UUID imageUUID = UUID.nameUUIDFromBytes(originalImageName.getBytes());
+
+        return imageUUID + "." + extension;
     }
 }
