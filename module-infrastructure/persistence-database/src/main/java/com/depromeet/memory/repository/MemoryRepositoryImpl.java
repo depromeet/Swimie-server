@@ -2,10 +2,9 @@ package com.depromeet.memory.repository;
 
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.entity.MemoryEntity;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor

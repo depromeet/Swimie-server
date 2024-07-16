@@ -7,8 +7,10 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ImageEntity {
@@ -21,14 +23,22 @@ public class ImageEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private MemoryEntity memory;
 
+    @NotNull private String originImageName;
+
     @NotNull private String imageName;
 
     @NotNull private String imageUrl;
 
     @Builder
-    public ImageEntity(Long id, MemoryEntity memory, String imageName, String imageUrl) {
+    public ImageEntity(
+            Long id,
+            MemoryEntity memory,
+            String originImageName,
+            String imageName,
+            String imageUrl) {
         this.id = id;
         this.memory = memory;
+        this.originImageName = originImageName;
         this.imageName = imageName;
         this.imageUrl = imageUrl;
     }
@@ -40,6 +50,7 @@ public class ImageEntity {
                         image.getMemory().isPresent()
                                 ? MemoryEntity.from(image.getMemory().get())
                                 : null)
+                .originImageName(image.getOriginImageName())
                 .imageName(image.getImageName())
                 .imageUrl(image.getImageUrl())
                 .build();
@@ -49,24 +60,13 @@ public class ImageEntity {
         return Image.builder()
                 .id(this.id)
                 .memory(this.memory == null ? null : this.memory.toModel())
+                .originImageName(this.originImageName)
                 .imageName(this.imageName)
                 .imageUrl(this.imageUrl)
                 .build();
     }
 
-    public Long getId() {
-        return this.id;
-    }
-
     public Optional<MemoryEntity> getMemory() {
         return Optional.ofNullable(this.memory);
-    }
-
-    public String getImageName() {
-        return this.imageName;
-    }
-
-    public String getImageUrl() {
-        return this.imageUrl;
     }
 }
