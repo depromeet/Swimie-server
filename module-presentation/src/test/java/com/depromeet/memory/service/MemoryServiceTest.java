@@ -4,10 +4,7 @@ import com.depromeet.member.Member;
 import com.depromeet.member.MemberRole;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
-import com.depromeet.memory.mock.FakeAuthorizationUtil;
-import com.depromeet.memory.mock.FakeMemberRepository;
-import com.depromeet.memory.mock.FakeMemoryDetailRepository;
-import com.depromeet.memory.mock.FakeMemoryRepository;
+import com.depromeet.memory.mock.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
@@ -20,6 +17,8 @@ class MemoryServiceTest {
 
     private FakeMemberRepository memberRepository;
     private FakeAuthorizationUtil authorizationUtil;
+
+    private FakePoolRepository poolRepository;
 
     private MemoryService memoryService;
 
@@ -34,6 +33,8 @@ class MemoryServiceTest {
 
         memberRepository = new FakeMemberRepository();
         authorizationUtil = new FakeAuthorizationUtil(userId);
+
+        poolRepository = new FakePoolRepository();
 
         // member create
         member1 =
@@ -51,7 +52,8 @@ class MemoryServiceTest {
                         memoryRepository,
                         memoryDetailRepository,
                         memberRepository,
-                        authorizationUtil);
+                        authorizationUtil,
+                        poolRepository);
     }
 
     @Test

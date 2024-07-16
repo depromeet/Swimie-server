@@ -7,8 +7,10 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ImageEntity {
@@ -64,23 +66,7 @@ public class ImageEntity {
                 .build();
     }
 
-    public Long getId() {
-        return this.id;
-    }
-
     public Optional<MemoryEntity> getMemory() {
         return Optional.ofNullable(this.memory);
-    }
-
-    public String getOriginImageName() {
-        return originImageName;
-    }
-
-    public String getImageName() {
-        return this.imageName;
-    }
-
-    public String getImageUrl() {
-        return this.imageUrl;
     }
 }

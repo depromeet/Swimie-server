@@ -1,5 +1,6 @@
 package com.depromeet.memory.service;
 
+import com.depromeet.exception.NotFoundException;
 import com.depromeet.exception.UnauthorizedException;
 import com.depromeet.member.Member;
 import com.depromeet.member.repository.MemberRepository;
@@ -8,8 +9,11 @@ import com.depromeet.memory.MemoryDetail;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.repository.MemoryDetailRepository;
 import com.depromeet.memory.repository.MemoryRepository;
+import com.depromeet.pool.Pool;
+import com.depromeet.pool.repository.PoolRepository;
 import com.depromeet.security.AuthorizationUtil;
 import com.depromeet.type.member.MemberErrorType;
+import com.depromeet.type.pool.PoolErrorType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +27,8 @@ public class MemoryServiceImpl implements MemoryService {
     private final MemberRepository memberRepository;
     private final AuthorizationUtil authorizationUtil;
 
+    private final PoolRepository poolRepository;
+
     @Transactional
     public Memory save(MemoryCreateRequest memoryCreateRequest) {
         Long loginId = authorizationUtil.getLoginId();
@@ -34,10 +40,16 @@ public class MemoryServiceImpl implements MemoryService {
         if (memoryDetail != null) {
             memoryDetailRepository.save(memoryDetail);
         }
+        Pool pool = null;
+        if (memoryCreateRequest.getPoolId() != null) {
+            pool = poolRepository
+                    .findById(memoryCreateRequest.getPoolId())
+                    .orElseThrow(() -> new NotFoundException(PoolErrorType.NOT_FOUND));
+        }
         Memory memory =
                 Memory.builder()
                         .member(writer)
-                        .pool(null) // Pool Repository와 findById로 연결하기
+                        .pool(pool)
                         .memoryDetail(memoryDetail)
                         .recordAt(memoryCreateRequest.getRecordAt())
                         .startTime(memoryCreateRequest.getStartTime())

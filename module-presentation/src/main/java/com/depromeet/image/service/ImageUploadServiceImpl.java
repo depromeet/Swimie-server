@@ -5,7 +5,6 @@ import static com.depromeet.type.common.CommonErrorType.INTERNAL_SERVER;
 import com.depromeet.exception.BadRequestException;
 import com.depromeet.exception.InternalServerException;
 import com.depromeet.image.Image;
-import com.depromeet.image.dto.request.ImagesMemoryIdDto;
 import com.depromeet.image.repository.ImageRepository;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.repository.MemoryRepository;
@@ -16,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,13 +51,7 @@ public class ImageUploadServiceImpl implements ImageUploadService {
     }
 
     @Override
-    public void addMemoryIdToImages(Long memoryId, ImagesMemoryIdDto inputImagesMemoryIdDto) {
-        Memory memory =
-                memoryRepository
-                        .findById(memoryId)
-                        .orElseThrow(() -> new NoSuchElementException("Memory not found"));
-        List<Long> imageIds = inputImagesMemoryIdDto.imageIds();
-
+    public void addMemoryIdToImages(Memory memory, List<Long> imageIds) {
         List<Image> images = imageRepository.findImageByIds(imageIds);
         for (Image image : images) {
             image.addMemoryToImage(memory);

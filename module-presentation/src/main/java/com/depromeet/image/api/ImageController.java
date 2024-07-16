@@ -3,7 +3,6 @@ package com.depromeet.image.api;
 import static com.depromeet.type.image.ImageSuccessType.*;
 
 import com.depromeet.dto.response.ApiResponse;
-import com.depromeet.image.dto.request.ImagesMemoryIdDto;
 import com.depromeet.image.dto.response.MemoryImagesDto;
 import com.depromeet.image.service.ImageDeleteService;
 import com.depromeet.image.service.ImageGetService;
@@ -36,20 +35,10 @@ public class ImageController {
         return ApiResponse.success(UPLOAD_IMAGES_SUCCESS, imageIds);
     }
 
-    @PatchMapping("/memory") // 임시로 작성하긴 했는데 직관적이지 않네요 api 작명 추천 받습니다.
-    @Operation(summary = "업로드 된 이미지에 memoryId 추가")
-    public ApiResponse<?> addMemoryToImages(
-            @RequestParam(name = "memoryId") Long memoryId,
-            @RequestBody ImagesMemoryIdDto imagesMemoryIdDto) {
-        imageUploadService.addMemoryIdToImages(memoryId, imagesMemoryIdDto);
-
-        return ApiResponse.success(ADD_MEMORY_TO_IMAGES_SUCCESS);
-    }
-
-    @PatchMapping
+    @PatchMapping("/memory/{memoryId}")
     @Operation(summary = "수영 기록의 이미지 수정")
     public ApiResponse<?> updateImages(
-            @RequestParam(name = "memoryId") Long memoryId,
+            @RequestParam("memoryId") Long memoryId,
             @RequestPart List<MultipartFile> images) {
         imageUpdateService.updateImages(memoryId, images);
 
