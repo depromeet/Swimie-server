@@ -21,6 +21,7 @@ public class StrokeServiceImpl implements StrokeService {
 
     @Override
     public List<Stroke> saveAll(Memory memory, List<StrokeCreateRequest> strokes) {
+        if (strokes.isEmpty()) return null;
         List<Stroke> result = new CopyOnWriteArrayList<>();
         strokes.forEach(
                 stroke -> {
@@ -35,5 +36,10 @@ public class StrokeServiceImpl implements StrokeService {
                     result.add(newStroke);
                 });
         return result;
+    }
+
+    @Override
+    public List<Stroke> getAllByMemoryId(Long memoryId) {
+        return strokeRepository.findAllByMemoryId(memoryId);
     }
 }

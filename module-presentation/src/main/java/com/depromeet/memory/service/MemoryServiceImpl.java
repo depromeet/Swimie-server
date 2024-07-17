@@ -7,12 +7,14 @@ import com.depromeet.member.repository.MemberRepository;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.MemoryDetail;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
+import com.depromeet.memory.dto.response.MemoryResponse;
 import com.depromeet.memory.repository.MemoryDetailRepository;
 import com.depromeet.memory.repository.MemoryRepository;
 import com.depromeet.pool.Pool;
 import com.depromeet.pool.repository.PoolRepository;
 import com.depromeet.security.AuthorizationUtil;
 import com.depromeet.type.member.MemberErrorType;
+import com.depromeet.type.memory.MemoryErrorType;
 import com.depromeet.type.pool.PoolErrorType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,7 +40,7 @@ public class MemoryServiceImpl implements MemoryService {
                         .orElseThrow(() -> new UnauthorizedException(MemberErrorType.NOT_FOUND));
         MemoryDetail memoryDetail = getMemoryDetail(memoryCreateRequest);
         if (memoryDetail != null) {
-            memoryDetailRepository.save(memoryDetail);
+            memoryDetail = memoryDetailRepository.save(memoryDetail);
         }
         Pool pool = null;
         if (memoryCreateRequest.getPoolId() != null) {
@@ -59,6 +61,15 @@ public class MemoryServiceImpl implements MemoryService {
                         .diary(memoryCreateRequest.getDiary())
                         .build();
         return memoryRepository.save(memory);
+    }
+
+    @Override
+    public MemoryResponse findById(Long memoryId) {
+        Memory memory =
+                memoryRepository
+                        .findById(memoryId)
+                        .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND));
+        return MemoryResponse.from(memory);
     }
 
     private MemoryDetail getMemoryDetail(MemoryCreateRequest memoryCreateRequest) {

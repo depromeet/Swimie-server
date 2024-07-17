@@ -1,16 +1,8 @@
 package com.depromeet.auth.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record GoogleAccessTokenRequest(
-        String code,
-        @JsonProperty("client_id")
-        String clientId,
-        @JsonProperty("client_secret")
-        String clientSecret,
-        @JsonProperty("redirect_uri")
-        String redirectUri,
-        @JsonProperty("grant_type")
-        String grantType
-) {
-}
+        String code, String clientId, String clientSecret, String redirectUri, String grantType) {}

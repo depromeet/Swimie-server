@@ -65,13 +65,15 @@ public class MemberServiceImpl implements MemberService {
     public Member findOrCreateMemberBy(AccountProfileResponse profile) {
         return memberRepository
                 .findByEmail(profile.email())
-                .orElseGet(() -> {
-                    Member member = Member.builder()
-                            .name(profile.name())
-                            .email(profile.email())
-                            .role(MemberRole.USER)
-                            .build();
-                    return memberRepository.save(member);
-                });
+                .orElseGet(
+                        () -> {
+                            Member member =
+                                    Member.builder()
+                                            .name(profile.name())
+                                            .email(profile.email())
+                                            .role(MemberRole.USER)
+                                            .build();
+                            return memberRepository.save(member);
+                        });
     }
 }

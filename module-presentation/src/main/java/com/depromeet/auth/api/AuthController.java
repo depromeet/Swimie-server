@@ -1,4 +1,4 @@
-package com.depromeet.auth.controller;
+package com.depromeet.auth.api;
 
 import com.depromeet.auth.dto.request.GoogleLoginRequest;
 import com.depromeet.auth.dto.request.KakaoLoginRequest;
@@ -16,16 +16,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/login")
-public class AuthController {
+public class AuthController implements AuthApi {
     private final AuthService authService;
 
     @PostMapping("/google")
-    public ApiResponse<JwtTokenResponseDto> loginByGoogle(@Valid @RequestBody final GoogleLoginRequest request) {
-        return ApiResponse.success(AuthSuccessType.LOGIN_SUCCESS, authService.loginByGoogle(request));
+    public ApiResponse<JwtTokenResponseDto> loginByGoogle(
+            @Valid @RequestBody final GoogleLoginRequest request) {
+        return ApiResponse.success(
+                AuthSuccessType.LOGIN_SUCCESS, authService.loginByGoogle(request));
     }
 
     @PostMapping("/kakao")
-    public ApiResponse<JwtTokenResponseDto> loginByKakao(@Valid @RequestBody final KakaoLoginRequest request) {
-        return ApiResponse.success(AuthSuccessType.LOGIN_SUCCESS, authService.loginByKakao(request));
+    public ApiResponse<JwtTokenResponseDto> loginByKakao(
+            @Valid @RequestBody final KakaoLoginRequest request) {
+        return ApiResponse.success(
+                AuthSuccessType.LOGIN_SUCCESS, authService.loginByKakao(request));
     }
 }

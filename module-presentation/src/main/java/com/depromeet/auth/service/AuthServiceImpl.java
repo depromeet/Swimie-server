@@ -54,13 +54,14 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public JwtTokenResponseDto loginByKakao(KakaoLoginRequest request) {
-        final KakaoAccountProfileResponse profile = kakaoClient.getKakaoAccountProfile(request.code());
+        final KakaoAccountProfileResponse profile =
+                kakaoClient.getKakaoAccountProfile(request.code());
         if (profile == null) {
             throw new NotFoundException(AuthErrorType.NOT_FOUND);
         }
-        AccountProfileResponse account = new AccountProfileResponse(
-                profile.getId(), profile.getNickname(), profile.getEmail()
-        );
+        AccountProfileResponse account =
+                new AccountProfileResponse(
+                        profile.getId(), profile.getNickname(), profile.getEmail());
         final Member member = memberService.findOrCreateMemberBy(account);
         return jwtTokenService.generateToken(member.getId(), member.getRole());
     }

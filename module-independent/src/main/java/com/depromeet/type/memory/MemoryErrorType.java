@@ -3,7 +3,8 @@ package com.depromeet.type.memory;
 import com.depromeet.type.ErrorType;
 
 public enum MemoryErrorType implements ErrorType {
-    CREATE_FAILED("MEMORY_1", "기록 저장에 실패하였습니다");
+    CREATE_FAILED("MEMORY_1", "기록 저장에 실패하였습니다"),
+    NOT_FOUND("MEMORY_2", "기록이 존재하지 않습니다");
 
     private final String code;
     private final String message;
