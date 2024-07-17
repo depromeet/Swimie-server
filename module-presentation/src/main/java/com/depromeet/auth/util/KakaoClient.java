@@ -1,23 +1,20 @@
 package com.depromeet.auth.util;
 
-import com.depromeet.auth.dto.response.AccountProfileResponse;
 import com.depromeet.auth.dto.response.KakaoAccessTokenResponse;
 import com.depromeet.auth.dto.response.KakaoAccountProfileResponse;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.type.auth.AuthErrorType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -43,7 +40,6 @@ public class KakaoClient {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-
     public KakaoAccountProfileResponse getKakaoAccountProfile(final String code) {
         final String accessToken = requestKakaoAccessToken(code);
         return requestKakaoAccountProfile(accessToken);
@@ -60,12 +56,11 @@ public class KakaoClient {
         body.add("client_secret", clientSecret);
         body.add("redirect_uri", redirectUri);
         body.add("grant_type", grantType);
-        final HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(
-                body, headers
-        );
-        KakaoAccessTokenResponse response = restTemplate.postForObject(
-                accessTokenUrl, httpEntity, KakaoAccessTokenResponse.class
-        );
+        final HttpEntity<MultiValueMap<String, String>> httpEntity =
+                new HttpEntity<>(body, headers);
+        KakaoAccessTokenResponse response =
+                restTemplate.postForObject(
+                        accessTokenUrl, httpEntity, KakaoAccessTokenResponse.class);
         return Optional.ofNullable(response)
                 .orElseThrow(() -> new NotFoundException(AuthErrorType.NOT_FOUND))
                 .accessToken();
@@ -77,7 +72,8 @@ public class KakaoClient {
         headers.setBearerAuth(accessToken);
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         final HttpEntity<?> httpEntity = new HttpEntity<>(body, headers);
-        return restTemplate.exchange(profileUrl, HttpMethod.GET, httpEntity, KakaoAccountProfileResponse.class)
+        return restTemplate
+                .exchange(profileUrl, HttpMethod.GET, httpEntity, KakaoAccountProfileResponse.class)
                 .getBody();
     }
 }

@@ -5,6 +5,9 @@ import com.depromeet.auth.dto.response.AccountProfileResponse;
 import com.depromeet.auth.dto.response.GoogleAccessTokenResponse;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.type.auth.AuthErrorType;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -13,10 +16,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -50,13 +49,23 @@ public class GoogleClient {
         final String decodedCode = URLDecoder.decode(code, StandardCharsets.UTF_8);
         final HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-        final HttpEntity<GoogleAccessTokenRequest> httpEntity = new HttpEntity<>(
-                new GoogleAccessTokenRequest(decodedCode, clientId, clientSecret, redirectUri, authorizationCode),
-                headers
-        );
-        final GoogleAccessTokenResponse response = restTemplate.exchange(
-                accessTokenUrl, HttpMethod.POST, httpEntity, GoogleAccessTokenResponse.class
-        ).getBody();
+        final HttpEntity<GoogleAccessTokenRequest> httpEntity =
+                new HttpEntity<>(
+                        new GoogleAccessTokenRequest(
+                                decodedCode,
+                                clientId,
+                                clientSecret,
+                                redirectUri,
+                                authorizationCode),
+                        headers);
+        final GoogleAccessTokenResponse response =
+                restTemplate
+                        .exchange(
+                                accessTokenUrl,
+                                HttpMethod.POST,
+                                httpEntity,
+                                GoogleAccessTokenResponse.class)
+                        .getBody();
         return Optional.ofNullable(response)
                 .orElseThrow(() -> new NotFoundException(AuthErrorType.NOT_FOUND))
                 .accessToken();
@@ -66,7 +75,8 @@ public class GoogleClient {
         final HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
         final HttpEntity<GoogleAccessTokenRequest> httpEntity = new HttpEntity<>(headers);
-        return restTemplate.exchange(profileUrl, HttpMethod.GET, httpEntity, AccountProfileResponse.class)
+        return restTemplate
+                .exchange(profileUrl, HttpMethod.GET, httpEntity, AccountProfileResponse.class)
                 .getBody();
     }
 }
