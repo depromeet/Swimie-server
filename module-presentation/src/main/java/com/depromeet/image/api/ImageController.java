@@ -25,7 +25,8 @@ public class ImageController implements ImageApi {
     private final ImageDeleteService imageDeleteService;
 
     @PostMapping
-    public ApiResponse<?> uploadImages(@RequestPart(value = "images") @NotNull List<MultipartFile> images) {
+    public ApiResponse<?> uploadImages(
+            @RequestPart(value = "images") @NotNull List<MultipartFile> images) {
         List<Long> imageIds = imageUploadService.uploadMemoryImages(images);
 
         return ApiResponse.success(UPLOAD_IMAGES_SUCCESS, imageIds);
@@ -33,7 +34,8 @@ public class ImageController implements ImageApi {
 
     @PatchMapping("/memory/{memoryId}")
     public ApiResponse<?> updateImages(
-            @RequestParam("memoryId") Long memoryId, @RequestPart(value = "images") List<MultipartFile> images) {
+            @RequestParam("memoryId") Long memoryId,
+            @RequestPart(value = "images") List<MultipartFile> images) {
         imageUpdateService.updateImages(memoryId, images);
 
         return ApiResponse.success(UPDATE_IMAGES_SUCCESS);
