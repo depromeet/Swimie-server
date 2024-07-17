@@ -26,6 +26,7 @@ spring:
             scope: profile,email
             access-token-url: https://oauth2.googleapis.com/token
             profile-url: https://www.googleapis.com/userinfo/v2/me
+            authorization-grant-type: authorization_code
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
@@ -39,3 +40,7 @@ jwt:
   access-token-expiration-time: ${ACCESS_TOKEN_EXP}
   refresh-token-expiration-time: ${REFRESH_TOKEN_EXP}
   issuer: ${ISSUER}
+
+url:
+  access-token: https://oauth2.googleapis.com/token
+  profile: https://www.googleapis.com/userinfo/v2/me
