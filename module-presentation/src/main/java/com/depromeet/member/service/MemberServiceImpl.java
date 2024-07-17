@@ -1,6 +1,6 @@
 package com.depromeet.member.service;
 
-import com.depromeet.auth.dto.response.GoogleAccountProfileResponse;
+import com.depromeet.auth.dto.response.AccountProfileResponse;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.member.Member;
 import com.depromeet.member.MemberRole;
@@ -62,7 +62,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member findOrCreateMemberBy(GoogleAccountProfileResponse profile) {
+    public Member findOrCreateMemberBy(AccountProfileResponse profile) {
         return memberRepository
                 .findByEmail(profile.email())
                 .orElseGet(() -> {

@@ -1,6 +1,7 @@
 package com.depromeet.auth.controller;
 
 import com.depromeet.auth.dto.request.GoogleLoginRequest;
+import com.depromeet.auth.dto.request.KakaoLoginRequest;
 import com.depromeet.auth.dto.response.JwtTokenResponseDto;
 import com.depromeet.auth.service.AuthService;
 import com.depromeet.dto.response.ApiResponse;
@@ -21,5 +22,10 @@ public class AuthController {
     @PostMapping("/google")
     public ApiResponse<JwtTokenResponseDto> loginByGoogle(@Valid @RequestBody final GoogleLoginRequest request) {
         return ApiResponse.success(AuthSuccessType.LOGIN_SUCCESS, authService.loginByGoogle(request));
+    }
+
+    @PostMapping("/kakao")
+    public ApiResponse<JwtTokenResponseDto> loginByKakao(@Valid @RequestBody final KakaoLoginRequest request) {
+        return ApiResponse.success(AuthSuccessType.LOGIN_SUCCESS, authService.loginByKakao(request));
     }
 }

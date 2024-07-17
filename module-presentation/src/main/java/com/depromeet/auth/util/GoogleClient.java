@@ -1,8 +1,8 @@
 package com.depromeet.auth.util;
 
 import com.depromeet.auth.dto.request.GoogleAccessTokenRequest;
+import com.depromeet.auth.dto.response.AccountProfileResponse;
 import com.depromeet.auth.dto.response.GoogleAccessTokenResponse;
-import com.depromeet.auth.dto.response.GoogleAccountProfileResponse;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.type.auth.AuthErrorType;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +41,7 @@ public class GoogleClient {
 
     private final RestTemplate restTemplate;
 
-    public GoogleAccountProfileResponse getGoogleAccountProfile(final String code) {
+    public AccountProfileResponse getGoogleAccountProfile(final String code) {
         final String accessToken = requestGoogleAccessToken(code);
         return requestGoogleAccountProfile(accessToken);
     }
@@ -62,11 +62,11 @@ public class GoogleClient {
                 .accessToken();
     }
 
-    private GoogleAccountProfileResponse requestGoogleAccountProfile(final String accessToken) {
+    private AccountProfileResponse requestGoogleAccountProfile(final String accessToken) {
         final HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
         final HttpEntity<GoogleAccessTokenRequest> httpEntity = new HttpEntity<>(headers);
-        return restTemplate.exchange(profileUrl, HttpMethod.GET, httpEntity, GoogleAccountProfileResponse.class)
+        return restTemplate.exchange(profileUrl, HttpMethod.GET, httpEntity, AccountProfileResponse.class)
                 .getBody();
     }
 }

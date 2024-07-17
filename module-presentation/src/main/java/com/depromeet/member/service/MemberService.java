@@ -1,6 +1,6 @@
 package com.depromeet.member.service;
 
-import com.depromeet.auth.dto.response.GoogleAccountProfileResponse;
+import com.depromeet.auth.dto.response.AccountProfileResponse;
 import com.depromeet.member.Member;
 import com.depromeet.member.dto.request.MemberCreateDto;
 import com.depromeet.member.dto.response.MemberFindOneResponseDto;
@@ -16,5 +16,5 @@ public interface MemberService {
 
     boolean matchPassword(String rawPassword, String encodedPassword);
 
-    Member findOrCreateMemberBy(GoogleAccountProfileResponse profile);
+    Member findOrCreateMemberBy(AccountProfileResponse profile);
 }
