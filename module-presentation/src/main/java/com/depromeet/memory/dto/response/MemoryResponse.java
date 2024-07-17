@@ -44,25 +44,27 @@ public class MemoryResponse {
             LocalTime endTime,
             Short lane,
             String diary) {
-        List<Stroke> resultStrokes = strokes.stream().map(
-                stroke -> {
-                    if (stroke.getLaps() != null) {
-                        return Stroke.builder()
-                                .id(stroke.getId())
-                                .name(stroke.getName())
-                                .laps(stroke.getLaps())
-                                .meter(stroke.getLaps() * lane)
-                                .build();
-                    } else {
-                        return Stroke.builder()
-                                .id(stroke.getId())
-                                .name(stroke.getName())
-                                .laps((short) (stroke.getMeter() / lane))
-                                .meter(stroke.getMeter())
-                                .build();
-                    }
-                }
-        ).toList();
+        List<Stroke> resultStrokes =
+                strokes.stream()
+                        .map(
+                                stroke -> {
+                                    if (stroke.getLaps() != null) {
+                                        return Stroke.builder()
+                                                .id(stroke.getId())
+                                                .name(stroke.getName())
+                                                .laps(stroke.getLaps())
+                                                .meter(stroke.getLaps() * lane)
+                                                .build();
+                                    } else {
+                                        return Stroke.builder()
+                                                .id(stroke.getId())
+                                                .name(stroke.getName())
+                                                .laps((short) (stroke.getMeter() / lane))
+                                                .meter(stroke.getMeter())
+                                                .build();
+                                    }
+                                })
+                        .toList();
 
         Integer totalLap = 0;
         Integer totalMeter = 0;
@@ -80,17 +82,21 @@ public class MemoryResponse {
                 images.stream()
                         .map(
                                 image ->
-                                Image.builder()
-                                        .id(image.getId())
-                                        .originImageName(image.getOriginImageName())
-                                        .imageName(image.getImageName())
-                                        .imageUrl(image.getImageUrl())
-                                        .build())
+                                        Image.builder()
+                                                .id(image.getId())
+                                                .originImageName(image.getOriginImageName())
+                                                .imageName(image.getImageName())
+                                                .imageUrl(image.getImageUrl())
+                                                .build())
                         .toList();
         this.recordAt = recordAt;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.duration = endTime.minusNanos(startTime.getNano());
+        this.duration =
+                LocalTime.of(
+                        endTime.minusHours(startTime.getHour()).getHour(),
+                        endTime.minusMinutes(startTime.getMinute()).getMinute(),
+                        0);
         this.lane = lane;
         this.totalLap = totalLap;
         this.totalMeter = totalMeter;
@@ -98,7 +104,9 @@ public class MemoryResponse {
     }
 
     public static MemoryResponse from(Memory memory) {
-        MemberSimpleResponse memberSimple = new MemberSimpleResponse(memory.getMember().getGoal(), memory.getMember().getName());
+        MemberSimpleResponse memberSimple =
+                new MemberSimpleResponse(
+                        memory.getMember().getGoal(), memory.getMember().getName());
         return MemoryResponse.builder()
                 .id(memory.getId())
                 .member(memberSimple)
