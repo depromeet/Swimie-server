@@ -19,4 +19,9 @@ public class FakePoolRepository implements PoolRepository {
     public Optional<Pool> findById(Long poolId) {
         return data.stream().filter(item -> item.getId().equals(poolId)).findAny();
     }
+
+    @Override
+    public Pool save(Pool pool) {
+        return null;
+    }
 }
