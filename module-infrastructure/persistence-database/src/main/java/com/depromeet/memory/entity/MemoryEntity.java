@@ -89,8 +89,14 @@ public class MemoryEntity {
                         memory.getMemoryDetail() != null
                                 ? MemoryDetailEntity.from(memory.getMemoryDetail())
                                 : null)
-                .strokes(null)
-                .images(null)
+                .strokes(
+                        memory.getStrokes() != null
+                        ? memory.getStrokes().stream().map(StrokeEntity::pureFrom).toList()
+                        : null)
+                .images(
+                        memory.getImages() != null
+                        ? memory.getImages().stream().map(ImageEntity::pureFrom).toList()
+                        : null)
                 .recordAt(memory.getRecordAt())
                 .startTime(memory.getStartTime())
                 .endTime(memory.getEndTime())
@@ -107,11 +113,11 @@ public class MemoryEntity {
                 .memoryDetail(this.memoryDetail != null ? this.memoryDetail.toModel() : null)
                 .strokes(
                         this.strokes != null
-                                ? this.strokes.stream().map(StrokeEntity::toModel).toList()
+                                ? this.strokes.stream().map(StrokeEntity::pureToModel).toList()
                                 : null)
                 .images(
                         this.images != null
-                                ? this.images.stream().map(ImageEntity::toModel).toList()
+                                ? this.images.stream().map(ImageEntity::pureToModel).toList()
                                 : null)
                 .recordAt(this.recordAt)
                 .startTime(this.startTime)
