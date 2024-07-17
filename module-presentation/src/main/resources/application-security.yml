@@ -1,0 +1,46 @@
+spring:
+  config:
+    activate:
+      on-profile: security
+
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            redirect-uri: ${KAKAO_REDIRECT_URL}
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post
+            client-name: kakao
+            scope:
+              - profile_nickname
+              - account_email
+          google:
+            client-name: google
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            redirect-uri: ${GOOGLE_REDIRECT_URL}
+            authorization-code: ${GOOGLE_AUTH_CODE}
+            scope: profile,email
+            access-token-url: https://oauth2.googleapis.com/token
+            profile-url: https://www.googleapis.com/userinfo/v2/me
+            authorization-grant-type: authorization_code
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+jwt:
+  access-token-secret: ${ACCESS_TOKEN_SECRET}
+  refresh-token-secret: ${REFRESH_TOKEN_SECRET}
+  access-token-expiration-time: ${ACCESS_TOKEN_EXP}
+  refresh-token-expiration-time: ${REFRESH_TOKEN_EXP}
+  issuer: ${ISSUER}
+
+url:
+  access-token: https://oauth2.googleapis.com/token
+  profile: https://www.googleapis.com/userinfo/v2/me
