@@ -33,21 +33,21 @@ public class ImageController implements ImageApi {
 
     @PatchMapping("/memory/{memoryId}")
     public ApiResponse<?> updateImages(
-            @RequestParam("memoryId") Long memoryId, @RequestPart List<MultipartFile> images) {
+            @PathVariable Long memoryId, @RequestPart List<MultipartFile> images) {
         imageUpdateService.updateImages(memoryId, images);
 
         return ApiResponse.success(UPDATE_IMAGES_SUCCESS);
     }
 
-    @GetMapping
-    public ApiResponse<?> findImages(@RequestParam(name = "memoryId") Long memoryId) {
+    @GetMapping("/memory/{memoryId}")
+    public ApiResponse<?> findImages(@PathVariable Long memoryId) {
         List<MemoryImagesDto> memoryImages = imageGetService.findImagesByMemoryId(memoryId);
 
         return ApiResponse.success(GET_IMAGES_SUCCESS, memoryImages);
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteImages(@RequestParam(value = "memoryId") Long memoryId) {
+    @DeleteMapping("/memory/{memoryId}")
+    public ResponseEntity<?> deleteImages(@PathVariable Long memoryId) {
         imageDeleteService.deleteAllImagesByMemoryId(memoryId);
 
         return ResponseEntity.noContent().build();
