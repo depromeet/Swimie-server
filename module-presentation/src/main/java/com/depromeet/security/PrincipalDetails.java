@@ -3,15 +3,18 @@ package com.depromeet.security;
 import com.depromeet.member.MemberRole;
 import java.util.Collection;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@RequiredArgsConstructor
 public class PrincipalDetails implements UserDetails {
     private final Long memberId;
     private final MemberRole memberRole;
+
+    public PrincipalDetails(Long memberId, MemberRole memberRole) {
+        this.memberId = memberId;
+        this.memberRole = memberRole;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
