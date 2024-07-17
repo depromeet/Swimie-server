@@ -76,7 +76,6 @@ public class KakaoClient {
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
         headers.setBearerAuth(accessToken);
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("property_keys", "[\"id\", \"kakao_account.email\", \"kakao_account.profile.nickname\"]");
         final HttpEntity<?> httpEntity = new HttpEntity<>(body, headers);
         return restTemplate.exchange(profileUrl, HttpMethod.GET, httpEntity, KakaoAccountProfileResponse.class)
                 .getBody();
