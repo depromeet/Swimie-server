@@ -1,7 +1,9 @@
 package com.depromeet.member.service;
 
+import com.depromeet.auth.dto.response.AccountProfileResponse;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.member.Member;
+import com.depromeet.member.MemberRole;
 import com.depromeet.member.dto.request.MemberCreateDto;
 import com.depromeet.member.dto.response.MemberFindOneResponseDto;
 import com.depromeet.member.mapper.MemberMapper;
@@ -57,5 +59,19 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public boolean matchPassword(String rawPassword, String encodedPassword) {
         return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
+    @Override
+    public Member findOrCreateMemberBy(AccountProfileResponse profile) {
+        return memberRepository
+                .findByEmail(profile.email())
+                .orElseGet(() -> {
+                    Member member = Member.builder()
+                            .name(profile.name())
+                            .email(profile.email())
+                            .role(MemberRole.USER)
+                            .build();
+                    return memberRepository.save(member);
+                });
     }
 }
