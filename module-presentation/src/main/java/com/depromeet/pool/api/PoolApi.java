@@ -9,6 +9,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Tag(name = "수영장(Pool)")
 public interface PoolApi {
     @Operation(summary = "수영장 검색")
-    public ApiResponse<PoolResponseDto> searchPoolsByName(
-            @RequestParam(required = false) String query);
+    ApiResponse<PoolResponseDto> searchPoolsByName(@RequestParam(required = false) String query);
 }

@@ -22,12 +22,15 @@ public class PoolEntity {
 
     private String name;
 
+    private String address;
+
     private Integer lane;
 
     @Builder
-    public PoolEntity(Long id, String name, Integer lane) {
+    public PoolEntity(Long id, String name, String address, Integer lane) {
         this.id = id;
         this.name = name;
+        this.address = address;
         this.lane = lane;
     }
 
@@ -35,11 +38,17 @@ public class PoolEntity {
         return PoolEntity.builder()
                 .id(pool.getId())
                 .name(pool.getName())
+                .address(pool.getAddress())
                 .lane(pool.getLane())
                 .build();
     }
 
     public Pool toModel() {
-        return Pool.builder().id(this.id).name(this.name).lane(this.lane).build();
+        return Pool.builder()
+                .id(this.id)
+                .name(this.name)
+                .address(this.address)
+                .lane(this.lane)
+                .build();
     }
 }

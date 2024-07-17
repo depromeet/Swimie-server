@@ -10,7 +10,6 @@ import com.depromeet.memory.service.MemoryService;
 import com.depromeet.memory.service.StrokeService;
 import com.depromeet.type.memory.MemoryErrorType;
 import com.depromeet.type.memory.MemorySuccessType;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/memory")
-public class MemoryController {
+public class MemoryController implements MemoryApi {
     private final MemoryService memoryService;
     private final StrokeService strokeService;
     private final ImageUploadService imageUploadService;
 
     @PostMapping
-    @Operation(summary = "수영 기록 저장")
     public ApiResponse<?> create(@Valid @RequestBody MemoryCreateRequest memoryCreateRequest) {
         Memory newMemory = memoryService.save(memoryCreateRequest);
         if (newMemory == null) {

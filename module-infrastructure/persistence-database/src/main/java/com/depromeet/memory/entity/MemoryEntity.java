@@ -1,5 +1,6 @@
 package com.depromeet.memory.entity;
 
+import com.depromeet.image.entity.ImageEntity;
 import com.depromeet.member.entity.MemberEntity;
 import com.depromeet.memory.Memory;
 import com.depromeet.pool.entity.PoolEntity;
@@ -7,6 +8,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,6 +37,12 @@ public class MemoryEntity {
     @JoinColumn(name = "memory_detail_id")
     private MemoryDetailEntity memoryDetail;
 
+    @OneToMany(mappedBy = "memory")
+    private List<StrokeEntity> strokes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "memory")
+    private List<ImageEntity> images = new ArrayList<>();
+
     @NotNull private LocalDate recordAt;
 
     @NotNull private LocalTime startTime;
@@ -51,6 +60,8 @@ public class MemoryEntity {
             MemberEntity member,
             PoolEntity pool,
             MemoryDetailEntity memoryDetail,
+            List<StrokeEntity> strokes,
+            List<ImageEntity> images,
             LocalDate recordAt,
             LocalTime startTime,
             LocalTime endTime,
@@ -60,6 +71,8 @@ public class MemoryEntity {
         this.member = member;
         this.pool = pool;
         this.memoryDetail = memoryDetail;
+        this.strokes = strokes;
+        this.images = images;
         this.recordAt = recordAt;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -76,6 +89,8 @@ public class MemoryEntity {
                         memory.getMemoryDetail() != null
                                 ? MemoryDetailEntity.from(memory.getMemoryDetail())
                                 : null)
+                .strokes(null)
+                .images(null)
                 .recordAt(memory.getRecordAt())
                 .startTime(memory.getStartTime())
                 .endTime(memory.getEndTime())
@@ -90,6 +105,14 @@ public class MemoryEntity {
                 .member(this.member.toModel())
                 .pool(this.pool != null ? this.pool.toModel() : null)
                 .memoryDetail(this.memoryDetail != null ? this.memoryDetail.toModel() : null)
+                .strokes(
+                        this.strokes != null
+                                ? this.strokes.stream().map(StrokeEntity::toModel).toList()
+                                : null)
+                .images(
+                        this.images != null
+                                ? this.images.stream().map(ImageEntity::toModel).toList()
+                                : null)
                 .recordAt(this.recordAt)
                 .startTime(this.startTime)
                 .endTime(this.endTime)
