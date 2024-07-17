@@ -42,9 +42,10 @@ public class MemoryServiceImpl implements MemoryService {
         }
         Pool pool = null;
         if (memoryCreateRequest.getPoolId() != null) {
-            pool = poolRepository
-                    .findById(memoryCreateRequest.getPoolId())
-                    .orElseThrow(() -> new NotFoundException(PoolErrorType.NOT_FOUND));
+            pool =
+                    poolRepository
+                            .findById(memoryCreateRequest.getPoolId())
+                            .orElseThrow(() -> new NotFoundException(PoolErrorType.NOT_FOUND));
         }
         Memory memory =
                 Memory.builder()

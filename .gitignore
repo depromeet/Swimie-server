@@ -40,3 +40,6 @@ out/
 
 ### .RUN ###
 Application.run.xml
+
+### localhost.p12
+localhost.p12

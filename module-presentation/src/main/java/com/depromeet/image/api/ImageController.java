@@ -38,8 +38,7 @@ public class ImageController {
     @PatchMapping("/memory/{memoryId}")
     @Operation(summary = "수영 기록의 이미지 수정")
     public ApiResponse<?> updateImages(
-            @RequestParam("memoryId") Long memoryId,
-            @RequestPart List<MultipartFile> images) {
+            @RequestParam("memoryId") Long memoryId, @RequestPart List<MultipartFile> images) {
         imageUpdateService.updateImages(memoryId, images);
 
         return ApiResponse.success(UPDATE_IMAGES_SUCCESS);

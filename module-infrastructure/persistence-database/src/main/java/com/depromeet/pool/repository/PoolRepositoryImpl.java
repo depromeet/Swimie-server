@@ -8,7 +8,6 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -39,5 +38,10 @@ public class PoolRepositoryImpl implements PoolRepository {
     @Override
     public Optional<Pool> findById(Long poolId) {
         return poolJpaRepository.findById(poolId).map(PoolEntity::toModel);
+    }
+
+    @Override
+    public Pool save(Pool pool) {
+        return poolJpaRepository.save(PoolEntity.from(pool)).toModel();
     }
 }
