@@ -13,14 +13,20 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Getter
 @NoArgsConstructor
 public class MemoryCreateRequest {
+    @Schema(description = "수영장 정보 Id", example = "null")
     private Long poolId; // 수영장 정보
+
     // MemoryDetail
+    @Schema(description = "수영 장비", example = "오리발")
     private String item;
+
+    @Schema(description = "심박수", example = "129")
     private Short heartRate;
 
     @Schema(description = "페이스", example = "05:00:00", maxLength = 8, type = "string")
     private LocalTime pace;
 
+    @Schema(description = "칼로리", example = "300")
     private Integer kcal;
 
     // Memory
@@ -38,11 +44,18 @@ public class MemoryCreateRequest {
     @Schema(description = "수영 종료 시간", example = "11:50:00", maxLength = 8, type = "string")
     private LocalTime endTime;
 
+    @Schema(description = "레인 길이", example = "25")
     private Short lane;
+
+    @Schema(description = "수영 일기", example = "나는 짱이야!! 내가 정말 멋져!!")
     private String diary;
+
     // Stroke
+    @Schema(description = "영법 목록")
     private List<StrokeCreateRequest> strokes;
+
     // Images
+    @Schema(description = "수영 일기")
     private List<Long> imageIdList;
 
     @Builder

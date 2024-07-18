@@ -3,7 +3,8 @@ package com.depromeet.type.memory;
 import com.depromeet.type.SuccessType;
 
 public enum MemorySuccessType implements SuccessType {
-    POST_RESULT_SUCCESS("MEMORY_1", "수영 기록 저장에 성공하였습니다");
+    POST_RESULT_SUCCESS("MEMORY_1", "수영 기록 저장에 성공하였습니다"),
+    GET_RESULT_SUCCESS("MEMORY_2", "수영 기록 조회에 성공하였습니다");
 
     private final String code;
 

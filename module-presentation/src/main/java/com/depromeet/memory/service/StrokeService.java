@@ -9,4 +9,6 @@ public interface StrokeService {
     Stroke save(Stroke stroke);
 
     List<Stroke> saveAll(Memory memory, List<StrokeCreateRequest> strokes);
+
+    List<Stroke> getAllByMemoryId(Long memoryId);
 }

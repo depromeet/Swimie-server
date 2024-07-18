@@ -54,10 +54,27 @@ public class StrokeEntity {
                 .build();
     }
 
+    public static StrokeEntity pureFrom(Stroke stroke) {
+        return StrokeEntity.builder()
+                .id(stroke.getId())
+                .name(stroke.getName())
+                .laps(stroke.getLaps())
+                .meter(stroke.getMeter())
+                .build();
+    }
+
     public Stroke toModel() {
         return Stroke.builder()
                 .id(this.id)
                 .memory(this.memory.toModel())
+                .name(this.name)
+                .laps(this.laps)
+                .meter(this.meter)
+                .build();
+    }
+    public Stroke pureToModel() {
+        return Stroke.builder()
+                .id(this.id)
                 .name(this.name)
                 .laps(this.laps)
                 .meter(this.meter)
