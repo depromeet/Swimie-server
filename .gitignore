@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 **/application-secret.properties
 **/data.sql
+generated
 
 ### STS ###
 .apt_generated

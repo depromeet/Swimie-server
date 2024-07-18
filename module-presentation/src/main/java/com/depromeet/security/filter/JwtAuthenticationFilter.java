@@ -103,7 +103,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 || url.startsWith("/oauth2")
                 || url.startsWith("/login")
                 || url.startsWith("/depromeet-actuator")
-                || url.startsWith("/api/v1/auth");
+                || url.startsWith("/api/v1/auth")
+                || url.startsWith("/api/login");
     }
 
     private Optional<AccessTokenDto> parseAccessToken(String accessToken) {
