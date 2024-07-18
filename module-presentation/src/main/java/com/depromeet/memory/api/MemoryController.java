@@ -46,9 +46,10 @@ public class MemoryController implements MemoryApi {
     public ApiResponse<?> timeline(
             @LoginMember Long memberId,
             @RequestParam(value = "cursorId", required = false) Long cursorId,
-            @RequestParam("size") Integer size) {
+            @RequestParam(value = "recordAt", required = false) String recordAt,
+            @RequestParam(value = "size") Integer size) {
         Slice<TimelineResponseDto> timelines =
-                timelineService.getTimelineByMemberIdAndCursor(memberId, cursorId, size);
+                timelineService.getTimelineByMemberIdAndCursor(memberId, cursorId, recordAt, size);
         List<TimelineResponseDto> content = timelines.getContent();
 
         CustomSliceResponse<?> response =

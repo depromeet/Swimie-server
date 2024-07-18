@@ -37,11 +37,11 @@ public class MemoryRepositoryImpl implements MemoryRepository {
 
     @Override
     public Slice<Memory> getSliceMemoryByMemberIdAndCursorId(
-            Long memberId, Long cursorId, Pageable pageable) {
+            Long memberId, Long cursorId, LocalDate recordAt, Pageable pageable) {
         List<MemoryEntity> result =
                 queryFactory
                         .selectFrom(memory)
-                        .where(memory.member.id.eq(memberId).and(ltCursorId(cursorId)))
+                        .where(memory.member.id.eq(memberId).and(ltCursorId(cursorId, recordAt)))
                         .limit(pageable.getPageSize() + 1)
                         .orderBy(memory.recordAt.desc(), memory.id.desc())
                         .fetch();
@@ -61,7 +61,11 @@ public class MemoryRepositoryImpl implements MemoryRepository {
 
     @Override
     public Slice<Memory> findPrevMemoryByMemberId(
-            Long memberId, Long cursorId, Pageable pageable, LocalDate recordAt) {
+            Long memberId,
+            Long cursorId,
+            LocalDate cursorRecordAt,
+            Pageable pageable,
+            LocalDate recordAt) {
 
         List<MemoryEntity> result =
                 queryFactory
@@ -70,7 +74,7 @@ public class MemoryRepositoryImpl implements MemoryRepository {
                                 memory.member
                                         .id
                                         .eq(memberId)
-                                        .and(ltCursorId(cursorId))
+                                        .and(ltCursorId(cursorId, cursorRecordAt))
                                         .and(loeRecordAt(recordAt)))
                         .limit(pageable.getPageSize() + 1)
                         .orderBy(memory.recordAt.desc())
@@ -87,9 +91,11 @@ public class MemoryRepositoryImpl implements MemoryRepository {
         return new SliceImpl<>(content, pageable, hasPrev);
     }
 
-    private BooleanExpression ltCursorId(Long cursorId) {
-        if (cursorId != null) {
-            return memory.id.lt(cursorId);
+    private BooleanExpression ltCursorId(Long cursorId, LocalDate recordAt) {
+        if (cursorId != null && recordAt != null) {
+            return memory.recordAt
+                    .lt(recordAt)
+                    .or(memory.recordAt.eq(recordAt).and(memory.id.lt(cursorId)));
         }
         return null;
     }

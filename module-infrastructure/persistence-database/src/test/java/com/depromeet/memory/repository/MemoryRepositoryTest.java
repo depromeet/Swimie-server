@@ -73,7 +73,7 @@ public class MemoryRepositoryTest {
     void getSliceMemoryByMemberIdAndCursorIdByMemberIdAndCursorTest() {
         Slice<Memory> resultSlice =
                 memoryRepositoryImpl.getSliceMemoryByMemberIdAndCursorId(
-                        member.getId(), null, pageable);
+                        member.getId(), null, null, pageable);
         List<Memory> result = resultSlice.getContent();
 
         Memory lastMemory = result.getLast();
@@ -88,7 +88,7 @@ public class MemoryRepositoryTest {
 
         Slice<Memory> resultSlice =
                 memoryRepositoryImpl.findPrevMemoryByMemberId(
-                        member.getId(), null, pageable, recordAt);
+                        member.getId(), null, null, pageable, recordAt);
         List<Memory> result = resultSlice.getContent();
 
         Memory lastMemory = result.getLast();
@@ -107,14 +107,14 @@ public class MemoryRepositoryTest {
 
         Slice<Memory> initResultSlice =
                 memoryRepositoryImpl.findPrevMemoryByMemberId(
-                        member.getId(), null, pageable, recordAt);
+                        member.getId(), null, null, pageable, recordAt);
 
         List<Memory> initResultSliceList = initResultSlice.getContent();
         Memory lastDate = initResultSliceList.getLast();
 
         Slice<Memory> resultSlice =
                 memoryRepositoryImpl.findPrevMemoryByMemberId(
-                        member.getId(), lastDate.getId(), pageable, null);
+                        member.getId(), lastDate.getId(), null, pageable, null);
         List<Memory> result = resultSlice.getContent();
         List<LocalDate> resultRecordAt = result.stream().map(Memory::getRecordAt).toList();
         System.out.println(resultRecordAt);
@@ -126,15 +126,15 @@ public class MemoryRepositoryTest {
     @DisplayName(
             value =
                     """
-                    지정한 날짜 이전 30일 데이터 이후 커서로 다음 데이터를 가져오고 recordAt Desc로 가져오는지 확인
-                    """)
+                            지정한 날짜 이전 30일 데이터 이후 커서로 다음 데이터를 가져오고 recordAt Desc로 가져오는지 확인
+                            """)
     @Test
     void findNextMemoryByMemberIdTest_1() {
         LocalDate recordAt = LocalDate.of(2024, 8, 31);
 
         Slice<Memory> initResultSlice =
                 memoryRepositoryImpl.findPrevMemoryByMemberId(
-                        member.getId(), null, pageable, recordAt);
+                        member.getId(), null, null, pageable, recordAt);
 
         List<Memory> initResultSliceList = initResultSlice.getContent();
         Memory firstDate = initResultSliceList.getFirst();

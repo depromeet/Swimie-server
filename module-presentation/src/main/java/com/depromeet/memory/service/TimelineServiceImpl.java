@@ -7,6 +7,7 @@ import com.depromeet.memory.Stroke;
 import com.depromeet.memory.dto.response.StrokeResponseDto;
 import com.depromeet.memory.dto.response.TimelineResponseDto;
 import com.depromeet.memory.repository.MemoryRepository;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -28,10 +29,17 @@ public class TimelineServiceImpl implements TimelineService {
 
     @Override
     public Slice<TimelineResponseDto> getTimelineByMemberIdAndCursor(
-            Long memberId, Long cursorId, int pageSize) {
+            Long memberId, Long cursorId, String recordAt, int pageSize) {
+        LocalDate recordAtLocalDate = null;
+        if (recordAt != null && !recordAt.trim().isEmpty()) {
+            recordAtLocalDate =
+                    LocalDate.parse(recordAt, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        }
+
         Pageable pageable = PageRequest.of(0, pageSize, Sort.by(Sort.Order.desc("recordAt")));
         Slice<Memory> memories =
-                memoryRepository.getSliceMemoryByMemberIdAndCursorId(memberId, cursorId, pageable);
+                memoryRepository.getSliceMemoryByMemberIdAndCursorId(
+                        memberId, cursorId, recordAtLocalDate, pageable);
         return memories.map(this::mapToTimelineResponseDto);
     }
 

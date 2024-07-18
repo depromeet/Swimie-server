@@ -6,7 +6,7 @@ import org.springframework.data.domain.Slice;
 
 public interface TimelineService {
     Slice<TimelineResponseDto> getTimelineByMemberIdAndCursor(
-            Long memberId, Long cursorId, int pageSize);
+            Long memberId, Long cursorId, String recordAt, int pageSize);
 
     TimelineResponseDto mapToTimelineResponseDto(Memory memory);
 }
