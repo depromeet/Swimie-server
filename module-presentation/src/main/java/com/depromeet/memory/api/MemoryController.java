@@ -1,17 +1,17 @@
-package com.depromeet.memory.controller;
+package com.depromeet.memory.api;
 
 import com.depromeet.dto.response.ApiResponse;
-import com.depromeet.exception.InternalServerException;
+import com.depromeet.dto.response.CustomSliceResponse;
 import com.depromeet.image.service.ImageUploadService;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
+import com.depromeet.memory.dto.response.MemoryResponse;
 import com.depromeet.memory.dto.response.TimelineResponseDto;
 import com.depromeet.memory.service.MemoryService;
 import com.depromeet.memory.service.StrokeService;
 import com.depromeet.memory.service.TimelineService;
 import com.depromeet.security.LoginMember;
-import com.depromeet.type.memory.MemoryErrorType;
 import com.depromeet.type.memory.MemorySuccessType;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -31,22 +31,34 @@ public class MemoryController implements MemoryApi {
     @PostMapping
     public ApiResponse<?> create(@Valid @RequestBody MemoryCreateRequest memoryCreateRequest) {
         Memory newMemory = memoryService.save(memoryCreateRequest);
-        if (newMemory == null) {
-            return ApiResponse.fail(new InternalServerException(MemoryErrorType.CREATE_FAILED));
-        }
         List<Stroke> strokes = strokeService.saveAll(newMemory, memoryCreateRequest.getStrokes());
         imageUploadService.addMemoryIdToImages(newMemory, memoryCreateRequest.getImageIdList());
         return ApiResponse.success(MemorySuccessType.POST_RESULT_SUCCESS);
     }
 
-    @GetMapping("/timeline")
-    public ApiResponse<?> getTimeline(
-            @RequestParam(name = "cursorId", required = false) Long cursorId,
-            @RequestParam(name = "size") int size,
-            @LoginMember Long memberId) {
-        Slice<TimelineResponseDto> responseDtoSlice =
-                timelineService.findTimelineByMemberIdAndCursor(memberId, cursorId, size);
+    @GetMapping("/{memoryId}")
+    public ApiResponse<MemoryResponse> read(@PathVariable("memoryId") Long memoryId) {
+        MemoryResponse memoryResponse = memoryService.findById(memoryId);
+        return ApiResponse.success(MemorySuccessType.GET_RESULT_SUCCESS, memoryResponse);
+    }
 
-        return ApiResponse.success(MemorySuccessType.GET_TIMELINE_SUCCESS, responseDtoSlice);
+    @GetMapping("/timeline")
+    public ApiResponse<?> timeline(
+            @LoginMember Long memberId,
+            @RequestParam(value = "cursorId", required = false) Long cursorId,
+            @RequestParam("size") Integer size) {
+        Slice<TimelineResponseDto> timelines =
+                timelineService.getTimelineByMemberIdAndCursor(memberId, cursorId, size);
+        List<TimelineResponseDto> content = timelines.getContent();
+
+        CustomSliceResponse<?> response =
+                CustomSliceResponse.builder()
+                        .content(content)
+                        .pageSize(timelines.getSize())
+                        .pageNumber(timelines.getNumber())
+                        .hasPrevious(timelines.hasPrevious())
+                        .hasNext(timelines.hasNext())
+                        .build();
+        return ApiResponse.success(MemorySuccessType.GET_TIMELINE_SUCCESS, response);
     }
 }

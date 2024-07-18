@@ -1,9 +1,9 @@
 package com.depromeet.memory.service;
 
+import com.depromeet.image.Image;
 import com.depromeet.image.dto.response.MemoryImagesDto;
-import com.depromeet.memory.dto.ImageDto;
-import com.depromeet.memory.dto.MemoryDto;
-import com.depromeet.memory.dto.StrokeDto;
+import com.depromeet.memory.Memory;
+import com.depromeet.memory.Stroke;
 import com.depromeet.memory.dto.response.StrokeResponseDto;
 import com.depromeet.memory.dto.response.TimelineResponseDto;
 import com.depromeet.memory.repository.MemoryRepository;
@@ -27,16 +27,15 @@ public class TimelineServiceImpl implements TimelineService {
     private final MemoryRepository memoryRepository;
 
     @Override
-    public Slice<TimelineResponseDto> findTimelineByMemberIdAndCursor(
+    public Slice<TimelineResponseDto> getTimelineByMemberIdAndCursor(
             Long memberId, Long cursorId, int pageSize) {
         Pageable pageable = PageRequest.of(0, pageSize, Sort.by(Sort.Order.desc("recordAt")));
-        Slice<MemoryDto> memories =
-                memoryRepository.findAllByMemberIdAndCursorId(memberId, cursorId, pageable);
+        Slice<Memory> memories =
+                memoryRepository.getSliceMemoryByMemberIdAndCursorId(memberId, cursorId, pageable);
         return memories.map(this::mapToTimelineResponseDto);
     }
 
-    @Override
-    public TimelineResponseDto mapToTimelineResponseDto(MemoryDto memory) {
+    public TimelineResponseDto mapToTimelineResponseDto(Memory memory) {
         return TimelineResponseDto.builder()
                 .memoryId(memory.getId())
                 .recordAt(memory.getRecordAt().toString())
@@ -46,7 +45,9 @@ public class TimelineServiceImpl implements TimelineService {
                 .diary(memory.getDiary())
                 .totalMeter(calculateTotalMeter(memory.getStrokes(), memory.getLane()))
                 .memoryDetailId(
-                        memory.getMemoryDetailId() == null ? null : memory.getMemoryDetailId())
+                        memory.getMemoryDetail().getId() == null
+                                ? null
+                                : memory.getMemoryDetail().getId())
                 .item(getItemFromMemoryDetail(memory))
                 .heartRate(getHeartRateFromMemoryDetail(memory))
                 .pace(getPaceFromMemoryDetail(memory))
@@ -56,20 +57,28 @@ public class TimelineServiceImpl implements TimelineService {
                 .build();
     }
 
-    private String getItemFromMemoryDetail(MemoryDto memory) {
-        return memory.getItem() == null ? null : memory.getItem();
+    private String getItemFromMemoryDetail(Memory memory) {
+        return memory.getMemoryDetail().getItem() == null
+                ? null
+                : memory.getMemoryDetail().getItem();
     }
 
-    private Short getHeartRateFromMemoryDetail(MemoryDto memory) {
-        return memory.getHeartRate() == null ? null : memory.getHeartRate();
+    private Short getHeartRateFromMemoryDetail(Memory memory) {
+        return memory.getMemoryDetail().getHeartRate() == null
+                ? null
+                : memory.getMemoryDetail().getHeartRate();
     }
 
-    private String getPaceFromMemoryDetail(MemoryDto memory) {
-        return memory.getPace() == null ? null : localTimeToString(memory.getPace());
+    private String getPaceFromMemoryDetail(Memory memory) {
+        return memory.getMemoryDetail().getPace() == null
+                ? null
+                : localTimeToString(memory.getMemoryDetail().getPace());
     }
 
-    private Integer getKcalFromMemoryDetail(MemoryDto memory) {
-        return memory.getKcal() == null ? null : memory.getKcal();
+    private Integer getKcalFromMemoryDetail(Memory memory) {
+        return memory.getMemoryDetail().getKcal() == null
+                ? null
+                : memory.getMemoryDetail().getKcal();
     }
 
     private String localTimeToString(LocalTime time) {
@@ -79,11 +88,11 @@ public class TimelineServiceImpl implements TimelineService {
         return time.format(DateTimeFormatter.ofPattern("HH:mm"));
     }
 
-    private Integer calculateTotalMeter(List<StrokeDto> strokes, Short lane) {
+    private Integer calculateTotalMeter(List<Stroke> strokes, Short lane) {
         if (strokes == null || strokes.isEmpty()) return null;
 
         Integer totalMeter = 0;
-        for (StrokeDto stroke : strokes) {
+        for (Stroke stroke : strokes) {
             if (stroke.getMeter() != null) {
                 totalMeter += stroke.getMeter();
             } else {
@@ -94,7 +103,7 @@ public class TimelineServiceImpl implements TimelineService {
         return totalMeter;
     }
 
-    private List<StrokeResponseDto> strokeToDto(List<StrokeDto> strokes) {
+    private List<StrokeResponseDto> strokeToDto(List<Stroke> strokes) {
         if (strokes == null || strokes.isEmpty()) return null;
 
         return strokes.stream()
@@ -109,15 +118,15 @@ public class TimelineServiceImpl implements TimelineService {
                 .toList();
     }
 
-    private Short getLapsFromStroke(StrokeDto stroke) {
+    private Short getLapsFromStroke(Stroke stroke) {
         return stroke.getLaps() == null ? null : stroke.getLaps();
     }
 
-    private Integer getMeterFromStroke(StrokeDto stroke) {
+    private Integer getMeterFromStroke(Stroke stroke) {
         return stroke.getMeter() == null ? null : stroke.getMeter();
     }
 
-    private List<MemoryImagesDto> imagesToDto(List<ImageDto> images) {
+    private List<MemoryImagesDto> imagesToDto(List<Image> images) {
         if (images == null || images.isEmpty()) return null;
 
         return images.stream()

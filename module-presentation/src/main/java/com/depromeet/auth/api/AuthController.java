@@ -1,4 +1,4 @@
-package com.depromeet.auth.controller;
+package com.depromeet.auth.api;
 
 import com.depromeet.auth.dto.request.GoogleLoginRequest;
 import com.depromeet.auth.dto.request.KakaoLoginRequest;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/login")
-public class AuthController {
+public class AuthController implements AuthApi {
     private final AuthService authService;
 
     @PostMapping("/google")

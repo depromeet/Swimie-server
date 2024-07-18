@@ -1,7 +1,6 @@
 package com.depromeet.memory.mock;
 
 import com.depromeet.memory.Memory;
-import com.depromeet.memory.dto.MemoryDto;
 import com.depromeet.memory.repository.MemoryRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -44,13 +43,13 @@ public class FakeMemoryRepository implements MemoryRepository {
     }
 
     @Override
-    public Slice<MemoryDto> findAllByMemberIdAndCursorId(
+    public Slice<Memory> getSliceMemoryByMemberIdAndCursorId(
             Long memberId, Long cursorId, Pageable pageable) {
         return null;
     }
 
     @Override
-    public Slice<MemoryDto> findPrevMemoryByMemberId(
+    public Slice<Memory> findPrevMemoryByMemberId(
             Long memberId, Long cursorId, Pageable pageable, LocalDate recordAt) {
         return null;
     }

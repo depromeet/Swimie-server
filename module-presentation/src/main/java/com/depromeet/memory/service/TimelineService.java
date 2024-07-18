@@ -1,12 +1,12 @@
 package com.depromeet.memory.service;
 
-import com.depromeet.memory.dto.MemoryDto;
+import com.depromeet.memory.Memory;
 import com.depromeet.memory.dto.response.TimelineResponseDto;
 import org.springframework.data.domain.Slice;
 
 public interface TimelineService {
-    Slice<TimelineResponseDto> findTimelineByMemberIdAndCursor(
+    Slice<TimelineResponseDto> getTimelineByMemberIdAndCursor(
             Long memberId, Long cursorId, int pageSize);
 
-    TimelineResponseDto mapToTimelineResponseDto(MemoryDto memory);
+    TimelineResponseDto mapToTimelineResponseDto(Memory memory);
 }
