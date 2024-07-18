@@ -1,8 +1,17 @@
 package com.depromeet.memory.repository;
 
+import com.depromeet.image.entity.QImageEntity;
+import com.depromeet.member.entity.QMemberEntity;
 import com.depromeet.memory.Memory;
+import com.depromeet.memory.dto.ImageDto;
+import com.depromeet.memory.dto.MemoryDto;
+import com.depromeet.memory.dto.StrokeDto;
 import com.depromeet.memory.entity.MemoryEntity;
+import com.depromeet.memory.entity.QMemoryDetailEntity;
 import com.depromeet.memory.entity.QMemoryEntity;
+import com.depromeet.memory.entity.QStrokeEntity;
+import com.depromeet.pool.entity.QPoolEntity;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
@@ -10,11 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class MemoryRepositoryImpl implements MemoryRepository {
@@ -34,64 +45,148 @@ public class MemoryRepositoryImpl implements MemoryRepository {
     }
 
     @Override
-    public Slice<Memory> findAllByMemberIdAndCursorId(
+    public Slice<MemoryDto> findAllByMemberIdAndCursorId(
             Long memberId, Long cursorId, Pageable pageable) {
-        List<MemoryEntity> result =
+        QMemoryDetailEntity memoryDetail = QMemoryDetailEntity.memoryDetailEntity;
+        QStrokeEntity stroke = QStrokeEntity.strokeEntity;
+        QMemberEntity member = QMemberEntity.memberEntity;
+        QImageEntity image = QImageEntity.imageEntity;
+        QPoolEntity pool = QPoolEntity.poolEntity;
+        List<MemoryDto> result =
                 queryFactory
-                        .selectFrom(memory)
-                        .where(memory.member.id.eq(memberId).and(ltCursorId(cursorId, memory)))
+                        .select(
+                                Projections.constructor(
+                                        MemoryDto.class,
+                                        memory.id,
+                                        memory.member.id.as("memberId"),
+                                        pool.id.as("poolId"),
+                                        pool.name.as("poolName"),
+                                        pool.address.as("poolAddress"),
+                                        memoryDetail.id.as("memoryDetailId"),
+                                        memoryDetail.item,
+                                        memoryDetail.heartRate,
+                                        memoryDetail.pace,
+                                        memoryDetail.kcal,
+                                        Projections.list(
+                                                Projections.constructor(
+                                                        StrokeDto.class,
+                                                        stroke.id,
+                                                        stroke.name,
+                                                        stroke.laps,
+                                                        stroke.meter)),
+                                        Projections.list(
+                                                Projections.constructor(
+                                                        ImageDto.class,
+                                                        image.id,
+                                                        image.originImageName,
+                                                        image.imageName,
+                                                        image.imageUrl)),
+                                        memory.recordAt,
+                                        memory.startTime,
+                                        memory.endTime,
+                                        memory.lane,
+                                        memory.diary))
+                        .from(memory)
+                        .leftJoin(memory.member, member)
+                        .leftJoin(memory.pool, pool)
+                        .leftJoin(memory.memoryDetail, memoryDetail)
+                        .leftJoin(memory.strokes, stroke)
+                        .leftJoin(memory.images, image)
+                        .where(memory.member.id.eq(memberId).and(ltCursorId(cursorId)))
                         .limit(pageable.getPageSize() + 1)
-                        .orderBy(memory.recordAt.desc())
+                        .orderBy(memory.recordAt.desc(), memory.id.desc())
                         .fetch();
 
-        List<Memory> content = toModel(result);
-
         boolean hasPrev = false;
-        if (content.size() > pageable.getPageSize()) {
-            content = new ArrayList<>(content); // immutable -> modifiedList
-            content.removeLast();
+        if (result.size() > pageable.getPageSize()) {
+            result = new ArrayList<>(result); // immutable -> modifiedList
+            result.removeLast();
             hasPrev = true;
         }
 
-        return new SliceImpl<>(content, pageable, hasPrev);
+        return new SliceImpl<>(result, pageable, hasPrev);
     }
 
     @Override
-    public Slice<Memory> findPrevMemoryByMemberId(
+    public Slice<MemoryDto> findPrevMemoryByMemberId(
             Long memberId, Long cursorId, Pageable pageable, LocalDate recordAt) {
-        List<MemoryEntity> result =
+        QMemoryDetailEntity memoryDetail = QMemoryDetailEntity.memoryDetailEntity;
+        QStrokeEntity stroke = QStrokeEntity.strokeEntity;
+        QMemberEntity member = QMemberEntity.memberEntity;
+        QImageEntity image = QImageEntity.imageEntity;
+        QPoolEntity pool = QPoolEntity.poolEntity;
+
+        List<MemoryDto> result =
                 queryFactory
-                        .selectFrom(memory)
+                        .select(
+                                Projections.constructor(
+                                        MemoryDto.class,
+                                        memory.id,
+                                        memory.member.id.as("memberId"),
+                                        pool.id.as("poolId"),
+                                        pool.name.as("poolName"),
+                                        pool.address.as("poolAddress"),
+                                        memoryDetail.id.as("memoryDetailId"),
+                                        memoryDetail.item,
+                                        memoryDetail.heartRate,
+                                        memoryDetail.pace,
+                                        memoryDetail.kcal,
+                                        Projections.list(
+                                                Projections.constructor(
+                                                                StrokeDto.class,
+                                                                stroke.id,
+                                                                stroke.name,
+                                                                stroke.laps,
+                                                                stroke.meter)
+                                                        .as("strokes")),
+                                        Projections.list(
+                                                Projections.constructor(
+                                                                ImageDto.class,
+                                                                image.id,
+                                                                image.originImageName,
+                                                                image.imageName,
+                                                                image.imageUrl)
+                                                        .as("images")),
+                                        memory.recordAt,
+                                        memory.startTime,
+                                        memory.endTime,
+                                        memory.lane,
+                                        memory.diary))
+                        .from(memory)
+                        .leftJoin(memory.member, member)
+                        .leftJoin(memory.pool, pool)
+                        .leftJoin(memory.memoryDetail, memoryDetail)
+                        .leftJoin(memory.strokes, stroke)
+                        .leftJoin(memory.images, image)
+                        .on(image.memory.id.eq(memory.id))
                         .where(
                                 memory.member
                                         .id
                                         .eq(memberId)
-                                        .and(ltCursorId(cursorId, memory))
-                                        .and(loeRecordAt(recordAt, memory)))
+                                        .and(ltCursorId(cursorId))
+                                        .and(loeRecordAt(recordAt)))
                         .limit(pageable.getPageSize() + 1)
                         .orderBy(memory.recordAt.desc())
                         .fetch();
 
-        List<Memory> content = toModel(result);
-
         boolean hasPrev = false;
-        if (content.size() > pageable.getPageSize()) {
-            content = new ArrayList<>(content); // immutable -> modifiedList
-            content.removeLast();
+        if (result.size() > pageable.getPageSize()) {
+            result = new ArrayList<>(result); // immutable -> modifiedList
+            result.removeLast();
             hasPrev = true;
         }
 
-        return new SliceImpl<>(content, pageable, hasPrev);
+        return new SliceImpl<>(result, pageable, hasPrev);
     }
 
-    private BooleanExpression ltCursorId(Long cursorId, QMemoryEntity memory) {
+    private BooleanExpression ltCursorId(Long cursorId) {
         if (cursorId != null) {
             return memory.id.lt(cursorId);
         }
         return null;
     }
 
-    private BooleanExpression loeRecordAt(LocalDate recordAt, QMemoryEntity memory) {
+    private BooleanExpression loeRecordAt(LocalDate recordAt) {
         if (recordAt != null) {
             return memory.recordAt.loe(recordAt);
         }
@@ -108,8 +203,8 @@ public class MemoryRepositoryImpl implements MemoryRepository {
                                 memory.member
                                         .id
                                         .eq(memberId)
-                                        .and(gtCursorId(cursorId, memory))
-                                        .and(goeRecordAt(recordAt, memory)))
+                                        .and(gtCursorId(cursorId))
+                                        .and(goeRecordAt(recordAt)))
                         .limit(pageable.getPageSize() + 1)
                         .orderBy(memory.recordAt.asc())
                         .fetch();
@@ -127,14 +222,14 @@ public class MemoryRepositoryImpl implements MemoryRepository {
         return new SliceImpl<>(content, pageable, hasNext);
     }
 
-    private BooleanExpression gtCursorId(Long cursorId, QMemoryEntity memory) {
+    private BooleanExpression gtCursorId(Long cursorId) {
         if (cursorId != null) {
             return memory.id.gt(cursorId);
         }
         return null;
     }
 
-    private BooleanExpression goeRecordAt(LocalDate recordAt, QMemoryEntity memory) {
+    private BooleanExpression goeRecordAt(LocalDate recordAt) {
         if (recordAt != null) {
             return memory.recordAt.goe(recordAt);
         }
