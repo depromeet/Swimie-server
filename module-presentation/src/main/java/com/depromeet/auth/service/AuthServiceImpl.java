@@ -2,7 +2,6 @@ package com.depromeet.auth.service;
 
 import com.depromeet.auth.dto.request.GoogleLoginRequest;
 import com.depromeet.auth.dto.request.KakaoLoginRequest;
-import com.depromeet.auth.dto.request.LoginDto;
 import com.depromeet.auth.dto.response.AccountProfileResponse;
 import com.depromeet.auth.dto.response.JwtTokenResponseDto;
 import com.depromeet.auth.dto.response.KakaoAccountProfileResponse;
@@ -10,7 +9,6 @@ import com.depromeet.auth.util.GoogleClient;
 import com.depromeet.auth.util.KakaoClient;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.member.Member;
-import com.depromeet.member.dto.request.MemberCreateDto;
 import com.depromeet.member.service.MemberService;
 import com.depromeet.type.auth.AuthErrorType;
 import lombok.RequiredArgsConstructor;
@@ -27,20 +25,6 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenService jwtTokenService;
     private final GoogleClient googleClient;
     private final KakaoClient kakaoClient;
-
-    @Deprecated
-    @Override
-    public JwtTokenResponseDto login(LoginDto loginDto) {
-        Member member = memberService.findByEmail(loginDto.email());
-
-        return jwtTokenService.generateToken(member.getId(), member.getRole());
-    }
-
-    @Deprecated
-    @Override
-    public void signUp(MemberCreateDto memberCreateDto) {
-        Member member = memberService.save(memberCreateDto);
-    }
 
     @Override
     public JwtTokenResponseDto loginByGoogle(GoogleLoginRequest request) {
@@ -62,6 +46,14 @@ public class AuthServiceImpl implements AuthService {
         AccountProfileResponse account =
                 new AccountProfileResponse(
                         profile.getId(), profile.getNickname(), profile.getEmail());
+        final Member member = memberService.findOrCreateMemberBy(account);
+        return jwtTokenService.generateToken(member.getId(), member.getRole());
+    }
+
+    @Override
+    public JwtTokenResponseDto loginForDevelop() {
+        AccountProfileResponse account =
+                new AccountProfileResponse("", "testUser", "test@gmail.com");
         final Member member = memberService.findOrCreateMemberBy(account);
         return jwtTokenService.generateToken(member.getId(), member.getRole());
     }
