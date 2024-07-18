@@ -48,4 +48,20 @@ public class Memory {
         this.lane = lane;
         this.diary = diary;
     }
+
+    public Memory update(Memory updateMemory) {
+        return Memory.builder()
+                .id(id)
+                .member(member)
+                .pool(updateMemory.getPool())
+                .memoryDetail(updateMemory.getMemoryDetail())
+                .strokes(updateMemory.getStrokes())
+                .images(images)
+                .recordAt(updateMemory.getRecordAt())
+                .startTime(updateMemory.getStartTime())
+                .endTime(updateMemory.getEndTime())
+                .lane(updateMemory.getLane())
+                .diary(updateMemory.getDiary())
+                .build();
+    }
 }

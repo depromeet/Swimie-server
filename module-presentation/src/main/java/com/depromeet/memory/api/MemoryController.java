@@ -1,10 +1,12 @@
 package com.depromeet.memory.api;
 
 import com.depromeet.dto.response.ApiResponse;
+import com.depromeet.image.service.ImageUpdateService;
 import com.depromeet.image.service.ImageUploadService;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
+import com.depromeet.memory.dto.request.MemoryUpdateRequest;
 import com.depromeet.memory.dto.response.MemoryResponse;
 import com.depromeet.memory.service.MemoryService;
 import com.depromeet.memory.service.StrokeService;
@@ -21,6 +23,7 @@ public class MemoryController implements MemoryApi {
     private final MemoryService memoryService;
     private final StrokeService strokeService;
     private final ImageUploadService imageUploadService;
+    private final ImageUpdateService imageUpdateService;
 
     @PostMapping
     public ApiResponse<?> create(@Valid @RequestBody MemoryCreateRequest memoryCreateRequest) {
@@ -32,7 +35,18 @@ public class MemoryController implements MemoryApi {
 
     @GetMapping("/{memoryId}")
     public ApiResponse<MemoryResponse> read(@PathVariable("memoryId") Long memoryId) {
-        MemoryResponse memoryResponse = memoryService.findById(memoryId);
+        MemoryResponse memoryResponse = MemoryResponse.from(memoryService.findById(memoryId));
         return ApiResponse.success(MemorySuccessType.GET_RESULT_SUCCESS, memoryResponse);
+    }
+
+    @PatchMapping("/{memoryId}")
+    public ApiResponse<MemoryResponse> update(
+            @PathVariable("memoryId") Long memoryId,
+            @RequestBody MemoryUpdateRequest memoryUpdateRequest) {
+        Memory memory = memoryService.findById(memoryId);
+        List<Stroke> stokes = strokeService.updateAll(memory, memoryUpdateRequest.getStrokes());
+        MemoryResponse memoryResponse =
+                MemoryResponse.from(memoryService.update(memoryId, memoryUpdateRequest, stokes));
+        return ApiResponse.success(MemorySuccessType.PATCH_RESULT_SUCCESS, memoryResponse);
     }
 }
