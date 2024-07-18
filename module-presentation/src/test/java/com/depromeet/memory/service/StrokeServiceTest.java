@@ -26,6 +26,7 @@ class StrokeServiceTest {
     @BeforeEach
     void init() {
         strokeRepository = new FakeStrokeRepository();
+        memoryRepository = new FakeMemoryRepository();
         strokeService = new StrokeServiceImpl(strokeRepository, memoryRepository);
     }
 

@@ -8,6 +8,7 @@ import com.depromeet.member.repository.MemberJpaRepository;
 import com.depromeet.member.repository.MemberRepositoryImpl;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.MemoryDetail;
+import com.depromeet.memory.dto.MemoryDto;
 import com.depromeet.mock.member.MockMember;
 import com.depromeet.mock.memory.MockMemory;
 import com.depromeet.mock.memory.MockMemoryDetail;
@@ -78,11 +79,11 @@ public class MemoryRepositoryTest {
     @DisplayName(value = "findAllByMemberIdAndCursor 최신 30일 데이터 recordAt Desc로 가져오는지 확인")
     @Test
     void findAllByMemberIdAndCursorTest() {
-        Slice<Memory> resultSlice =
+        Slice<MemoryDto> resultSlice =
                 memoryRepositoryImpl.findAllByMemberIdAndCursorId(member.getId(), null, pageable);
-        List<Memory> result = resultSlice.getContent();
+        List<MemoryDto> result = resultSlice.getContent();
 
-        Memory lastMemory = result.getLast();
+        MemoryDto lastMemory = result.getLast();
         assertThat(result.size()).isEqualTo(30);
         assertThat(lastMemory.getRecordAt()).isEqualTo(startRecordAt.minusDays(30));
     }
@@ -92,12 +93,12 @@ public class MemoryRepositoryTest {
     void findPrevMemoryByMemberIdTest_1() {
         LocalDate recordAt = LocalDate.of(2024, 8, 31);
 
-        Slice<Memory> resultSlice =
+        Slice<MemoryDto> resultSlice =
                 memoryRepositoryImpl.findPrevMemoryByMemberId(
                         member.getId(), null, pageable, recordAt);
-        List<Memory> result = resultSlice.getContent();
+        List<MemoryDto> result = resultSlice.getContent();
 
-        Memory lastMemory = result.getLast();
+        MemoryDto lastMemory = result.getLast();
         assertThat(result.size()).isEqualTo(30);
         assertThat(lastMemory.getRecordAt()).isEqualTo(LocalDate.of(2024, 7, 1).plusDays(30));
     }
@@ -111,18 +112,18 @@ public class MemoryRepositoryTest {
     void findPrevMemoryByMemberIdTest_2() {
         LocalDate recordAt = LocalDate.of(2024, 8, 31);
 
-        Slice<Memory> initResultSlice =
+        Slice<MemoryDto> initResultSlice =
                 memoryRepositoryImpl.findPrevMemoryByMemberId(
                         member.getId(), null, pageable, recordAt);
 
-        List<Memory> initResultSliceList = initResultSlice.getContent();
-        Memory lastDate = initResultSliceList.getLast();
+        List<MemoryDto> initResultSliceList = initResultSlice.getContent();
+        MemoryDto lastDate = initResultSliceList.getLast();
 
-        Slice<Memory> resultSlice =
+        Slice<MemoryDto> resultSlice =
                 memoryRepositoryImpl.findPrevMemoryByMemberId(
                         member.getId(), lastDate.getId(), pageable, null);
-        List<Memory> result = resultSlice.getContent();
-        List<LocalDate> resultRecordAt = result.stream().map(Memory::getRecordAt).toList();
+        List<MemoryDto> result = resultSlice.getContent();
+        List<LocalDate> resultRecordAt = result.stream().map(MemoryDto::getRecordAt).toList();
         System.out.println(resultRecordAt);
 
         assertThat(result.size()).isEqualTo(30);
@@ -138,12 +139,12 @@ public class MemoryRepositoryTest {
     void findNextMemoryByMemberIdTest_1() {
         LocalDate recordAt = LocalDate.of(2024, 8, 31);
 
-        Slice<Memory> initResultSlice =
+        Slice<MemoryDto> initResultSlice =
                 memoryRepositoryImpl.findPrevMemoryByMemberId(
                         member.getId(), null, pageable, recordAt);
 
-        List<Memory> initResultSliceList = initResultSlice.getContent();
-        Memory firstDate = initResultSliceList.getFirst();
+        List<MemoryDto> initResultSliceList = initResultSlice.getContent();
+        MemoryDto firstDate = initResultSliceList.getFirst();
 
         Slice<Memory> resultSlice =
                 memoryRepositoryImpl.findNextMemoryByMemberId(
