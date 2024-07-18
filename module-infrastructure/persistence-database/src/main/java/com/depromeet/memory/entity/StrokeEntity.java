@@ -72,6 +72,7 @@ public class StrokeEntity {
                 .meter(this.meter)
                 .build();
     }
+
     public Stroke pureToModel() {
         return Stroke.builder()
                 .id(this.id)
