@@ -11,6 +11,9 @@ public interface MemoryRepository {
 
     Optional<Memory> findById(Long memoryId);
 
+    Slice<Memory> findAllByMemberIdAndCursorId(Long memberId, Long cursorId, Pageable pageable);
+
+    // 날짜 기준 위아래 무한 스크롤 개발 중...
     Slice<Memory> findPrevMemoryByMemberId(
             Long memberId, Long cursorId, Pageable pageable, LocalDate recordAt);
 

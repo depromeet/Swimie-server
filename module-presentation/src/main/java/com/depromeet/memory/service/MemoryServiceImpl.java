@@ -38,7 +38,7 @@ public class MemoryServiceImpl implements MemoryService {
                         .orElseThrow(() -> new UnauthorizedException(MemberErrorType.NOT_FOUND));
         MemoryDetail memoryDetail = getMemoryDetail(memoryCreateRequest);
         if (memoryDetail != null) {
-            memoryDetailRepository.save(memoryDetail);
+            memoryDetail = memoryDetailRepository.save(memoryDetail);
         }
         Pool pool = null;
         if (memoryCreateRequest.getPoolId() != null) {

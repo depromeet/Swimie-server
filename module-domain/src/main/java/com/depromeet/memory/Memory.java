@@ -48,4 +48,10 @@ public class Memory {
         this.lane = lane;
         this.diary = diary;
     }
+
+    public void setStrokes(List<Stroke> strokes) {
+        if (strokes != null && !strokes.isEmpty()) {
+            this.strokes = strokes;
+        }
+    }
 }

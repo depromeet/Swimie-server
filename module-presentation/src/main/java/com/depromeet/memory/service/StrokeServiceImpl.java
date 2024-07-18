@@ -3,6 +3,7 @@ package com.depromeet.memory.service;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
 import com.depromeet.memory.dto.request.StrokeCreateRequest;
+import com.depromeet.memory.repository.MemoryRepository;
 import com.depromeet.memory.repository.StrokeRepository;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class StrokeServiceImpl implements StrokeService {
     private final StrokeRepository strokeRepository;
+    private final MemoryRepository memoryRepository;
 
     @Override
     public Stroke save(Stroke stroke) {
@@ -24,16 +26,20 @@ public class StrokeServiceImpl implements StrokeService {
         List<Stroke> result = new CopyOnWriteArrayList<>();
         strokes.forEach(
                 stroke -> {
-                    Stroke newStroke =
-                            this.save(
-                                    Stroke.builder()
-                                            .memory(memory)
-                                            .name(stroke.name())
-                                            .laps(stroke.laps())
-                                            .meter(stroke.meter())
-                                            .build());
+                    Stroke newStroke = this.save(mapToModel(memory, stroke));
                     result.add(newStroke);
                 });
+        memory.setStrokes(result);
+        memoryRepository.save(memory);
         return result;
+    }
+
+    private Stroke mapToModel(Memory memory, StrokeCreateRequest stroke) {
+        return Stroke.builder()
+                .memory(memory)
+                .name(stroke.name())
+                .laps(stroke.laps())
+                .meter(stroke.meter())
+                .build();
     }
 }

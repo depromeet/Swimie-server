@@ -34,6 +34,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 public class MemoryRepositoryTest {
 
+    private Pageable pageable;
+
     @Autowired private JPAQueryFactory queryFactory;
     @Autowired private MemoryJpaRepository memoryJpaRepository;
     private MemoryRepositoryImpl memoryRepositoryImpl;
@@ -45,9 +47,12 @@ public class MemoryRepositoryTest {
     private PoolRepositoryImpl poolRepositoryImpl;
 
     private Member member;
+    private LocalDate startRecordAt;
 
     @BeforeEach
     void setUp() {
+        pageable = getPageable();
+
         memberRepositoryImpl = new MemberRepositoryImpl(memberJpaRepository);
         memoryRepositoryImpl = new MemoryRepositoryImpl(memoryJpaRepository, queryFactory);
         memoryDetailRepositoryImpl = new MemoryDetailRepositoryImpl(memoryDetailJpaRepository);
@@ -57,7 +62,7 @@ public class MemoryRepositoryTest {
         //        Pool pool = poolRepositoryImpl.save(MockPool.mockPool());
         List<MemoryDetail> memoryDetailList = MockMemoryDetail.memoryDetailList();
 
-        LocalDate startRecordAt = LocalDate.of(2024, 7, 1);
+        startRecordAt = LocalDate.of(2024, 7, 1);
         for (int i = 0; i < 100; i++) {
             MemoryDetail memoryDetail = memoryDetailRepositoryImpl.save(memoryDetailList.get(i));
             memoryRepositoryImpl.save(
@@ -66,28 +71,88 @@ public class MemoryRepositoryTest {
         }
     }
 
+    private Pageable getPageable() {
+        return PageRequest.of(0, 30, Sort.by(Sort.Order.desc("recordAt")));
+    }
+
+    @DisplayName(value = "findAllByMemberIdAndCursor 최신 30일 데이터 recordAt Desc로 가져오는지 확인")
+    @Test
+    void findAllByMemberIdAndCursorTest() {
+        Slice<Memory> resultSlice =
+                memoryRepositoryImpl.findAllByMemberIdAndCursorId(member.getId(), null, pageable);
+        List<Memory> result = resultSlice.getContent();
+
+        Memory lastMemory = result.getLast();
+        assertThat(result.size()).isEqualTo(30);
+        assertThat(lastMemory.getRecordAt()).isEqualTo(startRecordAt.minusDays(30));
+    }
+
     @DisplayName(value = "findPrevMemoryByMemberId로 지정한 날짜 이전 30일 데이터 recordAt Desc로 가져오는지 확인")
     @Test
-    void findMemoryRecordAt() {
+    void findPrevMemoryByMemberIdTest_1() {
         LocalDate recordAt = LocalDate.of(2024, 8, 31);
 
-        Pageable pageable = PageRequest.of(0, 30, Sort.by(Sort.Order.desc("recordAt")));
         Slice<Memory> resultSlice =
                 memoryRepositoryImpl.findPrevMemoryByMemberId(
                         member.getId(), null, pageable, recordAt);
         List<Memory> result = resultSlice.getContent();
-        List<LocalDate> resultRecordAt = result.stream().map(Memory::getRecordAt).toList();
-        System.out.println(resultRecordAt);
 
         Memory lastMemory = result.getLast();
         assertThat(result.size()).isEqualTo(30);
-        assertThat(lastMemory.getRecordAt()).isEqualTo(LocalDate.of(2024, 8, 1));
+        assertThat(lastMemory.getRecordAt()).isEqualTo(LocalDate.of(2024, 7, 1).plusDays(30));
     }
 
+    @DisplayName(
+            value =
+                    """
+            지정한 날짜 이전 30일 데이터 이후 커서로 다음 데이터를 가져오고 recordAt Desc로 가져오는지 확인
+            """)
     @Test
-    void calculateExpectDate() {
+    void findPrevMemoryByMemberIdTest_2() {
         LocalDate recordAt = LocalDate.of(2024, 8, 31);
-        System.out.println(recordAt.plusDays(30)); // 9/30
-        System.out.println(recordAt.minusDays(30)); // 8/1
+
+        Slice<Memory> initResultSlice =
+                memoryRepositoryImpl.findPrevMemoryByMemberId(
+                        member.getId(), null, pageable, recordAt);
+
+        List<Memory> initResultSliceList = initResultSlice.getContent();
+        Memory lastDate = initResultSliceList.getLast();
+
+        Slice<Memory> resultSlice =
+                memoryRepositoryImpl.findPrevMemoryByMemberId(
+                        member.getId(), lastDate.getId(), pageable, null);
+        List<Memory> result = resultSlice.getContent();
+        List<LocalDate> resultRecordAt = result.stream().map(Memory::getRecordAt).toList();
+        System.out.println(resultRecordAt);
+
+        assertThat(result.size()).isEqualTo(30);
+        assertThat(result.getLast().getRecordAt()).isEqualTo(lastDate.getRecordAt().minusDays(30));
+    }
+
+    @DisplayName(
+            value =
+                    """
+            지정한 날짜 이전 30일 데이터 이후 커서로 다음 데이터를 가져오고 recordAt Desc로 가져오는지 확인
+            """)
+    @Test
+    void findNextMemoryByMemberIdTest_1() {
+        LocalDate recordAt = LocalDate.of(2024, 8, 31);
+
+        Slice<Memory> initResultSlice =
+                memoryRepositoryImpl.findPrevMemoryByMemberId(
+                        member.getId(), null, pageable, recordAt);
+
+        List<Memory> initResultSliceList = initResultSlice.getContent();
+        Memory firstDate = initResultSliceList.getFirst();
+
+        Slice<Memory> resultSlice =
+                memoryRepositoryImpl.findNextMemoryByMemberId(
+                        member.getId(), firstDate.getId(), pageable, null);
+        List<Memory> result = resultSlice.getContent();
+        List<LocalDate> resultRecordAt = result.stream().map(Memory::getRecordAt).toList();
+        System.out.println(resultRecordAt);
+
+        assertThat(result.size()).isEqualTo(30);
+        assertThat(result.getFirst().getRecordAt()).isEqualTo(firstDate.getRecordAt().plusDays(30));
     }
 }

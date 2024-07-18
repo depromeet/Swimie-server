@@ -43,6 +43,12 @@ public class FakeMemoryRepository implements MemoryRepository {
     }
 
     @Override
+    public Slice<Memory> findAllByMemberIdAndCursorId(
+            Long memberId, Long cursorId, Pageable pageable) {
+        return null;
+    }
+
+    @Override
     public Slice<Memory> findPrevMemoryByMemberId(
             Long memberId, Long cursorId, Pageable pageable, LocalDate recordAt) {
         return null;
