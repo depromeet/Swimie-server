@@ -1,5 +1,7 @@
 package com.depromeet.memory.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.depromeet.member.Member;
 import com.depromeet.member.MemberRole;
 import com.depromeet.memory.Memory;
@@ -18,22 +20,21 @@ import org.junit.jupiter.api.Test;
 public class TimelineServiceTest {
     private FakeMemoryRepository memoryRepository;
     private FakeMemoryDetailRepository memoryDetailRepository;
-
     private FakeMemberRepository memberRepository;
     private FakeAuthorizationUtil authorizationUtil;
-
     private FakePoolRepository poolRepository;
-
     private MemoryService memoryService;
-
     private FakeStrokeRepository strokeRepository;
     private StrokeService strokeService;
-
     private TimelineService timelineService;
 
     private Long userId = 1L; // 로그인한 사용자 아이디 임의 지정
     private Member member1;
     private Memory memory;
+    private Integer expectedTotalMeter = 0;
+    private Short lane;
+
+    private static List<String> STROKE_NAME_LIST = List.of("자유형", "배영", "평형", "접영", "잠영");
 
     @BeforeEach
     void init() {
@@ -47,7 +48,7 @@ public class TimelineServiceTest {
         poolRepository = new FakePoolRepository();
 
         strokeRepository = new FakeStrokeRepository();
-        strokeService = new StrokeServiceImpl(strokeRepository);
+        strokeService = new StrokeServiceImpl(strokeRepository, memoryRepository);
 
         // member create
         member1 =
@@ -70,6 +71,7 @@ public class TimelineServiceTest {
 
         timelineService = new TimelineServiceImpl(memoryRepository);
         memory = saveMemory();
+        lane = memory.getLane();
     }
 
     Memory saveMemory() {
@@ -84,25 +86,47 @@ public class TimelineServiceTest {
                         .recordAt(LocalDate.of(2024, 7, 15))
                         .startTime(LocalTime.of(15, 0))
                         .endTime(LocalTime.of(15, 50))
-                        .strokes(saveStroke())
                         .build();
         return memoryService.save(memoryCreateRequest);
     }
 
-    List<StrokeCreateRequest> saveStroke() {
+    void saveMeterStroke() {
+        Integer meter = 50;
         List<StrokeCreateRequest> scr = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            Short laps = 2;
-            scr.add(new StrokeCreateRequest("자유형", laps, 50));
+        for (int i = 0; i < STROKE_NAME_LIST.size(); i++) {
+            scr.add(new StrokeCreateRequest(STROKE_NAME_LIST.get(i), null, meter));
+            expectedTotalMeter += meter;
         }
-        return scr;
+        strokeService.saveAll(memory, scr);
     }
 
-    @DisplayName("mapToTimelineResponseDto가 memory를 TimelineResponseDto로 변환 시키는지 테스트")
+    void saveLapsStroke() {
+        List<StrokeCreateRequest> scr = new ArrayList<>();
+        Short laps = 2;
+        for (int i = 0; i < STROKE_NAME_LIST.size(); i++) {
+            scr.add(new StrokeCreateRequest(STROKE_NAME_LIST.get(i), laps, null));
+            expectedTotalMeter += laps * lane;
+        }
+        strokeService.saveAll(memory, scr);
+    }
+
+    @DisplayName("memory -> TimelineResponseDto 변환 : stroke에 meter 저장")
     @Test
-    void mapToTimelineResponseDtoTest() {
+    void mapToTimelineResponseDtoStrokeMeterTest() {
+        saveMeterStroke();
         TimelineResponseDto result = timelineService.mapToTimelineResponseDto(memory);
 
         System.out.println(result);
+        assertThat(result.totalMeter()).isEqualTo(expectedTotalMeter);
+    }
+
+    @DisplayName("memory -> TimelineResponseDto 변환 : stroke에 meter 저장")
+    @Test
+    void mapToTimelineResponseDtoStrokeLapsTest() {
+        saveLapsStroke();
+        TimelineResponseDto result = timelineService.mapToTimelineResponseDto(memory);
+
+        System.out.println(result);
+        assertThat(result.totalMeter()).isEqualTo(expectedTotalMeter);
     }
 }
