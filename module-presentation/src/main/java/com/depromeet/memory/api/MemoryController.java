@@ -42,7 +42,7 @@ public class MemoryController implements MemoryApi {
     @PatchMapping("/{memoryId}")
     public ApiResponse<MemoryResponse> update(
             @PathVariable("memoryId") Long memoryId,
-            @RequestBody MemoryUpdateRequest memoryUpdateRequest) {
+            @Valid @RequestBody MemoryUpdateRequest memoryUpdateRequest) {
         Memory memory = memoryService.findById(memoryId);
         List<Stroke> stokes = strokeService.updateAll(memory, memoryUpdateRequest.getStrokes());
         MemoryResponse memoryResponse =
