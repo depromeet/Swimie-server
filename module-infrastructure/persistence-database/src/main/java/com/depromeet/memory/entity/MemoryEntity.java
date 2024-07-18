@@ -1,8 +1,11 @@
 package com.depromeet.memory.entity;
 
+import com.depromeet.image.Image;
 import com.depromeet.image.entity.ImageEntity;
 import com.depromeet.member.entity.MemberEntity;
 import com.depromeet.memory.Memory;
+import com.depromeet.memory.MemoryDetail;
+import com.depromeet.memory.Stroke;
 import com.depromeet.pool.entity.PoolEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -89,8 +92,14 @@ public class MemoryEntity {
                         memory.getMemoryDetail() != null
                                 ? MemoryDetailEntity.from(memory.getMemoryDetail())
                                 : null)
-                .strokes(null)
-                .images(null)
+                .strokes(
+                        memory.getStrokes() != null
+                                ? memory.getStrokes().stream().map(StrokeEntity::pureFrom).toList()
+                                : null)
+                .images(
+                        memory.getImages() != null
+                                ? memory.getImages().stream().map(ImageEntity::pureFrom).toList()
+                                : null)
                 .recordAt(memory.getRecordAt())
                 .startTime(memory.getStartTime())
                 .endTime(memory.getEndTime())
@@ -104,21 +113,31 @@ public class MemoryEntity {
                 .id(this.id)
                 .member(this.member.toModel())
                 .pool(this.pool != null ? this.pool.toModel() : null)
-                .memoryDetail(this.memoryDetail != null ? this.memoryDetail.toModel() : null)
-                .strokes(
-                        this.strokes != null
-                                ? this.strokes.stream().map(StrokeEntity::toModel).toList()
-                                : null)
-                .images(
-                        this.images != null
-                                ? this.images.stream().map(ImageEntity::toModel).toList()
-                                : null)
+                .memoryDetail(getMemoryDetailOrNull())
+                .strokes(getStrokeListOrNull())
+                .images(getImageListOrNull())
                 .recordAt(this.recordAt)
                 .startTime(this.startTime)
                 .endTime(this.endTime)
                 .lane(this.lane)
                 .diary(this.diary)
                 .build();
+    }
+
+    private List<Image> getImageListOrNull() {
+        return this.images != null
+                ? this.images.stream().map(ImageEntity::pureToModel).toList()
+                : null;
+    }
+
+    private List<Stroke> getStrokeListOrNull() {
+        return this.strokes != null
+                ? this.strokes.stream().map(StrokeEntity::pureToModel).toList()
+                : null;
+    }
+
+    private MemoryDetail getMemoryDetailOrNull() {
+        return this.memoryDetail != null ? this.memoryDetail.toModel() : null;
     }
 
     public String updateDiary(String diary) {
