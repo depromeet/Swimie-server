@@ -5,6 +5,8 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,10 +35,19 @@ public class SwaggerConfig {
 
         SecurityRequirement securityRequirement = new SecurityRequirement().addList("Bearer Token");
 
+        Server productionServer = new Server();
+        productionServer.setDescription("Production Server");
+        productionServer.setUrl("https://appu.o-r.kr");
+
+        Server localServer = new Server();
+        localServer.setDescription("Local Server");
+        localServer.setUrl("http://localhost:8080");
+
         return new OpenAPI()
                 .info(info)
                 .addSecurityItem(getSecurityRequirement())
                 .components(getAuthComponent())
+                .servers(List.of(productionServer, localServer))
                 .components(new Components().addSecuritySchemes("Bearer Token", apiKey))
                 .addSecurityItem(securityRequirement);
     }
