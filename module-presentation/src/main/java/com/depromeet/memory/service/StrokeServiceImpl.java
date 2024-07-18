@@ -24,16 +24,18 @@ public class StrokeServiceImpl implements StrokeService {
         List<Stroke> result = new CopyOnWriteArrayList<>();
         strokes.forEach(
                 stroke -> {
-                    Stroke newStroke =
-                            this.save(
-                                    Stroke.builder()
-                                            .memory(memory)
-                                            .name(stroke.name())
-                                            .laps(stroke.laps())
-                                            .meter(stroke.meter())
-                                            .build());
+                    Stroke newStroke = this.save(mapToModel(memory, stroke));
                     result.add(newStroke);
                 });
         return result;
+    }
+
+    private Stroke mapToModel(Memory memory, StrokeCreateRequest stroke) {
+        return Stroke.builder()
+                .memory(memory)
+                .name(stroke.name())
+                .laps(stroke.laps())
+                .meter(stroke.meter())
+                .build();
     }
 }
