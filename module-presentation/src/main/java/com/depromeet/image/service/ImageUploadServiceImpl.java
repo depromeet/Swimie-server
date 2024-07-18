@@ -52,6 +52,7 @@ public class ImageUploadServiceImpl implements ImageUploadService {
 
     @Override
     public void addMemoryIdToImages(Memory memory, List<Long> imageIds) {
+        if (imageIds.isEmpty()) return;
         List<Image> images = imageRepository.findImageByIds(imageIds);
         for (Image image : images) {
             image.addMemoryToImage(memory);

@@ -25,7 +25,8 @@ public class ImageController implements ImageApi {
     private final ImageDeleteService imageDeleteService;
 
     @PostMapping
-    public ApiResponse<?> uploadImages(@RequestPart @NotNull List<MultipartFile> images) {
+    public ApiResponse<?> uploadImages(
+            @RequestPart(value = "images") @NotNull List<MultipartFile> images) {
         List<Long> imageIds = imageUploadService.uploadMemoryImages(images);
 
         return ApiResponse.success(UPLOAD_IMAGES_SUCCESS, imageIds);

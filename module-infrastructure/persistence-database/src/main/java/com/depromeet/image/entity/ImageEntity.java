@@ -56,10 +56,28 @@ public class ImageEntity {
                 .build();
     }
 
+    public static ImageEntity pureFrom(Image image) {
+        return ImageEntity.builder()
+                .id(image.getId())
+                .originImageName(image.getOriginImageName())
+                .imageName(image.getImageName())
+                .imageUrl(image.getImageUrl())
+                .build();
+    }
+
     public Image toModel() {
         return Image.builder()
                 .id(this.id)
                 .memory(this.memory == null ? null : this.memory.toModel())
+                .originImageName(this.originImageName)
+                .imageName(this.imageName)
+                .imageUrl(this.imageUrl)
+                .build();
+    }
+
+    public Image pureToModel() {
+        return Image.builder()
+                .id(this.id)
                 .originImageName(this.originImageName)
                 .imageName(this.imageName)
                 .imageUrl(this.imageUrl)

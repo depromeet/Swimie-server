@@ -1,10 +1,8 @@
 package com.depromeet.auth.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record GoogleAccessTokenResponse(
-        @JsonProperty("access_token") String accessToken,
-        @JsonProperty("expires_in") Integer expiresIn,
-        @JsonProperty("scope") String scope,
-        @JsonProperty("token_type") String tokenType,
-        @JsonProperty("id_token") String idToken) {}
+        String accessToken, Integer expiresIn, String scope, String tokenType, String idToken) {}
