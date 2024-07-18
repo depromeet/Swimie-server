@@ -28,4 +28,9 @@ public class FakeStrokeRepository implements StrokeRepository {
             return stroke;
         }
     }
+
+    @Override
+    public List<Stroke> findAllByMemoryId(Long memoryId) {
+        return data.stream().filter(item -> item.getMemory().getId().equals(memoryId)).toList();
+    }
 }
