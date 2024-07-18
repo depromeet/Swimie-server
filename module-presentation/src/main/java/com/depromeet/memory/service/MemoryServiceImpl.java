@@ -93,7 +93,9 @@ public class MemoryServiceImpl implements MemoryService {
                         .pace(memoryUpdateRequest.getPace())
                         .kcal(memoryUpdateRequest.getKcal())
                         .build();
-        updateMemoryDetail = memory.getMemoryDetail().update(updateMemoryDetail);
+        if (memory.getMemoryDetail() != null) {
+            updateMemoryDetail = memory.getMemoryDetail().update(updateMemoryDetail);
+        }
         memoryDetailRepository.save(updateMemoryDetail);
 
         // Pool 정보 찾기

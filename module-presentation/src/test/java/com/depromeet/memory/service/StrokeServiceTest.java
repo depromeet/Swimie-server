@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
 import com.depromeet.memory.dto.request.StrokeCreateRequest;
-import com.depromeet.memory.mock.FakeStrokeRepository;
+import com.depromeet.memory.mock.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
