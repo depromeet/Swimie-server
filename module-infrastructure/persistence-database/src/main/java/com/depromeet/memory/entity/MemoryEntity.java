@@ -91,12 +91,12 @@ public class MemoryEntity {
                                 : null)
                 .strokes(
                         memory.getStrokes() != null
-                        ? memory.getStrokes().stream().map(StrokeEntity::pureFrom).toList()
-                        : null)
+                                ? memory.getStrokes().stream().map(StrokeEntity::pureFrom).toList()
+                                : null)
                 .images(
                         memory.getImages() != null
-                        ? memory.getImages().stream().map(ImageEntity::pureFrom).toList()
-                        : null)
+                                ? memory.getImages().stream().map(ImageEntity::pureFrom).toList()
+                                : null)
                 .recordAt(memory.getRecordAt())
                 .startTime(memory.getStartTime())
                 .endTime(memory.getEndTime())
