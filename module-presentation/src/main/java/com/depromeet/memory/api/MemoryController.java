@@ -28,9 +28,6 @@ public class MemoryController implements MemoryApi {
     @PostMapping
     public ApiResponse<?> create(@Valid @RequestBody MemoryCreateRequest memoryCreateRequest) {
         Memory newMemory = memoryService.save(memoryCreateRequest);
-        if (newMemory == null) {
-            return ApiResponse.fail(new InternalServerException(MemoryErrorType.CREATE_FAILED));
-        }
         List<Stroke> strokes = strokeService.saveAll(newMemory, memoryCreateRequest.getStrokes());
         imageUploadService.addMemoryIdToImages(newMemory, memoryCreateRequest.getImageIdList());
         return ApiResponse.success(MemorySuccessType.POST_RESULT_SUCCESS);
@@ -39,10 +36,6 @@ public class MemoryController implements MemoryApi {
     @GetMapping("/{memoryId}")
     public ApiResponse<MemoryResponse> read(@PathVariable("memoryId") Long memoryId) {
         MemoryResponse memoryResponse = memoryService.findById(memoryId);
-        if (memoryResponse == null) {
-            return ApiResponse.fail(
-                    new NotFoundException(MemoryErrorType.NOT_FOUND), memoryResponse);
-        }
         return ApiResponse.success(MemorySuccessType.GET_RESULT_SUCCESS, memoryResponse);
     }
 }

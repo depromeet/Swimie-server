@@ -1,5 +1,6 @@
 package com.depromeet.memory.service;
 
+import com.depromeet.exception.InternalServerException;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.exception.UnauthorizedException;
 import com.depromeet.member.Member;
@@ -60,6 +61,9 @@ public class MemoryServiceImpl implements MemoryService {
                         .lane(memoryCreateRequest.getLane())
                         .diary(memoryCreateRequest.getDiary())
                         .build();
+        if (memory == null) {
+            throw new InternalServerException(MemoryErrorType.CREATE_FAILED);
+        }
         return memoryRepository.save(memory);
     }
 
