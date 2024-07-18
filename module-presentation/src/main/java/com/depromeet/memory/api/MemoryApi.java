@@ -5,7 +5,6 @@ import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.response.MemoryResponse;
 import com.depromeet.security.LoginMember;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,8 +22,7 @@ public interface MemoryApi {
     @Operation(summary = "타임라인 최신순 조회")
     ApiResponse<?> timeline(
             @LoginMember Long memberId,
-            @RequestParam(value = "cursorId", required = false)
-                    @Schema(name = "최초 타임라인 조회 후, 가장 아래의 memory PK 값")
-                    Long cursorId,
-            @RequestParam("size") @Schema(name = "페이지 크기") Integer size);
+            @RequestParam(value = "cursorId", required = false) Long cursorId,
+            @RequestParam(value = "recordAt", required = false) String recordAt,
+            @RequestParam(value = "size") Integer size);
 }
