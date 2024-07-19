@@ -1,7 +1,10 @@
 package com.depromeet.pool.service;
 
-import com.depromeet.pool.dto.response.PoolResponseDto;
+import com.depromeet.pool.dto.response.PoolInitialResponse;
+import com.depromeet.pool.dto.response.PoolSearchResponse;
 
 public interface PoolService {
-    PoolResponseDto findPoolsByName(String nameQuery);
+    PoolSearchResponse findPoolsByName(String nameQuery);
+
+    PoolInitialResponse getFavoriteAndSearchedPools(Long memberId);
 }

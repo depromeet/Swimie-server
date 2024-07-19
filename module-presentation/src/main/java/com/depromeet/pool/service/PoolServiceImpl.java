@@ -1,7 +1,10 @@
 package com.depromeet.pool.service;
 
+import com.depromeet.pool.FavoritePool;
 import com.depromeet.pool.Pool;
-import com.depromeet.pool.dto.response.PoolResponseDto;
+import com.depromeet.pool.PoolSearch;
+import com.depromeet.pool.dto.response.PoolInitialResponse;
+import com.depromeet.pool.dto.response.PoolSearchResponse;
 import com.depromeet.pool.repository.PoolRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +18,15 @@ public class PoolServiceImpl implements PoolService {
     private final PoolRepository poolRepository;
 
     @Override
-    public PoolResponseDto findPoolsByName(String nameQuery) {
+    public PoolSearchResponse findPoolsByName(String nameQuery) {
         List<Pool> findPools = poolRepository.findPoolsByName(nameQuery);
-        return PoolResponseDto.of(findPools);
+        return PoolSearchResponse.of(findPools);
+    }
+
+    @Override
+    public PoolInitialResponse getFavoriteAndSearchedPools(Long memberId) {
+        List<FavoritePool> favoritePools = poolRepository.findFavoritePools(memberId);
+        List<PoolSearch> searchedPools = poolRepository.findSearchedPools(memberId);
+        return PoolInitialResponse.of(favoritePools, searchedPools);
     }
 }
