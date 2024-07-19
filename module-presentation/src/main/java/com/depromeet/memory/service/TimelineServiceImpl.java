@@ -23,8 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-@Transactional
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TimelineServiceImpl implements TimelineService {
     private final MemoryRepository memoryRepository;
 
