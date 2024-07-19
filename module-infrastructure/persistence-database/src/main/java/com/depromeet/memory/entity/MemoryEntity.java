@@ -1,8 +1,11 @@
 package com.depromeet.memory.entity;
 
+import com.depromeet.image.Image;
 import com.depromeet.image.entity.ImageEntity;
 import com.depromeet.member.entity.MemberEntity;
 import com.depromeet.memory.Memory;
+import com.depromeet.memory.MemoryDetail;
+import com.depromeet.memory.Stroke;
 import com.depromeet.pool.entity.PoolEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -84,19 +87,10 @@ public class MemoryEntity {
         return MemoryEntity.builder()
                 .id(memory.getId())
                 .member(MemberEntity.from(memory.getMember()))
-                .pool(memory.getPool() != null ? PoolEntity.from(memory.getPool()) : null)
-                .memoryDetail(
-                        memory.getMemoryDetail() != null
-                                ? MemoryDetailEntity.from(memory.getMemoryDetail())
-                                : null)
-                .strokes(
-                        memory.getStrokes() != null
-                                ? memory.getStrokes().stream().map(StrokeEntity::pureFrom).toList()
-                                : null)
-                .images(
-                        memory.getImages() != null
-                                ? memory.getImages().stream().map(ImageEntity::pureFrom).toList()
-                                : null)
+                .pool(getPoolEntityOrNull(memory))
+                .memoryDetail(getMemoryDetailEntityOrNull(memory))
+                .strokes(getStrokeEntitiesOrNull(memory))
+                .images(getImageEntitiesOrNull(memory))
                 .recordAt(memory.getRecordAt())
                 .startTime(memory.getStartTime())
                 .endTime(memory.getEndTime())
@@ -105,26 +99,58 @@ public class MemoryEntity {
                 .build();
     }
 
+    private static PoolEntity getPoolEntityOrNull(Memory memory) {
+        return memory.getPool() != null ? PoolEntity.from(memory.getPool()) : null;
+    }
+
+    private static MemoryDetailEntity getMemoryDetailEntityOrNull(Memory memory) {
+        return memory.getMemoryDetail() != null
+                ? MemoryDetailEntity.from(memory.getMemoryDetail())
+                : null;
+    }
+
+    private static List<StrokeEntity> getStrokeEntitiesOrNull(Memory memory) {
+        return memory.getStrokes() != null
+                ? memory.getStrokes().stream().map(StrokeEntity::pureFrom).toList()
+                : null;
+    }
+
+    private static List<ImageEntity> getImageEntitiesOrNull(Memory memory) {
+        return memory.getImages() != null
+                ? memory.getImages().stream().map(ImageEntity::pureFrom).toList()
+                : null;
+    }
+
     public Memory toModel() {
         return Memory.builder()
                 .id(this.id)
                 .member(this.member.toModel())
                 .pool(this.pool != null ? this.pool.toModel() : null)
-                .memoryDetail(this.memoryDetail != null ? this.memoryDetail.toModel() : null)
-                .strokes(
-                        this.strokes != null
-                                ? this.strokes.stream().map(StrokeEntity::pureToModel).toList()
-                                : null)
-                .images(
-                        this.images != null
-                                ? this.images.stream().map(ImageEntity::pureToModel).toList()
-                                : null)
+                .memoryDetail(getMemoryDetailOrNull())
+                .strokes(getStrokeListOrNull())
+                .images(getImageListOrNull())
                 .recordAt(this.recordAt)
                 .startTime(this.startTime)
                 .endTime(this.endTime)
                 .lane(this.lane)
                 .diary(this.diary)
                 .build();
+    }
+
+    private List<Image> getImageListOrNull() {
+        return this.images != null
+                ? this.images.stream().map(ImageEntity::pureToModel).toList()
+                : null;
+    }
+
+    private List<Stroke> getStrokeListOrNull() {
+        return this.strokes != null
+                ? this.strokes.stream().map(StrokeEntity::pureToModel).toList()
+                : null;
+    }
+
+    private MemoryDetail getMemoryDetailOrNull() {
+        return this.memoryDetail != null ? this.memoryDetail.toModel() : null;
     }
 
     public String updateDiary(String diary) {

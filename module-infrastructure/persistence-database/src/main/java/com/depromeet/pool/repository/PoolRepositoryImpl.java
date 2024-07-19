@@ -39,4 +39,9 @@ public class PoolRepositoryImpl implements PoolRepository {
     public Optional<Pool> findById(Long poolId) {
         return poolJpaRepository.findById(poolId).map(PoolEntity::toModel);
     }
+
+    @Override
+    public Pool save(Pool pool) {
+        return poolJpaRepository.save(PoolEntity.from(pool)).toModel();
+    }
 }
