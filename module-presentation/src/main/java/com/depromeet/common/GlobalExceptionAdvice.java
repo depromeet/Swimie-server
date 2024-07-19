@@ -80,7 +80,7 @@ public class GlobalExceptionAdvice {
             final ConstraintDefinitionException ex) {
         log.error(ex.getMessage());
         return new ResponseEntity<>(
-                ApiResponse.fail(CommonErrorType.INVALID_HTTP_REQUEST, 400, ex.toString()),
+                ApiResponse.fail(CommonErrorType.VALIDATION_FAILED, 400, ex.toString()),
                 HttpStatus.BAD_REQUEST);
     }
 
@@ -89,7 +89,7 @@ public class GlobalExceptionAdvice {
             final ConstraintViolationException ex) {
         log.error(ex.getMessage());
         return new ResponseEntity<>(
-                ApiResponse.fail(CommonErrorType.INVALID_HTTP_REQUEST, 400, ex.toString()),
+                ApiResponse.fail(CommonErrorType.VALIDATION_FAILED, 400, ex.toString()),
                 HttpStatus.BAD_REQUEST);
     }
 
