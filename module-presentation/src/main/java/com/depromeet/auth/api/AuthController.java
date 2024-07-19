@@ -32,10 +32,4 @@ public class AuthController implements AuthApi {
         return ApiResponse.success(
                 AuthSuccessType.LOGIN_SUCCESS, authService.loginByKakao(request));
     }
-
-    // 테스트 시 JWT 토큰을 있도록 함
-    @PostMapping("/test")
-    public ApiResponse<JwtTokenResponseDto> loginForDevelop() {
-        return ApiResponse.success(AuthSuccessType.LOGIN_SUCCESS, authService.loginForDevelop());
-    }
 }

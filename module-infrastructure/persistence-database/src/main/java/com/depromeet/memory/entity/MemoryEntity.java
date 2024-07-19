@@ -87,25 +87,38 @@ public class MemoryEntity {
         return MemoryEntity.builder()
                 .id(memory.getId())
                 .member(MemberEntity.from(memory.getMember()))
-                .pool(memory.getPool() != null ? PoolEntity.from(memory.getPool()) : null)
-                .memoryDetail(
-                        memory.getMemoryDetail() != null
-                                ? MemoryDetailEntity.from(memory.getMemoryDetail())
-                                : null)
-                .strokes(
-                        memory.getStrokes() != null
-                                ? memory.getStrokes().stream().map(StrokeEntity::pureFrom).toList()
-                                : null)
-                .images(
-                        memory.getImages() != null
-                                ? memory.getImages().stream().map(ImageEntity::pureFrom).toList()
-                                : null)
+                .pool(getPoolEntityOrNull(memory))
+                .memoryDetail(getMemoryDetailEntityOrNull(memory))
+                .strokes(getStrokeEntitiesOrNull(memory))
+                .images(getImageEntitiesOrNull(memory))
                 .recordAt(memory.getRecordAt())
                 .startTime(memory.getStartTime())
                 .endTime(memory.getEndTime())
                 .lane(memory.getLane())
                 .diary(memory.getDiary())
                 .build();
+    }
+
+    private static PoolEntity getPoolEntityOrNull(Memory memory) {
+        return memory.getPool() != null ? PoolEntity.from(memory.getPool()) : null;
+    }
+
+    private static MemoryDetailEntity getMemoryDetailEntityOrNull(Memory memory) {
+        return memory.getMemoryDetail() != null
+                ? MemoryDetailEntity.from(memory.getMemoryDetail())
+                : null;
+    }
+
+    private static List<StrokeEntity> getStrokeEntitiesOrNull(Memory memory) {
+        return memory.getStrokes() != null
+                ? memory.getStrokes().stream().map(StrokeEntity::pureFrom).toList()
+                : null;
+    }
+
+    private static List<ImageEntity> getImageEntitiesOrNull(Memory memory) {
+        return memory.getImages() != null
+                ? memory.getImages().stream().map(ImageEntity::pureFrom).toList()
+                : null;
     }
 
     public Memory toModel() {

@@ -1,5 +1,6 @@
 package com.depromeet.memory.service;
 
+import com.depromeet.dto.response.CustomSliceResponse;
 import com.depromeet.image.Image;
 import com.depromeet.image.dto.response.MemoryImagesDto;
 import com.depromeet.memory.Memory;
@@ -28,21 +29,23 @@ public class TimelineServiceImpl implements TimelineService {
     private final MemoryRepository memoryRepository;
 
     @Override
-    public Slice<TimelineResponseDto> getTimelineByMemberIdAndCursor(
+    public CustomSliceResponse<?> getTimelineByMemberIdAndCursor(
             Long memberId, Long cursorId, String recordAt, int pageSize) {
         LocalDate recordAtLocalDate = null;
         if (recordAt != null && !recordAt.trim().isEmpty()) {
-            recordAtLocalDate =
-                    LocalDate.parse(recordAt, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            recordAtLocalDate = LocalDate.parse(recordAt);
         }
 
         Pageable pageable = PageRequest.of(0, pageSize, Sort.by(Sort.Order.desc("recordAt")));
         Slice<Memory> memories =
                 memoryRepository.getSliceMemoryByMemberIdAndCursorId(
                         memberId, cursorId, recordAtLocalDate, pageable);
-        return memories.map(this::mapToTimelineResponseDto);
+
+        Slice<TimelineResponseDto> result = memories.map(this::mapToTimelineResponseDto);
+        return mapToCustomSliceResponse(result);
     }
 
+    @Override
     public TimelineResponseDto mapToTimelineResponseDto(Memory memory) {
         return TimelineResponseDto.builder()
                 .memoryId(memory.getId())
@@ -53,9 +56,9 @@ public class TimelineServiceImpl implements TimelineService {
                 .diary(memory.getDiary())
                 .totalMeter(calculateTotalMeter(memory.getStrokes(), memory.getLane()))
                 .memoryDetailId(
-                        memory.getMemoryDetail().getId() == null
-                                ? null
-                                : memory.getMemoryDetail().getId())
+                        memory.getMemoryDetail().getId() != null
+                                ? memory.getMemoryDetail().getId()
+                                : null)
                 .item(getItemFromMemoryDetail(memory))
                 .heartRate(getHeartRateFromMemoryDetail(memory))
                 .pace(getPaceFromMemoryDetail(memory))
@@ -66,15 +69,15 @@ public class TimelineServiceImpl implements TimelineService {
     }
 
     private String getItemFromMemoryDetail(Memory memory) {
-        return memory.getMemoryDetail().getItem() == null
-                ? null
-                : memory.getMemoryDetail().getItem();
+        return memory.getMemoryDetail().getItem() != null
+                ? memory.getMemoryDetail().getItem()
+                : null;
     }
 
     private Short getHeartRateFromMemoryDetail(Memory memory) {
-        return memory.getMemoryDetail().getHeartRate() == null
-                ? null
-                : memory.getMemoryDetail().getHeartRate();
+        return memory.getMemoryDetail().getHeartRate() != null
+                ? memory.getMemoryDetail().getHeartRate()
+                : null;
     }
 
     private String getPaceFromMemoryDetail(Memory memory) {
@@ -84,9 +87,9 @@ public class TimelineServiceImpl implements TimelineService {
     }
 
     private Integer getKcalFromMemoryDetail(Memory memory) {
-        return memory.getMemoryDetail().getKcal() == null
-                ? null
-                : memory.getMemoryDetail().getKcal();
+        return memory.getMemoryDetail().getKcal() != null
+                ? memory.getMemoryDetail().getKcal()
+                : null;
     }
 
     private String localTimeToString(LocalTime time) {
@@ -127,11 +130,11 @@ public class TimelineServiceImpl implements TimelineService {
     }
 
     private Short getLapsFromStroke(Stroke stroke) {
-        return stroke.getLaps() == null ? null : stroke.getLaps();
+        return stroke.getLaps() != null ? stroke.getLaps() : null;
     }
 
     private Integer getMeterFromStroke(Stroke stroke) {
-        return stroke.getMeter() == null ? null : stroke.getMeter();
+        return stroke.getMeter() != null ? stroke.getMeter() : null;
     }
 
     private List<MemoryImagesDto> imagesToDto(List<Image> images) {
@@ -147,5 +150,18 @@ public class TimelineServiceImpl implements TimelineService {
                                         .url(image.getImageUrl())
                                         .build())
                 .toList();
+    }
+
+    private static CustomSliceResponse<?> mapToCustomSliceResponse(
+            Slice<TimelineResponseDto> result) {
+        List<TimelineResponseDto> content = result.getContent();
+
+        return CustomSliceResponse.builder()
+                .content(content)
+                .pageSize(result.getSize())
+                .pageNumber(result.getNumber())
+                .hasPrevious(result.hasPrevious())
+                .hasNext(result.hasNext())
+                .build();
     }
 }

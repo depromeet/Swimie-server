@@ -7,7 +7,6 @@ import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.response.MemoryResponse;
-import com.depromeet.memory.dto.response.TimelineResponseDto;
 import com.depromeet.memory.service.MemoryService;
 import com.depromeet.memory.service.StrokeService;
 import com.depromeet.memory.service.TimelineService;
@@ -16,7 +15,6 @@ import com.depromeet.type.memory.MemorySuccessType;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Slice;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -48,18 +46,8 @@ public class MemoryController implements MemoryApi {
             @RequestParam(value = "cursorId", required = false) Long cursorId,
             @RequestParam(value = "recordAt", required = false) String recordAt,
             @RequestParam(value = "size") Integer size) {
-        Slice<TimelineResponseDto> timelines =
+        CustomSliceResponse<?> result =
                 timelineService.getTimelineByMemberIdAndCursor(memberId, cursorId, recordAt, size);
-        List<TimelineResponseDto> content = timelines.getContent();
-
-        CustomSliceResponse<?> response =
-                CustomSliceResponse.builder()
-                        .content(content)
-                        .pageSize(timelines.getSize())
-                        .pageNumber(timelines.getNumber())
-                        .hasPrevious(timelines.hasPrevious())
-                        .hasNext(timelines.hasNext())
-                        .build();
-        return ApiResponse.success(MemorySuccessType.GET_TIMELINE_SUCCESS, response);
+        return ApiResponse.success(MemorySuccessType.GET_TIMELINE_SUCCESS, result);
     }
 }

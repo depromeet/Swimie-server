@@ -49,12 +49,4 @@ public class AuthServiceImpl implements AuthService {
         final Member member = memberService.findOrCreateMemberBy(account);
         return jwtTokenService.generateToken(member.getId(), member.getRole());
     }
-
-    @Override
-    public JwtTokenResponseDto loginForDevelop() {
-        AccountProfileResponse account =
-                new AccountProfileResponse("", "testUser", "test@gmail.com");
-        final Member member = memberService.findOrCreateMemberBy(account);
-        return jwtTokenService.generateToken(member.getId(), member.getRole());
-    }
 }

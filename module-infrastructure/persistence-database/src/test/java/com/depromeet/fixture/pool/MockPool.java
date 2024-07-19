@@ -1,4 +1,4 @@
-package com.depromeet.mock.pool;
+package com.depromeet.fixture.pool;
 
 import com.depromeet.pool.Pool;
 

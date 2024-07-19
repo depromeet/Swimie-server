@@ -41,7 +41,11 @@ public class MemoryRepositoryImpl implements MemoryRepository {
         List<MemoryEntity> result =
                 queryFactory
                         .selectFrom(memory)
-                        .where(memory.member.id.eq(memberId).and(ltCursorId(cursorId, recordAt)))
+                        .where(
+                                memory.member
+                                        .id
+                                        .eq(memberId)
+                                        .and(ltCursorIdOrRecordAt(cursorId, recordAt)))
                         .limit(pageable.getPageSize() + 1)
                         .orderBy(memory.recordAt.desc(), memory.id.desc())
                         .fetch();
@@ -74,7 +78,7 @@ public class MemoryRepositoryImpl implements MemoryRepository {
                                 memory.member
                                         .id
                                         .eq(memberId)
-                                        .and(ltCursorId(cursorId, cursorRecordAt))
+                                        .and(ltCursorIdOrRecordAt(cursorId, cursorRecordAt))
                                         .and(loeRecordAt(recordAt)))
                         .limit(pageable.getPageSize() + 1)
                         .orderBy(memory.recordAt.desc())
@@ -89,22 +93,6 @@ public class MemoryRepositoryImpl implements MemoryRepository {
         }
 
         return new SliceImpl<>(content, pageable, hasPrev);
-    }
-
-    private BooleanExpression ltCursorId(Long cursorId, LocalDate recordAt) {
-        if (cursorId != null && recordAt != null) {
-            return memory.recordAt
-                    .lt(recordAt)
-                    .or(memory.recordAt.eq(recordAt).and(memory.id.lt(cursorId)));
-        }
-        return null;
-    }
-
-    private BooleanExpression loeRecordAt(LocalDate recordAt) {
-        if (recordAt != null) {
-            return memory.recordAt.loe(recordAt);
-        }
-        return null;
     }
 
     @Override
@@ -134,6 +122,22 @@ public class MemoryRepositoryImpl implements MemoryRepository {
         content = content.reversed();
 
         return new SliceImpl<>(content, pageable, hasNext);
+    }
+
+    private BooleanExpression ltCursorIdOrRecordAt(Long cursorId, LocalDate recordAt) {
+        if (cursorId == null || recordAt == null) {
+            return null;
+        }
+        return memory.recordAt
+                .lt(recordAt)
+                .or(memory.recordAt.eq(recordAt).and(memory.id.lt(cursorId)));
+    }
+
+    private BooleanExpression loeRecordAt(LocalDate recordAt) {
+        if (recordAt == null) {
+            return null;
+        }
+        return memory.recordAt.loe(recordAt);
     }
 
     private BooleanExpression gtCursorId(Long cursorId) {

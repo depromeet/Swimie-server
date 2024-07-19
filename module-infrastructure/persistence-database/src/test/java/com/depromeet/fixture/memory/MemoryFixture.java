@@ -1,4 +1,4 @@
-package com.depromeet.mock.memory;
+package com.depromeet.fixture.memory;
 
 import com.depromeet.member.Member;
 import com.depromeet.memory.Memory;
@@ -7,7 +7,7 @@ import com.depromeet.pool.Pool;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class MockMemory {
+public class MemoryFixture {
     public static Memory mockMemory(
             Member member, MemoryDetail memoryDetail, Pool pool, LocalDate recordAt) {
         return Memory.builder()

@@ -1,11 +1,11 @@
-package com.depromeet.mock.memory;
+package com.depromeet.fixture.memory;
 
 import com.depromeet.memory.MemoryDetail;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MockMemoryDetail {
+public class MemoryDetailFixture {
     public static MemoryDetail mockMemoryDetail() {
         return MemoryDetail.builder()
                 .item("킥판, 오리발")

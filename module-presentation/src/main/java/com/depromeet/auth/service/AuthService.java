@@ -9,6 +9,4 @@ public interface AuthService {
     JwtTokenResponseDto loginByGoogle(GoogleLoginRequest request);
 
     JwtTokenResponseDto loginByKakao(KakaoLoginRequest request);
-
-    JwtTokenResponseDto loginForDevelop();
 }

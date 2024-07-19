@@ -3,19 +3,18 @@ package com.depromeet.memory.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.depromeet.TestQueryDslConfig;
+import com.depromeet.fixture.member.MemberFixture;
+import com.depromeet.fixture.memory.MemoryDetailFixture;
+import com.depromeet.fixture.memory.MemoryFixture;
 import com.depromeet.member.Member;
 import com.depromeet.member.repository.MemberJpaRepository;
 import com.depromeet.member.repository.MemberRepositoryImpl;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.MemoryDetail;
-import com.depromeet.mock.member.MockMember;
-import com.depromeet.mock.memory.MockMemory;
-import com.depromeet.mock.memory.MockMemoryDetail;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @Import(TestQueryDslConfig.class)
 @ExtendWith(SpringExtension.class)
 public class MemoryRepositoryTest {
-
     private Pageable pageable;
 
     @Autowired private JPAQueryFactory queryFactory;
@@ -52,14 +50,14 @@ public class MemoryRepositoryTest {
         memberRepositoryImpl = new MemberRepositoryImpl(memberJpaRepository);
         memoryRepositoryImpl = new MemoryRepositoryImpl(memoryJpaRepository, queryFactory);
         memoryDetailRepositoryImpl = new MemoryDetailRepositoryImpl(memoryDetailJpaRepository);
-        member = memberRepositoryImpl.save(MockMember.mockMember());
-        List<MemoryDetail> memoryDetailList = MockMemoryDetail.memoryDetailList();
+        member = memberRepositoryImpl.save(MemberFixture.mockMember());
+        List<MemoryDetail> memoryDetailList = MemoryDetailFixture.memoryDetailList();
 
         startRecordAt = LocalDate.of(2024, 7, 1);
         for (int i = 0; i < 100; i++) {
             MemoryDetail memoryDetail = memoryDetailRepositoryImpl.save(memoryDetailList.get(i));
             memoryRepositoryImpl.save(
-                    MockMemory.mockMemory(member, memoryDetail, null, startRecordAt));
+                    MemoryFixture.mockMemory(member, memoryDetail, null, startRecordAt));
             startRecordAt = startRecordAt.plusDays(1);
         }
     }
@@ -68,41 +66,41 @@ public class MemoryRepositoryTest {
         return PageRequest.of(0, 30, Sort.by(Sort.Order.desc("recordAt")));
     }
 
-    @DisplayName(value = "getSliceMemoryByMemberIdAndCursorId 최신 30일 데이터 recordAt Desc로 가져오는지 확인")
     @Test
-    void getSliceMemoryByMemberIdAndCursorIdByMemberIdAndCursorTest() {
+    void getSliceMemoryByMemberIdAndCursorId가_최신_30일_데이터_recordAt_Desc로_가져오는지_테스트() {
+        // when
         Slice<Memory> resultSlice =
                 memoryRepositoryImpl.getSliceMemoryByMemberIdAndCursorId(
                         member.getId(), null, null, pageable);
         List<Memory> result = resultSlice.getContent();
 
         Memory lastMemory = result.getLast();
+        // then
         assertThat(result.size()).isEqualTo(30);
         assertThat(lastMemory.getRecordAt()).isEqualTo(startRecordAt.minusDays(30));
     }
 
-    @DisplayName(value = "findPrevMemoryByMemberId로 지정한 날짜 이전 30일 데이터 recordAt Desc로 가져오는지 확인")
     @Test
-    void findPrevMemoryByMemberIdTest_1() {
+    void findPrevMemoryByMemberId로_지정한_날짜_이전_30일_recordAt_Desc로_가져오는지_테스트() {
+        // given
         LocalDate recordAt = LocalDate.of(2024, 8, 31);
 
+        // when
         Slice<Memory> resultSlice =
                 memoryRepositoryImpl.findPrevMemoryByMemberId(
                         member.getId(), null, null, pageable, recordAt);
         List<Memory> result = resultSlice.getContent();
 
         Memory lastMemory = result.getLast();
+
+        // then
         assertThat(result.size()).isEqualTo(30);
         assertThat(lastMemory.getRecordAt()).isEqualTo(LocalDate.of(2024, 7, 1).plusDays(30));
     }
 
-    @DisplayName(
-            value =
-                    """
-                            지정한 날짜 이전 30일 데이터 이후 커서로 다음 데이터를 가져오고 recordAt Desc로 가져오는지 확인
-                            """)
     @Test
-    void findPrevMemoryByMemberIdTest_2() {
+    void 최초_조회_이후_findPrevMemoryByMemberId로_다음_데이터를_가져오는지_테스트() {
+        // given
         LocalDate recordAt = LocalDate.of(2024, 8, 31);
 
         Slice<Memory> initResultSlice =
@@ -112,24 +110,20 @@ public class MemoryRepositoryTest {
         List<Memory> initResultSliceList = initResultSlice.getContent();
         Memory lastDate = initResultSliceList.getLast();
 
+        // when
         Slice<Memory> resultSlice =
                 memoryRepositoryImpl.findPrevMemoryByMemberId(
-                        member.getId(), lastDate.getId(), null, pageable, null);
+                        member.getId(), lastDate.getId(), lastDate.getRecordAt(), pageable, null);
         List<Memory> result = resultSlice.getContent();
-        List<LocalDate> resultRecordAt = result.stream().map(Memory::getRecordAt).toList();
-        System.out.println(resultRecordAt);
 
+        // then
         assertThat(result.size()).isEqualTo(30);
         assertThat(result.getLast().getRecordAt()).isEqualTo(lastDate.getRecordAt().minusDays(30));
     }
 
-    @DisplayName(
-            value =
-                    """
-                            지정한 날짜 이전 30일 데이터 이후 커서로 다음 데이터를 가져오고 recordAt Desc로 가져오는지 확인
-                            """)
     @Test
-    void findNextMemoryByMemberIdTest_1() {
+    void 최초_조회_이후_findPrevMemoryByMemberId로_다음_데이터를_가져오는지_확인() {
+        // given
         LocalDate recordAt = LocalDate.of(2024, 8, 31);
 
         Slice<Memory> initResultSlice =
@@ -139,13 +133,13 @@ public class MemoryRepositoryTest {
         List<Memory> initResultSliceList = initResultSlice.getContent();
         Memory firstDate = initResultSliceList.getFirst();
 
+        // when
         Slice<Memory> resultSlice =
                 memoryRepositoryImpl.findNextMemoryByMemberId(
                         member.getId(), firstDate.getId(), pageable, null);
         List<Memory> result = resultSlice.getContent();
-        List<LocalDate> resultRecordAt = result.stream().map(Memory::getRecordAt).toList();
-        System.out.println(resultRecordAt);
 
+        // then
         assertThat(result.size()).isEqualTo(30);
         assertThat(result.getFirst().getRecordAt()).isEqualTo(firstDate.getRecordAt().plusDays(30));
     }
