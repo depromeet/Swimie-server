@@ -96,9 +96,11 @@ public class MemoryServiceImpl implements MemoryService {
                         .build();
         if (memory.getMemoryDetail() != null) {
             Long memoryDetailId = memory.getMemoryDetail().getId();
-            updateMemoryDetail = memoryDetailRepository
-                    .update(memoryDetailId, updateMemoryDetail)
-                    .orElseThrow(() -> new NotFoundException(MemoryDetailErrorType.NOT_FOUND));
+            updateMemoryDetail =
+                    memoryDetailRepository
+                            .update(memoryDetailId, updateMemoryDetail)
+                            .orElseThrow(
+                                    () -> new NotFoundException(MemoryDetailErrorType.NOT_FOUND));
         } else {
             updateMemoryDetail = memoryDetailRepository.save(updateMemoryDetail);
         }
@@ -115,6 +117,7 @@ public class MemoryServiceImpl implements MemoryService {
         // Memory 수정
         Memory updateMemory =
                 Memory.builder()
+                        .member(memory.getMember())
                         .pool(updatePool)
                         .memoryDetail(updateMemoryDetail)
                         .strokes(strokes)
@@ -125,7 +128,8 @@ public class MemoryServiceImpl implements MemoryService {
                         .diary(memoryUpdateRequest.getDiary())
                         .build();
 
-        return memoryRepository.update(memoryId, updateMemory)
+        return memoryRepository
+                .update(memoryId, updateMemory)
                 .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND));
     }
 

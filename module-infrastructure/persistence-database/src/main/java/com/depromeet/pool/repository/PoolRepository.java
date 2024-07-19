@@ -8,4 +8,6 @@ public interface PoolRepository {
     List<Pool> findPoolsByName(String nameQuery);
 
     Optional<Pool> findById(Long poolId);
+
+    Pool save(Pool pool);
 }

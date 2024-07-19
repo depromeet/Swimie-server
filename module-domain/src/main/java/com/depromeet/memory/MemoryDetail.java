@@ -20,14 +20,4 @@ public class MemoryDetail {
         this.pace = pace;
         this.kcal = kcal;
     }
-
-    public MemoryDetail update(MemoryDetail memoryDetail) {
-        return MemoryDetail.builder()
-                .id(id)
-                .item(memoryDetail.getItem())
-                .heartRate(memoryDetail.getHeartRate())
-                .pace(memoryDetail.getPace())
-                .kcal(memoryDetail.getKcal())
-                .build();
-    }
 }

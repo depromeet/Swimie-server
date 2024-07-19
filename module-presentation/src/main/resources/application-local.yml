@@ -5,7 +5,7 @@ spring:
     import: optional:application-secret.properties
   jpa:
     hibernate:
-      ddl-auto: create # 실제 서버에서 사용시 모든 데이터가 다 날아가므로 주의
+      ddl-auto: update # 실제 서버에서 사용시 모든 데이터가 다 날아가므로 주의
     defer-datasource-initialization: false
     properties:
       hibernate:

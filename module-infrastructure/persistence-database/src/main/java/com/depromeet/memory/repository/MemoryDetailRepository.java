@@ -1,7 +1,6 @@
 package com.depromeet.memory.repository;
 
 import com.depromeet.memory.MemoryDetail;
-
 import java.util.Optional;
 
 public interface MemoryDetailRepository {

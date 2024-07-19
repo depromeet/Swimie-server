@@ -49,6 +49,12 @@ public class Memory {
         this.diary = diary;
     }
 
+    public void setStrokes(List<Stroke> strokes) {
+        if (strokes != null && !strokes.isEmpty()) {
+            this.strokes = strokes;
+        }
+    }
+
     public Memory update(Memory updateMemory) {
         return Memory.builder()
                 .id(id)
