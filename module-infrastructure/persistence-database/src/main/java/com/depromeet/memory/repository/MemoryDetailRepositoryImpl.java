@@ -19,9 +19,8 @@ public class MemoryDetailRepositoryImpl implements MemoryDetailRepository {
 
     @Override
     public Optional<MemoryDetail> update(Long id, MemoryDetail updateMemoryDetail) {
-        return memoryDetailJpaRepository.findById(id).map(entity -> {
-            entity.update(MemoryDetailEntity.from(updateMemoryDetail));
-            return entity.toModel();
-        });
+        return memoryDetailJpaRepository.findById(id).map(entity ->
+                entity.update(MemoryDetailEntity.from(updateMemoryDetail)).toModel()
+        );
     }
 }

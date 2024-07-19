@@ -61,10 +61,14 @@ public class MemoryDetailEntity {
     }
 
     public MemoryDetailEntity update(MemoryDetailEntity mde) {
-        this.item = mde.getItem();
-        this.heartRate = mde.getHeartRate();
-        this.pace = mde.getPace();
-        this.kcal = mde.getKcal();
+        if (mde.getItem() != null)
+            this.item = mde.getItem();
+        if (mde.getHeartRate() != null)
+            this.heartRate = mde.getHeartRate();
+        if (mde.getPace() != null)
+            this.pace = mde.getPace();
+        if (mde.getKcal() != null)
+            this.kcal = mde.getKcal();
         return this;
     }
 }
