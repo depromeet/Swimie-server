@@ -16,12 +16,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class MemoryServiceTest {
-    // stroke
+    // Stroke
     private FakeStrokeRepository strokeRepository;
 
     private StrokeService strokeService;
 
-    // memory
+    // Memory
     private FakeMemoryRepository memoryRepository;
     private FakeMemoryDetailRepository memoryDetailRepository;
 
@@ -37,13 +37,13 @@ class MemoryServiceTest {
 
     @BeforeEach
     void init() {
-        // dependencies
+        // Dependencies
         strokeRepository = new FakeStrokeRepository();
 
-        // stroke service
+        // Stroke service
         strokeService = new StrokeServiceImpl(strokeRepository);
 
-        // dependencies
+        // Dependencies
         memoryRepository = new FakeMemoryRepository();
         memoryDetailRepository = new FakeMemoryDetailRepository();
 
@@ -52,7 +52,7 @@ class MemoryServiceTest {
 
         poolRepository = new FakePoolRepository();
 
-        // member create
+        // Member create
         member1 =
                 Member.builder()
                         .id(userId)
@@ -62,7 +62,7 @@ class MemoryServiceTest {
                         .build();
         memberRepository.save(member1);
 
-        // memoryService
+        // MemoryService
         memoryService =
                 new MemoryServiceImpl(
                         memoryRepository,

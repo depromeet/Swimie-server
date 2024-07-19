@@ -48,12 +48,12 @@ public class StrokeServiceImpl implements StrokeService {
     @Override
     public List<Stroke> updateAll(Memory memory, List<StrokeUpdateRequest> strokes) {
         List<Stroke> beforeStrokes = memory.getStrokes();
-        // 영법이 없는 경우 패스
+
         if ((beforeStrokes == null || beforeStrokes.isEmpty())
                 && (strokes == null || strokes.isEmpty())) {
             return null;
         }
-        // 기존 저장된 영법이 없는 경우 모두 저장
+
         if (beforeStrokes == null || beforeStrokes.isEmpty()) {
             List<Stroke> result = new CopyOnWriteArrayList<>();
             strokes.forEach(
@@ -71,17 +71,13 @@ public class StrokeServiceImpl implements StrokeService {
             return result;
         }
 
-        // 업데이트 영법 목록이 없는 경우 기존 영법 전부 삭제
         if (strokes == null || strokes.isEmpty()) {
             beforeStrokes.forEach(stroke -> strokeRepository.deleteById(stroke.getId()));
             return null;
         }
 
-        // 기존 영법 Id 목록
         List<Long> originStrokeIds = beforeStrokes.stream().map(Stroke::getId).toList();
-        // 수정된 영법 Id 목록
         List<Long> updateStrokeIds = strokes.stream().map(StrokeUpdateRequest::id).toList();
-        // 중복되는 Id 목록
         List<Long> existStrokeIds =
                 originStrokeIds.stream()
                         .filter(id -> updateStrokeIds.stream().anyMatch(Predicate.isEqual(id)))
@@ -89,14 +85,12 @@ public class StrokeServiceImpl implements StrokeService {
         beforeStrokes.forEach(
                 stroke -> {
                     if (!existStrokeIds.contains(stroke.getId())) {
-                        // 수정된 영법에 남아있지 않으면 지운다
                         strokeRepository.deleteById(stroke.getId());
                     }
                 });
         strokes.forEach(
                 stroke -> {
                     if (stroke.id() != null) {
-                        // 수정된 영법이면 업데이트한다
                         Stroke updateStroke =
                                 Stroke.builder()
                                         .id(stroke.id())
@@ -107,7 +101,6 @@ public class StrokeServiceImpl implements StrokeService {
                                         .build();
                         strokeRepository.save(updateStroke);
                     } else {
-                        // 새로운 영법이면 저장한다
                         Stroke updateStroke =
                                 Stroke.builder()
                                         .memory(memory)
