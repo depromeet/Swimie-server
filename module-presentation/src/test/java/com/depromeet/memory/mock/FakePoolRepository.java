@@ -43,15 +43,20 @@ public class FakePoolRepository implements PoolRepository {
     }
 
     @Override
-    public FavoritePool saveFavoritePool(FavoritePool favoritePool) {
-        return null;
-    }
-
-    @Override
     public PoolSearch savePoolSearch(PoolSearch poolSearch) {
         return null;
     }
 
     @Override
-    public void removeFavorite(FavoritePool favoritePool) {}
+    public FavoritePool saveFavoritePool(FavoritePool favoritePool) {
+        return null;
+    }
+
+    @Override
+    public boolean existsFavoritePool(FavoritePool favoritePool) {
+        return false;
+    }
+
+    @Override
+    public void deleteFavoritePool(FavoritePool favoritePool) {}
 }

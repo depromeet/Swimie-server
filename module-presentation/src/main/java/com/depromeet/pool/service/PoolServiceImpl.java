@@ -16,10 +16,12 @@ import com.depromeet.type.member.MemberErrorType;
 import com.depromeet.type.pool.PoolErrorType;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -42,24 +44,17 @@ public class PoolServiceImpl implements PoolService {
 
     @Override
     @Transactional
-    public String createFavoritePool(Long memberId, FavoritePoolCreateRequest request) {
+    public String putFavoritePool(Long memberId, FavoritePoolCreateRequest request) {
         Member member = getMember(memberId);
         Pool pool = getPool(request.poolId());
-        FavoritePool favoritePool =
-                poolRepository.saveFavoritePool(createFavoritePool(member, pool));
+        FavoritePool favoritePool = createFavoritePool(member, pool);
 
-        return favoritePool.getId().toString();
-    }
-
-    @Override
-    @Transactional
-    public void removeFavoritePool(Long memberId, Long favoritePoolId) {
-        Member member = getMember(memberId);
-        FavoritePool favoritePool = getFavoritePool(favoritePoolId);
-
-        validateOwnerOfFavorite(member.getId(), favoritePool.getMember().getId());
-
-        poolRepository.removeFavorite(favoritePool);
+        // 여기서 삭제 로직
+        if (poolRepository.existsFavoritePool(favoritePool)) {
+            poolRepository.deleteFavoritePool(favoritePool);
+            return null;
+        }
+        return poolRepository.saveFavoritePool(favoritePool).getId().toString();
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.depromeet.pool.repository;
 
 import static com.depromeet.pool.entity.QPoolEntity.*;
 
+import com.depromeet.member.entity.MemberEntity;
 import com.depromeet.pool.FavoritePool;
 import com.depromeet.pool.Pool;
 import com.depromeet.pool.PoolSearch;
@@ -18,10 +19,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class PoolRepositoryImpl implements PoolRepository {
-    private final PoolJpaRepository poolJpaRepository;
-    private final FavoritePoolJpaRepository favoritePoolJpaRepository;
-    private final PoolSearchJpaRepository poolSearchJpaRepository;
     private final JPAQueryFactory queryFactory;
+    private final PoolJpaRepository poolJpaRepository;
+    private final PoolSearchJpaRepository poolSearchJpaRepository;
+    private final FavoritePoolJpaRepository favoritePoolJpaRepository;
 
     @Override
     public List<Pool> findPoolsByName(String nameQuery) {
@@ -70,20 +71,30 @@ public class PoolRepositoryImpl implements PoolRepository {
     }
 
     @Override
-    public FavoritePool saveFavoritePool(FavoritePool favoritePool) {
-        FavoritePoolEntity favoritePoolEntity = FavoritePoolEntity.from(favoritePool);
-        return favoritePoolJpaRepository.save(favoritePoolEntity).toModel();
-    }
-
-    @Override
     public PoolSearch savePoolSearch(PoolSearch poolSearch) {
         PoolSearchEntity poolSearchEntity = PoolSearchEntity.from(poolSearch);
         return poolSearchJpaRepository.save(poolSearchEntity).toModel();
     }
 
     @Override
-    public void removeFavorite(FavoritePool favoritePool) {
+    public FavoritePool saveFavoritePool(FavoritePool favoritePool) {
         FavoritePoolEntity favoritePoolEntity = FavoritePoolEntity.from(favoritePool);
-        favoritePoolJpaRepository.delete(favoritePoolEntity);
+        return favoritePoolJpaRepository.save(favoritePoolEntity).toModel();
+    }
+
+    @Override
+    public boolean existsFavoritePool(FavoritePool favoritePool) {
+        FavoritePoolEntity favoritePoolEntity = FavoritePoolEntity.from(favoritePool);
+        Long memberId = favoritePoolEntity.getMember().getId();
+        Long poolId = favoritePoolEntity.getPool().getId();
+        return favoritePoolJpaRepository.existsByMemberIdAndPoolId(memberId, poolId);
+    }
+
+    @Override
+    public void deleteFavoritePool(FavoritePool favoritePool) {
+        FavoritePoolEntity favoritePoolEntity = FavoritePoolEntity.from(favoritePool);
+        MemberEntity member = favoritePoolEntity.getMember();
+        PoolEntity pool = favoritePoolEntity.getPool();
+        favoritePoolJpaRepository.deleteByMemberAndPool(member, pool);
     }
 }

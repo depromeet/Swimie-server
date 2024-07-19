@@ -10,9 +10,7 @@ public interface PoolService {
 
     PoolInitialResponse getFavoriteAndSearchedPools(Long memberId);
 
-    String createFavoritePool(Long memberId, FavoritePoolCreateRequest request);
-
-    void removeFavoritePool(Long memberId, Long favoritePoolId);
+    String putFavoritePool(Long memberId, FavoritePoolCreateRequest request);
 
     String createSearchLog(Member member, Long poolId);
 }

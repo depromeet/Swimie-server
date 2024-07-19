@@ -19,9 +19,11 @@ public interface PoolRepository {
 
     Pool save(Pool pool);
 
-    FavoritePool saveFavoritePool(FavoritePool favoritePool);
-
     PoolSearch savePoolSearch(PoolSearch poolSearch);
 
-    void removeFavorite(FavoritePool favoritePool);
+    FavoritePool saveFavoritePool(FavoritePool favoritePool);
+
+    boolean existsFavoritePool(FavoritePool favoritePool);
+
+    void deleteFavoritePool(FavoritePool favoritePool);
 }
