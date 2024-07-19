@@ -1,5 +1,6 @@
 package com.depromeet.pool.service;
 
+import com.depromeet.member.Member;
 import com.depromeet.pool.dto.request.FavoritePoolCreateRequest;
 import com.depromeet.pool.dto.response.PoolInitialResponse;
 import com.depromeet.pool.dto.response.PoolSearchResponse;
@@ -12,4 +13,6 @@ public interface PoolService {
     String createFavoritePool(Long memberId, FavoritePoolCreateRequest request);
 
     void removeFavoritePool(Long memberId, Long favoritePoolId);
+
+    String createSearchLog(Member member, Long poolId);
 }

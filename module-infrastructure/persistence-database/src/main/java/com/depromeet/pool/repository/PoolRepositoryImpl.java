@@ -76,6 +76,12 @@ public class PoolRepositoryImpl implements PoolRepository {
     }
 
     @Override
+    public PoolSearch savePoolSearch(PoolSearch poolSearch) {
+        PoolSearchEntity poolSearchEntity = PoolSearchEntity.from(poolSearch);
+        return poolSearchJpaRepository.save(poolSearchEntity).toModel();
+    }
+
+    @Override
     public void removeFavorite(FavoritePool favoritePool) {
         FavoritePoolEntity favoritePoolEntity = FavoritePoolEntity.from(favoritePool);
         favoritePoolJpaRepository.delete(favoritePoolEntity);

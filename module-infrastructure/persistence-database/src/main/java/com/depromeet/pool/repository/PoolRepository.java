@@ -21,5 +21,7 @@ public interface PoolRepository {
 
     FavoritePool saveFavoritePool(FavoritePool favoritePool);
 
+    PoolSearch savePoolSearch(PoolSearch poolSearch);
+
     void removeFavorite(FavoritePool favoritePool);
 }

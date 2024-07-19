@@ -17,6 +17,7 @@ import com.depromeet.type.pool.PoolErrorType;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -61,8 +62,22 @@ public class PoolServiceImpl implements PoolService {
         poolRepository.removeFavorite(favoritePool);
     }
 
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public String createSearchLog(Member member, Long poolId) {
+        Pool pool = getPool(poolId);
+        PoolSearch poolSearch = createPoolSearch(member, pool);
+        PoolSearch savedPoolSearch = poolRepository.savePoolSearch(poolSearch);
+
+        return savedPoolSearch.getId().toString();
+    }
+
     private FavoritePool createFavoritePool(Member member, Pool pool) {
         return FavoritePool.builder().member(member).pool(pool).build();
+    }
+
+    private PoolSearch createPoolSearch(Member member, Pool pool) {
+        return PoolSearch.builder().member(member).pool(pool).build();
     }
 
     private Member getMember(Long memberId) {

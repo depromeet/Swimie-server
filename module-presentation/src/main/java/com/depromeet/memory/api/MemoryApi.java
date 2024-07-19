@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Tag(name = "수영 기록(Memory)")
 public interface MemoryApi {
     @Operation(summary = "수영 기록 저장")
-    ApiResponse<?> create(@Valid @RequestBody MemoryCreateRequest memoryCreateRequest);
+    ApiResponse<?> create(
+            @LoginMember Long memberId,
+            @Valid @RequestBody MemoryCreateRequest memoryCreateRequest);
 
     @Operation(summary = "수영 기록 단일 조회")
     ApiResponse<MemoryResponse> read(@PathVariable("memoryId") Long memoryId);
