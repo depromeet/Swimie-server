@@ -124,8 +124,9 @@ public class MemoryServiceImpl implements MemoryService {
                         .lane(memoryUpdateRequest.getLane())
                         .diary(memoryUpdateRequest.getDiary())
                         .build();
-        memory = memory.update(updateMemory);
-        return memoryRepository.save(memory);
+
+        return memoryRepository.update(memoryId, updateMemory)
+                .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND));
     }
 
     private void validateMemoryMemberMismatch(Memory memory) {

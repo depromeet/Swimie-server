@@ -7,4 +7,6 @@ public interface MemoryRepository {
     Memory save(Memory memory);
 
     Optional<Memory> findById(Long memoryId);
+
+    Optional<Memory> update(Long memoryId, Memory memoryUpdate);
 }

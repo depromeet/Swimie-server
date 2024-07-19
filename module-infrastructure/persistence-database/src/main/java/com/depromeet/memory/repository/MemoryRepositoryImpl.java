@@ -20,4 +20,11 @@ public class MemoryRepositoryImpl implements MemoryRepository {
     public Optional<Memory> findById(Long memoryId) {
         return memoryJpaRepository.findById(memoryId).map(MemoryEntity::toModel);
     }
+
+    @Override
+    public Optional<Memory> update(Long memoryId, Memory memoryUpdate) {
+        return memoryJpaRepository.findById(memoryId).map(entity ->
+                entity.update(MemoryEntity.from(memoryUpdate)).toModel()
+        );
+    }
 }
