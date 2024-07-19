@@ -152,8 +152,7 @@ public class TimelineServiceImpl implements TimelineService {
                 .toList();
     }
 
-    private static CustomSliceResponse<?> mapToCustomSliceResponse(
-            Slice<TimelineResponseDto> result) {
+    private CustomSliceResponse<?> mapToCustomSliceResponse(Slice<TimelineResponseDto> result) {
         List<TimelineResponseDto> content = result.getContent();
 
         return CustomSliceResponse.builder()

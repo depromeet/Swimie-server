@@ -60,7 +60,11 @@ public class FakeMemoryRepository implements MemoryRepository {
 
     @Override
     public Slice<Memory> findNextMemoryByMemberId(
-            Long memberId, Long cursorId, Pageable pageable, LocalDate recordAt) {
+            Long memberId,
+            Long cursorId,
+            LocalDate cursorRecordAt,
+            Pageable pageable,
+            LocalDate recordAt) {
         return null;
     }
 }

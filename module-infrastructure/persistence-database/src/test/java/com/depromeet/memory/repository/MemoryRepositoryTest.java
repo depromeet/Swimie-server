@@ -136,7 +136,7 @@ public class MemoryRepositoryTest {
         // when
         Slice<Memory> resultSlice =
                 memoryRepositoryImpl.findNextMemoryByMemberId(
-                        member.getId(), firstDate.getId(), pageable, null);
+                        member.getId(), firstDate.getId(), firstDate.getRecordAt(), pageable, null);
         List<Memory> result = resultSlice.getContent();
 
         // then

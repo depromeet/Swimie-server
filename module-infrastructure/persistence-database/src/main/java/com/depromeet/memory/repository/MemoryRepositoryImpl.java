@@ -42,10 +42,8 @@ public class MemoryRepositoryImpl implements MemoryRepository {
                 queryFactory
                         .selectFrom(memory)
                         .where(
-                                memory.member
-                                        .id
-                                        .eq(memberId)
-                                        .and(ltCursorIdOrRecordAt(cursorId, recordAt)))
+                                memory.member.id.eq(memberId),
+                                ltCursorIdOrRecordAt(cursorId, recordAt))
                         .limit(pageable.getPageSize() + 1)
                         .orderBy(memory.recordAt.desc(), memory.id.desc())
                         .fetch();
@@ -75,12 +73,8 @@ public class MemoryRepositoryImpl implements MemoryRepository {
                 queryFactory
                         .selectFrom(memory)
                         .where(
-                                memory.member
-                                        .id
-                                        .eq(memberId)
-                                        .and(ltCursorIdOrRecordAt(cursorId, cursorRecordAt))
-                                        .and(loeRecordAt(recordAt)))
-                        .limit(pageable.getPageSize() + 1)
+                                memory.member.id.eq(memberId),
+                                ltCursorIdOrRecordAt(cursorId, recordAt))
                         .orderBy(memory.recordAt.desc())
                         .fetch();
         List<Memory> content = toModel(result);
@@ -97,7 +91,11 @@ public class MemoryRepositoryImpl implements MemoryRepository {
 
     @Override
     public Slice<Memory> findNextMemoryByMemberId(
-            Long memberId, Long cursorId, Pageable pageable, LocalDate recordAt) {
+            Long memberId,
+            Long cursorId,
+            LocalDate cursorRecordAt,
+            Pageable pageable,
+            LocalDate recordAt) {
         List<MemoryEntity> result =
                 queryFactory
                         .selectFrom(memory)
