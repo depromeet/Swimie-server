@@ -17,6 +17,7 @@ import com.depromeet.pool.Pool;
 import com.depromeet.pool.repository.PoolRepository;
 import com.depromeet.security.AuthorizationUtil;
 import com.depromeet.type.member.MemberErrorType;
+import com.depromeet.type.memory.MemoryDetailErrorType;
 import com.depromeet.type.memory.MemoryErrorType;
 import com.depromeet.type.pool.PoolErrorType;
 import java.util.List;
@@ -94,9 +95,13 @@ public class MemoryServiceImpl implements MemoryService {
                         .kcal(memoryUpdateRequest.getKcal())
                         .build();
         if (memory.getMemoryDetail() != null) {
-            updateMemoryDetail = memory.getMemoryDetail().update(updateMemoryDetail);
+            Long memoryDetailId = memory.getMemoryDetail().getId();
+            updateMemoryDetail = memoryDetailRepository
+                    .update(memoryDetailId, updateMemoryDetail)
+                    .orElseThrow(() -> new NotFoundException(MemoryDetailErrorType.NOT_FOUND));
+        } else {
+            updateMemoryDetail = memoryDetailRepository.save(updateMemoryDetail);
         }
-        memoryDetailRepository.save(updateMemoryDetail);
 
         // Pool 정보 찾기
         Pool updatePool = memory.getPool();
@@ -107,7 +112,7 @@ public class MemoryServiceImpl implements MemoryService {
                             .orElseThrow(() -> new NotFoundException(PoolErrorType.NOT_FOUND));
         }
 
-        // memory 수정
+        // Memory 수정
         Memory updateMemory =
                 Memory.builder()
                         .pool(updatePool)

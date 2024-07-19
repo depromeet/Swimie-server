@@ -59,4 +59,12 @@ public class MemoryDetailEntity {
                 .kcal(this.kcal)
                 .build();
     }
+
+    public MemoryDetailEntity update(MemoryDetailEntity mde) {
+        this.item = mde.getItem();
+        this.heartRate = mde.getHeartRate();
+        this.pace = mde.getPace();
+        this.kcal = mde.getKcal();
+        return this;
+    }
 }
