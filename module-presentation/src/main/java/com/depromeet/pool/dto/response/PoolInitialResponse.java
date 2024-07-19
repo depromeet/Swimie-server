@@ -9,7 +9,8 @@ public record PoolInitialResponse(
         List<PoolInfoResponse> favoritePools, List<PoolSearchInfoResponse> searchedPools) {
     public static PoolInitialResponse of(
             List<FavoritePool> favoritePools, List<PoolSearch> searchedPools) {
-        List<Long> favoritePoolIds = favoritePools.stream().map(FavoritePool::getId).toList();
+        List<Long> favoritePoolIds =
+                favoritePools.stream().map(it -> it.getPool().getId()).toList();
         return new PoolInitialResponse(
                 getFavoritePoolsInfo(favoritePools),
                 getSearchedPoolsInfo(favoritePoolIds, searchedPools));
