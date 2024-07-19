@@ -29,20 +29,38 @@ public class TimelineServiceImpl implements TimelineService {
     private final MemoryRepository memoryRepository;
 
     @Override
-    public CustomSliceResponse<?> getTimelineByMemberIdAndCursor(
-            Long memberId, Long cursorId, String recordAt, int pageSize) {
-        LocalDate recordAtLocalDate = null;
-        if (recordAt != null && !recordAt.trim().isEmpty()) {
-            recordAtLocalDate = LocalDate.parse(recordAt);
+    public CustomSliceResponse<?> getTimelineByMemberIdAndCursorAndDate(
+            Long memberId,
+            Long cursorId,
+            String cursorRecordAt,
+            String date,
+            boolean showNewer,
+            int size) {
+        Slice<Memory> memories;
+        Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Order.desc("recordAt")));
+
+        LocalDate parsedCursorRecordAt = getLocalDateOrNull(cursorRecordAt);
+        LocalDate parsedDate = getLocalDateOrNull(date);
+
+        if (showNewer) {
+            memories =
+                    memoryRepository.findNextMemoryByMemberId(
+                            memberId, cursorId, parsedCursorRecordAt, pageable, parsedDate);
+        } else {
+            memories =
+                    memoryRepository.findPrevMemoryByMemberId(
+                            memberId, cursorId, parsedCursorRecordAt, pageable, parsedDate);
         }
-
-        Pageable pageable = PageRequest.of(0, pageSize, Sort.by(Sort.Order.desc("recordAt")));
-        Slice<Memory> memories =
-                memoryRepository.getSliceMemoryByMemberIdAndCursorId(
-                        memberId, cursorId, recordAtLocalDate, pageable);
-
         Slice<TimelineResponseDto> result = memories.map(this::mapToTimelineResponseDto);
         return mapToCustomSliceResponse(result);
+    }
+
+    private LocalDate getLocalDateOrNull(String cursorRecordAt) {
+        LocalDate cursorRecordAtLocalDate = null;
+        if (cursorRecordAt != null && !cursorRecordAt.trim().isEmpty()) {
+            cursorRecordAtLocalDate = LocalDate.parse(cursorRecordAt);
+        }
+        return cursorRecordAtLocalDate;
     }
 
     @Override

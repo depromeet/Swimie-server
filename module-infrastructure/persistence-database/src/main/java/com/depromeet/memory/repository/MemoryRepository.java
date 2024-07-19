@@ -11,9 +11,6 @@ public interface MemoryRepository {
 
     Optional<Memory> findById(Long memoryId);
 
-    Slice<Memory> getSliceMemoryByMemberIdAndCursorId(
-            Long memberId, Long cursorId, LocalDate recordAt, Pageable pageable);
-
     Slice<Memory> findPrevMemoryByMemberId(
             Long memberId,
             Long cursorId,

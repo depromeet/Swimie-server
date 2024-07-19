@@ -67,14 +67,18 @@ public class MemoryRepositoryTest {
     }
 
     @Test
-    void getSliceMemoryByMemberIdAndCursorId가_최신_30일_데이터_recordAt_Desc로_가져오는지_테스트() {
+    void findPrevMemoryByMemberId로_최근_날짜_이전_30일_recordAt_Desc로_가져오는지_테스트() {
         // when
         Slice<Memory> resultSlice =
-                memoryRepositoryImpl.getSliceMemoryByMemberIdAndCursorId(
-                        member.getId(), null, null, pageable);
+                memoryRepositoryImpl.findPrevMemoryByMemberId(
+                        member.getId(), null, null, pageable, null);
         List<Memory> result = resultSlice.getContent();
 
+        List<LocalDate> resultRecordAtList = result.stream().map(Memory::getRecordAt).toList();
+        System.out.println(resultRecordAtList);
+
         Memory lastMemory = result.getLast();
+
         // then
         assertThat(result.size()).isEqualTo(30);
         assertThat(lastMemory.getRecordAt()).isEqualTo(startRecordAt.minusDays(30));
@@ -90,12 +94,14 @@ public class MemoryRepositoryTest {
                 memoryRepositoryImpl.findPrevMemoryByMemberId(
                         member.getId(), null, null, pageable, recordAt);
         List<Memory> result = resultSlice.getContent();
+        List<LocalDate> resultRecordAtList = result.stream().map(Memory::getRecordAt).toList();
+        System.out.println(resultRecordAtList);
 
         Memory lastMemory = result.getLast();
 
         // then
         assertThat(result.size()).isEqualTo(30);
-        assertThat(lastMemory.getRecordAt()).isEqualTo(LocalDate.of(2024, 7, 1).plusDays(30));
+        assertThat(lastMemory.getRecordAt()).isEqualTo(recordAt.minusDays(29));
     }
 
     @Test

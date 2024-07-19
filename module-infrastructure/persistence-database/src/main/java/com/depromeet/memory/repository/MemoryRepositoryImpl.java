@@ -35,30 +35,6 @@ public class MemoryRepositoryImpl implements MemoryRepository {
         return memoryJpaRepository.findById(memoryId).map(MemoryEntity::toModel);
     }
 
-    @Override
-    public Slice<Memory> getSliceMemoryByMemberIdAndCursorId(
-            Long memberId, Long cursorId, LocalDate recordAt, Pageable pageable) {
-        List<MemoryEntity> result =
-                queryFactory
-                        .selectFrom(memory)
-                        .where(
-                                memory.member.id.eq(memberId),
-                                ltCursorIdOrRecordAt(cursorId, recordAt))
-                        .limit(pageable.getPageSize() + 1)
-                        .orderBy(memory.recordAt.desc(), memory.id.desc())
-                        .fetch();
-        List<Memory> content = result.stream().map(MemoryEntity::toModel).toList();
-
-        boolean hasPrev = false;
-        if (content.size() > pageable.getPageSize()) {
-            content = new ArrayList<>(content); // immutable -> modifiedList
-            content.removeLast();
-            hasPrev = true;
-        }
-
-        return new SliceImpl<>(content, pageable, hasPrev);
-    }
-
     // ---- 날짜 선택 후 위아래 무한 스크롤 구현
 
     @Override
@@ -74,14 +50,16 @@ public class MemoryRepositoryImpl implements MemoryRepository {
                         .selectFrom(memory)
                         .where(
                                 memory.member.id.eq(memberId),
-                                ltCursorIdOrRecordAt(cursorId, recordAt))
+                                ltCursorIdOrCursorRecordAt(cursorId, cursorRecordAt),
+                                loeRecordAt(recordAt))
+                        .limit(pageable.getPageSize() + 1)
                         .orderBy(memory.recordAt.desc())
                         .fetch();
         List<Memory> content = toModel(result);
 
         boolean hasPrev = false;
         if (content.size() > pageable.getPageSize()) {
-            content = new ArrayList<>(content); // immutable -> modifiedList
+            content = new ArrayList<>(content);
             content.removeLast();
             hasPrev = true;
         }
@@ -93,18 +71,16 @@ public class MemoryRepositoryImpl implements MemoryRepository {
     public Slice<Memory> findNextMemoryByMemberId(
             Long memberId,
             Long cursorId,
-            LocalDate cursorRecordAt,
+            LocalDate cursorRecordAt, // 7/20 이라 가정
             Pageable pageable,
             LocalDate recordAt) {
         List<MemoryEntity> result =
                 queryFactory
                         .selectFrom(memory)
                         .where(
-                                memory.member
-                                        .id
-                                        .eq(memberId)
-                                        .and(gtCursorId(cursorId))
-                                        .and(goeRecordAt(recordAt)))
+                                memory.member.id.eq(memberId),
+                                gtCursorIdOrCursorRecordAt(cursorId, cursorRecordAt),
+                                goeRecordAt(recordAt))
                         .limit(pageable.getPageSize() + 1)
                         .orderBy(memory.recordAt.asc())
                         .fetch();
@@ -113,7 +89,7 @@ public class MemoryRepositoryImpl implements MemoryRepository {
 
         boolean hasNext = false;
         if (content.size() > pageable.getPageSize()) {
-            content = new ArrayList<>(content); // immutable -> modifiedList
+            content = new ArrayList<>(content);
             content.removeLast();
             hasNext = true;
         }
@@ -122,7 +98,7 @@ public class MemoryRepositoryImpl implements MemoryRepository {
         return new SliceImpl<>(content, pageable, hasNext);
     }
 
-    private BooleanExpression ltCursorIdOrRecordAt(Long cursorId, LocalDate recordAt) {
+    private BooleanExpression ltCursorIdOrCursorRecordAt(Long cursorId, LocalDate recordAt) {
         if (cursorId == null || recordAt == null) {
             return null;
         }
@@ -138,18 +114,20 @@ public class MemoryRepositoryImpl implements MemoryRepository {
         return memory.recordAt.loe(recordAt);
     }
 
-    private BooleanExpression gtCursorId(Long cursorId) {
-        if (cursorId != null) {
-            return memory.id.gt(cursorId);
+    private BooleanExpression gtCursorIdOrCursorRecordAt(Long cursorId, LocalDate cursorRecordAt) {
+        if (cursorId == null || cursorRecordAt == null) {
+            return null;
         }
-        return null;
+        return memory.recordAt
+                .gt(cursorRecordAt)
+                .or(memory.recordAt.eq(cursorRecordAt).and(memory.id.gt(cursorId)));
     }
 
     private BooleanExpression goeRecordAt(LocalDate recordAt) {
-        if (recordAt != null) {
-            return memory.recordAt.goe(recordAt);
+        if (recordAt == null) {
+            return null;
         }
-        return null;
+        return memory.recordAt.goe(recordAt);
     }
 
     private List<Memory> toModel(List<MemoryEntity> memoryEntities) {

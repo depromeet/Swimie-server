@@ -19,10 +19,12 @@ public interface MemoryApi {
     @Operation(summary = "수영 기록 단일 조회")
     ApiResponse<MemoryResponse> read(@PathVariable("memoryId") Long memoryId);
 
-    @Operation(summary = "타임라인 최신순 조회")
-    ApiResponse<?> timeline(
+    @Operation(summary = "타임라인 최신순 조회 및 달력 조회 후, 위/아래 무한 스크롤 구현")
+    ApiResponse<?> timelineCalendar(
             @LoginMember Long memberId,
             @RequestParam(value = "cursorId", required = false) Long cursorId,
-            @RequestParam(value = "recordAt", required = false) String recordAt,
+            @RequestParam(value = "cursorRecordAt", required = false) String cursorRecordAt,
+            @RequestParam(value = "date", required = false) String date,
+            @RequestParam(value = "showNewer", required = false) boolean showNewer,
             @RequestParam(value = "size") Integer size);
 }
