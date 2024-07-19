@@ -16,4 +16,6 @@ public interface PoolRepository {
     Optional<Pool> findById(Long poolId);
 
     Pool save(Pool pool);
+
+    FavoritePool saveFavoritePool(FavoritePool favoritePool);
 }

@@ -1,13 +1,19 @@
 package com.depromeet.pool.api;
 
 import com.depromeet.dto.response.ApiResponse;
+import com.depromeet.pool.dto.request.FavoritePoolCreateRequest;
 import com.depromeet.pool.dto.response.PoolInitialResponse;
 import com.depromeet.pool.dto.response.PoolSearchResponse;
 import com.depromeet.pool.service.PoolService;
 import com.depromeet.security.LoginMember;
 import com.depromeet.type.pool.PoolSuccessType;
+import jakarta.validation.Valid;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,5 +37,12 @@ public class PoolController implements PoolApi {
         return ApiResponse.success(
                 PoolSuccessType.INITIAL_GET_SUCCESS,
                 poolService.getFavoriteAndSearchedPools(memberId));
+    }
+
+    @PostMapping("/favorite")
+    public ResponseEntity<URI> createFavoritePool(
+            @LoginMember Long memberId, @Valid @RequestBody FavoritePoolCreateRequest request) {
+        String uri = poolService.createFavoritePool(memberId, request);
+        return ResponseEntity.created(URI.create(uri)).build();
     }
 }

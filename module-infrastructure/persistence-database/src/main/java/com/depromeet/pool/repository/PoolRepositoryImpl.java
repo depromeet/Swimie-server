@@ -63,4 +63,10 @@ public class PoolRepositoryImpl implements PoolRepository {
     public Pool save(Pool pool) {
         return poolJpaRepository.save(PoolEntity.from(pool)).toModel();
     }
+
+    @Override
+    public FavoritePool saveFavoritePool(FavoritePool favoritePool) {
+        FavoritePoolEntity favoritePoolEntity = FavoritePoolEntity.from(favoritePool);
+        return favoritePoolJpaRepository.save(favoritePoolEntity).toModel();
+    }
 }
