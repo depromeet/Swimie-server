@@ -36,6 +36,13 @@ public class MemoryRepositoryImpl implements MemoryRepository {
     }
 
     @Override
+    public Optional<Memory> update(Long memoryId, Memory memoryUpdate) {
+        return memoryJpaRepository
+                .findById(memoryId)
+                .map(entity -> entity.update(MemoryEntity.from(memoryUpdate)).toModel());
+    }
+
+    @Override
     public Slice<Memory> getSliceMemoryByMemberIdAndCursorId(
             Long memberId, Long cursorId, LocalDate recordAt, Pageable pageable) {
         List<MemoryEntity> result =

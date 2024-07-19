@@ -11,6 +11,8 @@ public interface MemoryRepository {
 
     Optional<Memory> findById(Long memoryId);
 
+    Optional<Memory> update(Long memoryId, Memory memoryUpdate);
+
     Slice<Memory> getSliceMemoryByMemberIdAndCursorId(
             Long memberId, Long cursorId, LocalDate recordAt, Pageable pageable);
 
