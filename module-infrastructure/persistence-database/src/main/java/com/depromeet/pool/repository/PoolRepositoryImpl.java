@@ -60,6 +60,11 @@ public class PoolRepositoryImpl implements PoolRepository {
     }
 
     @Override
+    public Optional<FavoritePool> findFavoritePoolById(Long favoritePoolId) {
+        return favoritePoolJpaRepository.findById(favoritePoolId).map(FavoritePoolEntity::toModel);
+    }
+
+    @Override
     public Pool save(Pool pool) {
         return poolJpaRepository.save(PoolEntity.from(pool)).toModel();
     }
@@ -68,5 +73,11 @@ public class PoolRepositoryImpl implements PoolRepository {
     public FavoritePool saveFavoritePool(FavoritePool favoritePool) {
         FavoritePoolEntity favoritePoolEntity = FavoritePoolEntity.from(favoritePool);
         return favoritePoolJpaRepository.save(favoritePoolEntity).toModel();
+    }
+
+    @Override
+    public void removeFavorite(FavoritePool favoritePool) {
+        FavoritePoolEntity favoritePoolEntity = FavoritePoolEntity.from(favoritePool);
+        favoritePoolJpaRepository.delete(favoritePoolEntity);
     }
 }

@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,5 +45,13 @@ public class PoolController implements PoolApi {
             @LoginMember Long memberId, @Valid @RequestBody FavoritePoolCreateRequest request) {
         String uri = poolService.createFavoritePool(memberId, request);
         return ResponseEntity.created(URI.create(uri)).build();
+    }
+
+    @DeleteMapping("/favorite")
+    public ResponseEntity<Void> removeFavoritePool(
+            @LoginMember Long memberId,
+            @RequestParam(value = "favoritePoolId") Long favoritePoolId) {
+        poolService.removeFavoritePool(memberId, favoritePoolId);
+        return ResponseEntity.noContent().build();
     }
 }

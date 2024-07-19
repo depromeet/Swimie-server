@@ -1,5 +1,7 @@
 package com.depromeet.pool.service;
 
+import static com.depromeet.pool.service.PoolValidator.*;
+
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.member.Member;
 import com.depromeet.member.repository.MemberRepository;
@@ -48,6 +50,17 @@ public class PoolServiceImpl implements PoolService {
         return favoritePool.getId().toString();
     }
 
+    @Override
+    @Transactional
+    public void removeFavoritePool(Long memberId, Long favoritePoolId) {
+        Member member = getMember(memberId);
+        FavoritePool favoritePool = getFavoritePool(favoritePoolId);
+
+        validateOwnerOfFavorite(member.getId(), favoritePool.getMember().getId());
+
+        poolRepository.removeFavorite(favoritePool);
+    }
+
     private FavoritePool createFavoritePool(Member member, Pool pool) {
         return FavoritePool.builder().member(member).pool(pool).build();
     }
@@ -62,5 +75,11 @@ public class PoolServiceImpl implements PoolService {
         return poolRepository
                 .findById(poolId)
                 .orElseThrow(() -> new NotFoundException(PoolErrorType.NOT_FOUND));
+    }
+
+    private FavoritePool getFavoritePool(Long favoritePoolId) {
+        return poolRepository
+                .findFavoritePoolById(favoritePoolId)
+                .orElseThrow(() -> new NotFoundException(PoolErrorType.FAVORITE_NOT_FOUND));
     }
 }

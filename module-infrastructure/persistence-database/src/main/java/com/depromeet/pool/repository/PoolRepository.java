@@ -15,7 +15,11 @@ public interface PoolRepository {
 
     Optional<Pool> findById(Long poolId);
 
+    Optional<FavoritePool> findFavoritePoolById(Long favoritePoolId);
+
     Pool save(Pool pool);
 
     FavoritePool saveFavoritePool(FavoritePool favoritePool);
+
+    void removeFavorite(FavoritePool favoritePool);
 }

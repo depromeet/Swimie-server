@@ -33,7 +33,20 @@ public class FakePoolRepository implements PoolRepository {
     }
 
     @Override
+    public Optional<FavoritePool> findFavoritePoolById(Long favoritePoolId) {
+        return Optional.empty();
+    }
+
+    @Override
     public Pool save(Pool pool) {
         return null;
     }
+
+    @Override
+    public FavoritePool saveFavoritePool(FavoritePool favoritePool) {
+        return null;
+    }
+
+    @Override
+    public void removeFavorite(FavoritePool favoritePool) {}
 }
