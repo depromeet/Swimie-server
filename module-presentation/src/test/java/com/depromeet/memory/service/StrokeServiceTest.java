@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
 import com.depromeet.memory.dto.request.StrokeCreateRequest;
+import com.depromeet.memory.mock.*;
 import com.depromeet.memory.mock.FakeMemoryRepository;
 import com.depromeet.memory.mock.FakeStrokeRepository;
 import java.time.LocalDate;
@@ -27,7 +28,7 @@ class StrokeServiceTest {
     void init() {
         strokeRepository = new FakeStrokeRepository();
         memoryRepository = new FakeMemoryRepository();
-        strokeService = new StrokeServiceImpl(strokeRepository, memoryRepository);
+        strokeService = new StrokeServiceImpl(strokeRepository);
     }
 
     @Test

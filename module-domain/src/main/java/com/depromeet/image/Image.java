@@ -32,4 +32,13 @@ public class Image {
     public Optional<Memory> getMemory() {
         return Optional.ofNullable(this.memory);
     }
+
+    public Image withoutMemory() {
+        return Image.builder()
+                .id(id)
+                .originImageName(originImageName)
+                .imageName(imageName)
+                .imageUrl(imageUrl)
+                .build();
+    }
 }

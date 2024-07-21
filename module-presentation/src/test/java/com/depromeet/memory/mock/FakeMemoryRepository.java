@@ -43,6 +43,57 @@ public class FakeMemoryRepository implements MemoryRepository {
     }
 
     @Override
+    public Optional<Memory> update(Long memoryId, Memory memoryUpdate) {
+        Optional<Memory> md = data.stream().filter(item -> item.getId().equals(memoryId)).findAny();
+        if (md.isEmpty()) {
+            return Optional.empty();
+        } else {
+            Memory origin = md.get();
+            return Optional.of(
+                    Memory.builder()
+                            .id(memoryId)
+                            .member(origin.getMember())
+                            .pool(
+                                    memoryUpdate.getPool() != null
+                                            ? memoryUpdate.getPool()
+                                            : origin.getPool())
+                            .memoryDetail(
+                                    memoryUpdate.getMemoryDetail() != null
+                                            ? memoryUpdate.getMemoryDetail()
+                                            : origin.getMemoryDetail())
+                            .strokes(
+                                    memoryUpdate.getStrokes() != null
+                                            ? memoryUpdate.getStrokes()
+                                            : origin.getStrokes())
+                            .images(
+                                    memoryUpdate.getImages() != null
+                                            ? memoryUpdate.getImages()
+                                            : origin.getImages())
+                            .recordAt(
+                                    memoryUpdate.getRecordAt() != null
+                                            ? memoryUpdate.getRecordAt()
+                                            : origin.getRecordAt())
+                            .startTime(
+                                    memoryUpdate.getStartTime() != null
+                                            ? memoryUpdate.getStartTime()
+                                            : origin.getStartTime())
+                            .endTime(
+                                    memoryUpdate.getEndTime() != null
+                                            ? memoryUpdate.getEndTime()
+                                            : origin.getEndTime())
+                            .lane(
+                                    memoryUpdate.getLane() != null
+                                            ? memoryUpdate.getLane()
+                                            : origin.getLane())
+                            .diary(
+                                    memoryUpdate.getDiary() != null
+                                            ? memoryUpdate.getDiary()
+                                            : origin.getDiary())
+                            .build());
+        }
+    }
+
+    @Override
     public Slice<Memory> getSliceMemoryByMemberIdAndCursorId(
             Long memberId, Long cursorId, LocalDate recordAt, Pageable pageable) {
         return null;

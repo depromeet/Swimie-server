@@ -3,6 +3,7 @@ package com.depromeet.memory.api;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.dto.response.CustomSliceResponse;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
+import com.depromeet.memory.dto.request.MemoryUpdateRequest;
 import com.depromeet.memory.dto.response.MemoryResponse;
 import com.depromeet.memory.facade.MemoryFacade;
 import com.depromeet.security.LoginMember;
@@ -29,6 +30,14 @@ public class MemoryController implements MemoryApi {
     public ApiResponse<MemoryResponse> read(@PathVariable("memoryId") Long memoryId) {
         MemoryResponse response = memoryFacade.findById(memoryId);
         return ApiResponse.success(MemorySuccessType.GET_RESULT_SUCCESS, response);
+    }
+
+    @PatchMapping("/{memoryId}")
+    public ApiResponse<MemoryResponse> update(
+            @PathVariable("memoryId") Long memoryId,
+            @Valid @RequestBody MemoryUpdateRequest memoryUpdateRequest) {
+        MemoryResponse response = memoryFacade.update(memoryId, memoryUpdateRequest);
+        return ApiResponse.success(MemorySuccessType.PATCH_RESULT_SUCCESS, response);
     }
 
     @GetMapping("/timeline")

@@ -22,4 +22,9 @@ public class StrokeRepositoryImpl implements StrokeRepository {
                 .map(StrokeEntity::toModel)
                 .toList();
     }
+
+    @Override
+    public void deleteById(Long id) {
+        strokeJpaRepository.deleteById(id);
+    }
 }

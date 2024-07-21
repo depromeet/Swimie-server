@@ -7,6 +7,7 @@ import com.depromeet.member.service.MemberService;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
+import com.depromeet.memory.dto.request.MemoryUpdateRequest;
 import com.depromeet.memory.dto.response.MemoryResponse;
 import com.depromeet.memory.service.MemoryService;
 import com.depromeet.memory.service.StrokeService;
@@ -37,8 +38,15 @@ public class MemoryFacade {
         poolService.createSearchLog(writer, request.getPoolId());
     }
 
+    @Transactional
+    public MemoryResponse update(Long memoryId, MemoryUpdateRequest request) {
+        Memory memory = memoryService.findById(memoryId);
+        List<Stroke> stokes = strokeService.updateAll(memory, request.getStrokes());
+        return MemoryResponse.of(memoryService.update(memoryId, request, stokes));
+    }
+
     public MemoryResponse findById(Long memoryId) {
-        return memoryService.findById(memoryId);
+        return MemoryResponse.of(memoryService.findById(memoryId));
     }
 
     public CustomSliceResponse<?> getTimelineByMemberIdAndCursor(

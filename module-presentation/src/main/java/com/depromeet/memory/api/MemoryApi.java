@@ -2,6 +2,7 @@ package com.depromeet.memory.api;
 
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
+import com.depromeet.memory.dto.request.MemoryUpdateRequest;
 import com.depromeet.memory.dto.response.MemoryResponse;
 import com.depromeet.security.LoginMember;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +21,11 @@ public interface MemoryApi {
 
     @Operation(summary = "수영 기록 단일 조회")
     ApiResponse<MemoryResponse> read(@PathVariable("memoryId") Long memoryId);
+
+    @Operation(summary = "수영 기록 수정")
+    ApiResponse<MemoryResponse> update(
+            @PathVariable("memoryId") Long memoryId,
+            @RequestBody MemoryUpdateRequest memoryUpdateRequest);
 
     @Operation(summary = "타임라인 최신순 조회")
     ApiResponse<?> timeline(
