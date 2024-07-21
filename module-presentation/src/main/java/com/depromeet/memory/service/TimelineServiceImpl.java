@@ -126,8 +126,9 @@ public class TimelineServiceImpl implements TimelineService {
             if (stroke.getMeter() != null) {
                 totalMeter += stroke.getMeter();
             } else {
-                if (lane == null) return null;
-                totalMeter += (int) stroke.getLaps() * lane;
+                if (lane != null) {
+                    totalMeter += (int) stroke.getLaps() * lane;
+                }
             }
         }
         return totalMeter;

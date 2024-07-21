@@ -45,13 +45,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Optional<String> optionalRefreshToken =
                 Optional.ofNullable(request.getHeader(REFRESH_HEADER.getValue()));
 
-        if (optionalAccessToken.isEmpty()
-                && optionalRefreshToken.isEmpty()) { // accessToken, refreshToken 둘다 없는 경우
+        if (optionalAccessToken.isEmpty() && optionalRefreshToken.isEmpty()) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        if (optionalAccessToken.isEmpty()) { // accessToken 만 없는 경우
+        if (optionalAccessToken.isEmpty()) {
             reissueJWTWithRefreshToken(request, response, filterChain);
             return;
         }
@@ -66,10 +65,38 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Optional<AccessTokenDto> optionalAccessTokenDto = parseAccessToken(accessToken);
 
         if (optionalAccessTokenDto.isPresent()) {
-            AccessTokenDto accessTokenDto = optionalAccessTokenDto.get(); // 액서스 토큰이 만료되지 않은 경우
+            AccessTokenDto accessTokenDto = optionalAccessTokenDto.get();
             setAuthentication(accessTokenDto);
         } // 만료된 경우 401 error
         filterChain.doFilter(request, response);
+    }
+
+    private boolean noAuthentication(String url) {
+        return url.startsWith("/swagger-ui")
+                || url.startsWith("/v3")
+                || url.startsWith("/favicon.ico")
+                || url.startsWith("/oauth2")
+                || url.startsWith("/login")
+                || url.startsWith("/depromeet-actuator")
+                || url.startsWith("/api/v1/auth")
+                || url.startsWith("/api/login");
+    }
+
+    private Optional<AccessTokenDto> parseAccessToken(String accessToken) {
+        Optional<AccessTokenDto> optionalAccessTokenDto;
+        try {
+            optionalAccessTokenDto = jwtTokenService.parseAccessToken(accessToken);
+        } catch (IllegalArgumentException e) {
+            log.error(e.getMessage());
+            throw new UnauthorizedException(INVALID_JWT_TOKEN);
+        } catch (ExpiredJwtException e) {
+            log.error("JWT expired");
+            return Optional.empty();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw e;
+        }
+        return optionalAccessTokenDto;
     }
 
     private void reissueJWTWithRefreshToken(
@@ -101,34 +128,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         AccessTokenDto reissuedAccessToken = addReissuedJwtTokenToHeader(response, refreshToken);
         setAuthentication(reissuedAccessToken);
         filterChain.doFilter(request, response);
-    }
-
-    private boolean noAuthentication(String url) {
-        return url.startsWith("/swagger-ui")
-                || url.startsWith("/v3")
-                || url.startsWith("/favicon.ico")
-                || url.startsWith("/oauth2")
-                || url.startsWith("/login")
-                || url.startsWith("/depromeet-actuator")
-                || url.startsWith("/api/v1/auth")
-                || url.startsWith("/api/login");
-    }
-
-    private Optional<AccessTokenDto> parseAccessToken(String accessToken) {
-        Optional<AccessTokenDto> optionalAccessTokenDto;
-        try {
-            optionalAccessTokenDto = jwtTokenService.parseAccessToken(accessToken);
-        } catch (IllegalArgumentException e) {
-            log.error(e.getMessage());
-            throw new UnauthorizedException(INVALID_JWT_TOKEN);
-        } catch (ExpiredJwtException e) {
-            log.error("JWT expired");
-            return Optional.empty();
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw e;
-        }
-        return optionalAccessTokenDto;
     }
 
     private Optional<RefreshTokenDto> parseRefreshToken(String refreshToken) {
