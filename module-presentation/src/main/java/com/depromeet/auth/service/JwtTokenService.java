@@ -79,30 +79,6 @@ public class JwtTokenService {
         }
     }
 
-    public String getRefreshToken(String expiredAccessToken) {
-        expiredAccessToken = expiredAccessToken.substring(7);
-        Long memberId = null;
-        try {
-            parseAccessToken(expiredAccessToken)
-                    .orElseThrow(() -> new UnauthorizedException(AuthErrorType.INVALID_JWT_TOKEN));
-        } catch (ExpiredJwtException e) {
-            memberId = Long.parseLong(e.getClaims().getSubject());
-        }
-
-        if (memberId == null) {
-            throw new UnauthorizedException(AuthErrorType.INVALID_JWT_TOKEN);
-        }
-
-        Member member =
-                memberRepository
-                        .findById(memberId)
-                        .orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
-        if (member.getRefreshToken() != null) {
-            return member.getRefreshToken();
-        }
-        throw new NotFoundException(AuthErrorType.REFRESH_TOKEN_NOT_FOUND);
-    }
-
     public RefreshTokenDto retrieveRefreshToken(
             RefreshTokenDto refreshTokenDto, String refreshToken) {
         Member member =

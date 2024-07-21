@@ -154,6 +154,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 jwtTokenService.reissueAccessToken(reissuedRefreshToken.memberId());
 
         response.addHeader(ACCESS_HEADER.getValue(), reissuedAccessToken.accessToken());
+        response.addHeader(REFRESH_HEADER.getValue(), reissuedRefreshToken.refreshToken());
         return reissuedAccessToken;
     }
 

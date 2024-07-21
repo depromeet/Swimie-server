@@ -131,10 +131,10 @@ public class MemoryRepositoryImpl implements MemoryRepository {
     }
 
     private BooleanExpression goeRecordAt(LocalDate recordAt) {
-        if (recordAt == null) {
-            return null;
+        if (recordAt != null) {
+            return memory.recordAt.goe(recordAt);
         }
-        return memory.recordAt.goe(recordAt);
+        return null;
     }
 
     private List<Memory> toModel(List<MemoryEntity> memoryEntities) {

@@ -1,10 +1,8 @@
 package com.depromeet.auth.api;
 
-import com.depromeet.auth.dto.request.AccessTokenDto;
 import com.depromeet.auth.dto.request.GoogleLoginRequest;
 import com.depromeet.auth.dto.request.KakaoLoginRequest;
 import com.depromeet.auth.dto.response.JwtTokenResponseDto;
-import com.depromeet.auth.dto.response.RefreshTokenDto;
 import com.depromeet.auth.service.AuthService;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.type.auth.AuthSuccessType;
@@ -33,13 +31,5 @@ public class AuthController implements AuthApi {
             @Valid @RequestBody final KakaoLoginRequest request) {
         return ApiResponse.success(
                 AuthSuccessType.LOGIN_SUCCESS, authService.loginByKakao(request));
-    }
-
-    @PostMapping("/refresh")
-    public ApiResponse<RefreshTokenDto> getRefreshToken(@RequestBody AccessTokenDto request) {
-        RefreshTokenDto refreshTokenDto =
-                authService.getRefreshTokenFromExpiredAccessToken(request.accessToken());
-
-        return ApiResponse.success(AuthSuccessType.LOGIN_SUCCESS, refreshTokenDto);
     }
 }

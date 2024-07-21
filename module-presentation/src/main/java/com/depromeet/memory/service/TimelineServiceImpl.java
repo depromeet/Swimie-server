@@ -75,7 +75,7 @@ public class TimelineServiceImpl implements TimelineService {
                 .diary(memory.getDiary())
                 .totalMeter(calculateTotalMeter(memory.getStrokes(), memory.getLane()))
                 .memoryDetailId(
-                        memory.getMemoryDetail().getId() != null
+                        memory.getMemoryDetail() != null && memory.getMemoryDetail().getId() != null
                                 ? memory.getMemoryDetail().getId()
                                 : null)
                 .item(getItemFromMemoryDetail(memory))
@@ -88,25 +88,25 @@ public class TimelineServiceImpl implements TimelineService {
     }
 
     private String getItemFromMemoryDetail(Memory memory) {
-        return memory.getMemoryDetail().getItem() != null
+        return memory.getMemoryDetail() != null && memory.getMemoryDetail().getItem() != null
                 ? memory.getMemoryDetail().getItem()
                 : null;
     }
 
     private Short getHeartRateFromMemoryDetail(Memory memory) {
-        return memory.getMemoryDetail().getHeartRate() != null
+        return memory.getMemoryDetail() != null && memory.getMemoryDetail().getHeartRate() != null
                 ? memory.getMemoryDetail().getHeartRate()
                 : null;
     }
 
     private String getPaceFromMemoryDetail(Memory memory) {
-        return memory.getMemoryDetail().getPace() == null
-                ? null
-                : localTimeToString(memory.getMemoryDetail().getPace());
+        return memory.getMemoryDetail() != null && memory.getMemoryDetail().getPace() != null
+                ? localTimeToString(memory.getMemoryDetail().getPace())
+                : null;
     }
 
     private Integer getKcalFromMemoryDetail(Memory memory) {
-        return memory.getMemoryDetail().getKcal() != null
+        return memory.getMemoryDetail() != null && memory.getMemoryDetail().getKcal() != null
                 ? memory.getMemoryDetail().getKcal()
                 : null;
     }
