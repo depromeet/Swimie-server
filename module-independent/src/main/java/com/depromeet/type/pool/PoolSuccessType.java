@@ -3,7 +3,8 @@ package com.depromeet.type.pool;
 import com.depromeet.type.SuccessType;
 
 public enum PoolSuccessType implements SuccessType {
-    SEARCH_SUCCESS("POOL_1", "수영장 검색을 성공하였습니다");
+    SEARCH_SUCCESS("POOL_1", "수영장 검색을 성공하였습니다"),
+    INITIAL_GET_SUCCESS("POOL_2", "즐겨찾기 및 최근 검색 수영장 조회를 성공하였습니다");
 
     private final String code;
     private final String message;

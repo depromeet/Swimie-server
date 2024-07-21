@@ -105,7 +105,7 @@ public class MemoryResponse {
                 .toList();
     }
 
-    public static MemoryResponse from(Memory memory) {
+    public static MemoryResponse of(Memory memory) {
         MemberSimpleResponse memberSimple =
                 new MemberSimpleResponse(
                         memory.getMember().getGoal(), memory.getMember().getName());
