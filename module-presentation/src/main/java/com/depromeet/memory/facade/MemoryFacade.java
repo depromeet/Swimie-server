@@ -1,5 +1,7 @@
 package com.depromeet.memory.facade;
 
+import static com.depromeet.memory.service.MemoryValidator.*;
+
 import com.depromeet.dto.response.CustomSliceResponse;
 import com.depromeet.image.service.ImageUploadService;
 import com.depromeet.member.Member;
@@ -39,14 +41,17 @@ public class MemoryFacade {
     }
 
     @Transactional
-    public MemoryResponse update(Long memoryId, MemoryUpdateRequest request) {
+    public MemoryResponse update(Long memberId, Long memoryId, MemoryUpdateRequest request) {
         Memory memory = memoryService.findById(memoryId);
-        List<Stroke> stokes = strokeService.updateAll(memory, request.getStrokes());
-        return MemoryResponse.of(memoryService.update(memoryId, request, stokes));
+        validatePermission(memory.getMember().getId(), memberId);
+        List<Stroke> strokes = strokeService.updateAll(memory, request.getStrokes());
+        return MemoryResponse.of(memoryService.update(memoryId, request, strokes));
     }
 
-    public MemoryResponse findById(Long memoryId) {
-        return MemoryResponse.of(memoryService.findById(memoryId));
+    public MemoryResponse findById(Long memberId, Long memoryId) {
+        Memory memory = memoryService.findById(memoryId);
+        validatePermission(memory.getMember().getId(), memberId);
+        return MemoryResponse.of(memory);
     }
 
     public CustomSliceResponse<?> getTimelineByMemberIdAndCursor(

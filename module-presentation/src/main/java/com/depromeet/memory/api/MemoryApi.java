@@ -20,10 +20,12 @@ public interface MemoryApi {
             @Valid @RequestBody MemoryCreateRequest memoryCreateRequest);
 
     @Operation(summary = "수영 기록 단일 조회")
-    ApiResponse<MemoryResponse> read(@PathVariable("memoryId") Long memoryId);
+    ApiResponse<MemoryResponse> read(
+            @LoginMember Long memberId, @PathVariable("memoryId") Long memoryId);
 
     @Operation(summary = "수영 기록 수정")
     ApiResponse<MemoryResponse> update(
+            @LoginMember Long memberId,
             @PathVariable("memoryId") Long memoryId,
             @RequestBody MemoryUpdateRequest memoryUpdateRequest);
 

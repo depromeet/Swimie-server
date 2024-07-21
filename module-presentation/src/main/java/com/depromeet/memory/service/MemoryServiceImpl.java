@@ -1,6 +1,5 @@
 package com.depromeet.memory.service;
 
-import com.depromeet.exception.ForbiddenException;
 import com.depromeet.exception.InternalServerException;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.member.Member;
@@ -71,8 +70,6 @@ public class MemoryServiceImpl implements MemoryService {
             Long memoryId, MemoryUpdateRequest memoryUpdateRequest, List<Stroke> strokes) {
         Memory memory = findById(memoryId);
 
-        validateMemoryMemberMismatch(memory);
-
         // MemoryDetail 수정
         MemoryDetail updateMemoryDetail =
                 MemoryDetail.builder()
@@ -118,13 +115,6 @@ public class MemoryServiceImpl implements MemoryService {
         return memoryRepository
                 .update(memoryId, updateMemory)
                 .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND));
-    }
-
-    private void validateMemoryMemberMismatch(Memory memory) {
-        Long loginId = authorizationUtil.getLoginId();
-        if (!memory.getMember().getId().equals(loginId)) {
-            throw new ForbiddenException(MemoryErrorType.UPDATE_FAILED);
-        }
     }
 
     private MemoryDetail getMemoryDetail(MemoryCreateRequest memoryCreateRequest) {

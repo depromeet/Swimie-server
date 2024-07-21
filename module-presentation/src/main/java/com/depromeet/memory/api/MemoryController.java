@@ -27,16 +27,18 @@ public class MemoryController implements MemoryApi {
     }
 
     @GetMapping("/{memoryId}")
-    public ApiResponse<MemoryResponse> read(@PathVariable("memoryId") Long memoryId) {
-        MemoryResponse response = memoryFacade.findById(memoryId);
+    public ApiResponse<MemoryResponse> read(
+            @LoginMember Long memberId, @PathVariable("memoryId") Long memoryId) {
+        MemoryResponse response = memoryFacade.findById(memberId, memoryId);
         return ApiResponse.success(MemorySuccessType.GET_RESULT_SUCCESS, response);
     }
 
     @PatchMapping("/{memoryId}")
     public ApiResponse<MemoryResponse> update(
+            @LoginMember Long memberId,
             @PathVariable("memoryId") Long memoryId,
             @Valid @RequestBody MemoryUpdateRequest memoryUpdateRequest) {
-        MemoryResponse response = memoryFacade.update(memoryId, memoryUpdateRequest);
+        MemoryResponse response = memoryFacade.update(memberId, memoryId, memoryUpdateRequest);
         return ApiResponse.success(MemorySuccessType.PATCH_RESULT_SUCCESS, response);
     }
 
