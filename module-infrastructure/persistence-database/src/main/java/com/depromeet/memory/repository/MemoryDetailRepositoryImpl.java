@@ -25,8 +25,4 @@ public class MemoryDetailRepositoryImpl implements MemoryDetailRepository {
                                 entity.update(MemoryDetailEntity.from(updateMemoryDetail))
                                         .toModel());
     }
-
-    public Optional<MemoryDetail> findById(Long id) {
-        return memoryDetailJpaRepository.findById(id).map(MemoryDetailEntity::toModel);
-    }
 }
