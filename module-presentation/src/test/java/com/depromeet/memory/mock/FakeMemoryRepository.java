@@ -43,16 +43,6 @@ public class FakeMemoryRepository implements MemoryRepository {
     }
 
     @Override
-    public Slice<Memory> getSliceMemoryByMemberIdAndCursorId(
-            Long memberId,
-            Long cursorId,
-            LocalDate cursorRecordAt,
-            Pageable pageable,
-            LocalDate recordAt) {
-        return null;
-    }
-
-    @Override
     public Slice<Memory> findPrevMemoryByMemberId(
             Long memberId,
             Long cursorId,

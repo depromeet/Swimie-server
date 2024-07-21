@@ -11,6 +11,7 @@ import com.depromeet.memory.repository.MemoryRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -133,7 +134,7 @@ public class TimelineServiceImpl implements TimelineService {
     }
 
     private List<StrokeResponseDto> strokeToDto(List<Stroke> strokes) {
-        if (strokes == null || strokes.isEmpty()) return null;
+        if (strokes == null || strokes.isEmpty()) return new ArrayList<>();
 
         return strokes.stream()
                 .map(
@@ -156,7 +157,7 @@ public class TimelineServiceImpl implements TimelineService {
     }
 
     private List<MemoryImagesDto> imagesToDto(List<Image> images) {
-        if (images == null || images.isEmpty()) return null;
+        if (images == null || images.isEmpty()) return new ArrayList<>();
 
         return images.stream()
                 .map(
@@ -177,7 +178,6 @@ public class TimelineServiceImpl implements TimelineService {
                 .content(content)
                 .pageSize(result.getSize())
                 .pageNumber(result.getNumber())
-                .hasPrevious(result.hasPrevious())
                 .hasNext(result.hasNext())
                 .build();
     }
