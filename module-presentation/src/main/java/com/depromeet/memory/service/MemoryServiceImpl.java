@@ -1,22 +1,24 @@
 package com.depromeet.memory.service;
 
+import com.depromeet.exception.ForbiddenException;
 import com.depromeet.exception.InternalServerException;
 import com.depromeet.exception.NotFoundException;
-import com.depromeet.exception.UnauthorizedException;
 import com.depromeet.member.Member;
 import com.depromeet.member.repository.MemberRepository;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.MemoryDetail;
+import com.depromeet.memory.Stroke;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
-import com.depromeet.memory.dto.response.MemoryResponse;
+import com.depromeet.memory.dto.request.MemoryUpdateRequest;
 import com.depromeet.memory.repository.MemoryDetailRepository;
 import com.depromeet.memory.repository.MemoryRepository;
 import com.depromeet.pool.Pool;
 import com.depromeet.pool.repository.PoolRepository;
 import com.depromeet.security.AuthorizationUtil;
-import com.depromeet.type.member.MemberErrorType;
+import com.depromeet.type.memory.MemoryDetailErrorType;
 import com.depromeet.type.memory.MemoryErrorType;
 import com.depromeet.type.pool.PoolErrorType;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,33 +35,22 @@ public class MemoryServiceImpl implements MemoryService {
     private final PoolRepository poolRepository;
 
     @Transactional
-    public Memory save(MemoryCreateRequest memoryCreateRequest) {
-        Long loginId = authorizationUtil.getLoginId();
-        Member writer =
-                memberRepository
-                        .findById(loginId)
-                        .orElseThrow(() -> new UnauthorizedException(MemberErrorType.NOT_FOUND));
-        MemoryDetail memoryDetail = getMemoryDetail(memoryCreateRequest);
+    public Memory save(Member writer, MemoryCreateRequest request) {
+        MemoryDetail memoryDetail = getMemoryDetail(request);
         if (memoryDetail != null) {
             memoryDetail = memoryDetailRepository.save(memoryDetail);
         }
-        Pool pool = null;
-        if (memoryCreateRequest.getPoolId() != null) {
-            pool =
-                    poolRepository
-                            .findById(memoryCreateRequest.getPoolId())
-                            .orElseThrow(() -> new NotFoundException(PoolErrorType.NOT_FOUND));
-        }
+        Pool pool = poolRepository.findById(request.getPoolId()).orElse(null);
         Memory memory =
                 Memory.builder()
                         .member(writer)
                         .pool(pool)
                         .memoryDetail(memoryDetail)
-                        .recordAt(memoryCreateRequest.getRecordAt())
-                        .startTime(memoryCreateRequest.getStartTime())
-                        .endTime(memoryCreateRequest.getEndTime())
-                        .lane(memoryCreateRequest.getLane())
-                        .diary(memoryCreateRequest.getDiary())
+                        .recordAt(request.getRecordAt())
+                        .startTime(request.getStartTime())
+                        .endTime(request.getEndTime())
+                        .lane(request.getLane())
+                        .diary(request.getDiary())
                         .build();
         if (memory == null) {
             throw new InternalServerException(MemoryErrorType.CREATE_FAILED);
@@ -68,12 +59,72 @@ public class MemoryServiceImpl implements MemoryService {
     }
 
     @Override
-    public MemoryResponse findById(Long memoryId) {
-        Memory memory =
-                memoryRepository
-                        .findById(memoryId)
-                        .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND));
-        return MemoryResponse.from(memory);
+    public Memory findById(Long memoryId) {
+        return memoryRepository
+                .findById(memoryId)
+                .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND));
+    }
+
+    @Override
+    @Transactional
+    public Memory update(
+            Long memoryId, MemoryUpdateRequest memoryUpdateRequest, List<Stroke> strokes) {
+        Memory memory = findById(memoryId);
+
+        validateMemoryMemberMismatch(memory);
+
+        // MemoryDetail 수정
+        MemoryDetail updateMemoryDetail =
+                MemoryDetail.builder()
+                        .item(memoryUpdateRequest.getItem())
+                        .heartRate(memoryUpdateRequest.getHeartRate())
+                        .pace(memoryUpdateRequest.getPace())
+                        .kcal(memoryUpdateRequest.getKcal())
+                        .build();
+        if (memory.getMemoryDetail() != null) {
+            Long memoryDetailId = memory.getMemoryDetail().getId();
+            updateMemoryDetail =
+                    memoryDetailRepository
+                            .update(memoryDetailId, updateMemoryDetail)
+                            .orElseThrow(
+                                    () -> new NotFoundException(MemoryDetailErrorType.NOT_FOUND));
+        } else {
+            updateMemoryDetail = memoryDetailRepository.save(updateMemoryDetail);
+        }
+
+        // Pool 정보 찾기
+        Pool updatePool = memory.getPool();
+        if (memoryUpdateRequest.getPoolId() != null) {
+            updatePool =
+                    poolRepository
+                            .findById(memoryUpdateRequest.getPoolId())
+                            .orElseThrow(() -> new NotFoundException(PoolErrorType.NOT_FOUND));
+        }
+
+        // Memory 수정
+        Memory updateMemory =
+                Memory.builder()
+                        .member(memory.getMember())
+                        .pool(updatePool)
+                        .memoryDetail(updateMemoryDetail)
+                        .strokes(strokes)
+                        .recordAt(memoryUpdateRequest.getRecordAt())
+                        .startTime(memoryUpdateRequest.getStartTime())
+                        .endTime(memoryUpdateRequest.getEndTime())
+                        .lane(memoryUpdateRequest.getLane())
+                        .diary(memoryUpdateRequest.getDiary())
+                        .build();
+
+        return memoryRepository
+                .update(memoryId, updateMemory)
+                .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND));
+    }
+
+    private void validateMemoryMemberMismatch(Memory memory) {
+        Long loginId = authorizationUtil.getLoginId();
+        if (!memory.getMember().getId().equals(loginId)) {
+            throw new ForbiddenException(MemoryErrorType.UPDATE_FAILED);
+        }
     }
 
     private MemoryDetail getMemoryDetail(MemoryCreateRequest memoryCreateRequest) {

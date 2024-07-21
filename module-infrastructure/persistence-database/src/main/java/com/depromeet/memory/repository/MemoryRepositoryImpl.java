@@ -35,6 +35,13 @@ public class MemoryRepositoryImpl implements MemoryRepository {
         return memoryJpaRepository.findById(memoryId).map(MemoryEntity::toModel);
     }
 
+    @Override
+    public Optional<Memory> update(Long memoryId, Memory memoryUpdate) {
+        return memoryJpaRepository
+                .findById(memoryId)
+                .map(entity -> entity.update(MemoryEntity.from(memoryUpdate)).toModel());
+    }
+
     // ---- 날짜 선택 후 위아래 무한 스크롤 구현
 
     @Override

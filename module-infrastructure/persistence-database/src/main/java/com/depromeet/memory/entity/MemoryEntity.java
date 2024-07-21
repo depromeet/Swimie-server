@@ -156,4 +156,17 @@ public class MemoryEntity {
     public String updateDiary(String diary) {
         return this.diary = diary;
     }
+
+    public MemoryEntity update(MemoryEntity me) {
+        if (me.getPool() != null) this.pool = me.getPool();
+        if (me.getMemoryDetail() != null) this.memoryDetail = me.getMemoryDetail();
+        if (me.getStrokes() != null) this.strokes = me.getStrokes();
+        if (me.getImages() != null) this.images = me.getImages();
+        if (me.getRecordAt() != null) this.recordAt = me.getRecordAt();
+        if (me.getStartTime() != null) this.startTime = me.getStartTime();
+        if (me.getEndTime() != null) this.endTime = me.getEndTime();
+        if (me.getLane() != null) this.lane = me.getLane();
+        if (me.getDiary() != null) this.diary = me.getDiary();
+        return this;
+    }
 }

@@ -1,6 +1,8 @@
 package com.depromeet.memory.mock;
 
+import com.depromeet.pool.FavoritePool;
 import com.depromeet.pool.Pool;
+import com.depromeet.pool.PoolSearch;
 import com.depromeet.pool.repository.PoolRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +18,45 @@ public class FakePoolRepository implements PoolRepository {
     }
 
     @Override
+    public List<FavoritePool> findFavoritePools(Long memberId) {
+        return null;
+    }
+
+    @Override
+    public List<PoolSearch> findSearchedPools(Long memberId) {
+        return null;
+    }
+
+    @Override
     public Optional<Pool> findById(Long poolId) {
         return data.stream().filter(item -> item.getId().equals(poolId)).findAny();
+    }
+
+    @Override
+    public Optional<FavoritePool> findFavoritePoolById(Long favoritePoolId) {
+        return Optional.empty();
     }
 
     @Override
     public Pool save(Pool pool) {
         return null;
     }
+
+    @Override
+    public PoolSearch savePoolSearch(PoolSearch poolSearch) {
+        return null;
+    }
+
+    @Override
+    public FavoritePool saveFavoritePool(FavoritePool favoritePool) {
+        return null;
+    }
+
+    @Override
+    public boolean existsFavoritePool(FavoritePool favoritePool) {
+        return false;
+    }
+
+    @Override
+    public void deleteFavoritePool(FavoritePool favoritePool) {}
 }

@@ -1,11 +1,19 @@
 package com.depromeet.pool.api;
 
 import com.depromeet.dto.response.ApiResponse;
-import com.depromeet.pool.dto.response.PoolResponseDto;
+import com.depromeet.pool.dto.request.FavoritePoolCreateRequest;
+import com.depromeet.pool.dto.response.PoolInitialResponse;
+import com.depromeet.pool.dto.response.PoolSearchResponse;
 import com.depromeet.pool.service.PoolService;
+import com.depromeet.security.LoginMember;
 import com.depromeet.type.pool.PoolSuccessType;
+import jakarta.validation.Valid;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,9 +25,28 @@ public class PoolController implements PoolApi {
     private final PoolService poolService;
 
     @GetMapping("/search")
-    public ApiResponse<PoolResponseDto> searchPoolsByName(
-            @RequestParam(required = false) String nameQuery) {
+    public ApiResponse<PoolSearchResponse> searchPoolsByNameQuery(
+            @RequestParam(value = "nameQuery") String nameQuery) {
         return ApiResponse.success(
                 PoolSuccessType.SEARCH_SUCCESS, poolService.findPoolsByName(nameQuery));
+    }
+
+    @GetMapping("/search/initial")
+    public ApiResponse<PoolInitialResponse> getFavoriteAndSearchedPools(
+            @LoginMember Long memberId) {
+        return ApiResponse.success(
+                PoolSuccessType.INITIAL_GET_SUCCESS,
+                poolService.getFavoriteAndSearchedPools(memberId));
+    }
+
+    @PutMapping("/favorite")
+    public ResponseEntity<URI> createFavoritePool(
+            @LoginMember Long memberId, @Valid @RequestBody FavoritePoolCreateRequest request) {
+        String uri = poolService.putFavoritePool(memberId, request);
+
+        if (uri == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.created(URI.create(uri)).build();
     }
 }
