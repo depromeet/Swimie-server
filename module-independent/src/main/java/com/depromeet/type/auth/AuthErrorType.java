@@ -7,7 +7,8 @@ public enum AuthErrorType implements ErrorType {
     JWT_TOKEN_EXPIRED("AUTH_2", "만료된 JWT 토큰입니다"),
     REFRESH_TOKEN_NOT_MATCH("AUTH_3", "일치하지 않는 Refresh 토큰입니다"),
     LOGIN_FAILED("AUTH_4", "로그인에 실패하였습니다"),
-    NOT_FOUND("AUTH_5", "소셜로그인 계정 정보가 존재하지 않습니다");
+    NOT_FOUND("AUTH_5", "소셜로그인 계정 정보가 존재하지 않습니다"),
+    REFRESH_TOKEN_NOT_FOUND("AUTH_6", "Refresh 토큰이 존재하지 않습니다");
 
     private final String code;
     private final String message;

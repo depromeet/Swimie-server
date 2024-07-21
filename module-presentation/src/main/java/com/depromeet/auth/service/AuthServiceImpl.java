@@ -1,13 +1,18 @@
 package com.depromeet.auth.service;
 
+import static com.depromeet.security.constant.SecurityConstant.BEARER_PREFIX;
+import static com.depromeet.type.auth.AuthErrorType.INVALID_JWT_TOKEN;
+
 import com.depromeet.auth.dto.request.GoogleLoginRequest;
 import com.depromeet.auth.dto.request.KakaoLoginRequest;
 import com.depromeet.auth.dto.response.AccountProfileResponse;
 import com.depromeet.auth.dto.response.JwtTokenResponseDto;
 import com.depromeet.auth.dto.response.KakaoAccountProfileResponse;
+import com.depromeet.auth.dto.response.RefreshTokenDto;
 import com.depromeet.auth.util.GoogleClient;
 import com.depromeet.auth.util.KakaoClient;
 import com.depromeet.exception.NotFoundException;
+import com.depromeet.exception.UnauthorizedException;
 import com.depromeet.member.Member;
 import com.depromeet.member.service.MemberService;
 import com.depromeet.type.auth.AuthErrorType;
@@ -48,5 +53,16 @@ public class AuthServiceImpl implements AuthService {
                         profile.getId(), profile.getNickname(), profile.getEmail());
         final Member member = memberService.findOrCreateMemberBy(account);
         return jwtTokenService.generateToken(member.getId(), member.getRole());
+    }
+
+    @Override
+    public RefreshTokenDto getRefreshTokenFromExpiredAccessToken(String accessToken) {
+        if (!accessToken.startsWith(BEARER_PREFIX.getValue())) {
+            throw new UnauthorizedException(INVALID_JWT_TOKEN);
+        }
+
+        String refreshToken =
+                BEARER_PREFIX.getValue() + jwtTokenService.getRefreshToken(accessToken);
+        return RefreshTokenDto.builder().refreshToken(refreshToken).build();
     }
 }

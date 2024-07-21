@@ -34,65 +34,72 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        log.info("start jwt filter");
         String url = request.getRequestURI();
         if (noAuthentication(url)) {
             filterChain.doFilter(request, response);
             return;
         }
+
         Optional<String> optionalAccessToken =
                 Optional.ofNullable(request.getHeader(ACCESS_HEADER.getValue()));
+        Optional<String> optionalRefreshToken =
+                Optional.ofNullable(request.getHeader(REFRESH_HEADER.getValue()));
 
-        if (optionalAccessToken.isEmpty()) {
-            log.info("access token is empty");
+        if (optionalAccessToken.isEmpty()
+                && optionalRefreshToken.isEmpty()) { // accessToken, refreshToken 둘다 없는 경우
             filterChain.doFilter(request, response);
             return;
         }
+
+        if (optionalAccessToken.isEmpty()) { // accessToken 만 없는 경우
+            reissueJWTWithRefreshToken(request, response, filterChain);
+            return;
+        }
+
         String accessToken = optionalAccessToken.get();
         if (!accessToken.startsWith(BEARER_PREFIX.getValue())) {
-            log.info("not starts with bearer ");
             filterChain.doFilter(request, response);
             return;
         }
 
         accessToken = accessToken.substring(7);
-
         Optional<AccessTokenDto> optionalAccessTokenDto = parseAccessToken(accessToken);
 
         if (optionalAccessTokenDto.isPresent()) {
-            AccessTokenDto accessTokenDto = optionalAccessTokenDto.get();
+            AccessTokenDto accessTokenDto = optionalAccessTokenDto.get(); // 액서스 토큰이 만료되지 않은 경우
             setAuthentication(accessTokenDto);
-        } else {
-            // 클라이언트에서 refreshToken을 쿠키에 추가할 경우
-            /* Optional<String> optionalRefreshToken = Optional.ofNullable(WebUtils.getCookie(request, REFRESH_HEADER.getValue()))
-                    .map(Cookie::getValue);
-            */
-            // 그냥 헤더에 추가해서 보내줄 경우
-            Optional<String> optionalRefreshToken =
-                    Optional.ofNullable(request.getHeader(REFRESH_HEADER.getValue()));
+        } // 만료된 경우 401 error
+        filterChain.doFilter(request, response);
+    }
 
-            if (optionalRefreshToken.isEmpty()) {
-                log.info("failed to find refresh token");
-                filterChain.doFilter(request, response);
-                return;
-            }
-            String refreshToken = optionalRefreshToken.get();
+    private void reissueJWTWithRefreshToken(
+            HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws IOException, ServletException {
+        Optional<String> optionalRefreshToken =
+                Optional.ofNullable(request.getHeader(REFRESH_HEADER.getValue()));
 
-            Optional<RefreshTokenDto> optionalRefreshTokenDto = parseRefreshToken(refreshToken);
-
-            if (optionalRefreshTokenDto.isEmpty()) {
-                log.info("failed to parse refresh token");
-                filterChain.doFilter(request, response);
-                return;
-            }
-
-            RefreshTokenDto refreshTokenDto = optionalRefreshTokenDto.get();
-
-            jwtTokenService.retrieveRefreshToken(refreshTokenDto, refreshToken);
-            AccessTokenDto reissuedAccessToken =
-                    addReissuedJwtTokenToHeader(response, accessToken, refreshToken);
-            setAuthentication(reissuedAccessToken);
+        if (optionalRefreshToken.isEmpty()) {
+            filterChain.doFilter(request, response);
+            return;
         }
+
+        String refreshToken = optionalRefreshToken.get();
+        if (!refreshToken.startsWith(BEARER_PREFIX.getValue())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        refreshToken = refreshToken.substring(7);
+
+        Optional<RefreshTokenDto> optionalRefreshTokenDto = parseRefreshToken(refreshToken);
+        if (optionalRefreshTokenDto.isEmpty()) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        RefreshTokenDto refreshTokenDto = optionalRefreshTokenDto.get();
+        jwtTokenService.retrieveRefreshToken(refreshTokenDto, refreshToken);
+        AccessTokenDto reissuedAccessToken = addReissuedJwtTokenToHeader(response, refreshToken);
+        setAuthentication(reissuedAccessToken);
         filterChain.doFilter(request, response);
     }
 
@@ -115,8 +122,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.error(e.getMessage());
             throw new UnauthorizedException(INVALID_JWT_TOKEN);
         } catch (ExpiredJwtException e) {
-            log.error(e.getMessage());
-            throw new UnauthorizedException(JWT_TOKEN_EXPIRED);
+            log.error("JWT expired");
+            return Optional.empty();
         } catch (Exception e) {
             log.error(e.getMessage());
             throw e;
@@ -142,12 +149,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private AccessTokenDto addReissuedJwtTokenToHeader(
-            HttpServletResponse response, String accessToken, String refreshToken) {
-        AccessTokenDto reissuedAccessToken = jwtTokenService.reissueAccessToken(accessToken);
+            HttpServletResponse response, String refreshToken) {
         RefreshTokenDto reissuedRefreshToken = jwtTokenService.reissueRefreshToken(refreshToken);
+        AccessTokenDto reissuedAccessToken =
+                jwtTokenService.reissueAccessToken(reissuedRefreshToken.memberId());
 
         response.addHeader(ACCESS_HEADER.getValue(), reissuedAccessToken.accessToken());
-        response.addHeader(REFRESH_HEADER.getValue(), reissuedRefreshToken.refreshToken());
         return reissuedAccessToken;
     }
 
