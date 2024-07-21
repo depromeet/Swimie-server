@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.depromeet.member.Member;
 import com.depromeet.member.MemberRole;
 import com.depromeet.memory.Memory;
+import com.depromeet.memory.Stroke;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.StrokeCreateRequest;
 import com.depromeet.memory.dto.response.TimelineResponseDto;
@@ -86,33 +87,35 @@ public class TimelineServiceTest {
                         .startTime(LocalTime.of(15, 0))
                         .endTime(LocalTime.of(15, 50))
                         .build();
-        return memoryService.save(memoryCreateRequest);
+        return memoryService.save(member, memoryCreateRequest);
     }
 
-    void saveMeterStroke() {
+    List<Stroke> saveMeterStroke() {
         Integer meter = 50;
         List<StrokeCreateRequest> scr = new ArrayList<>();
         for (int i = 0; i < STROKE_NAME_LIST.size(); i++) {
             scr.add(new StrokeCreateRequest(STROKE_NAME_LIST.get(i), null, meter));
             expectedTotalMeter += meter;
         }
-        strokeService.saveAll(memory, scr);
+        return strokeService.saveAll(memory, scr);
     }
 
-    void saveLapsStroke() {
+    List<Stroke> saveLapsStroke() {
         List<StrokeCreateRequest> scr = new ArrayList<>();
         Short laps = 2;
         for (int i = 0; i < STROKE_NAME_LIST.size(); i++) {
             scr.add(new StrokeCreateRequest(STROKE_NAME_LIST.get(i), laps, null));
             expectedTotalMeter += laps * lane;
         }
-        strokeService.saveAll(memory, scr);
+        return strokeService.saveAll(memory, scr);
     }
 
     @Test
     void TimelineResponseDto로_변환_테스트_Stroke_meter로_저장() {
         // given
-        saveMeterStroke();
+        List<Stroke> strokes = saveMeterStroke();
+        memory.setStrokes(strokes);
+        memoryRepository.save(memory);
 
         // when
         TimelineResponseDto result = timelineService.mapToTimelineResponseDto(memory);
@@ -124,7 +127,9 @@ public class TimelineServiceTest {
     @Test
     void TimelineResponseDto로_변환_테스트_Stroke_laps로_저장() {
         // given
-        saveLapsStroke();
+        List<Stroke> strokes = saveLapsStroke();
+        memory.setStrokes(strokes);
+        memoryRepository.save(memory);
 
         // when
         TimelineResponseDto result = timelineService.mapToTimelineResponseDto(memory);
