@@ -3,9 +3,11 @@ package com.depromeet.security;
 import com.depromeet.auth.service.JwtTokenService;
 import com.depromeet.member.repository.MemberRepository;
 import com.depromeet.security.filter.JwtAuthenticationFilter;
+import com.depromeet.security.filter.JwtExceptionFilter;
 import com.depromeet.security.oauth.CustomOAuth2UserService;
 import com.depromeet.security.oauth.handler.OAuth2FailureHandler;
 import com.depromeet.security.oauth.handler.OAuth2SuccessHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -44,8 +46,11 @@ public class SecurityConfig {
         // HTTP Basic 인증 방식 disable
         http.httpBasic(HttpBasicConfigurer::disable);
 
-        // JWTFilter 추가
+        // JWT Filter 추가
         http.addFilterAfter(jwtAuthenticationFilter(), OAuth2LoginAuthenticationFilter.class);
+
+        // JWT Error Handle
+        http.addFilterBefore(jwtExceptionFilter(), JwtAuthenticationFilter.class);
 
         // oauth2
         http.oauth2Login(
@@ -69,7 +74,8 @@ public class SecurityConfig {
                                 .permitAll() // oauth2
                                 .requestMatchers("/swagger-ui/**", "/v3/**", "/favicon.ico")
                                 .permitAll() // swagger
-                                .requestMatchers("/api/v1/auth/**", "/api/login/**")
+                                .requestMatchers(
+                                        "/api/v1/auth/**", "/api/login/kakao", "/api/login/google")
                                 .permitAll() // 로그인 및 회원가입
                                 .anyRequest()
                                 .authenticated());
@@ -109,6 +115,11 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(jwtTokenService);
+    }
+
+    @Bean
+    public JwtExceptionFilter jwtExceptionFilter() {
+        return new JwtExceptionFilter(new ObjectMapper());
     }
 
     @Bean
