@@ -78,7 +78,7 @@ public class MemoryRepositoryImpl implements MemoryRepository {
     public Slice<Memory> findNextMemoryByMemberId(
             Long memberId,
             Long cursorId,
-            LocalDate cursorRecordAt, // 7/20 이라 가정
+            LocalDate cursorRecordAt,
             Pageable pageable,
             LocalDate recordAt) {
         List<MemoryEntity> result =

@@ -48,7 +48,7 @@ public class MemberEntity {
                 .name(member.getName())
                 .email(member.getEmail())
                 .role(member.getRole())
-                .refreshToken(getRefreshTokenOrNull(member))
+                .refreshToken(member.getRefreshToken())
                 .build();
     }
 
@@ -60,9 +60,5 @@ public class MemberEntity {
                 .role(role)
                 .refreshToken(refreshToken)
                 .build();
-    }
-
-    private static String getRefreshTokenOrNull(Member member) {
-        return member.getRefreshToken() != null ? member.getRefreshToken() : null;
     }
 }
