@@ -10,7 +10,9 @@ import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
+import com.depromeet.memory.dto.response.CalendarResponse;
 import com.depromeet.memory.dto.response.MemoryResponse;
+import com.depromeet.memory.service.CalendarService;
 import com.depromeet.memory.service.MemoryService;
 import com.depromeet.memory.service.StrokeService;
 import com.depromeet.memory.service.TimelineService;
@@ -24,12 +26,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemoryFacade {
+    private final PoolService poolService;
     private final MemberService memberService;
     private final MemoryService memoryService;
     private final StrokeService strokeService;
-    private final ImageUploadService imageUploadService;
     private final TimelineService timelineService;
-    private final PoolService poolService;
+    private final CalendarService calendarService;
+    private final ImageUploadService imageUploadService;
 
     @Transactional
     public void create(Long memberId, MemoryCreateRequest request) {
@@ -57,5 +60,17 @@ public class MemoryFacade {
     public CustomSliceResponse<?> getTimelineByMemberIdAndCursor(
             Long memberId, Long cursorId, String recordAt, Integer size) {
         return timelineService.getTimelineByMemberIdAndCursor(memberId, cursorId, recordAt, size);
+    }
+
+    public CalendarResponse getCalendar(Long memberId, Integer year, Short month) {
+        List<Memory> calendarMemories =
+                calendarService.getCalendarByYearAndMonth(memberId, year, month);
+
+        CalendarResponse response = new CalendarResponse();
+        for (Memory calendarMemory : calendarMemories) {
+            response.addMemory(calendarMemory);
+        }
+
+        return response;
     }
 }

@@ -118,4 +118,9 @@ public class FakeMemoryRepository implements MemoryRepository {
             LocalDate recordAt) {
         return null;
     }
+
+    @Override
+    public List<Memory> getCalendarByYearAndMonth(Long memberId, Integer year, Short month) {
+        return null;
+    }
 }

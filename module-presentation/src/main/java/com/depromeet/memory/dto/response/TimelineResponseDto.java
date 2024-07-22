@@ -17,7 +17,7 @@ public record TimelineResponseDto(
         Short heartRate,
         String pace,
         Integer kcal,
-        List<StrokeResponseDto> strokes,
+        List<StrokeResponse> strokes,
         List<MemoryImagesDto> images) {
     @Builder
     public TimelineResponseDto {}
