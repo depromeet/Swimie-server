@@ -7,16 +7,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
@@ -33,12 +33,27 @@ public class MemberEntity {
 
     @Column private String refreshToken;
 
+    private Integer goal;
+
     @Builder
-    private MemberEntity(Long id, String name, String email, MemberRole role) {
+    public MemberEntity(
+            Long id,
+            String name,
+            String email,
+            MemberRole role,
+            String refreshToken,
+            Integer goal) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;
+        this.refreshToken = refreshToken;
+        this.goal = goal;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.goal = 1000;
     }
 
     public static MemberEntity from(Member member) {
@@ -51,6 +66,6 @@ public class MemberEntity {
     }
 
     public Member toModel() {
-        return Member.builder().id(id).name(name).email(email).role(role).build();
+        return Member.builder().id(id).name(name).email(email).role(role).goal(goal).build();
     }
 }

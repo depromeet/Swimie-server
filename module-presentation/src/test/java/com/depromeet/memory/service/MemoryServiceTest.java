@@ -26,7 +26,6 @@ class MemoryServiceTest {
     private FakeMemoryDetailRepository memoryDetailRepository;
 
     private FakeMemberRepository memberRepository;
-    private FakeAuthorizationUtil authorizationUtil;
 
     private FakePoolRepository poolRepository;
 
@@ -48,7 +47,6 @@ class MemoryServiceTest {
         memoryDetailRepository = new FakeMemoryDetailRepository();
 
         memberRepository = new FakeMemberRepository();
-        authorizationUtil = new FakeAuthorizationUtil(userId);
 
         poolRepository = new FakePoolRepository();
 
@@ -64,12 +62,7 @@ class MemoryServiceTest {
 
         // MemoryService
         memoryService =
-                new MemoryServiceImpl(
-                        memoryRepository,
-                        memoryDetailRepository,
-                        memberRepository,
-                        authorizationUtil,
-                        poolRepository);
+                new MemoryServiceImpl(poolRepository, memoryRepository, memoryDetailRepository);
     }
 
     @Test
@@ -83,7 +76,7 @@ class MemoryServiceTest {
                         .build();
 
         // when
-        Memory memory = memoryService.save(memoryCreateRequest);
+        Memory memory = memoryService.save(member1, memoryCreateRequest);
 
         // then
         Assertions.assertThat(memory.getRecordAt()).isEqualTo(LocalDate.of(2024, 7, 15));
@@ -100,7 +93,7 @@ class MemoryServiceTest {
                         .startTime(LocalTime.of(15, 0))
                         .endTime(LocalTime.of(15, 50))
                         .build();
-        Memory memory = memoryService.save(memoryCreateRequest);
+        Memory memory = memoryService.save(member1, memoryCreateRequest);
         MemoryUpdateRequest memoryUpdateRequest =
                 MemoryUpdateRequest.builder()
                         .startTime(LocalTime.of(15, 30))
@@ -130,7 +123,7 @@ class MemoryServiceTest {
                         .startTime(LocalTime.of(15, 0))
                         .endTime(LocalTime.of(15, 50))
                         .build();
-        Memory memory = memoryService.save(memoryCreateRequest);
+        Memory memory = memoryService.save(member1, memoryCreateRequest);
         MemoryUpdateRequest memoryUpdateRequest =
                 MemoryUpdateRequest.builder()
                         .startTime(LocalTime.of(15, 30))
