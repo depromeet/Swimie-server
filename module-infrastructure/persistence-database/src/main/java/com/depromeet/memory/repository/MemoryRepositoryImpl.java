@@ -63,6 +63,15 @@ public class MemoryRepositoryImpl implements MemoryRepository {
     }
 
     @Override
+    public Optional<Memory> findByRecordAt(LocalDate recordAt) {
+        Optional<MemoryEntity> nullableMemoryEntity = memoryJpaRepository.findByRecordAt(recordAt);
+        if (nullableMemoryEntity.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(nullableMemoryEntity.get().toModel());
+    }
+
+    @Override
     public Optional<Memory> update(Long memoryId, Memory memoryUpdate) {
         return memoryJpaRepository
                 .findById(memoryId)

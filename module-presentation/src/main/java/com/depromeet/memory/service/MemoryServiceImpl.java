@@ -1,9 +1,9 @@
 package com.depromeet.memory.service;
 
+import com.depromeet.exception.BadRequestException;
 import com.depromeet.exception.InternalServerException;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.member.Member;
-import com.depromeet.member.repository.MemberRepository;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.MemoryDetail;
 import com.depromeet.memory.Stroke;
@@ -13,11 +13,11 @@ import com.depromeet.memory.repository.MemoryDetailRepository;
 import com.depromeet.memory.repository.MemoryRepository;
 import com.depromeet.pool.Pool;
 import com.depromeet.pool.repository.PoolRepository;
-import com.depromeet.security.AuthorizationUtil;
 import com.depromeet.type.memory.MemoryDetailErrorType;
 import com.depromeet.type.memory.MemoryErrorType;
 import com.depromeet.type.pool.PoolErrorType;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,17 +25,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class MemoryServiceImpl implements MemoryService {
+    private final PoolRepository poolRepository;
     private final MemoryRepository memoryRepository;
     private final MemoryDetailRepository memoryDetailRepository;
-
-    private final MemberRepository memberRepository;
-    private final AuthorizationUtil authorizationUtil;
-
-    private final PoolRepository poolRepository;
 
     @Transactional
     public Memory save(Member writer, MemoryCreateRequest request) {
         MemoryDetail memoryDetail = getMemoryDetail(request);
+        Optional<Memory> memoryByRecordAt = memoryRepository.findByRecordAt(request.getRecordAt());
+
+        if (memoryByRecordAt.isPresent()) {
+            throw new BadRequestException(MemoryErrorType.ALREADY_CREATED);
+        }
+
         if (memoryDetail != null) {
             memoryDetail = memoryDetailRepository.save(memoryDetail);
         }

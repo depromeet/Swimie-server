@@ -43,6 +43,11 @@ public class FakeMemoryRepository implements MemoryRepository {
     }
 
     @Override
+    public Optional<Memory> findByRecordAt(LocalDate recordAt) {
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<Memory> update(Long memoryId, Memory memoryUpdate) {
         Optional<Memory> md = data.stream().filter(item -> item.getId().equals(memoryId)).findAny();
         if (md.isEmpty()) {
