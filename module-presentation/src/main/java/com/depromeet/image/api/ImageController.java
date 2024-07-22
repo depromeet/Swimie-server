@@ -11,7 +11,6 @@ import com.depromeet.image.service.ImageUploadService;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,7 +24,7 @@ public class ImageController implements ImageApi {
     private final ImageDeleteService imageDeleteService;
 
     @PostMapping
-    public ApiResponse<?> uploadImages(
+    public ApiResponse<List<Long>> uploadImages(
             @RequestPart(value = "images") @NotNull List<MultipartFile> images) {
         List<Long> imageIds = imageUploadService.uploadMemoryImages(images);
 
@@ -34,23 +33,24 @@ public class ImageController implements ImageApi {
 
     @PatchMapping("/memory/{memoryId}")
     public ApiResponse<?> updateImages(
-            @PathVariable Long memoryId, @RequestPart List<MultipartFile> images) {
+            @PathVariable("memoryId") Long memoryId,
+            @RequestPart(value = "images") List<MultipartFile> images) {
         imageUpdateService.updateImages(memoryId, images);
 
         return ApiResponse.success(UPDATE_IMAGES_SUCCESS);
     }
 
     @GetMapping("/memory/{memoryId}")
-    public ApiResponse<?> findImages(@PathVariable Long memoryId) {
+    public ApiResponse<List<MemoryImagesDto>> findImages(@PathVariable("memoryId") Long memoryId) {
         List<MemoryImagesDto> memoryImages = imageGetService.findImagesByMemoryId(memoryId);
 
         return ApiResponse.success(GET_IMAGES_SUCCESS, memoryImages);
     }
 
     @DeleteMapping("/memory/{memoryId}")
-    public ResponseEntity<?> deleteImages(@PathVariable Long memoryId) {
+    public ApiResponse<?> deleteImages(@PathVariable("memoryId") Long memoryId) {
         imageDeleteService.deleteAllImagesByMemoryId(memoryId);
 
-        return ResponseEntity.noContent().build();
+        return ApiResponse.success(DELETE_IMAGE_SUCCESS);
     }
 }
