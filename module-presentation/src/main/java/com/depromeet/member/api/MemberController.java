@@ -18,6 +18,7 @@ public class MemberController implements MemberApi {
 
     @GetMapping("/{id}")
     public ApiResponse<MemberFindOneResponseDto> getMember(@PathVariable("id") Long id) {
-        return ApiResponse.success(MemberSuccessType.GET_SUCCESS, memberService.findOneMemberResponseById(id));
+        return ApiResponse.success(
+                MemberSuccessType.GET_SUCCESS, memberService.findOneMemberResponseById(id));
     }
 }
