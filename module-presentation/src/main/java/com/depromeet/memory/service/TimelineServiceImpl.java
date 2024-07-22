@@ -38,7 +38,6 @@ public class TimelineServiceImpl implements TimelineService {
         Pageable pageable =
                 PageRequest.of(0, timeline.getSize(), Sort.by(Sort.Order.desc("recordAt")));
 
-        LocalDate parsedCursorRecordAt = getLocalDateOrNull(timeline.getCursorRecordAt());
         LocalDate parsedDate = getLocalDateOrNull(timeline.getDate());
 
         if (timeline.isShowNewer()) {
@@ -46,7 +45,7 @@ public class TimelineServiceImpl implements TimelineService {
                     memoryRepository.findNextMemoryByMemberId(
                             memberId,
                             timeline.getCursorId(),
-                            parsedCursorRecordAt,
+                            timeline.getCursorRecordAt(),
                             pageable,
                             parsedDate);
         } else {
@@ -54,7 +53,7 @@ public class TimelineServiceImpl implements TimelineService {
                     memoryRepository.findPrevMemoryByMemberId(
                             memberId,
                             timeline.getCursorId(),
-                            parsedCursorRecordAt,
+                            timeline.getCursorRecordAt(),
                             pageable,
                             parsedDate);
         }

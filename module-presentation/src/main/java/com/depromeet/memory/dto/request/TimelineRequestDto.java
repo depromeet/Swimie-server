@@ -1,8 +1,8 @@
 package com.depromeet.memory.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,12 +13,10 @@ public class TimelineRequestDto {
     private Long cursorId;
 
     @Schema(description = "최초 조회 이후 나온 timeline 리스트 중 가장 마지막 요소의 memory recordAt, yyyy-MM")
-    @JsonFormat(pattern = "yyyy-MM")
-    @DateTimeFormat(pattern = "yyyy-MM")
-    private YearMonth cursorRecordAt;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate cursorRecordAt;
 
     @Schema(description = "조회하고 싶은 날짜, yyyy-MM")
-    @JsonFormat(pattern = "yyyy-MM")
     @DateTimeFormat(pattern = "yyyy-MM")
     private YearMonth date;
 
@@ -31,7 +29,7 @@ public class TimelineRequestDto {
 
     public TimelineRequestDto(
             Long cursorId,
-            YearMonth cursorRecordAt,
+            LocalDate cursorRecordAt,
             YearMonth date,
             boolean showNewer,
             Integer size) {
