@@ -45,13 +45,13 @@ public class MemoryFacade {
         Memory memory = memoryService.findById(memoryId);
         validatePermission(memory.getMember().getId(), memberId);
         List<Stroke> strokes = strokeService.updateAll(memory, request.getStrokes());
-        return MemoryResponse.of(memoryService.update(memoryId, request, strokes));
+        return MemoryResponse.from(memoryService.update(memoryId, request, strokes));
     }
 
     public MemoryResponse findById(Long memberId, Long memoryId) {
         Memory memory = memoryService.findById(memoryId);
         validatePermission(memory.getMember().getId(), memberId);
-        return MemoryResponse.of(memory);
+        return MemoryResponse.from(memory);
     }
 
     public CustomSliceResponse<?> getTimelineByMemberIdAndCursor(
