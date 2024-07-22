@@ -41,13 +41,16 @@ public class MemoryController implements MemoryApi {
     }
 
     @GetMapping("/timeline")
-    public ApiResponse<?> timeline(
+    public ApiResponse<?> timelineCalendar(
             @LoginMember Long memberId,
             @RequestParam(value = "cursorId", required = false) Long cursorId,
-            @RequestParam(value = "recordAt", required = false) String recordAt,
+            @RequestParam(value = "cursorRecordAt", required = false) String cursorRecordAt,
+            @RequestParam(value = "date", required = false) String date,
+            @RequestParam(value = "showNewer", required = false) boolean showNewer,
             @RequestParam(value = "size") Integer size) {
-        CustomSliceResponse<?> response =
-                memoryFacade.getTimelineByMemberIdAndCursor(memberId, cursorId, recordAt, size);
-        return ApiResponse.success(MemorySuccessType.GET_TIMELINE_SUCCESS, response);
+        CustomSliceResponse<?> result =
+                memoryFacade.getTimelineByMemberIdAndCursorAndDate(
+                        memberId, cursorId, cursorRecordAt, date, showNewer, size);
+        return ApiResponse.success(MemorySuccessType.GET_TIMELINE_SUCCESS, result);
     }
 }

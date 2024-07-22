@@ -49,8 +49,14 @@ public class MemoryFacade {
         return MemoryResponse.of(memoryService.findById(memoryId));
     }
 
-    public CustomSliceResponse<?> getTimelineByMemberIdAndCursor(
-            Long memberId, Long cursorId, String recordAt, Integer size) {
-        return timelineService.getTimelineByMemberIdAndCursor(memberId, cursorId, recordAt, size);
+    public CustomSliceResponse<?> getTimelineByMemberIdAndCursorAndDate(
+            Long memberId,
+            Long cursorId,
+            String cursorRecordAt,
+            String date,
+            boolean showNewer,
+            int size) {
+        return timelineService.getTimelineByMemberIdAndCursorAndDate(
+                memberId, cursorId, cursorRecordAt, date, showNewer, size);
     }
 }
