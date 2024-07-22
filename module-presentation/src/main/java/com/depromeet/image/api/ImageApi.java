@@ -14,12 +14,12 @@ import org.springframework.web.multipart.MultipartFile;
 public interface ImageApi {
     @Operation(summary = "수영 기록 이미지 업로드")
     ApiResponse<List<Long>> uploadImages(
-            @RequestPart(value = "images") @NotNull List<MultipartFile> images);
+            @RequestPart("images") @NotNull List<MultipartFile> images);
 
     @Operation(summary = "수영 기록 이미지 수정")
     ApiResponse<?> updateImages(
             @PathVariable("memoryId") Long memoryId,
-            @RequestPart(value = "images") List<MultipartFile> images);
+            @RequestPart("images") List<MultipartFile> images);
 
     @Operation(summary = "수영 기록의 이미지 조회")
     ApiResponse<List<MemoryImagesDto>> findImages(@PathVariable("memoryId") Long memoryId);
