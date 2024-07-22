@@ -34,10 +34,13 @@ public interface MemoryApi {
             @Parameter(description = "최초 조회 이후 나온 timeline 리스트 중 가장 마지막 요소의 memory PK")
                     @RequestParam(value = "cursorId", required = false)
                     Long cursorId,
-            @Parameter(description = "최초 조회 이후 나온 timeline 리스트 중 가장 마지막 요소의 memory recordAt")
+            @Parameter(
+                            description =
+                                    "최초 조회 이후 나온 timeline 리스트 중 가장 마지막 요소의 memory recordAt, yyyy-MM",
+                            example = "2024-07")
                     @RequestParam(value = "cursorRecordAt", required = false)
                     String cursorRecordAt,
-            @Parameter(description = "조회하고 싶은 날짜, yyyy-MM-dd", example = "2024-07-15")
+            @Parameter(description = "조회하고 싶은 날짜, yyyy-MM", example = "2024-07")
                     @RequestParam(value = "date", required = false)
                     String date,
             @Parameter(

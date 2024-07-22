@@ -56,12 +56,23 @@ public class TimelineServiceImpl implements TimelineService {
         return mapToCustomSliceResponse(result);
     }
 
-    private LocalDate getLocalDateOrNull(String cursorRecordAt) {
-        LocalDate cursorRecordAtLocalDate = null;
-        if (cursorRecordAt != null && !cursorRecordAt.trim().isEmpty()) {
-            cursorRecordAtLocalDate = LocalDate.parse(cursorRecordAt);
+    private LocalDate getLocalDateOrNull(String date) {
+        LocalDate lastDayOfMonth = null;
+        if (date != null && !date.trim().isEmpty()) {
+            lastDayOfMonth = getLastDayOfMonth(date, lastDayOfMonth);
         }
-        return cursorRecordAtLocalDate;
+        return lastDayOfMonth;
+    }
+
+    private LocalDate getLastDayOfMonth(String date, LocalDate lastDayOfMonth) {
+        String[] dateParts = date.split("-");
+        if (dateParts.length == 2) {
+            int year = Integer.parseInt(dateParts[0]);
+            int month = Integer.parseInt(dateParts[1]);
+            LocalDate firstDayOfMonth = LocalDate.of(year, month, 1);
+            lastDayOfMonth = firstDayOfMonth.withDayOfMonth(firstDayOfMonth.lengthOfMonth());
+        }
+        return lastDayOfMonth;
     }
 
     @Override
