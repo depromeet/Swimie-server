@@ -88,6 +88,7 @@ public class GlobalExceptionAdvice {
     protected ResponseEntity<ApiResponse<?>> handlerConstraintViolationException(
             final ConstraintViolationException ex) {
         log.error(ex.getMessage());
+        log.error("여긴 왜 아니야?");
         return new ResponseEntity<>(
                 ApiResponse.fail(CommonErrorType.VALIDATION_FAILED, 400, ex.toString()),
                 HttpStatus.BAD_REQUEST);
@@ -134,9 +135,11 @@ public class GlobalExceptionAdvice {
     public ResponseEntity<ApiResponse<?>> handlerRuntimeException(
             final RuntimeException ex, final HttpServletRequest request) {
         log.error(ex.getMessage());
-        return new ResponseEntity<>(
-                ApiResponse.fail(CommonErrorType.INTERNAL_SERVER, 500),
-                HttpStatus.INTERNAL_SERVER_ERROR);
+        String[] message = ex.getMessage().split(" ");
+        int code = Integer.parseInt(message[0]);
+        HttpStatus httpStatus = HttpStatus.resolve(code);
+        CommonErrorType errorType = CommonErrorType.valueOf(message[1]);
+        return new ResponseEntity<>(ApiResponse.fail(errorType, code), httpStatus);
     }
 
     /** CUSTOM */
