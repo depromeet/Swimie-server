@@ -39,7 +39,27 @@ public class MemoryRepositoryImpl implements MemoryRepository {
 
     @Override
     public Optional<Memory> findById(Long memoryId) {
-        return memoryJpaRepository.findById(memoryId).map(MemoryEntity::toModel);
+        // select m from MemoryEntity m join fetch m.member join fetch m.memoryDetail join fetch
+        // m.pool join fetch m.strokes where m.id = :memoryId
+        MemoryEntity memoryEntity =
+                queryFactory
+                        .selectFrom(memory)
+                        .join(memory.member, memberEntity)
+                        .fetchJoin()
+                        .leftJoin(memory.memoryDetail, memoryDetailEntity)
+                        .fetchJoin()
+                        .leftJoin(memory.pool, poolEntity)
+                        .fetchJoin()
+                        .leftJoin(memory.strokes, strokeEntity)
+                        .fetchJoin()
+                        .leftJoin(memory.images, imageEntity)
+                        .where(memory.id.eq(memoryId))
+                        .fetchOne();
+
+        if (memoryEntity == null) {
+            return Optional.empty();
+        }
+        return Optional.of(memoryEntity.toModel());
     }
 
     @Override

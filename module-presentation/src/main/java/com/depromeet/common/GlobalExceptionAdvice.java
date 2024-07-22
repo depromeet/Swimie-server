@@ -88,7 +88,6 @@ public class GlobalExceptionAdvice {
     protected ResponseEntity<ApiResponse<?>> handlerConstraintViolationException(
             final ConstraintViolationException ex) {
         log.error(ex.getMessage());
-        log.error("여긴 왜 아니야?");
         return new ResponseEntity<>(
                 ApiResponse.fail(CommonErrorType.VALIDATION_FAILED, 400, ex.toString()),
                 HttpStatus.BAD_REQUEST);

@@ -17,6 +17,7 @@ import com.depromeet.memory.service.MemoryService;
 import com.depromeet.memory.service.StrokeService;
 import com.depromeet.memory.service.TimelineService;
 import com.depromeet.pool.service.PoolService;
+import java.time.YearMonth;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -62,15 +63,14 @@ public class MemoryFacade {
         return timelineService.getTimelineByMemberIdAndCursor(memberId, cursorId, recordAt, size);
     }
 
-    public CalendarResponse getCalendar(Long memberId, Integer year, Short month) {
+    public CalendarResponse getCalendar(Long memberId, YearMonth yearMonth) {
         List<Memory> calendarMemories =
-                calendarService.getCalendarByYearAndMonth(memberId, year, month);
+                calendarService.getCalendarByYearAndMonth(memberId, yearMonth);
 
         CalendarResponse response = new CalendarResponse();
         for (Memory calendarMemory : calendarMemories) {
             response.addMemory(calendarMemory);
         }
-
         return response;
     }
 }

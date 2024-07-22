@@ -9,8 +9,7 @@ import com.depromeet.security.LoginMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import java.time.YearMonth;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,7 +40,5 @@ public interface MemoryApi {
 
     @Operation(summary = "캘린더 조회")
     ApiResponse<CalendarResponse> getCalendar(
-            @LoginMember Long memberId,
-            @RequestParam("year") Integer year,
-            @Valid @Min(1) @Max(12) @RequestParam("month") Short month);
+            @LoginMember Long memberId, @RequestParam("yearMonth") YearMonth yearMonth);
 }
