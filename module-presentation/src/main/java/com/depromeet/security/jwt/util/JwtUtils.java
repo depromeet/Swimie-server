@@ -1,10 +1,14 @@
 package com.depromeet.security.jwt.util;
 
+import static com.depromeet.security.constant.SecurityConstant.ACCESS;
+import static com.depromeet.security.constant.SecurityConstant.REFRESH;
+
 import com.depromeet.member.MemberRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import java.util.Date;
 import java.util.Optional;
 import javax.crypto.SecretKey;
@@ -27,6 +31,7 @@ public class JwtUtils {
                         .issuer(jwtProperties.issuer())
                         .subject(memberId.toString())
                         .claim("role", memberRole.getValue())
+                        .claim("type", ACCESS.getValue())
                         .issuedAt(now)
                         .expiration(exp)
                         .signWith(getJwtTokenKey(jwtProperties.accessTokenSecret()))
@@ -42,11 +47,34 @@ public class JwtUtils {
                 Jwts.builder()
                         .issuer(jwtProperties.issuer())
                         .subject(memberId.toString())
+                        .claim("type", REFRESH.getValue())
                         .issuedAt(now)
                         .expiration(exp)
                         .signWith(getJwtTokenKey(jwtProperties.refreshTokenSecret()))
                         .compact();
         return new RefreshTokenDto(memberId, refreshToken);
+    }
+
+    public String findTokenType(String token) {
+        try {
+            return Jwts.parser()
+                    .requireIssuer(jwtProperties.issuer())
+                    .verifyWith(getJwtTokenKey(jwtProperties.accessTokenSecret()))
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .get("type")
+                    .toString();
+        } catch (SignatureException e) {
+            return Jwts.parser()
+                    .requireIssuer(jwtProperties.issuer())
+                    .verifyWith(getJwtTokenKey(jwtProperties.refreshTokenSecret()))
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .get("type")
+                    .toString();
+        }
     }
 
     public Optional<AccessTokenDto> parseAccessToken(String token) {

@@ -1,6 +1,5 @@
 package com.depromeet.security.oauth.handler;
 
-import static com.depromeet.security.constant.SecurityConstant.*;
 import static com.depromeet.type.member.MemberErrorType.NOT_FOUND;
 
 import com.depromeet.auth.dto.response.JwtTokenResponseDto;
@@ -10,8 +9,6 @@ import com.depromeet.exception.NotFoundException;
 import com.depromeet.member.Member;
 import com.depromeet.member.MemberRole;
 import com.depromeet.member.repository.MemberRepository;
-import com.depromeet.security.jwt.util.AccessTokenDto;
-import com.depromeet.security.jwt.util.RefreshTokenDto;
 import com.depromeet.security.oauth.CustomOAuth2User;
 import com.depromeet.type.auth.AuthSuccessType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -68,18 +65,5 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                                 ApiResponse.success(
                                         AuthSuccessType.LOGIN_SUCCESS,
                                         jwtTokenResponseDto))); // json 응답
-    }
-
-    // 헤더에 토큰을 담아서 응답하는 방식
-    private void addTokenToResponse(
-            HttpServletResponse response,
-            AccessTokenDto accessTokenDto,
-            RefreshTokenDto refreshTokenDto) {
-
-        response.addHeader(
-                ACCESS_HEADER.getValue(), BEARER_PREFIX.getValue() + accessTokenDto.accessToken());
-        response.addHeader(
-                REFRESH_HEADER.getValue(),
-                BEARER_PREFIX.getValue() + refreshTokenDto.refreshToken());
     }
 }
