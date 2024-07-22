@@ -1,11 +1,18 @@
 package com.depromeet.memory.repository;
 
+import static com.depromeet.image.entity.QImageEntity.*;
+import static com.depromeet.member.entity.QMemberEntity.*;
+import static com.depromeet.memory.entity.QMemoryDetailEntity.*;
+import static com.depromeet.memory.entity.QStrokeEntity.*;
+import static com.depromeet.pool.entity.QPoolEntity.*;
+
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.entity.MemoryEntity;
 import com.depromeet.memory.entity.QMemoryEntity;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,8 +27,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class MemoryRepositoryImpl implements MemoryRepository {
-    private final MemoryJpaRepository memoryJpaRepository;
     private final JPAQueryFactory queryFactory;
+    private final MemoryJpaRepository memoryJpaRepository;
 
     QMemoryEntity memory = QMemoryEntity.memoryEntity;
 
@@ -32,7 +39,36 @@ public class MemoryRepositoryImpl implements MemoryRepository {
 
     @Override
     public Optional<Memory> findById(Long memoryId) {
-        return memoryJpaRepository.findById(memoryId).map(MemoryEntity::toModel);
+        // select m from MemoryEntity m join fetch m.member join fetch m.memoryDetail join fetch
+        // m.pool join fetch m.strokes where m.id = :memoryId
+        MemoryEntity memoryEntity =
+                queryFactory
+                        .selectFrom(memory)
+                        .join(memory.member, memberEntity)
+                        .fetchJoin()
+                        .leftJoin(memory.memoryDetail, memoryDetailEntity)
+                        .fetchJoin()
+                        .leftJoin(memory.pool, poolEntity)
+                        .fetchJoin()
+                        .leftJoin(memory.strokes, strokeEntity)
+                        .fetchJoin()
+                        .leftJoin(memory.images, imageEntity)
+                        .where(memory.id.eq(memoryId))
+                        .fetchOne();
+
+        if (memoryEntity == null) {
+            return Optional.empty();
+        }
+        return Optional.of(memoryEntity.toModel());
+    }
+
+    @Override
+    public Optional<Memory> findByRecordAt(LocalDate recordAt) {
+        Optional<MemoryEntity> nullableMemoryEntity = memoryJpaRepository.findByRecordAt(recordAt);
+        if (nullableMemoryEntity.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(nullableMemoryEntity.get().toModel());
     }
 
     @Override
@@ -105,6 +141,27 @@ public class MemoryRepositoryImpl implements MemoryRepository {
         return new SliceImpl<>(content, pageable, hasNext);
     }
 
+    @Override
+    public List<Memory> getCalendarByYearAndMonth(Long memberId, Integer year, Short month) {
+        List<MemoryEntity> memories =
+                queryFactory
+                        .selectFrom(memory)
+                        .join(memory.member, memberEntity)
+                        .fetchJoin()
+                        .leftJoin(memory.pool, poolEntity)
+                        .fetchJoin()
+                        .leftJoin(memory.memoryDetail, memoryDetailEntity)
+                        .fetchJoin()
+                        .leftJoin(memory.strokes, strokeEntity)
+                        .fetchJoin()
+                        .leftJoin(memory.images, imageEntity)
+                        .where(memberEq(memberId), yearAndMonthEq(year, month))
+                        .orderBy(memory.recordAt.asc())
+                        .fetch();
+
+        return toModel(memories);
+    }
+
     private BooleanExpression ltCursorIdOrCursorRecordAt(Long cursorId, LocalDate recordAt) {
         if (cursorId == null || recordAt == null) {
             return null;
@@ -128,6 +185,12 @@ public class MemoryRepositoryImpl implements MemoryRepository {
         return memory.recordAt
                 .gt(cursorRecordAt)
                 .or(memory.recordAt.eq(cursorRecordAt).and(memory.id.gt(cursorId)));
+      
+    private BooleanExpression gtCursorId(Long cursorId) {
+        if (cursorId == null) {
+            return null;
+        }
+        return memory.id.gt(cursorId);
     }
 
     private BooleanExpression goeRecordAt(LocalDate recordAt) {
@@ -135,6 +198,23 @@ public class MemoryRepositoryImpl implements MemoryRepository {
             return memory.recordAt.goe(recordAt);
         }
         return null;
+    }
+
+    private BooleanExpression memberEq(Long memberId) {
+        if (memberId == null) {
+            return null;
+        }
+        return memory.member.id.eq(memberId);
+    }
+
+    private BooleanExpression yearAndMonthEq(Integer year, Short month) {
+        if (year == null) {
+            return null;
+        }
+        YearMonth yearMonth = YearMonth.of(year, month);
+        int lastDay = yearMonth.lengthOfMonth();
+        return memory.recordAt.between(
+                LocalDate.of(year, month, 1), LocalDate.of(year, month, lastDay));
     }
 
     private List<Memory> toModel(List<MemoryEntity> memoryEntities) {

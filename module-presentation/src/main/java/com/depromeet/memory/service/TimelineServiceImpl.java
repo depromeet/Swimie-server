@@ -6,7 +6,7 @@ import com.depromeet.image.dto.response.MemoryImagesDto;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
 import com.depromeet.memory.dto.request.TimelineRequestDto;
-import com.depromeet.memory.dto.response.StrokeResponseDto;
+import com.depromeet.memory.dto.response.StrokeResponse;
 import com.depromeet.memory.dto.response.TimelineResponseDto;
 import com.depromeet.memory.repository.MemoryRepository;
 import java.time.LocalDate;
@@ -141,13 +141,13 @@ public class TimelineServiceImpl implements TimelineService {
         return totalMeter;
     }
 
-    private List<StrokeResponseDto> strokeToDto(List<Stroke> strokes) {
-        if (strokes == null || strokes.isEmpty()) return new ArrayList<>();
+    private List<StrokeResponse> strokeToDto(List<Stroke> strokes) {
+        if (strokes == null || strokes.isEmpty()) return null;
 
         return strokes.stream()
                 .map(
                         stroke ->
-                                StrokeResponseDto.builder()
+                                StrokeResponse.builder()
                                         .strokeId(stroke.getId())
                                         .name(stroke.getName())
                                         .laps(getLapsFromStroke(stroke))

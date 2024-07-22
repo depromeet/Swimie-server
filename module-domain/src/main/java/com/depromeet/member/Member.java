@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class Member {
     private Long id;
-    private Long goal;
+    private Integer goal;
     private String name;
     private String email;
     private MemberRole role;
