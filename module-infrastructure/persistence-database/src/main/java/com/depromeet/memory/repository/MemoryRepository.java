@@ -13,9 +13,6 @@ public interface MemoryRepository {
 
     Optional<Memory> update(Long memoryId, Memory memoryUpdate);
 
-    Slice<Memory> getSliceMemoryByMemberIdAndCursorId(
-            Long memberId, Long cursorId, LocalDate recordAt, Pageable pageable);
-
     Slice<Memory> findPrevMemoryByMemberId(
             Long memberId,
             Long cursorId,

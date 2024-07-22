@@ -5,8 +5,13 @@ import com.depromeet.memory.Memory;
 import com.depromeet.memory.dto.response.TimelineResponseDto;
 
 public interface TimelineService {
-    CustomSliceResponse<?> getTimelineByMemberIdAndCursor(
-            Long memberId, Long cursorId, String recordAt, int pageSize);
+    CustomSliceResponse<?> getTimelineByMemberIdAndCursorAndDate(
+            Long memberId,
+            Long cursorId,
+            String cursorRecordAt,
+            String date,
+            boolean showNewer,
+            int size);
 
     TimelineResponseDto mapToTimelineResponseDto(Memory memory);
 }

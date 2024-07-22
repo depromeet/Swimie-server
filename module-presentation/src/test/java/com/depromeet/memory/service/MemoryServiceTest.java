@@ -33,7 +33,7 @@ class MemoryServiceTest {
     private MemoryService memoryService;
 
     private Long userId = 1L; // 로그인한 사용자 아이디 임의 지정
-    private Member member1;
+    private Member member;
 
     @BeforeEach
     void init() {
@@ -53,14 +53,14 @@ class MemoryServiceTest {
         poolRepository = new FakePoolRepository();
 
         // Member create
-        member1 =
+        member =
                 Member.builder()
                         .id(userId)
                         .name("member1")
                         .email("member1@gmail.com")
                         .role(MemberRole.USER)
                         .build();
-        memberRepository.save(member1);
+        memberRepository.save(member);
 
         // MemoryService
         memoryService =
@@ -83,7 +83,7 @@ class MemoryServiceTest {
                         .build();
 
         // when
-        Memory memory = memoryService.save(memoryCreateRequest);
+        Memory memory = memoryService.save(member, memoryCreateRequest);
 
         // then
         Assertions.assertThat(memory.getRecordAt()).isEqualTo(LocalDate.of(2024, 7, 15));
@@ -100,7 +100,7 @@ class MemoryServiceTest {
                         .startTime(LocalTime.of(15, 0))
                         .endTime(LocalTime.of(15, 50))
                         .build();
-        Memory memory = memoryService.save(memoryCreateRequest);
+        Memory memory = memoryService.save(member, memoryCreateRequest);
         MemoryUpdateRequest memoryUpdateRequest =
                 MemoryUpdateRequest.builder()
                         .startTime(LocalTime.of(15, 30))
@@ -130,7 +130,7 @@ class MemoryServiceTest {
                         .startTime(LocalTime.of(15, 0))
                         .endTime(LocalTime.of(15, 50))
                         .build();
-        Memory memory = memoryService.save(memoryCreateRequest);
+        Memory memory = memoryService.save(member, memoryCreateRequest);
         MemoryUpdateRequest memoryUpdateRequest =
                 MemoryUpdateRequest.builder()
                         .startTime(LocalTime.of(15, 30))
