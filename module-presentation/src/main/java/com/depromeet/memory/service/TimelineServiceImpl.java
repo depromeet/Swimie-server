@@ -5,11 +5,13 @@ import com.depromeet.image.Image;
 import com.depromeet.image.dto.response.MemoryImagesDto;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
+import com.depromeet.memory.dto.request.TimelineRequestDto;
 import com.depromeet.memory.dto.response.StrokeResponseDto;
 import com.depromeet.memory.dto.response.TimelineResponseDto;
 import com.depromeet.memory.repository.MemoryRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,46 +33,40 @@ public class TimelineServiceImpl implements TimelineService {
 
     @Override
     public CustomSliceResponse<?> getTimelineByMemberIdAndCursorAndDate(
-            Long memberId,
-            Long cursorId,
-            String cursorRecordAt,
-            String date,
-            boolean showNewer,
-            int size) {
+            Long memberId, TimelineRequestDto timeline) {
         Slice<Memory> memories;
-        Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Order.desc("recordAt")));
+        Pageable pageable =
+                PageRequest.of(0, timeline.getSize(), Sort.by(Sort.Order.desc("recordAt")));
 
-        LocalDate parsedCursorRecordAt = getLocalDateOrNull(cursorRecordAt);
-        LocalDate parsedDate = getLocalDateOrNull(date);
+        LocalDate parsedCursorRecordAt = getLocalDateOrNull(timeline.getCursorRecordAt());
+        LocalDate parsedDate = getLocalDateOrNull(timeline.getDate());
 
-        if (showNewer) {
+        if (timeline.isShowNewer()) {
             memories =
                     memoryRepository.findNextMemoryByMemberId(
-                            memberId, cursorId, parsedCursorRecordAt, pageable, parsedDate);
+                            memberId,
+                            timeline.getCursorId(),
+                            parsedCursorRecordAt,
+                            pageable,
+                            parsedDate);
         } else {
             memories =
                     memoryRepository.findPrevMemoryByMemberId(
-                            memberId, cursorId, parsedCursorRecordAt, pageable, parsedDate);
+                            memberId,
+                            timeline.getCursorId(),
+                            parsedCursorRecordAt,
+                            pageable,
+                            parsedDate);
         }
         Slice<TimelineResponseDto> result = memories.map(this::mapToTimelineResponseDto);
         return mapToCustomSliceResponse(result);
     }
 
-    private LocalDate getLocalDateOrNull(String date) {
+    private LocalDate getLocalDateOrNull(YearMonth date) {
         LocalDate lastDayOfMonth = null;
-        if (date != null && !date.trim().isEmpty()) {
-            lastDayOfMonth = getLastDayOfMonth(date, lastDayOfMonth);
-        }
-        return lastDayOfMonth;
-    }
-
-    private LocalDate getLastDayOfMonth(String date, LocalDate lastDayOfMonth) {
-        String[] dateParts = date.split("-");
-        if (dateParts.length == 2) {
-            int year = Integer.parseInt(dateParts[0]);
-            int month = Integer.parseInt(dateParts[1]);
-            LocalDate firstDayOfMonth = LocalDate.of(year, month, 1);
-            lastDayOfMonth = firstDayOfMonth.withDayOfMonth(firstDayOfMonth.lengthOfMonth());
+        log.info("localDate : {}", date);
+        if (date != null) {
+            lastDayOfMonth = date.atEndOfMonth();
         }
         return lastDayOfMonth;
     }
