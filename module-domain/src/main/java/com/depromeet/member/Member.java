@@ -14,7 +14,12 @@ public class Member {
 
     @Builder
     public Member(
-            Long id, Long goal, String name, String email, MemberRole role, String refreshToken) {
+            Long id,
+            Integer goal,
+            String name,
+            String email,
+            MemberRole role,
+            String refreshToken) {
         this.id = id;
         this.goal = goal;
         this.name = name;

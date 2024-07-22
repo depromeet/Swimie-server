@@ -78,7 +78,6 @@ class MemoryServiceTest {
         // when
         Memory memory = memoryService.save(member, memoryCreateRequest);
 
-
         // then
         Assertions.assertThat(memory.getRecordAt()).isEqualTo(LocalDate.of(2024, 7, 15));
         Assertions.assertThat(memory.getStartTime()).isEqualTo(LocalTime.of(15, 0));

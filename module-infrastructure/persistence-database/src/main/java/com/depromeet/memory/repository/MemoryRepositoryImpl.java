@@ -1,10 +1,10 @@
 package com.depromeet.memory.repository;
 
-import static com.depromeet.image.entity.QImageEntity.*;
-import static com.depromeet.member.entity.QMemberEntity.*;
-import static com.depromeet.memory.entity.QMemoryDetailEntity.*;
-import static com.depromeet.memory.entity.QStrokeEntity.*;
-import static com.depromeet.pool.entity.QPoolEntity.*;
+import static com.depromeet.image.entity.QImageEntity.imageEntity;
+import static com.depromeet.member.entity.QMemberEntity.memberEntity;
+import static com.depromeet.memory.entity.QMemoryDetailEntity.memoryDetailEntity;
+import static com.depromeet.memory.entity.QStrokeEntity.strokeEntity;
+import static com.depromeet.pool.entity.QPoolEntity.poolEntity;
 
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.entity.MemoryEntity;
@@ -185,7 +185,8 @@ public class MemoryRepositoryImpl implements MemoryRepository {
         return memory.recordAt
                 .gt(cursorRecordAt)
                 .or(memory.recordAt.eq(cursorRecordAt).and(memory.id.gt(cursorId)));
-      
+    }
+
     private BooleanExpression gtCursorId(Long cursorId) {
         if (cursorId == null) {
             return null;
