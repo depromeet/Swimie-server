@@ -73,10 +73,6 @@ public class MemoryRepositoryTest {
                 memoryRepositoryImpl.findPrevMemoryByMemberId(
                         member.getId(), null, null, pageable, null);
         List<Memory> result = resultSlice.getContent();
-
-        List<LocalDate> resultRecordAtList = result.stream().map(Memory::getRecordAt).toList();
-        System.out.println(resultRecordAtList);
-
         Memory lastMemory = result.getLast();
 
         // then
@@ -94,9 +90,6 @@ public class MemoryRepositoryTest {
                 memoryRepositoryImpl.findPrevMemoryByMemberId(
                         member.getId(), null, null, pageable, recordAt);
         List<Memory> result = resultSlice.getContent();
-        List<LocalDate> resultRecordAtList = result.stream().map(Memory::getRecordAt).toList();
-        System.out.println(resultRecordAtList);
-
         Memory lastMemory = result.getLast();
 
         // then
