@@ -48,7 +48,7 @@ public class MemoryRepositoryTest {
         pageable = getPageable();
 
         memberRepositoryImpl = new MemberRepositoryImpl(memberJpaRepository);
-        memoryRepositoryImpl = new MemoryRepositoryImpl(memoryJpaRepository, queryFactory);
+        memoryRepositoryImpl = new MemoryRepositoryImpl(queryFactory, memoryJpaRepository);
         memoryDetailRepositoryImpl = new MemoryDetailRepositoryImpl(memoryDetailJpaRepository);
         member = memberRepositoryImpl.save(MemberFixture.mockMember());
         List<MemoryDetail> memoryDetailList = MemoryDetailFixture.memoryDetailList();
