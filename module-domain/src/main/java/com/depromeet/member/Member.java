@@ -13,12 +13,14 @@ public class Member {
     private String refreshToken;
 
     @Builder
-    public Member(Long id, Long goal, String name, String email, MemberRole role) {
+    public Member(
+            Long id, Long goal, String name, String email, MemberRole role, String refreshToken) {
         this.id = id;
         this.goal = goal;
         this.name = name;
         this.email = email;
         this.role = role;
+        this.refreshToken = refreshToken;
     }
 
     public void updateRefreshToken(String refreshToken) {

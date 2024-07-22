@@ -34,11 +34,12 @@ public class MemberEntity {
     @Column private String refreshToken;
 
     @Builder
-    private MemberEntity(Long id, String name, String email, MemberRole role) {
+    private MemberEntity(Long id, String name, String email, MemberRole role, String refreshToken) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;
+        this.refreshToken = refreshToken;
     }
 
     public static MemberEntity from(Member member) {
@@ -47,10 +48,21 @@ public class MemberEntity {
                 .name(member.getName())
                 .email(member.getEmail())
                 .role(member.getRole())
+                .refreshToken(getRefreshTokenOrNull(member))
                 .build();
     }
 
     public Member toModel() {
-        return Member.builder().id(id).name(name).email(email).role(role).build();
+        return Member.builder()
+                .id(id)
+                .name(name)
+                .email(email)
+                .role(role)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    private static String getRefreshTokenOrNull(Member member) {
+        return member.getRefreshToken() != null ? member.getRefreshToken() : null;
     }
 }
