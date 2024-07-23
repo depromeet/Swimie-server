@@ -10,5 +10,5 @@ public interface MemberRepository {
 
     Member save(Member member);
 
-    void updateRefresh(Long memberId, String s);
+    void updateRefresh(Long memberId, String refreshToken);
 }
