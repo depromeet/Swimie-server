@@ -5,6 +5,7 @@ import static com.depromeet.security.constant.SecurityConstant.*;
 import com.depromeet.auth.service.JwtTokenService;
 import com.depromeet.exception.BadRequestException;
 import com.depromeet.exception.NotFoundException;
+import com.depromeet.member.MemberRole;
 import com.depromeet.security.jwt.util.AccessTokenDto;
 import com.depromeet.security.jwt.util.RefreshTokenDto;
 import com.depromeet.security.oauth.CustomOAuth2User;
@@ -63,7 +64,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (optionalAccessTokenDto.isPresent()) {
                 AccessTokenDto accessTokenDto = optionalAccessTokenDto.get();
-                setAuthentication(accessTokenDto);
+                setAuthentication(accessTokenDto.memberId(), accessTokenDto.memberRole());
             }
         } else if (tokenType.equals(REFRESH.getValue())) {
             if (!url.equals("/api/login/refresh")) {
@@ -79,9 +80,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             RefreshTokenDto refreshTokenDto = optionalRefreshTokenDto.get();
 
-            jwtTokenService.retrieveRefreshToken(refreshTokenDto, token);
-            AccessTokenDto reissuedAccessToken = addReissuedJwtTokenToHeader(response, token);
-            setAuthentication(reissuedAccessToken);
+            setAuthentication(refreshTokenDto.memberId(), refreshTokenDto.memberRole());
         }
         filterChain.doFilter(request, response);
     }
@@ -106,12 +105,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return reissuedAccessToken;
     }
 
-    private void setAuthentication(AccessTokenDto reissuedAccessToken) {
+    private void setAuthentication(Long memberId, MemberRole memberRole) {
         CustomOAuth2User customOAuth2User =
                 new CustomOAuth2User(
                         MemberDto.builder()
-                                .id(reissuedAccessToken.memberId())
-                                .memberRole(reissuedAccessToken.memberRole())
+                                .id(memberId)
+                                .memberRole(memberRole)
                                 .build());
 
         Authentication authentication =
