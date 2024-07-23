@@ -90,8 +90,9 @@ public class StrokeServiceImpl implements StrokeService {
                 });
         strokes.forEach(
                 stroke -> {
+                    Stroke updateStroke;
                     if (stroke.id() != null) {
-                        Stroke updateStroke =
+                        updateStroke =
                                 Stroke.builder()
                                         .id(stroke.id())
                                         .memory(memory)
@@ -99,17 +100,16 @@ public class StrokeServiceImpl implements StrokeService {
                                         .laps(stroke.laps())
                                         .meter(stroke.meter())
                                         .build();
-                        strokeRepository.save(updateStroke);
                     } else {
-                        Stroke updateStroke =
+                        updateStroke =
                                 Stroke.builder()
                                         .memory(memory)
                                         .name(stroke.name())
                                         .laps(stroke.laps())
                                         .meter(stroke.meter())
                                         .build();
-                        strokeRepository.save(updateStroke);
                     }
+                    strokeRepository.save(updateStroke);
                 });
         return getAllByMemoryId(memory.getId());
     }

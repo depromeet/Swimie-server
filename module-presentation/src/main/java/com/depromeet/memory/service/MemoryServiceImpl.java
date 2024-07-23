@@ -32,11 +32,7 @@ public class MemoryServiceImpl implements MemoryService {
     @Transactional
     public Memory save(Member writer, MemoryCreateRequest request) {
         MemoryDetail memoryDetail = getMemoryDetail(request);
-        Optional<Memory> memoryByRecordAt = memoryRepository.findByRecordAt(request.getRecordAt());
-
-        if (memoryByRecordAt.isPresent()) {
-            throw new BadRequestException(MemoryErrorType.ALREADY_CREATED);
-        }
+        checkMemoryAlreadyExist(request);
 
         if (memoryDetail != null) {
             memoryDetail = memoryDetailRepository.save(memoryDetail);
@@ -72,33 +68,8 @@ public class MemoryServiceImpl implements MemoryService {
             Long memoryId, MemoryUpdateRequest memoryUpdateRequest, List<Stroke> strokes) {
         Memory memory = findById(memoryId);
 
-        // MemoryDetail 수정
-        MemoryDetail updateMemoryDetail =
-                MemoryDetail.builder()
-                        .item(memoryUpdateRequest.getItem())
-                        .heartRate(memoryUpdateRequest.getHeartRate())
-                        .pace(memoryUpdateRequest.getPace())
-                        .kcal(memoryUpdateRequest.getKcal())
-                        .build();
-        if (memory.getMemoryDetail() != null) {
-            Long memoryDetailId = memory.getMemoryDetail().getId();
-            updateMemoryDetail =
-                    memoryDetailRepository
-                            .update(memoryDetailId, updateMemoryDetail)
-                            .orElseThrow(
-                                    () -> new NotFoundException(MemoryDetailErrorType.NOT_FOUND));
-        } else {
-            updateMemoryDetail = memoryDetailRepository.save(updateMemoryDetail);
-        }
-
-        // Pool 정보 찾기
-        Pool updatePool = memory.getPool();
-        if (memoryUpdateRequest.getPoolId() != null) {
-            updatePool =
-                    poolRepository
-                            .findById(memoryUpdateRequest.getPoolId())
-                            .orElseThrow(() -> new NotFoundException(PoolErrorType.NOT_FOUND));
-        }
+        MemoryDetail updateMemoryDetail = updateMemoryDetail(memoryUpdateRequest, memory);
+        Pool updatePool = getUpdatePool(memoryUpdateRequest.getPoolId(), memory.getPool());
 
         // Memory 수정
         Memory updateMemory =
@@ -119,6 +90,14 @@ public class MemoryServiceImpl implements MemoryService {
                 .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND));
     }
 
+    private void checkMemoryAlreadyExist(MemoryCreateRequest request) {
+        Optional<Memory> memoryByRecordAt = memoryRepository.findByRecordAt(request.getRecordAt());
+
+        if (memoryByRecordAt.isPresent()) {
+            throw new BadRequestException(MemoryErrorType.ALREADY_CREATED);
+        }
+    }
+
     private MemoryDetail getMemoryDetail(MemoryCreateRequest memoryCreateRequest) {
         if (memoryCreateRequest.getItem() == null
                 && memoryCreateRequest.getHeartRate() == null
@@ -132,5 +111,37 @@ public class MemoryServiceImpl implements MemoryService {
                 .pace(memoryCreateRequest.getPace())
                 .kcal(memoryCreateRequest.getKcal())
                 .build();
+    }
+
+    private MemoryDetail updateMemoryDetail(
+            MemoryUpdateRequest memoryUpdateRequest, Memory memory) {
+        MemoryDetail updateMemoryDetail =
+                MemoryDetail.builder()
+                        .item(memoryUpdateRequest.getItem())
+                        .heartRate(memoryUpdateRequest.getHeartRate())
+                        .pace(memoryUpdateRequest.getPace())
+                        .kcal(memoryUpdateRequest.getKcal())
+                        .build();
+        if (memory.getMemoryDetail() != null) {
+            Long memoryDetailId = memory.getMemoryDetail().getId();
+            updateMemoryDetail =
+                    memoryDetailRepository
+                            .update(memoryDetailId, updateMemoryDetail)
+                            .orElseThrow(
+                                    () -> new NotFoundException(MemoryDetailErrorType.NOT_FOUND));
+        } else {
+            updateMemoryDetail = memoryDetailRepository.save(updateMemoryDetail);
+        }
+        return updateMemoryDetail;
+    }
+
+    private Pool getUpdatePool(Long poolId, Pool pool) {
+        if (poolId != null) {
+            pool =
+                    poolRepository
+                            .findById(poolId)
+                            .orElseThrow(() -> new NotFoundException(PoolErrorType.NOT_FOUND));
+        }
+        return pool;
     }
 }
