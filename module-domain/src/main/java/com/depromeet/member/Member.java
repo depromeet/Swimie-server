@@ -28,9 +28,15 @@ public class Member {
         this.refreshToken = refreshToken;
     }
 
-    public void updateRefreshToken(String refreshToken) {
+    public Member updateRefreshToken(String refreshToken) {
         if (refreshToken != null) {
             this.refreshToken = refreshToken;
         }
+        return this;
+    }
+
+    public Member updateGoal(Integer goal) {
+        this.goal = goal;
+        return this;
     }
 }
