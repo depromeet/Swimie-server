@@ -18,8 +18,7 @@ public class GoalController implements GoalApi {
 
     @PatchMapping
     public ApiResponse<MemberSimpleResponse> update(
-            @LoginMember Long memberId,
-            @RequestBody GoalUpdateRequest goalUpdateRequest) {
+            @LoginMember Long memberId, @RequestBody GoalUpdateRequest goalUpdateRequest) {
         Member member = memberService.updateGoal(memberId, goalUpdateRequest.goal());
         return ApiResponse.success(
                 MemberSuccessType.UPDATE_GOAL_SUCCESS,

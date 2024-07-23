@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface GoalApi {
     @Operation(summary = "목표 수정")
     ApiResponse<MemberSimpleResponse> update(
-            @LoginMember Long memberId,
-            @RequestBody GoalUpdateRequest goalUpdateRequest);
+            @LoginMember Long memberId, @RequestBody GoalUpdateRequest goalUpdateRequest);
 
     @Operation(summary = "목표 조회")
     ApiResponse<MemberSimpleResponse> findGoal(@PathVariable("memberId") Long memberId);
