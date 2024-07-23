@@ -75,4 +75,9 @@ public class MemberEntity {
         if (refreshToken != null) this.refreshToken = refreshToken;
         return this;
     }
+
+    public MemberEntity updateGoal(Integer goal) {
+        this.goal = goal;
+        return this;
+    }
 }
