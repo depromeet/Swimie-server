@@ -82,18 +82,14 @@ public class MemoryRepositoryImpl implements MemoryRepository {
 
     @Override
     public Slice<Memory> findPrevMemoryByMemberId(
-            Long memberId,
-            Long cursorId,
-            LocalDate cursorRecordAt,
-            Pageable pageable,
-            LocalDate recordAt) {
+            Long memberId, Long cursorId, Pageable pageable, LocalDate recordAt) {
 
         List<MemoryEntity> result =
                 queryFactory
                         .selectFrom(memory)
                         .where(
                                 memory.member.id.eq(memberId),
-                                ltCursorIdOrCursorRecordAt(cursorId, cursorRecordAt),
+                                ltCursorId(cursorId),
                                 loeRecordAt(recordAt))
                         .limit(pageable.getPageSize() + 1)
                         .orderBy(memory.recordAt.desc())
@@ -112,17 +108,13 @@ public class MemoryRepositoryImpl implements MemoryRepository {
 
     @Override
     public Slice<Memory> findNextMemoryByMemberId(
-            Long memberId,
-            Long cursorId,
-            LocalDate cursorRecordAt,
-            Pageable pageable,
-            LocalDate recordAt) {
+            Long memberId, Long cursorId, Pageable pageable, LocalDate recordAt) {
         List<MemoryEntity> result =
                 queryFactory
                         .selectFrom(memory)
                         .where(
                                 memory.member.id.eq(memberId),
-                                gtCursorIdOrCursorRecordAt(cursorId, cursorRecordAt),
+                                gtCursorId(cursorId),
                                 goeRecordAt(recordAt))
                         .limit(pageable.getPageSize() + 1)
                         .orderBy(memory.recordAt.asc())
@@ -162,15 +154,6 @@ public class MemoryRepositoryImpl implements MemoryRepository {
         return toModel(memories);
     }
 
-    private BooleanExpression ltCursorIdOrCursorRecordAt(Long cursorId, LocalDate recordAt) {
-        if (cursorId == null || recordAt == null) {
-            return null;
-        }
-        return memory.recordAt
-                .lt(recordAt)
-                .or(memory.recordAt.eq(recordAt).and(memory.id.lt(cursorId)));
-    }
-
     private BooleanExpression loeRecordAt(LocalDate recordAt) {
         if (recordAt == null) {
             return null;
@@ -178,13 +161,11 @@ public class MemoryRepositoryImpl implements MemoryRepository {
         return memory.recordAt.loe(recordAt);
     }
 
-    private BooleanExpression gtCursorIdOrCursorRecordAt(Long cursorId, LocalDate cursorRecordAt) {
-        if (cursorId == null || cursorRecordAt == null) {
+    private BooleanExpression ltCursorId(Long cursorId) {
+        if (cursorId == null) {
             return null;
         }
-        return memory.recordAt
-                .gt(cursorRecordAt)
-                .or(memory.recordAt.eq(cursorRecordAt).and(memory.id.gt(cursorId)));
+        return memory.id.lt(cursorId);
     }
 
     private BooleanExpression gtCursorId(Long cursorId) {

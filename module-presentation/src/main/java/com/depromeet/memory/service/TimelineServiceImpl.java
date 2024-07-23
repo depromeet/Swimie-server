@@ -34,31 +34,23 @@ public class TimelineServiceImpl implements TimelineService {
     @Override
     public CustomSliceResponse<?> getTimelineByMemberIdAndCursorAndDate(
             Long memberId, TimelineRequestDto timeline) {
-        Slice<Memory> memories;
+        Slice<Memory> memories = getTimelines(memberId, timeline);
+        Slice<TimelineResponseDto> result = memories.map(this::mapToTimelineResponseDto);
+        return mapToCustomSliceResponse(result);
+    }
+
+    private Slice<Memory> getTimelines(Long memberId, TimelineRequestDto timeline) {
         Pageable pageable =
                 PageRequest.of(0, timeline.getSize(), Sort.by(Sort.Order.desc("recordAt")));
 
         LocalDate parsedDate = getLocalDateOrNull(timeline.getDate());
-
         if (timeline.isShowNewer()) {
-            memories =
-                    memoryRepository.findNextMemoryByMemberId(
-                            memberId,
-                            timeline.getCursorId(),
-                            timeline.getCursorRecordAt(),
-                            pageable,
-                            parsedDate);
+            return memoryRepository.findNextMemoryByMemberId(
+                    memberId, timeline.getCursorId(), pageable, parsedDate);
         } else {
-            memories =
-                    memoryRepository.findPrevMemoryByMemberId(
-                            memberId,
-                            timeline.getCursorId(),
-                            timeline.getCursorRecordAt(),
-                            pageable,
-                            parsedDate);
+            return memoryRepository.findPrevMemoryByMemberId(
+                    memberId, timeline.getCursorId(), pageable, parsedDate);
         }
-        Slice<TimelineResponseDto> result = memories.map(this::mapToTimelineResponseDto);
-        return mapToCustomSliceResponse(result);
     }
 
     private LocalDate getLocalDateOrNull(YearMonth date) {
