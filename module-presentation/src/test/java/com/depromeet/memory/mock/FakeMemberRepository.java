@@ -38,4 +38,26 @@ public class FakeMemberRepository implements MemberRepository {
             return member;
         }
     }
+
+    @Override
+    public void updateRefresh(Long memberId, String refreshToken) {
+        findById(memberId)
+                .map(
+                        item -> {
+                            Member member = item.updateRefreshToken(refreshToken);
+                            save(member);
+                            return member;
+                        });
+    }
+
+    @Override
+    public Optional<Member> updateGoal(Long memberId, Integer goal) {
+        return findById(memberId)
+                .map(
+                        item -> {
+                            Member member = item.updateGoal(goal);
+                            save(member);
+                            return member;
+                        });
+    }
 }
