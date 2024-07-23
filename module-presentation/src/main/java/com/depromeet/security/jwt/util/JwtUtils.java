@@ -1,10 +1,14 @@
 package com.depromeet.security.jwt.util;
 
+import static com.depromeet.security.constant.SecurityConstant.ACCESS;
+import static com.depromeet.security.constant.SecurityConstant.REFRESH;
+
 import com.depromeet.member.MemberRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import java.util.Date;
 import java.util.Optional;
 import javax.crypto.SecretKey;
@@ -27,6 +31,7 @@ public class JwtUtils {
                         .issuer(jwtProperties.issuer())
                         .subject(memberId.toString())
                         .claim("role", memberRole.getValue())
+                        .claim("type", ACCESS.getValue())
                         .issuedAt(now)
                         .expiration(exp)
                         .signWith(getJwtTokenKey(jwtProperties.accessTokenSecret()))
@@ -34,7 +39,7 @@ public class JwtUtils {
         return new AccessTokenDto(memberId, memberRole, accessToken);
     }
 
-    public RefreshTokenDto generateRefreshToken(Long memberId) {
+    public RefreshTokenDto generateRefreshToken(Long memberId, MemberRole memberRole) {
         Date now = new Date();
         Date exp = new Date(now.getTime() + jwtProperties.refreshTokenExpirationTime());
 
@@ -42,11 +47,35 @@ public class JwtUtils {
                 Jwts.builder()
                         .issuer(jwtProperties.issuer())
                         .subject(memberId.toString())
+                        .claim("role", memberRole.getValue())
+                        .claim("type", REFRESH.getValue())
                         .issuedAt(now)
                         .expiration(exp)
                         .signWith(getJwtTokenKey(jwtProperties.refreshTokenSecret()))
                         .compact();
-        return new RefreshTokenDto(memberId, refreshToken);
+        return new RefreshTokenDto(memberId, memberRole, refreshToken);
+    }
+
+    public String findTokenType(String token) {
+        try {
+            return Jwts.parser()
+                    .requireIssuer(jwtProperties.issuer())
+                    .verifyWith(getJwtTokenKey(jwtProperties.accessTokenSecret()))
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .get("type")
+                    .toString();
+        } catch (SignatureException e) {
+            return Jwts.parser()
+                    .requireIssuer(jwtProperties.issuer())
+                    .verifyWith(getJwtTokenKey(jwtProperties.refreshTokenSecret()))
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .get("type")
+                    .toString();
+        }
     }
 
     public Optional<AccessTokenDto> parseAccessToken(String token) {
@@ -69,7 +98,8 @@ public class JwtUtils {
                         .build()
                         .parseSignedClaims(token);
         Long memberId = Long.valueOf(claims.getPayload().getSubject());
-        return Optional.of(new RefreshTokenDto(memberId, token));
+        MemberRole memberRole = MemberRole.findByValue(claims.getPayload().get("role").toString());
+        return Optional.of(new RefreshTokenDto(memberId, memberRole, token));
     }
 
     private SecretKey getJwtTokenKey(String tokenKey) {

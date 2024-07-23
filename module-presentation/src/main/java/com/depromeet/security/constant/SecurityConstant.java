@@ -4,9 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum SecurityConstant {
-    ACCESS_HEADER("Authorization"),
-    REFRESH_HEADER("refresh"),
-    BEARER_PREFIX("Bearer ");
+    AUTH_HEADER("Authorization"),
+    BEARER_PREFIX("Bearer "),
+    ACCESS("access"),
+    REFRESH("refresh");
 
     private String value;
 

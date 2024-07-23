@@ -5,6 +5,7 @@ import com.depromeet.exception.BaseException;
 import com.depromeet.type.common.CommonErrorType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintDefinitionException;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.UnexpectedTypeException;
 import java.io.IOException;
 import java.util.HashMap;
@@ -79,7 +80,16 @@ public class GlobalExceptionAdvice {
             final ConstraintDefinitionException ex) {
         log.error(ex.getMessage());
         return new ResponseEntity<>(
-                ApiResponse.fail(CommonErrorType.INVALID_HTTP_REQUEST, 400, ex.toString()),
+                ApiResponse.fail(CommonErrorType.VALIDATION_FAILED, 400, ex.toString()),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    protected ResponseEntity<ApiResponse<?>> handlerConstraintViolationException(
+            final ConstraintViolationException ex) {
+        log.error(ex.getMessage());
+        return new ResponseEntity<>(
+                ApiResponse.fail(CommonErrorType.VALIDATION_FAILED, 400, ex.toString()),
                 HttpStatus.BAD_REQUEST);
     }
 
@@ -124,9 +134,11 @@ public class GlobalExceptionAdvice {
     public ResponseEntity<ApiResponse<?>> handlerRuntimeException(
             final RuntimeException ex, final HttpServletRequest request) {
         log.error(ex.getMessage());
-        return new ResponseEntity<>(
-                ApiResponse.fail(CommonErrorType.INTERNAL_SERVER, 500),
-                HttpStatus.INTERNAL_SERVER_ERROR);
+        String[] message = ex.getMessage().split(" ");
+        int code = Integer.parseInt(message[0]);
+        HttpStatus httpStatus = HttpStatus.resolve(code);
+        CommonErrorType errorType = CommonErrorType.valueOf(message[1]);
+        return new ResponseEntity<>(ApiResponse.fail(errorType, code), httpStatus);
     }
 
     /** CUSTOM */
