@@ -17,4 +17,6 @@ public interface MemberService {
     boolean matchPassword(String rawPassword, String encodedPassword);
 
     Member findOrCreateMemberBy(AccountProfileResponse profile);
+
+    Member updateGoal(Long memberId, Integer goal);
 }

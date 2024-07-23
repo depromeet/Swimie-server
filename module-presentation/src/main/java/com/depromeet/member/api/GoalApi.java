@@ -3,6 +3,7 @@ package com.depromeet.member.api;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.member.dto.request.GoalUpdateRequest;
 import com.depromeet.member.dto.response.MemberSimpleResponse;
+import com.depromeet.security.LoginMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,10 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface GoalApi {
     @Operation(summary = "목표 수정")
     ApiResponse<MemberSimpleResponse> update(
-            @PathVariable("memberId") Long memberId,
+            @LoginMember Long memberId,
             @RequestBody GoalUpdateRequest goalUpdateRequest);
 
     @Operation(summary = "목표 조회")
-    ApiResponse<MemberSimpleResponse> findGoal(
-            @PathVariable("memberId") Long memberId);
+    ApiResponse<MemberSimpleResponse> findGoal(@PathVariable("memberId") Long memberId);
 }
