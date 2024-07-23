@@ -39,7 +39,7 @@ public class JwtUtils {
         return new AccessTokenDto(memberId, memberRole, accessToken);
     }
 
-    public RefreshTokenDto generateRefreshToken(Long memberId) {
+    public RefreshTokenDto generateRefreshToken(Long memberId, MemberRole memberRole) {
         Date now = new Date();
         Date exp = new Date(now.getTime() + jwtProperties.refreshTokenExpirationTime());
 
@@ -47,12 +47,13 @@ public class JwtUtils {
                 Jwts.builder()
                         .issuer(jwtProperties.issuer())
                         .subject(memberId.toString())
+                        .claim("role", memberRole.getValue())
                         .claim("type", REFRESH.getValue())
                         .issuedAt(now)
                         .expiration(exp)
                         .signWith(getJwtTokenKey(jwtProperties.refreshTokenSecret()))
                         .compact();
-        return new RefreshTokenDto(memberId, refreshToken);
+        return new RefreshTokenDto(memberId, memberRole, refreshToken);
     }
 
     public String findTokenType(String token) {
@@ -97,7 +98,8 @@ public class JwtUtils {
                         .build()
                         .parseSignedClaims(token);
         Long memberId = Long.valueOf(claims.getPayload().getSubject());
-        return Optional.of(new RefreshTokenDto(memberId, token));
+        MemberRole memberRole = MemberRole.findByValue(claims.getPayload().get("role").toString());
+        return Optional.of(new RefreshTokenDto(memberId, memberRole, token));
     }
 
     private SecretKey getJwtTokenKey(String tokenKey) {

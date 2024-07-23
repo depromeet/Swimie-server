@@ -30,7 +30,7 @@ public class JwtTokenService {
 
     public JwtTokenResponseDto generateToken(Long memberId, MemberRole memberRole) {
         AccessTokenDto accessToken = jwtUtils.generateAccessToken(memberId, memberRole);
-        RefreshTokenDto refreshToken = jwtUtils.generateRefreshToken(memberId);
+        RefreshTokenDto refreshToken = jwtUtils.generateRefreshToken(memberId, memberRole);
 
         memberRepository.updateRefresh(memberId, refreshToken.refreshToken());
 
@@ -97,9 +97,12 @@ public class JwtTokenService {
                     memberRepository
                             .findById(memberId)
                             .orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
-            MemberRole memberRole = member.getRole();
-
-            return jwtUtils.generateAccessToken(memberId, memberRole);
+            if (member.getRefreshToken() != null && member.getRefreshToken().equals(refreshToken)) {
+                MemberRole memberRole = member.getRole();
+                return jwtUtils.generateAccessToken(memberId, memberRole);
+            } else {
+                throw new ForbiddenException(AuthErrorType.REFRESH_TOKEN_NOT_MATCH);
+            }
         } catch (ExpiredJwtException e) {
             throw new UnauthorizedException(AuthErrorType.JWT_REFRESH_TOKEN_EXPIRED);
         }

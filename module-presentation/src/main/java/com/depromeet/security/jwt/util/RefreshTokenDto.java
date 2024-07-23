@@ -1,3 +1,5 @@
 package com.depromeet.security.jwt.util;
 
-public record RefreshTokenDto(Long memberId, String refreshToken) {}
+import com.depromeet.member.MemberRole;
+
+public record RefreshTokenDto(Long memberId, MemberRole memberRole, String refreshToken) {}
