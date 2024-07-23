@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         String token = request.getHeader(AUTH_HEADER.getValue());
 
-        if (token.isEmpty()) {
+        if (token == null || token.isEmpty()) {
             log.info("token is empty");
             throw new NotFoundException(AuthErrorType.JWT_TOKEN_NOT_FOUND);
         }
