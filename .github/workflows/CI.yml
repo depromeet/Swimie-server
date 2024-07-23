@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+  dev-build-TEST:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: JDK 21 설정
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '21'
+
+      - name: 환경변수 파일 주입
+        run: |
+          cd module-presentation/src/main/resources
+          echo "${{ secrets.APPLICATION_SECRETS }}" > ./application-secret.properties
+          echo "${{ secrets.DATA }}" > ./data.sql
+
+      - name: Gradle Wrapper 권한 부여
+        run: chmod +x gradlew
+
+      - name: 빌드 (Build)
+        run: |
+          ./gradlew module-presentation:build -x test
+        shell: bash
+
+      - name: Gradle 테스트
+        run: ./gradlew --info test
+
+      - name: Test 결과 게시
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          junit_files: '**/build/test-results/test/TEST-*.xml'
