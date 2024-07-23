@@ -32,4 +32,11 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .findById(memberId)
                 .map(memberEntity -> memberEntity.updateRefresh(refreshToken));
     }
+
+    @Override
+    public Optional<Member> updateGoal(Long memberId, Integer goal) {
+        return memberJpaRepository
+                .findById(memberId)
+                .map(memberEntity -> memberEntity.updateGoal(goal).toModel());
+    }
 }
