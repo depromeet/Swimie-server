@@ -1,7 +1,5 @@
 package com.depromeet.memory.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
 import com.depromeet.memory.dto.request.StrokeCreateRequest;

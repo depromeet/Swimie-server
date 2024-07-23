@@ -10,6 +10,7 @@ import com.depromeet.image.repository.ImageRepository;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.repository.MemoryRepository;
 import com.depromeet.type.image.ImageErrorType;
+import com.depromeet.type.memory.MemoryErrorType;
 import com.depromeet.util.ImageNameUtil;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -79,7 +80,7 @@ public class ImageUpdateServiceImpl implements ImageUpdateService {
     private Memory getMemory(Long memoryId) {
         return memoryRepository
                 .findById(memoryId)
-                .orElseThrow(() -> new NotFoundException(INTERNAL_SERVER)); // 임시
+                .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND));
     }
 
     private String generateImageName(String originImageName) {

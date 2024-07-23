@@ -48,7 +48,7 @@ public class MemoryRepositoryTest {
         pageable = getPageable();
 
         memberRepositoryImpl = new MemberRepositoryImpl(memberJpaRepository);
-        memoryRepositoryImpl = new MemoryRepositoryImpl(memoryJpaRepository, queryFactory);
+        memoryRepositoryImpl = new MemoryRepositoryImpl(queryFactory, memoryJpaRepository);
         memoryDetailRepositoryImpl = new MemoryDetailRepositoryImpl(memoryDetailJpaRepository);
         member = memberRepositoryImpl.save(MemberFixture.mockMember());
         List<MemoryDetail> memoryDetailList = MemoryDetailFixture.memoryDetailList();
@@ -70,13 +70,8 @@ public class MemoryRepositoryTest {
     void findPrevMemoryByMemberId로_최근_날짜_이전_30일_recordAt_Desc로_가져오는지_테스트() {
         // when
         Slice<Memory> resultSlice =
-                memoryRepositoryImpl.findPrevMemoryByMemberId(
-                        member.getId(), null, null, pageable, null);
+                memoryRepositoryImpl.findPrevMemoryByMemberId(member.getId(), null, pageable, null);
         List<Memory> result = resultSlice.getContent();
-
-        List<LocalDate> resultRecordAtList = result.stream().map(Memory::getRecordAt).toList();
-        System.out.println(resultRecordAtList);
-
         Memory lastMemory = result.getLast();
 
         // then
@@ -92,11 +87,8 @@ public class MemoryRepositoryTest {
         // when
         Slice<Memory> resultSlice =
                 memoryRepositoryImpl.findPrevMemoryByMemberId(
-                        member.getId(), null, null, pageable, recordAt);
+                        member.getId(), null, pageable, recordAt);
         List<Memory> result = resultSlice.getContent();
-        List<LocalDate> resultRecordAtList = result.stream().map(Memory::getRecordAt).toList();
-        System.out.println(resultRecordAtList);
-
         Memory lastMemory = result.getLast();
 
         // then
@@ -111,7 +103,7 @@ public class MemoryRepositoryTest {
 
         Slice<Memory> initResultSlice =
                 memoryRepositoryImpl.findPrevMemoryByMemberId(
-                        member.getId(), null, null, pageable, recordAt);
+                        member.getId(), null, pageable, recordAt);
 
         List<Memory> initResultSliceList = initResultSlice.getContent();
         Memory lastDate = initResultSliceList.getLast();
@@ -119,7 +111,7 @@ public class MemoryRepositoryTest {
         // when
         Slice<Memory> resultSlice =
                 memoryRepositoryImpl.findPrevMemoryByMemberId(
-                        member.getId(), lastDate.getId(), lastDate.getRecordAt(), pageable, null);
+                        member.getId(), lastDate.getId(), pageable, null);
         List<Memory> result = resultSlice.getContent();
 
         // then
@@ -134,7 +126,7 @@ public class MemoryRepositoryTest {
 
         Slice<Memory> initResultSlice =
                 memoryRepositoryImpl.findPrevMemoryByMemberId(
-                        member.getId(), null, null, pageable, recordAt);
+                        member.getId(), null, pageable, recordAt);
 
         List<Memory> initResultSliceList = initResultSlice.getContent();
         Memory firstDate = initResultSliceList.getFirst();
@@ -142,7 +134,7 @@ public class MemoryRepositoryTest {
         // when
         Slice<Memory> resultSlice =
                 memoryRepositoryImpl.findNextMemoryByMemberId(
-                        member.getId(), firstDate.getId(), firstDate.getRecordAt(), pageable, null);
+                        member.getId(), firstDate.getId(), pageable, null);
         List<Memory> result = resultSlice.getContent();
 
         // then

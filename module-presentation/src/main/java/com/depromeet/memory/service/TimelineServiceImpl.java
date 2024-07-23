@@ -5,11 +5,13 @@ import com.depromeet.image.Image;
 import com.depromeet.image.dto.response.MemoryImagesDto;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
-import com.depromeet.memory.dto.response.StrokeResponseDto;
+import com.depromeet.memory.dto.request.TimelineRequestDto;
+import com.depromeet.memory.dto.response.StrokeResponse;
 import com.depromeet.memory.dto.response.TimelineResponseDto;
 import com.depromeet.memory.repository.MemoryRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,37 +33,33 @@ public class TimelineServiceImpl implements TimelineService {
 
     @Override
     public CustomSliceResponse<?> getTimelineByMemberIdAndCursorAndDate(
-            Long memberId,
-            Long cursorId,
-            String cursorRecordAt,
-            String date,
-            boolean showNewer,
-            int size) {
-        Slice<Memory> memories;
-        Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Order.desc("recordAt")));
-
-        LocalDate parsedCursorRecordAt = getLocalDateOrNull(cursorRecordAt);
-        LocalDate parsedDate = getLocalDateOrNull(date);
-
-        if (showNewer) {
-            memories =
-                    memoryRepository.findNextMemoryByMemberId(
-                            memberId, cursorId, parsedCursorRecordAt, pageable, parsedDate);
-        } else {
-            memories =
-                    memoryRepository.findPrevMemoryByMemberId(
-                            memberId, cursorId, parsedCursorRecordAt, pageable, parsedDate);
-        }
+            Long memberId, TimelineRequestDto timeline) {
+        Slice<Memory> memories = getTimelines(memberId, timeline);
         Slice<TimelineResponseDto> result = memories.map(this::mapToTimelineResponseDto);
         return mapToCustomSliceResponse(result);
     }
 
-    private LocalDate getLocalDateOrNull(String cursorRecordAt) {
-        LocalDate cursorRecordAtLocalDate = null;
-        if (cursorRecordAt != null && !cursorRecordAt.trim().isEmpty()) {
-            cursorRecordAtLocalDate = LocalDate.parse(cursorRecordAt);
+    private Slice<Memory> getTimelines(Long memberId, TimelineRequestDto timeline) {
+        Pageable pageable =
+                PageRequest.of(0, timeline.getSize(), Sort.by(Sort.Order.desc("recordAt")));
+
+        LocalDate parsedDate = getLocalDateOrNull(timeline.getDate());
+        if (timeline.isShowNewer()) {
+            return memoryRepository.findNextMemoryByMemberId(
+                    memberId, timeline.getCursorId(), pageable, parsedDate);
+        } else {
+            return memoryRepository.findPrevMemoryByMemberId(
+                    memberId, timeline.getCursorId(), pageable, parsedDate);
         }
-        return cursorRecordAtLocalDate;
+    }
+
+    private LocalDate getLocalDateOrNull(YearMonth date) {
+        LocalDate lastDayOfMonth = null;
+        log.info("localDate : {}", date);
+        if (date != null) {
+            lastDayOfMonth = date.atEndOfMonth();
+        }
+        return lastDayOfMonth;
     }
 
     @Override
@@ -75,7 +73,7 @@ public class TimelineServiceImpl implements TimelineService {
                 .diary(memory.getDiary())
                 .totalMeter(calculateTotalMeter(memory.getStrokes(), memory.getLane()))
                 .memoryDetailId(
-                        memory.getMemoryDetail().getId() != null
+                        memory.getMemoryDetail() != null && memory.getMemoryDetail().getId() != null
                                 ? memory.getMemoryDetail().getId()
                                 : null)
                 .item(getItemFromMemoryDetail(memory))
@@ -88,25 +86,25 @@ public class TimelineServiceImpl implements TimelineService {
     }
 
     private String getItemFromMemoryDetail(Memory memory) {
-        return memory.getMemoryDetail().getItem() != null
+        return memory.getMemoryDetail() != null && memory.getMemoryDetail().getItem() != null
                 ? memory.getMemoryDetail().getItem()
                 : null;
     }
 
     private Short getHeartRateFromMemoryDetail(Memory memory) {
-        return memory.getMemoryDetail().getHeartRate() != null
+        return memory.getMemoryDetail() != null && memory.getMemoryDetail().getHeartRate() != null
                 ? memory.getMemoryDetail().getHeartRate()
                 : null;
     }
 
     private String getPaceFromMemoryDetail(Memory memory) {
-        return memory.getMemoryDetail().getPace() == null
-                ? null
-                : localTimeToString(memory.getMemoryDetail().getPace());
+        return memory.getMemoryDetail() != null && memory.getMemoryDetail().getPace() != null
+                ? localTimeToString(memory.getMemoryDetail().getPace())
+                : null;
     }
 
     private Integer getKcalFromMemoryDetail(Memory memory) {
-        return memory.getMemoryDetail().getKcal() != null
+        return memory.getMemoryDetail() != null && memory.getMemoryDetail().getKcal() != null
                 ? memory.getMemoryDetail().getKcal()
                 : null;
     }
@@ -126,20 +124,21 @@ public class TimelineServiceImpl implements TimelineService {
             if (stroke.getMeter() != null) {
                 totalMeter += stroke.getMeter();
             } else {
-                if (lane == null) return null;
-                totalMeter += (int) stroke.getLaps() * lane;
+                if (lane != null) {
+                    totalMeter += (int) stroke.getLaps() * lane;
+                }
             }
         }
         return totalMeter;
     }
 
-    private List<StrokeResponseDto> strokeToDto(List<Stroke> strokes) {
-        if (strokes == null || strokes.isEmpty()) return new ArrayList<>();
+    private List<StrokeResponse> strokeToDto(List<Stroke> strokes) {
+        if (strokes == null || strokes.isEmpty()) return null;
 
         return strokes.stream()
                 .map(
                         stroke ->
-                                StrokeResponseDto.builder()
+                                StrokeResponse.builder()
                                         .strokeId(stroke.getId())
                                         .name(stroke.getName())
                                         .laps(getLapsFromStroke(stroke))

@@ -43,6 +43,11 @@ public class FakeMemoryRepository implements MemoryRepository {
     }
 
     @Override
+    public Optional<Memory> findByRecordAt(LocalDate recordAt) {
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<Memory> update(Long memoryId, Memory memoryUpdate) {
         Optional<Memory> md = data.stream().filter(item -> item.getId().equals(memoryId)).findAny();
         if (md.isEmpty()) {
@@ -95,21 +100,18 @@ public class FakeMemoryRepository implements MemoryRepository {
 
     @Override
     public Slice<Memory> findPrevMemoryByMemberId(
-            Long memberId,
-            Long cursorId,
-            LocalDate cursorRecordAt,
-            Pageable pageable,
-            LocalDate recordAt) {
+            Long memberId, Long cursorId, Pageable pageable, LocalDate recordAt) {
         return null;
     }
 
     @Override
     public Slice<Memory> findNextMemoryByMemberId(
-            Long memberId,
-            Long cursorId,
-            LocalDate cursorRecordAt,
-            Pageable pageable,
-            LocalDate recordAt) {
+            Long memberId, Long cursorId, Pageable pageable, LocalDate recordAt) {
+        return null;
+    }
+
+    @Override
+    public List<Memory> getCalendarByYearAndMonth(Long memberId, Integer year, Short month) {
         return null;
     }
 }

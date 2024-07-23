@@ -21,7 +21,6 @@ public class TimelineServiceTest {
     private FakeMemoryRepository memoryRepository;
     private FakeMemoryDetailRepository memoryDetailRepository;
     private FakeMemberRepository memberRepository;
-    private FakeAuthorizationUtil authorizationUtil;
     private FakePoolRepository poolRepository;
     private MemoryService memoryService;
     private FakeStrokeRepository strokeRepository;
@@ -43,7 +42,6 @@ public class TimelineServiceTest {
         memoryDetailRepository = new FakeMemoryDetailRepository();
 
         memberRepository = new FakeMemberRepository();
-        authorizationUtil = new FakeAuthorizationUtil(memberId);
 
         poolRepository = new FakePoolRepository();
 
@@ -62,12 +60,7 @@ public class TimelineServiceTest {
 
         // memoryService
         memoryService =
-                new MemoryServiceImpl(
-                        memoryRepository,
-                        memoryDetailRepository,
-                        memberRepository,
-                        authorizationUtil,
-                        poolRepository);
+                new MemoryServiceImpl(poolRepository, memoryRepository, memoryDetailRepository);
 
         timelineService = new TimelineServiceImpl(memoryRepository);
         memory = saveMemory();
