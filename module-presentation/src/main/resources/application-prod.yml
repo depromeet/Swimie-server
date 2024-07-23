@@ -33,6 +33,14 @@ spring:
 cloud-front:
   domain: ${AWS_CLOUD_FRONT_DOMAIN}
 
+sentry:
+  dsn: ${SENTRY_DSN}
+  traces-sample-rate: 1.0
+  logging:
+    minimum-event-level: ERROR
+    minimum-breadcrumb-level: ERROR
+    enabled: true
+
 swagger.version: "v0.1"
 
 
