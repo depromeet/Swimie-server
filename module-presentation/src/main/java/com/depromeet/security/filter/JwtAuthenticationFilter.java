@@ -33,7 +33,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        log.info("start jwt filter");
         String url = request.getRequestURI();
         if (noAuthentication(url)) {
             filterChain.doFilter(request, response);
@@ -47,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         if (!token.startsWith(BEARER_PREFIX.getValue())) {
-            log.info("not starts with bearer ");
+            log.info("not starts with Bearer");
             throw new NotFoundException(AuthErrorType.JWT_TOKEN_PREFIX);
         }
 
