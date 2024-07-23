@@ -83,21 +83,6 @@ public class MemoryEntity {
         this.diary = diary;
     }
 
-    public static MemoryEntity create(Memory memory) {
-        return MemoryEntity.builder()
-                .member(MemberEntity.from(memory.getMember()))
-                .pool(getPoolEntityOrNull(memory))
-                .memoryDetail(getMemoryDetailEntityOrNull(memory))
-                .strokes(getStrokeEntitiesOrNull(memory))
-                .images(getImageEntitiesOrNull(memory))
-                .recordAt(memory.getRecordAt())
-                .startTime(memory.getStartTime())
-                .endTime(memory.getEndTime())
-                .lane(memory.getLane())
-                .diary(memory.getDiary())
-                .build();
-    }
-
     public static MemoryEntity from(Memory memory) {
         return MemoryEntity.builder()
                 .id(memory.getId())
