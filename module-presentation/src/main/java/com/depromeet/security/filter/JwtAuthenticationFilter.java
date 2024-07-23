@@ -108,10 +108,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void setAuthentication(Long memberId, MemberRole memberRole) {
         CustomOAuth2User customOAuth2User =
                 new CustomOAuth2User(
-                        MemberDto.builder()
-                                .id(memberId)
-                                .memberRole(memberRole)
-                                .build());
+                        MemberDto.builder().id(memberId).memberRole(memberRole).build());
 
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(

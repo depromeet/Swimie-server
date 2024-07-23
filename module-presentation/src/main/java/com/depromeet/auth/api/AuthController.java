@@ -27,8 +27,7 @@ public class AuthController implements AuthApi {
     @PostMapping("/kakao")
     public ApiResponse<JwtTokenResponseDto> loginByKakao(
             @Valid @RequestBody final KakaoLoginRequest request) {
-        return ApiResponse.success(
-                AuthSuccessType.LOGIN_SUCCESS, authFacade.loginByKakao(request));
+        return ApiResponse.success(AuthSuccessType.LOGIN_SUCCESS, authFacade.loginByKakao(request));
     }
 
     @PostMapping("/refresh")
