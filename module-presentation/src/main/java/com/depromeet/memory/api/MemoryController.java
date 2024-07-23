@@ -4,6 +4,7 @@ import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.dto.response.CustomSliceResponse;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
+import com.depromeet.memory.dto.request.TimelineRequestDto;
 import com.depromeet.memory.dto.response.CalendarResponse;
 import com.depromeet.memory.dto.response.MemoryResponse;
 import com.depromeet.memory.facade.MemoryFacade;
@@ -46,13 +47,10 @@ public class MemoryController implements MemoryApi {
 
     @GetMapping("/timeline")
     public ApiResponse<?> timeline(
-            @LoginMember Long memberId,
-            @RequestParam(value = "cursorId", required = false) Long cursorId,
-            @RequestParam(value = "recordAt", required = false) String recordAt,
-            @RequestParam(value = "size") Integer size) {
-        CustomSliceResponse<?> response =
-                memoryFacade.getTimelineByMemberIdAndCursor(memberId, cursorId, recordAt, size);
-        return ApiResponse.success(MemorySuccessType.GET_TIMELINE_SUCCESS, response);
+            @LoginMember Long memberId, @ModelAttribute TimelineRequestDto timelineRequestDto) {
+        CustomSliceResponse<?> result =
+                memoryFacade.getTimelineByMemberIdAndCursorAndDate(memberId, timelineRequestDto);
+        return ApiResponse.success(MemorySuccessType.GET_TIMELINE_SUCCESS, result);
     }
 
     @GetMapping("/calendar")

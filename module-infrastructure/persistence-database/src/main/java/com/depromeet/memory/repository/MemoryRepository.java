@@ -16,22 +16,11 @@ public interface MemoryRepository {
 
     Optional<Memory> update(Long memoryId, Memory memoryUpdate);
 
-    Slice<Memory> getSliceMemoryByMemberIdAndCursorId(
-            Long memberId, Long cursorId, LocalDate recordAt, Pageable pageable);
-
     Slice<Memory> findPrevMemoryByMemberId(
-            Long memberId,
-            Long cursorId,
-            LocalDate cursorRecordAt,
-            Pageable pageable,
-            LocalDate recordAt);
+            Long memberId, Long cursorId, Pageable pageable, LocalDate recordAt);
 
     Slice<Memory> findNextMemoryByMemberId(
-            Long memberId,
-            Long cursorId,
-            LocalDate cursorRecordAt,
-            Pageable pageable,
-            LocalDate recordAt);
+            Long memberId, Long cursorId, Pageable pageable, LocalDate recordAt);
 
     List<Memory> getCalendarByYearAndMonth(Long memberId, Integer year, Short month);
 }

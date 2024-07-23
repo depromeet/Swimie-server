@@ -62,6 +62,7 @@ public class MemberEntity {
                 .name(member.getName())
                 .email(member.getEmail())
                 .role(member.getRole())
+                .refreshToken(member.getRefreshToken())
                 .build();
     }
 
