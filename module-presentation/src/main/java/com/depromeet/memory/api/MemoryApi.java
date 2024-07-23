@@ -3,6 +3,7 @@ package com.depromeet.memory.api;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
+import com.depromeet.memory.dto.request.TimelineRequestDto;
 import com.depromeet.memory.dto.response.CalendarResponse;
 import com.depromeet.memory.dto.response.MemoryResponse;
 import com.depromeet.security.LoginMember;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.time.YearMonth;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,10 +35,7 @@ public interface MemoryApi {
 
     @Operation(summary = "타임라인 최신순 조회")
     ApiResponse<?> timeline(
-            @LoginMember Long memberId,
-            @RequestParam(value = "cursorId", required = false) Long cursorId,
-            @RequestParam(value = "recordAt", required = false) String recordAt,
-            @RequestParam(value = "size") Integer size);
+            @LoginMember Long memberId, @ModelAttribute TimelineRequestDto timelineRequestDto);
 
     @Operation(summary = "캘린더 조회")
     ApiResponse<CalendarResponse> getCalendar(

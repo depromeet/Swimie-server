@@ -68,14 +68,7 @@ public class MemberEntity {
     }
 
     public Member toModel() {
-        return Member.builder()
-                .id(id)
-                .name(name)
-                .email(email)
-                .role(role)
-                .refreshToken(refreshToken)
-                .goal(goal)
-                .build();
+        return Member.builder().id(id).name(name).email(email).role(role).refreshToken(refreshToken).goal(goal).build();
     }
 
     public MemberEntity updateRefresh(String refreshToken) {
