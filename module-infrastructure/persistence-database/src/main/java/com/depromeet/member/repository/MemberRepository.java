@@ -9,4 +9,6 @@ public interface MemberRepository {
     Optional<Member> findById(Long id);
 
     Member save(Member member);
+
+    void updateRefresh(Long memberId, String refreshToken);
 }
