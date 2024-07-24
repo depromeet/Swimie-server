@@ -29,18 +29,22 @@ public class ImageEntity {
 
     @NotNull private String imageUrl;
 
+    private boolean isPending;
+
     @Builder
     public ImageEntity(
             Long id,
             MemoryEntity memory,
             String originImageName,
             String imageName,
-            String imageUrl) {
+            String imageUrl,
+            boolean isPending) {
         this.id = id;
         this.memory = memory;
         this.originImageName = originImageName;
         this.imageName = imageName;
         this.imageUrl = imageUrl;
+        this.isPending = isPending;
     }
 
     public static ImageEntity from(Image image) {
@@ -53,6 +57,7 @@ public class ImageEntity {
                 .originImageName(image.getOriginImageName())
                 .imageName(image.getImageName())
                 .imageUrl(image.getImageUrl())
+                .isPending(image.isPending())
                 .build();
     }
 
@@ -62,6 +67,7 @@ public class ImageEntity {
                 .originImageName(image.getOriginImageName())
                 .imageName(image.getImageName())
                 .imageUrl(image.getImageUrl())
+                .isPending(image.isPending())
                 .build();
     }
 
@@ -72,6 +78,7 @@ public class ImageEntity {
                 .originImageName(this.originImageName)
                 .imageName(this.imageName)
                 .imageUrl(this.imageUrl)
+                .isPending(this.isPending)
                 .build();
     }
 
@@ -81,6 +88,7 @@ public class ImageEntity {
                 .originImageName(this.originImageName)
                 .imageName(this.imageName)
                 .imageUrl(this.imageUrl)
+                .isPending(this.isPending)
                 .build();
     }
 

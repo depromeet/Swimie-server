@@ -12,15 +12,22 @@ public class Image {
     private String originImageName;
     private String imageName;
     private String imageUrl;
+    private boolean isPending;
 
     @Builder
     public Image(
-            Long id, Memory memory, String originImageName, String imageName, String imageUrl) {
+            Long id,
+            Memory memory,
+            String originImageName,
+            String imageName,
+            String imageUrl,
+            boolean isPending) {
         this.id = id;
         this.memory = memory;
         this.originImageName = originImageName;
         this.imageName = imageName;
         this.imageUrl = imageUrl;
+        this.isPending = isPending;
     }
 
     public void addMemoryToImage(Memory memory) {
@@ -39,6 +46,7 @@ public class Image {
                 .originImageName(originImageName)
                 .imageName(imageName)
                 .imageUrl(imageUrl)
+                .isPending(isPending)
                 .build();
     }
 }
