@@ -18,10 +18,7 @@ public class FakePoolRepository implements PoolRepository {
 
     @Override
     public List<Pool> findPoolsByName(String nameQuery) {
-        return poolData.stream()
-                .filter(item -> item.getName().contains(nameQuery))
-                .limit(3)
-                .toList();
+        return poolData.stream().filter(item -> item.getName().contains(nameQuery)).toList();
     }
 
     @Override

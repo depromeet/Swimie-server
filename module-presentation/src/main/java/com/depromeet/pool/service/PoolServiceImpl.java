@@ -49,7 +49,6 @@ public class PoolServiceImpl implements PoolService {
 
         // 여기서 삭제 로직
         if (poolRepository.existsFavoritePool(favoritePool)) {
-            log.info("여기 체크");
             poolRepository.deleteFavoritePool(favoritePool);
             return null;
         }

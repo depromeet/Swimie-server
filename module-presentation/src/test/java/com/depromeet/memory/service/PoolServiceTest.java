@@ -35,7 +35,7 @@ public class PoolServiceTest {
 
         memberId = 1L;
         String memberRole = "USER";
-        Member member = MemberFixture.make(memberId, memberRole);
+        member = MemberFixture.make(memberId, memberRole);
         member = memberRepository.save(member);
 
         poolService = new PoolServiceImpl(poolRepository, memberRepository);
