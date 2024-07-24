@@ -1,16 +1,16 @@
 package com.depromeet.security.filter;
 
 import static com.depromeet.security.constant.SecurityConstant.*;
-import static com.depromeet.type.auth.AuthErrorType.INVALID_JWT_TOKEN;
-import static com.depromeet.type.auth.AuthErrorType.JWT_TOKEN_EXPIRED;
 
 import com.depromeet.auth.service.JwtTokenService;
-import com.depromeet.exception.UnauthorizedException;
+import com.depromeet.exception.BadRequestException;
+import com.depromeet.exception.NotFoundException;
+import com.depromeet.member.MemberRole;
 import com.depromeet.security.jwt.util.AccessTokenDto;
 import com.depromeet.security.jwt.util.RefreshTokenDto;
 import com.depromeet.security.oauth.CustomOAuth2User;
 import com.depromeet.security.oauth.dto.MemberDto;
-import io.jsonwebtoken.ExpiredJwtException;
+import com.depromeet.type.auth.AuthErrorType;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +27,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
     private final JwtTokenService jwtTokenService;
 
     @Override
@@ -39,67 +38,49 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        String token = request.getHeader(AUTH_HEADER.getValue());
 
-        Optional<String> optionalAccessToken =
-                Optional.ofNullable(request.getHeader(ACCESS_HEADER.getValue()));
-        Optional<String> optionalRefreshToken =
-                Optional.ofNullable(request.getHeader(REFRESH_HEADER.getValue()));
-
-        if (optionalAccessToken.isEmpty()
-                && optionalRefreshToken.isEmpty()) { // accessToken, refreshToken 둘다 없는 경우
-            filterChain.doFilter(request, response);
-            return;
+        if (token == null || token.isEmpty()) {
+            log.info("token is empty");
+            throw new NotFoundException(AuthErrorType.JWT_TOKEN_NOT_FOUND);
         }
 
-        if (optionalAccessToken.isEmpty()) { // accessToken 만 없는 경우
-            reissueJWTWithRefreshToken(request, response, filterChain);
-            return;
+        if (!token.startsWith(BEARER_PREFIX.getValue())) {
+            log.info("not starts with Bearer");
+            throw new NotFoundException(AuthErrorType.JWT_TOKEN_PREFIX);
         }
 
-        String accessToken = optionalAccessToken.get();
-        if (!accessToken.startsWith(BEARER_PREFIX.getValue())) {
-            filterChain.doFilter(request, response);
-            return;
+        token = token.substring(7);
+        String tokenType = jwtTokenService.findTokenType(token);
+
+        if (tokenType.equals(ACCESS.getValue())) {
+            if (url.equals("/api/login/refresh")) {
+                throw new BadRequestException(AuthErrorType.INVALID_JWT_ACCESS_REQUEST);
+            }
+
+            Optional<AccessTokenDto> optionalAccessTokenDto =
+                    jwtTokenService.parseAccessToken(token);
+
+            if (optionalAccessTokenDto.isPresent()) {
+                AccessTokenDto accessTokenDto = optionalAccessTokenDto.get();
+                setAuthentication(accessTokenDto.memberId(), accessTokenDto.memberRole());
+            }
+        } else if (tokenType.equals(REFRESH.getValue())) {
+            if (!url.equals("/api/login/refresh")) {
+                throw new BadRequestException(AuthErrorType.INVALID_JWT_REFRESH_REQUEST);
+            }
+            Optional<RefreshTokenDto> optionalRefreshTokenDto =
+                    jwtTokenService.parseRefreshToken(token);
+
+            if (optionalRefreshTokenDto.isEmpty()) {
+                log.info("failed to parse refresh token");
+                throw new NotFoundException(AuthErrorType.JWT_REFRESH_TOKEN_NOT_FOUND);
+            }
+
+            RefreshTokenDto refreshTokenDto = optionalRefreshTokenDto.get();
+
+            setAuthentication(refreshTokenDto.memberId(), refreshTokenDto.memberRole());
         }
-
-        accessToken = accessToken.substring(7);
-        Optional<AccessTokenDto> optionalAccessTokenDto = parseAccessToken(accessToken);
-
-        if (optionalAccessTokenDto.isPresent()) {
-            AccessTokenDto accessTokenDto = optionalAccessTokenDto.get(); // 액서스 토큰이 만료되지 않은 경우
-            setAuthentication(accessTokenDto);
-        } // 만료된 경우 401 error
-        filterChain.doFilter(request, response);
-    }
-
-    private void reissueJWTWithRefreshToken(
-            HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws IOException, ServletException {
-        Optional<String> optionalRefreshToken =
-                Optional.ofNullable(request.getHeader(REFRESH_HEADER.getValue()));
-
-        if (optionalRefreshToken.isEmpty()) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String refreshToken = optionalRefreshToken.get();
-        if (!refreshToken.startsWith(BEARER_PREFIX.getValue())) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        refreshToken = refreshToken.substring(7);
-
-        Optional<RefreshTokenDto> optionalRefreshTokenDto = parseRefreshToken(refreshToken);
-        if (optionalRefreshTokenDto.isEmpty()) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        RefreshTokenDto refreshTokenDto = optionalRefreshTokenDto.get();
-        jwtTokenService.retrieveRefreshToken(refreshTokenDto, refreshToken);
-        AccessTokenDto reissuedAccessToken = addReissuedJwtTokenToHeader(response, refreshToken);
-        setAuthentication(reissuedAccessToken);
         filterChain.doFilter(request, response);
     }
 
@@ -111,60 +92,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 || url.startsWith("/login")
                 || url.startsWith("/depromeet-actuator")
                 || url.startsWith("/api/v1/auth")
-                || url.startsWith("/api/login");
-    }
-
-    private Optional<AccessTokenDto> parseAccessToken(String accessToken) {
-        Optional<AccessTokenDto> optionalAccessTokenDto;
-        try {
-            optionalAccessTokenDto = jwtTokenService.parseAccessToken(accessToken);
-        } catch (IllegalArgumentException e) {
-            log.error(e.getMessage());
-            throw new UnauthorizedException(INVALID_JWT_TOKEN);
-        } catch (ExpiredJwtException e) {
-            log.error("JWT expired");
-            return Optional.empty();
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw e;
-        }
-        return optionalAccessTokenDto;
-    }
-
-    private Optional<RefreshTokenDto> parseRefreshToken(String refreshToken) {
-        Optional<RefreshTokenDto> optionalRefreshTokenDto;
-        try {
-            optionalRefreshTokenDto = jwtTokenService.parseRefreshToken(refreshToken);
-        } catch (IllegalArgumentException e) {
-            log.error(e.getMessage());
-            throw new UnauthorizedException(INVALID_JWT_TOKEN);
-        } catch (ExpiredJwtException e) {
-            log.error(e.getMessage());
-            throw new UnauthorizedException(JWT_TOKEN_EXPIRED);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw e;
-        }
-        return optionalRefreshTokenDto;
+                || url.equals("/api/login/kakao")
+                || url.equals("/api/login/google");
     }
 
     private AccessTokenDto addReissuedJwtTokenToHeader(
             HttpServletResponse response, String refreshToken) {
-        RefreshTokenDto reissuedRefreshToken = jwtTokenService.reissueRefreshToken(refreshToken);
-        AccessTokenDto reissuedAccessToken =
-                jwtTokenService.reissueAccessToken(reissuedRefreshToken.memberId());
+        AccessTokenDto reissuedAccessToken = jwtTokenService.reissueAccessToken(refreshToken);
 
-        response.addHeader(ACCESS_HEADER.getValue(), reissuedAccessToken.accessToken());
+        response.addHeader(AUTH_HEADER.getValue(), reissuedAccessToken.accessToken());
         return reissuedAccessToken;
     }
 
-    private void setAuthentication(AccessTokenDto reissuedAccessToken) {
+    private void setAuthentication(Long memberId, MemberRole memberRole) {
         CustomOAuth2User customOAuth2User =
                 new CustomOAuth2User(
-                        MemberDto.builder()
-                                .id(reissuedAccessToken.memberId())
-                                .memberRole(reissuedAccessToken.memberRole())
-                                .build());
+                        MemberDto.builder().id(memberId).memberRole(memberRole).build());
 
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(

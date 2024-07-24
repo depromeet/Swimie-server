@@ -63,10 +63,28 @@ public class MemberEntity {
                 .email(member.getEmail())
                 .role(member.getRole())
                 .refreshToken(member.getRefreshToken())
+                .goal(member.getGoal())
                 .build();
     }
 
     public Member toModel() {
-        return Member.builder().id(id).name(name).email(email).role(role).goal(goal).build();
+        return Member.builder()
+                .id(id)
+                .name(name)
+                .email(email)
+                .role(role)
+                .refreshToken(refreshToken)
+                .goal(goal)
+                .build();
+    }
+
+    public MemberEntity updateRefresh(String refreshToken) {
+        if (refreshToken != null) this.refreshToken = refreshToken;
+        return this;
+    }
+
+    public MemberEntity updateGoal(Integer goal) {
+        this.goal = goal;
+        return this;
     }
 }

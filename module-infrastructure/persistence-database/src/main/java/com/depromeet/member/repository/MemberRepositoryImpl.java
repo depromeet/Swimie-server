@@ -25,4 +25,18 @@ public class MemberRepositoryImpl implements MemberRepository {
     public Member save(Member member) {
         return memberJpaRepository.save(MemberEntity.from(member)).toModel();
     }
+
+    @Override
+    public void updateRefresh(Long memberId, String refreshToken) {
+        memberJpaRepository
+                .findById(memberId)
+                .map(memberEntity -> memberEntity.updateRefresh(refreshToken));
+    }
+
+    @Override
+    public Optional<Member> updateGoal(Long memberId, Integer goal) {
+        return memberJpaRepository
+                .findById(memberId)
+                .map(memberEntity -> memberEntity.updateGoal(goal).toModel());
+    }
 }

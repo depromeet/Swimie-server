@@ -1,6 +1,7 @@
 package com.depromeet.member.service;
 
 import com.depromeet.auth.dto.response.AccountProfileResponse;
+import com.depromeet.exception.InternalServerException;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.member.Member;
 import com.depromeet.member.MemberRole;
@@ -75,5 +76,12 @@ public class MemberServiceImpl implements MemberService {
                                             .build();
                             return memberRepository.save(member);
                         });
+    }
+
+    @Override
+    public Member updateGoal(Long memberId, Integer goal) {
+        return memberRepository
+                .updateGoal(memberId, goal)
+                .orElseThrow(() -> new InternalServerException(MemberErrorType.UPDATE_GOAL_FAILED));
     }
 }

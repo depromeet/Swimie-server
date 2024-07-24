@@ -1,5 +1,6 @@
 package com.depromeet.auth.service;
 
+import com.depromeet.auth.dto.response.JwtAccessTokenResponse;
 import com.depromeet.auth.dto.response.JwtTokenResponseDto;
 import com.depromeet.exception.ForbiddenException;
 import com.depromeet.exception.NotFoundException;
@@ -14,6 +15,7 @@ import com.depromeet.security.jwt.util.RefreshTokenDto;
 import com.depromeet.type.auth.AuthErrorType;
 import com.depromeet.type.member.MemberErrorType;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,14 +30,9 @@ public class JwtTokenService {
 
     public JwtTokenResponseDto generateToken(Long memberId, MemberRole memberRole) {
         AccessTokenDto accessToken = jwtUtils.generateAccessToken(memberId, memberRole);
-        RefreshTokenDto refreshToken = jwtUtils.generateRefreshToken(memberId);
+        RefreshTokenDto refreshToken = jwtUtils.generateRefreshToken(memberId, memberRole);
 
-        Member member =
-                memberRepository
-                        .findById(memberId)
-                        .orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
-        member.updateRefreshToken(refreshToken.refreshToken());
-        memberRepository.save(member);
+        memberRepository.updateRefresh(memberId, refreshToken.refreshToken());
 
         return new JwtTokenResponseDto(
                 memberId,
@@ -43,64 +40,72 @@ public class JwtTokenService {
                 SecurityConstant.BEARER_PREFIX.getValue() + refreshToken.refreshToken());
     }
 
+    public String findTokenType(String token) {
+        try {
+            return jwtUtils.findTokenType(token);
+        } catch (MalformedJwtException e) {
+            throw new UnauthorizedException(AuthErrorType.INVALID_JWT_TOKEN);
+        } catch (IllegalArgumentException e) {
+            throw new UnauthorizedException(AuthErrorType.JWT_TOKEN_NOT_FOUND);
+        } catch (ExpiredJwtException e) {
+            return e.getClaims().get("type").toString();
+        }
+    }
+
     public Optional<AccessTokenDto> parseAccessToken(String token) {
-        return jwtUtils.parseAccessToken(token);
+        try {
+            return jwtUtils.parseAccessToken(token);
+        } catch (MalformedJwtException e) {
+            throw new UnauthorizedException(AuthErrorType.INVALID_JWT_ACCESS_TOKEN);
+        } catch (IllegalArgumentException e) {
+            throw new UnauthorizedException(AuthErrorType.JWT_ACCESS_TOKEN_NOT_FOUND);
+        } catch (ExpiredJwtException e) {
+            throw new UnauthorizedException(AuthErrorType.JWT_ACCESS_TOKEN_EXPIRED);
+        }
     }
 
     public Optional<RefreshTokenDto> parseRefreshToken(String token) {
-        return jwtUtils.parseRefreshToken(token);
-    }
-
-    public AccessTokenDto reissueAccessToken(Long memberId) {
-        Member member =
-                memberRepository
-                        .findById(memberId)
-                        .orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
-
-        return jwtUtils.generateAccessToken(memberId, member.getRole());
-    }
-
-    public RefreshTokenDto reissueRefreshToken(String token) {
         try {
-            return parseRefreshToken(token)
-                    .orElseThrow(() -> new UnauthorizedException(AuthErrorType.INVALID_JWT_TOKEN));
+            return jwtUtils.parseRefreshToken(token);
+        } catch (MalformedJwtException e) {
+            throw new UnauthorizedException(AuthErrorType.INVALID_JWT_REFRESH_TOKEN);
+        } catch (IllegalArgumentException e) {
+            throw new UnauthorizedException(AuthErrorType.JWT_REFRESH_TOKEN_NOT_FOUND);
         } catch (ExpiredJwtException e) {
-            Long memberId = Long.parseLong(e.getClaims().getSubject());
+            throw new UnauthorizedException(AuthErrorType.JWT_REFRESH_TOKEN_EXPIRED);
+        }
+    }
 
-            RefreshTokenDto refreshTokenDto = jwtUtils.generateRefreshToken(memberId);
+    public JwtAccessTokenResponse generateAccessToken(String refreshToken) {
+        AccessTokenDto accessTokenDto = reissueAccessToken(refreshToken);
+        return new JwtAccessTokenResponse(
+                accessTokenDto.memberId(),
+                SecurityConstant.BEARER_PREFIX.getValue() + accessTokenDto.accessToken());
+    }
+
+    public AccessTokenDto reissueAccessToken(String refreshToken) {
+        try {
+            RefreshTokenDto refreshTokenDto =
+                    parseRefreshToken(refreshToken)
+                            .orElseThrow(
+                                    () ->
+                                            new UnauthorizedException(
+                                                    AuthErrorType.INVALID_JWT_REFRESH_TOKEN));
+
+            Long memberId = refreshTokenDto.memberId();
             Member member =
                     memberRepository
                             .findById(memberId)
                             .orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
-            member.updateRefreshToken(refreshTokenDto.refreshToken());
-            memberRepository.save(member);
-
-            return refreshTokenDto;
-        }
-    }
-
-    public String getRefreshToken(String expiredAccessToken) {
-        expiredAccessToken = expiredAccessToken.substring(7);
-        Long memberId = null;
-        try {
-            parseAccessToken(expiredAccessToken)
-                    .orElseThrow(() -> new UnauthorizedException(AuthErrorType.INVALID_JWT_TOKEN));
+            if (member.getRefreshToken() != null && member.getRefreshToken().equals(refreshToken)) {
+                MemberRole memberRole = member.getRole();
+                return jwtUtils.generateAccessToken(memberId, memberRole);
+            } else {
+                throw new ForbiddenException(AuthErrorType.REFRESH_TOKEN_NOT_MATCH);
+            }
         } catch (ExpiredJwtException e) {
-            memberId = Long.parseLong(e.getClaims().getSubject());
+            throw new UnauthorizedException(AuthErrorType.JWT_REFRESH_TOKEN_EXPIRED);
         }
-
-        if (memberId == null) {
-            throw new UnauthorizedException(AuthErrorType.INVALID_JWT_TOKEN);
-        }
-
-        Member member =
-                memberRepository
-                        .findById(memberId)
-                        .orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
-        if (member.getRefreshToken() != null) {
-            return member.getRefreshToken();
-        }
-        throw new NotFoundException(AuthErrorType.REFRESH_TOKEN_NOT_FOUND);
     }
 
     public RefreshTokenDto retrieveRefreshToken(
@@ -109,7 +114,7 @@ public class JwtTokenService {
                 memberRepository
                         .findById(refreshTokenDto.memberId())
                         .orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
-        if (member.getRefreshToken().equals(refreshToken)) {
+        if (member.getRefreshToken() != null && member.getRefreshToken().equals(refreshToken)) {
             return refreshTokenDto;
         }
         throw new ForbiddenException(AuthErrorType.REFRESH_TOKEN_NOT_MATCH);
