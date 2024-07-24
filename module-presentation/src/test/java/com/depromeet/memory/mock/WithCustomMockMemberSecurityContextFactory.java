@@ -14,10 +14,9 @@ public class WithCustomMockMemberSecurityContextFactory
     @Override
     public SecurityContext createSecurityContext(WithCustomMockMember annotation) {
         String userId = annotation.userId();
-        ;
         String role = annotation.role();
 
-        Member member = MemberFixture.make(userId, role);
+        Member member = MemberFixture.make(Long.parseLong(userId), role);
 
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(
