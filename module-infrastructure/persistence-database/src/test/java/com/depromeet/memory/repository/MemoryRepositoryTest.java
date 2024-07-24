@@ -64,8 +64,8 @@ public class MemoryRepositoryTest {
         Memory lastMemory = result.getLast();
 
         // then
-        assertThat(result.size()).isEqualTo(30);
-        assertThat(lastMemory.getRecordAt()).isEqualTo(startRecordAt.minusDays(30));
+        assertThat(result.size()).isEqualTo(10);
+        assertThat(lastMemory.getRecordAt()).isEqualTo(startRecordAt.minusDays(10));
     }
 
     @Test
@@ -80,8 +80,8 @@ public class MemoryRepositoryTest {
         Memory lastMemory = result.getLast();
 
         // then
-        assertThat(result.size()).isEqualTo(30);
-        assertThat(lastMemory.getRecordAt()).isEqualTo(recordAt.minusDays(29));
+        assertThat(result.size()).isEqualTo(10);
+        assertThat(lastMemory.getRecordAt()).isEqualTo(recordAt.minusDays(9));
     }
 
     @Test
@@ -102,8 +102,8 @@ public class MemoryRepositoryTest {
         List<Memory> result = timelines.getTimelineContents();
 
         // then
-        assertThat(result.size()).isEqualTo(30);
-        assertThat(result.getLast().getRecordAt()).isEqualTo(lastDate.getRecordAt().minusDays(30));
+        assertThat(result.size()).isEqualTo(10);
+        assertThat(result.getLast().getRecordAt()).isEqualTo(lastDate.getRecordAt().minusDays(10));
     }
 
     @Test
@@ -124,7 +124,7 @@ public class MemoryRepositoryTest {
         List<Memory> result = resultSlice.getTimelineContents();
 
         // then
-        assertThat(result.size()).isEqualTo(30);
-        assertThat(result.getFirst().getRecordAt()).isEqualTo(firstDate.getRecordAt().plusDays(30));
+        assertThat(result.size()).isEqualTo(10);
+        assertThat(result.getFirst().getRecordAt()).isEqualTo(firstDate.getRecordAt().plusDays(10));
     }
 }
