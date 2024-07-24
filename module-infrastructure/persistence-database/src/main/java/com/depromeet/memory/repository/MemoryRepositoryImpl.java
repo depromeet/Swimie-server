@@ -7,6 +7,7 @@ import static com.depromeet.memory.entity.QStrokeEntity.strokeEntity;
 import static com.depromeet.pool.entity.QPoolEntity.poolEntity;
 
 import com.depromeet.memory.Memory;
+import com.depromeet.memory.Timeline;
 import com.depromeet.memory.entity.MemoryEntity;
 import com.depromeet.memory.entity.QMemoryEntity;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -18,9 +19,9 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 @Slf4j
@@ -78,59 +79,75 @@ public class MemoryRepositoryImpl implements MemoryRepository {
                 .map(entity -> entity.update(MemoryEntity.from(memoryUpdate)).toModel());
     }
 
-    // ---- 날짜 선택 후 위아래 무한 스크롤 구현
-
     @Override
-    public Slice<Memory> findPrevMemoryByMemberId(
-            Long memberId, Long cursorId, Pageable pageable, LocalDate recordAt) {
+    public Timeline<Memory> findPrevMemoryByMemberId(
+            Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "recordAt");
 
         List<MemoryEntity> result =
                 queryFactory
                         .selectFrom(memory)
                         .where(
                                 memory.member.id.eq(memberId),
-                                ltCursorId(cursorId),
+                                ltCursorRecordAt(cursorRecordAt),
                                 loeRecordAt(recordAt))
                         .limit(pageable.getPageSize() + 1)
                         .orderBy(memory.recordAt.desc())
                         .fetch();
         List<Memory> content = toModel(result);
 
-        boolean hasPrev = false;
+        boolean hasNext = false;
+        Long nextMemoryId = null;
         if (content.size() > pageable.getPageSize()) {
             content = new ArrayList<>(content);
             content.removeLast();
-            hasPrev = true;
+            hasNext = true;
+            Memory lastMemory = content.getLast();
+            nextMemoryId = lastMemory.getId();
         }
 
-        return new SliceImpl<>(content, pageable, hasPrev);
+        return Timeline.builder()
+                .timelineContents(content)
+                .pageSize(10)
+                .cursorId(nextMemoryId)
+                .hasNext(hasNext)
+                .build();
     }
 
     @Override
-    public Slice<Memory> findNextMemoryByMemberId(
-            Long memberId, Long cursorId, Pageable pageable, LocalDate recordAt) {
+    public Timeline<Memory> findNextMemoryByMemberId(
+            Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "recordAt");
+
         List<MemoryEntity> result =
                 queryFactory
                         .selectFrom(memory)
                         .where(
                                 memory.member.id.eq(memberId),
-                                gtCursorId(cursorId),
+                                gtCursorRecordAt(cursorRecordAt),
                                 goeRecordAt(recordAt))
                         .limit(pageable.getPageSize() + 1)
                         .orderBy(memory.recordAt.asc())
                         .fetch();
-
         List<Memory> content = toModel(result);
 
         boolean hasNext = false;
+        Long nextMemoryId = null;
         if (content.size() > pageable.getPageSize()) {
             content = new ArrayList<>(content);
             content.removeLast();
             hasNext = true;
+            Memory lastMemory = content.getLast();
+            nextMemoryId = lastMemory.getId();
         }
         content = content.reversed();
 
-        return new SliceImpl<>(content, pageable, hasNext);
+        return Timeline.builder()
+                .timelineContents(content)
+                .pageSize(10)
+                .cursorId(nextMemoryId)
+                .hasNext(hasNext)
+                .build();
     }
 
     @Override
@@ -161,18 +178,18 @@ public class MemoryRepositoryImpl implements MemoryRepository {
         return memory.recordAt.loe(recordAt);
     }
 
-    private BooleanExpression ltCursorId(Long cursorId) {
-        if (cursorId == null) {
+    private BooleanExpression ltCursorRecordAt(LocalDate cursorRecordAt) {
+        if (cursorRecordAt == null) {
             return null;
         }
-        return memory.id.lt(cursorId);
+        return memory.recordAt.lt(cursorRecordAt);
     }
 
-    private BooleanExpression gtCursorId(Long cursorId) {
-        if (cursorId == null) {
+    private BooleanExpression gtCursorRecordAt(LocalDate cursorRecordAt) {
+        if (cursorRecordAt == null) {
             return null;
         }
-        return memory.id.gt(cursorId);
+        return memory.recordAt.gt(cursorRecordAt);
     }
 
     private BooleanExpression goeRecordAt(LocalDate recordAt) {

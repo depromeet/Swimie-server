@@ -47,7 +47,7 @@ public class MemoryController implements MemoryApi {
 
     @GetMapping("/timeline")
     public ApiResponse<?> timeline(
-            @LoginMember Long memberId, @ModelAttribute TimelineRequestDto timelineRequestDto) {
+            @LoginMember Long memberId, TimelineRequestDto timelineRequestDto) {
         CustomSliceResponse<?> result =
                 memoryFacade.getTimelineByMemberIdAndCursorAndDate(memberId, timelineRequestDto);
         return ApiResponse.success(MemorySuccessType.GET_TIMELINE_SUCCESS, result);
