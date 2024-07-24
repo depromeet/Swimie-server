@@ -1,14 +1,17 @@
 package com.depromeet.memory.service;
 
 import com.depromeet.dto.response.CustomSliceResponse;
+import com.depromeet.exception.NotFoundException;
 import com.depromeet.image.Image;
 import com.depromeet.image.dto.response.MemoryImagesDto;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
+import com.depromeet.memory.Timeline;
 import com.depromeet.memory.dto.request.TimelineRequestDto;
 import com.depromeet.memory.dto.response.StrokeResponse;
 import com.depromeet.memory.dto.response.TimelineResponseDto;
 import com.depromeet.memory.repository.MemoryRepository;
+import com.depromeet.type.memory.MemoryErrorType;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.YearMonth;
@@ -17,10 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,28 +33,46 @@ public class TimelineServiceImpl implements TimelineService {
     @Override
     public CustomSliceResponse<?> getTimelineByMemberIdAndCursorAndDate(
             Long memberId, TimelineRequestDto timeline) {
-        Slice<Memory> memories = getTimelines(memberId, timeline);
-        Slice<TimelineResponseDto> result = memories.map(this::mapToTimelineResponseDto);
-        return mapToCustomSliceResponse(result);
+        Timeline<Memory> timelines = getTimelines(memberId, timeline);
+
+        return mapToCustomSliceResponse(timelines);
     }
 
-    private Slice<Memory> getTimelines(Long memberId, TimelineRequestDto timeline) {
-        Pageable pageable =
-                PageRequest.of(0, timeline.getSize(), Sort.by(Sort.Order.desc("recordAt")));
+    private Timeline<Memory> getTimelines(Long memberId, TimelineRequestDto timeline) {
+        LocalDate cursorRecordAt = null;
+        if (timeline.getCursorId() != null) {
+            Memory memory =
+                    memoryRepository
+                            .findById(timeline.getCursorId())
+                            .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND));
+            cursorRecordAt = memory.getRecordAt();
+        }
 
         LocalDate parsedDate = getLocalDateOrNull(timeline.getDate());
+
         if (timeline.isShowNewer()) {
-            return memoryRepository.findNextMemoryByMemberId(
-                    memberId, timeline.getCursorId(), pageable, parsedDate);
+            return memoryRepository.findNextMemoryByMemberId(memberId, cursorRecordAt, parsedDate);
         } else {
-            return memoryRepository.findPrevMemoryByMemberId(
-                    memberId, timeline.getCursorId(), pageable, parsedDate);
+            return memoryRepository.findPrevMemoryByMemberId(memberId, cursorRecordAt, parsedDate);
         }
+    }
+
+    private CustomSliceResponse<?> mapToCustomSliceResponse(Timeline<Memory> timelines) {
+        List<TimelineResponseDto> result =
+                timelines.getTimelineContents().stream()
+                        .map(this::mapToTimelineResponseDto)
+                        .toList();
+
+        return CustomSliceResponse.builder()
+                .content(result)
+                .pageSize(timelines.getPageSize())
+                .cursorId(timelines.getCursorId())
+                .hasNext(timelines.isHasNext())
+                .build();
     }
 
     private LocalDate getLocalDateOrNull(YearMonth date) {
         LocalDate lastDayOfMonth = null;
-        log.info("localDate : {}", date);
         if (date != null) {
             lastDayOfMonth = date.atEndOfMonth();
         }
@@ -168,16 +185,5 @@ public class TimelineServiceImpl implements TimelineService {
                                         .url(image.getImageUrl())
                                         .build())
                 .toList();
-    }
-
-    private CustomSliceResponse<?> mapToCustomSliceResponse(Slice<TimelineResponseDto> result) {
-        List<TimelineResponseDto> content = result.getContent();
-
-        return CustomSliceResponse.builder()
-                .content(content)
-                .pageSize(result.getSize())
-                .pageNumber(result.getNumber())
-                .hasNext(result.hasNext())
-                .build();
     }
 }
