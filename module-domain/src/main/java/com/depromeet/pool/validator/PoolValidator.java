@@ -1,4 +1,4 @@
-package com.depromeet.pool.service;
+package com.depromeet.pool.validator;
 
 import com.depromeet.exception.ForbiddenException;
 import com.depromeet.type.pool.PoolErrorType;

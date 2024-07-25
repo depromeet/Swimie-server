@@ -1,6 +1,6 @@
 package com.depromeet.pool.dto.response;
 
-import com.depromeet.pool.Pool;
+import com.depromeet.pool.domain.Pool;
 import java.util.List;
 
 public record PoolSearchResponse(List<PoolInfoResponse> poolInfos) {

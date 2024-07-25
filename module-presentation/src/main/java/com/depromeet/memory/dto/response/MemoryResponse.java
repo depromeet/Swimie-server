@@ -5,7 +5,7 @@ import com.depromeet.member.dto.response.MemberSimpleResponse;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.MemoryDetail;
 import com.depromeet.memory.Stroke;
-import com.depromeet.pool.Pool;
+import com.depromeet.pool.domain.Pool;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;

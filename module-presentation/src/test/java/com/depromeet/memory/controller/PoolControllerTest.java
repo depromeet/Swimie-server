@@ -8,7 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.depromeet.memory.config.ControllerTestConfig;
 import com.depromeet.memory.mock.WithCustomMockMember;
 import com.depromeet.pool.api.PoolController;
-import com.depromeet.pool.service.PoolService;
+import com.depromeet.pool.facade.PoolFacade;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +23,7 @@ import org.springframework.http.MediaType;
 public class PoolControllerTest extends ControllerTestConfig {
     @Autowired private ObjectMapper objectMapper;
 
-    @MockBean PoolService poolService;
+    @MockBean PoolFacade poolFacade;
 
     @Test
     @WithCustomMockMember
@@ -50,7 +50,7 @@ public class PoolControllerTest extends ControllerTestConfig {
     void 수영장을_즐겨찾기에_등록합니다() throws Exception {
         Map<String, Long> requestBody = new HashMap<>();
         requestBody.put("poolId", 1L);
-        BDDMockito.given(poolService.putFavoritePool(any(), any())).willReturn("1");
+        BDDMockito.given(poolFacade.putFavoritePool(any(), any())).willReturn("1");
 
         mockMvc.perform(
                         put("/api/pool/favorite")
@@ -65,7 +65,7 @@ public class PoolControllerTest extends ControllerTestConfig {
     void 수영장을_즐겨찾기에서_삭제합니다() throws Exception {
         Map<String, Long> requestBody = new HashMap<>();
         requestBody.put("poolId", 1L);
-        BDDMockito.given(poolService.putFavoritePool(any(), any())).willReturn(null);
+        BDDMockito.given(poolFacade.putFavoritePool(any(), any())).willReturn(null);
 
         mockMvc.perform(
                         put("/api/pool/favorite")

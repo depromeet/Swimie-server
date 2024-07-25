@@ -21,7 +21,7 @@ public class TimelineServiceTest {
     private FakeMemoryRepository memoryRepository;
     private FakeMemoryDetailRepository memoryDetailRepository;
     private FakeMemberRepository memberRepository;
-    private FakePoolRepository poolRepository;
+    private FakePoolPersistencePort poolRepository;
     private MemoryService memoryService;
     private FakeStrokeRepository strokeRepository;
     private StrokeService strokeService;
@@ -43,7 +43,7 @@ public class TimelineServiceTest {
 
         memberRepository = new FakeMemberRepository();
 
-        poolRepository = new FakePoolRepository();
+        poolRepository = new FakePoolPersistencePort();
 
         strokeRepository = new FakeStrokeRepository();
         strokeService = new StrokeServiceImpl(strokeRepository);

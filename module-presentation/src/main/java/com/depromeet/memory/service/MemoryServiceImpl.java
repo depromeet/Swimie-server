@@ -11,8 +11,8 @@ import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
 import com.depromeet.memory.repository.MemoryDetailRepository;
 import com.depromeet.memory.repository.MemoryRepository;
-import com.depromeet.pool.Pool;
-import com.depromeet.pool.repository.PoolRepository;
+import com.depromeet.pool.domain.Pool;
+import com.depromeet.pool.port.out.persistence.PoolPersistencePort;
 import com.depromeet.type.memory.MemoryDetailErrorType;
 import com.depromeet.type.memory.MemoryErrorType;
 import com.depromeet.type.pool.PoolErrorType;
@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class MemoryServiceImpl implements MemoryService {
-    private final PoolRepository poolRepository;
+    private final PoolPersistencePort poolPersistencePort;
     private final MemoryRepository memoryRepository;
     private final MemoryDetailRepository memoryDetailRepository;
 
@@ -37,7 +37,7 @@ public class MemoryServiceImpl implements MemoryService {
         if (memoryDetail != null) {
             memoryDetail = memoryDetailRepository.save(memoryDetail);
         }
-        Pool pool = poolRepository.findById(request.getPoolId()).orElse(null);
+        Pool pool = poolPersistencePort.findById(request.getPoolId()).orElse(null);
         Memory memory =
                 Memory.builder()
                         .member(writer)
@@ -138,7 +138,7 @@ public class MemoryServiceImpl implements MemoryService {
     private Pool getUpdatePool(Long poolId, Pool pool) {
         if (poolId != null) {
             pool =
-                    poolRepository
+                    poolPersistencePort
                             .findById(poolId)
                             .orElseThrow(() -> new NotFoundException(PoolErrorType.NOT_FOUND));
         }
