@@ -5,6 +5,7 @@ import com.depromeet.image.Image;
 import com.depromeet.image.dto.response.MemoryImagesDto;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
+import com.depromeet.memory.Timeline;
 import com.depromeet.memory.dto.request.TimelineRequestDto;
 import com.depromeet.memory.dto.response.StrokeResponse;
 import com.depromeet.memory.dto.response.TimelineResponseDto;
@@ -17,10 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,32 +31,52 @@ public class TimelineServiceImpl implements TimelineService {
     @Override
     public CustomSliceResponse<?> getTimelineByMemberIdAndCursorAndDate(
             Long memberId, TimelineRequestDto timeline) {
-        Slice<Memory> memories = getTimelines(memberId, timeline);
-        Slice<TimelineResponseDto> result = memories.map(this::mapToTimelineResponseDto);
-        return mapToCustomSliceResponse(result);
+        Timeline timelines = getTimelines(memberId, timeline);
+
+        return mapToCustomSliceResponse(timelines);
     }
 
-    private Slice<Memory> getTimelines(Long memberId, TimelineRequestDto timeline) {
-        Pageable pageable =
-                PageRequest.of(0, timeline.getSize(), Sort.by(Sort.Order.desc("recordAt")));
+    private Timeline getTimelines(Long memberId, TimelineRequestDto timeline) {
+        LocalDate cursorRecordAt = null;
+        if (timeline.getCursorRecordAt() != null) {
+            cursorRecordAt = timeline.getCursorRecordAt();
+        }
 
         LocalDate parsedDate = getLocalDateOrNull(timeline.getDate());
+
         if (timeline.isShowNewer()) {
-            return memoryRepository.findNextMemoryByMemberId(
-                    memberId, timeline.getCursorId(), pageable, parsedDate);
+            return memoryRepository.findNextMemoryByMemberId(memberId, cursorRecordAt, parsedDate);
         } else {
-            return memoryRepository.findPrevMemoryByMemberId(
-                    memberId, timeline.getCursorId(), pageable, parsedDate);
+            return memoryRepository.findPrevMemoryByMemberId(memberId, cursorRecordAt, parsedDate);
         }
+    }
+
+    private CustomSliceResponse<?> mapToCustomSliceResponse(Timeline timelines) {
+        List<TimelineResponseDto> result =
+                timelines.getTimelineContents().stream()
+                        .map(this::mapToTimelineResponseDto)
+                        .toList();
+
+        return CustomSliceResponse.builder()
+                .content(result)
+                .pageSize(timelines.getPageSize())
+                .cursorRecordAt(getCursorRecordAtResponse(timelines))
+                .hasNext(timelines.isHasNext())
+                .build();
     }
 
     private LocalDate getLocalDateOrNull(YearMonth date) {
         LocalDate lastDayOfMonth = null;
-        log.info("localDate : {}", date);
         if (date != null) {
             lastDayOfMonth = date.atEndOfMonth();
         }
         return lastDayOfMonth;
+    }
+
+    private String getCursorRecordAtResponse(Timeline timelines) {
+        return timelines.getCursorRecordAt() != null
+                ? timelines.getCursorRecordAt().toString()
+                : null;
     }
 
     @Override
@@ -72,10 +89,7 @@ public class TimelineServiceImpl implements TimelineService {
                 .lane(memory.getLane())
                 .diary(memory.getDiary())
                 .totalMeter(calculateTotalMeter(memory.getStrokes(), memory.getLane()))
-                .memoryDetailId(
-                        memory.getMemoryDetail() != null && memory.getMemoryDetail().getId() != null
-                                ? memory.getMemoryDetail().getId()
-                                : null)
+                .memoryDetailId(getMemoryDetailId(memory))
                 .item(getItemFromMemoryDetail(memory))
                 .heartRate(getHeartRateFromMemoryDetail(memory))
                 .pace(getPaceFromMemoryDetail(memory))
@@ -132,6 +146,12 @@ public class TimelineServiceImpl implements TimelineService {
         return totalMeter;
     }
 
+    private Long getMemoryDetailId(Memory memory) {
+        return memory.getMemoryDetail() != null && memory.getMemoryDetail().getId() != null
+                ? memory.getMemoryDetail().getId()
+                : null;
+    }
+
     private List<StrokeResponse> strokeToDto(List<Stroke> strokes) {
         if (strokes == null || strokes.isEmpty()) return null;
 
@@ -168,16 +188,5 @@ public class TimelineServiceImpl implements TimelineService {
                                         .url(image.getImageUrl())
                                         .build())
                 .toList();
-    }
-
-    private CustomSliceResponse<?> mapToCustomSliceResponse(Slice<TimelineResponseDto> result) {
-        List<TimelineResponseDto> content = result.getContent();
-
-        return CustomSliceResponse.builder()
-                .content(content)
-                .pageSize(result.getSize())
-                .pageNumber(result.getNumber())
-                .hasNext(result.hasNext())
-                .build();
     }
 }
