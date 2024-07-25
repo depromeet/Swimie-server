@@ -80,7 +80,7 @@ public class MemoryRepositoryImpl implements MemoryRepository {
     }
 
     @Override
-    public Timeline<Memory> findPrevMemoryByMemberId(
+    public Timeline findPrevMemoryByMemberId(
             Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "recordAt");
 
@@ -97,25 +97,25 @@ public class MemoryRepositoryImpl implements MemoryRepository {
         List<Memory> content = toModel(result);
 
         boolean hasNext = false;
-        Long nextMemoryId = null;
+        LocalDate nextMemoryRecordAt = null;
         if (content.size() > pageable.getPageSize()) {
             content = new ArrayList<>(content);
             content.removeLast();
             hasNext = true;
             Memory lastMemory = content.getLast();
-            nextMemoryId = lastMemory.getId();
+            nextMemoryRecordAt = lastMemory.getRecordAt();
         }
 
         return Timeline.builder()
                 .timelineContents(content)
                 .pageSize(10)
-                .cursorId(nextMemoryId)
+                .cursorRecordAt(nextMemoryRecordAt)
                 .hasNext(hasNext)
                 .build();
     }
 
     @Override
-    public Timeline<Memory> findNextMemoryByMemberId(
+    public Timeline findNextMemoryByMemberId(
             Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "recordAt");
 
@@ -132,20 +132,20 @@ public class MemoryRepositoryImpl implements MemoryRepository {
         List<Memory> content = toModel(result);
 
         boolean hasNext = false;
-        Long nextMemoryId = null;
+        LocalDate nextMemoryRecordAt = null;
         if (content.size() > pageable.getPageSize()) {
             content = new ArrayList<>(content);
             content.removeLast();
             hasNext = true;
             Memory lastMemory = content.getLast();
-            nextMemoryId = lastMemory.getId();
+            nextMemoryRecordAt = lastMemory.getRecordAt();
         }
         content = content.reversed();
 
         return Timeline.builder()
                 .timelineContents(content)
                 .pageSize(10)
-                .cursorId(nextMemoryId)
+                .cursorRecordAt(nextMemoryRecordAt)
                 .hasNext(hasNext)
                 .build();
     }
