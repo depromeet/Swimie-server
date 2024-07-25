@@ -11,21 +11,21 @@ import org.springframework.validation.BindingResult;
 
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ErrorResponse {
+public class ValidationErrorResponse {
     private List<FieldError> fieldErrors;
     private List<ConstraintViolationError> constraintViolations;
 
-    public ErrorResponse(
+    public ValidationErrorResponse(
             List<FieldError> fieldErrors, List<ConstraintViolationError> constraintViolations) {
         this.fieldErrors = fieldErrors;
         this.constraintViolations = constraintViolations;
     }
 
-    public static ErrorResponse of(BindingResult bindingResult) {
-        return new ErrorResponse(FieldError.of(bindingResult), null);
+    public static ValidationErrorResponse of(BindingResult bindingResult) {
+        return new ValidationErrorResponse(FieldError.of(bindingResult), null);
     }
 
-    public static ErrorResponse of(Set<ConstraintViolation<?>> constraintViolations) {
-        return new ErrorResponse(null, ConstraintViolationError.of(constraintViolations));
+    public static ValidationErrorResponse of(Set<ConstraintViolation<?>> constraintViolations) {
+        return new ValidationErrorResponse(null, ConstraintViolationError.of(constraintViolations));
     }
 }

@@ -13,7 +13,6 @@ import com.depromeet.type.image.ImageErrorType;
 import com.depromeet.type.memory.MemoryErrorType;
 import com.depromeet.util.ImageNameUtil;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,12 +61,12 @@ public class ImageUpdateServiceImpl implements ImageUpdateService {
             throws IOException {
 
         Memory memory = getMemory(memoryId);
-        List<String> updatedImageNames = new ArrayList<>();
+        List<String> updatedImageNames =
+                images.stream().map(MultipartFile::getOriginalFilename).toList();
 
         for (MultipartFile image : images) {
             String originImageName = image.getOriginalFilename();
             String imageName = generateImageName(originImageName);
-            updatedImageNames.add(imageName); // 이게 if문 밑으로 내려가야 하지 않을까요?
 
             if (existImagesName.contains(imageName)) continue;
 
