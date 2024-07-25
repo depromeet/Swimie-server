@@ -1,7 +1,5 @@
 package com.depromeet.pool.service;
 
-import static com.depromeet.pool.service.PoolValidator.*;
-
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.member.Member;
 import com.depromeet.member.repository.MemberRepository;
@@ -85,11 +83,5 @@ public class PoolServiceImpl implements PoolService {
         return poolRepository
                 .findById(poolId)
                 .orElseThrow(() -> new NotFoundException(PoolErrorType.NOT_FOUND));
-    }
-
-    private FavoritePool getFavoritePool(Long favoritePoolId) {
-        return poolRepository
-                .findFavoritePoolById(favoritePoolId)
-                .orElseThrow(() -> new NotFoundException(PoolErrorType.FAVORITE_NOT_FOUND));
     }
 }
