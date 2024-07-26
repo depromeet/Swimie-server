@@ -37,7 +37,7 @@ public class SwaggerConfig {
 
         Server productionServer = new Server();
         productionServer.setDescription("Production Server");
-        productionServer.setUrl("https://appu.o-r.kr");
+        productionServer.setUrl("https://api.swimie.life");
 
         Server localServer = new Server();
         localServer.setDescription("Local Server");
