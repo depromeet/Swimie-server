@@ -3,7 +3,7 @@ package com.depromeet.memory.facade;
 import static com.depromeet.memory.service.MemoryValidator.validatePermission;
 
 import com.depromeet.dto.response.CustomSliceResponse;
-import com.depromeet.image.service.ImageUploadService;
+import com.depromeet.image.port.in.ImageUploadUseCase;
 import com.depromeet.member.Member;
 import com.depromeet.member.service.MemberService;
 import com.depromeet.memory.Memory;
@@ -33,7 +33,7 @@ public class MemoryFacade {
     private final StrokeService strokeService;
     private final TimelineService timelineService;
     private final CalendarService calendarService;
-    private final ImageUploadService imageUploadService;
+    private final ImageUploadUseCase imageUploadUseCase;
     private final SearchLogUseCase poolSearchLogUseCase;
 
     @Transactional
@@ -41,7 +41,7 @@ public class MemoryFacade {
         Member writer = memberService.findById(memberId);
         Memory newMemory = memoryService.save(writer, request);
         List<Stroke> strokes = strokeService.saveAll(newMemory, request.getStrokes());
-        imageUploadService.changeImageStatusAndAddMemoryIdToImages(
+        imageUploadUseCase.changeImageStatusAndAddMemoryIdToImages(
                 newMemory, request.getImageIdList());
         poolSearchLogUseCase.createSearchLog(writer, request.getPoolId());
     }
