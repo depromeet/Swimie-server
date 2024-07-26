@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ImageGetServiceImpl implements ImageGetService {
     private final ImageRepository imageRepository;
 
@@ -19,7 +19,7 @@ public class ImageGetServiceImpl implements ImageGetService {
 
     @Override
     public List<MemoryImagesDto> findImagesByMemoryId(Long memoryId) {
-        return imageRepository.findImagesByMemoryId(memoryId).stream()
+        return imageRepository.findAllByMemoryIdAndHasUploaded(memoryId).stream()
                 .map(
                         image ->
                                 MemoryImagesDto.builder()

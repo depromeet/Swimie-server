@@ -9,9 +9,13 @@ public interface ImageRepository {
 
     List<Image> saveAll(List<Image> images);
 
+    void updateByImageIds(List<Long> imageIds);
+
     Optional<Image> findById(Long id);
 
-    List<Image> findImagesByMemoryId(Long memoryId);
+    List<Image> findAllByMemoryId(Long memoryId);
+
+    List<Image> findAllByMemoryIdAndHasUploaded(Long memoryId);
 
     List<Image> findImageByIds(List<Long> ids);
 

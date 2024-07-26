@@ -41,8 +41,9 @@ public class MemoryFacade {
         Member writer = memberService.findById(memberId);
         Memory newMemory = memoryService.save(writer, request);
         List<Stroke> strokes = strokeService.saveAll(newMemory, request.getStrokes());
-        imageUploadService.addMemoryIdToImages(newMemory, request.getImageIdList());
         poolSearchLogUseCase.createSearchLog(writer, request.getPoolId());
+        imageUploadService.changeImageStatusAndAddMemoryIdToImages(
+                newMemory, request.getImageIdList());
     }
 
     @Transactional

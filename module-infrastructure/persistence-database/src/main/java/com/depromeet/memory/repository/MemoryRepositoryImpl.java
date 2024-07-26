@@ -1,11 +1,5 @@
 package com.depromeet.memory.repository;
 
-import static com.depromeet.image.entity.QImageEntity.imageEntity;
-import static com.depromeet.member.entity.QMemberEntity.memberEntity;
-import static com.depromeet.memory.entity.QMemoryDetailEntity.memoryDetailEntity;
-import static com.depromeet.memory.entity.QStrokeEntity.strokeEntity;
-import static com.depromeet.pool.entity.QPoolEntity.poolEntity;
-
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.Timeline;
 import com.depromeet.memory.entity.MemoryEntity;
