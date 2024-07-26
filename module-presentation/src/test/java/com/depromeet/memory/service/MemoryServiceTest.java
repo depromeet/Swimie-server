@@ -27,7 +27,7 @@ class MemoryServiceTest {
 
     private FakeMemberRepository memberRepository;
 
-    private FakePoolPersistencePort poolRepository;
+    private FakePoolRepository poolRepository;
 
     private MemoryService memoryService;
 
@@ -48,7 +48,7 @@ class MemoryServiceTest {
 
         memberRepository = new FakeMemberRepository();
 
-        poolRepository = new FakePoolPersistencePort();
+        poolRepository = new FakePoolRepository();
 
         // Member create
         member =

@@ -1,9 +1,11 @@
 package com.depromeet.pool.domain;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
+@EqualsAndHashCode
 public class Pool {
     private Long id;
     private String name;
