@@ -98,13 +98,13 @@ public class FakeMemoryRepository implements MemoryRepository {
     }
 
     @Override
-    public Timeline<Memory> findPrevMemoryByMemberId(
+    public Timeline findPrevMemoryByMemberId(
             Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
         return null;
     }
 
     @Override
-    public Timeline<Memory> findNextMemoryByMemberId(
+    public Timeline findNextMemoryByMemberId(
             Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
         return null;
     }

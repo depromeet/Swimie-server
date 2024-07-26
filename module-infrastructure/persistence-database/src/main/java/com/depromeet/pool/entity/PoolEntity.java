@@ -1,6 +1,6 @@
 package com.depromeet.pool.entity;
 
-import com.depromeet.pool.Pool;
+import com.depromeet.pool.domain.Pool;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -1,4 +1,4 @@
-package com.depromeet.pool;
+package com.depromeet.pool.domain;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -15,11 +15,9 @@ public interface MemoryRepository {
 
     Optional<Memory> update(Long memoryId, Memory memoryUpdate);
 
-    Timeline<Memory> findPrevMemoryByMemberId(
-            Long memberId, LocalDate cursorRecordAt, LocalDate recordAt);
+    Timeline findPrevMemoryByMemberId(Long memberId, LocalDate cursorRecordAt, LocalDate recordAt);
 
-    Timeline<Memory> findNextMemoryByMemberId(
-            Long memberId, LocalDate cursorRecordAt, LocalDate recordAt);
+    Timeline findNextMemoryByMemberId(Long memberId, LocalDate cursorRecordAt, LocalDate recordAt);
 
     List<Memory> getCalendarByYearAndMonth(Long memberId, Integer year, Short month);
 }

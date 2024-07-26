@@ -17,7 +17,7 @@ import com.depromeet.memory.service.CalendarService;
 import com.depromeet.memory.service.MemoryService;
 import com.depromeet.memory.service.StrokeService;
 import com.depromeet.memory.service.TimelineService;
-import com.depromeet.pool.service.PoolService;
+import com.depromeet.pool.port.in.usecase.SearchLogUseCase;
 import java.time.YearMonth;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +28,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemoryFacade {
-    private final PoolService poolService;
     private final MemberService memberService;
     private final MemoryService memoryService;
     private final StrokeService strokeService;
     private final TimelineService timelineService;
     private final CalendarService calendarService;
     private final ImageUploadService imageUploadService;
+    private final SearchLogUseCase poolSearchLogUseCase;
 
     @Transactional
     public void create(Long memberId, MemoryCreateRequest request) {
@@ -43,7 +43,7 @@ public class MemoryFacade {
         List<Stroke> strokes = strokeService.saveAll(newMemory, request.getStrokes());
         imageUploadService.changeImageStatusAndAddMemoryIdToImages(
                 newMemory, request.getImageIdList());
-        poolService.createSearchLog(writer, request.getPoolId());
+        poolSearchLogUseCase.createSearchLog(writer, request.getPoolId());
     }
 
     @Transactional

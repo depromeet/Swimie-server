@@ -1,6 +1,6 @@
 package com.depromeet.fixture.pool;
 
-import com.depromeet.pool.Pool;
+import com.depromeet.pool.domain.Pool;
 
 public class MockPool {
     public static Pool mockPool() {

@@ -1,7 +1,6 @@
 package com.depromeet.memory.service;
 
 import com.depromeet.dto.response.CustomSliceResponse;
-import com.depromeet.exception.NotFoundException;
 import com.depromeet.image.Image;
 import com.depromeet.image.dto.response.MemoryImagesDto;
 import com.depromeet.memory.Memory;
@@ -11,7 +10,6 @@ import com.depromeet.memory.dto.request.TimelineRequestDto;
 import com.depromeet.memory.dto.response.StrokeResponse;
 import com.depromeet.memory.dto.response.TimelineResponseDto;
 import com.depromeet.memory.repository.MemoryRepository;
-import com.depromeet.type.memory.MemoryErrorType;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.YearMonth;
@@ -33,19 +31,15 @@ public class TimelineServiceImpl implements TimelineService {
     @Override
     public CustomSliceResponse<?> getTimelineByMemberIdAndCursorAndDate(
             Long memberId, TimelineRequestDto timeline) {
-        Timeline<Memory> timelines = getTimelines(memberId, timeline);
+        Timeline timelines = getTimelines(memberId, timeline);
 
         return mapToCustomSliceResponse(timelines);
     }
 
-    private Timeline<Memory> getTimelines(Long memberId, TimelineRequestDto timeline) {
+    private Timeline getTimelines(Long memberId, TimelineRequestDto timeline) {
         LocalDate cursorRecordAt = null;
-        if (timeline.getCursorId() != null) {
-            Memory memory =
-                    memoryRepository
-                            .findById(timeline.getCursorId())
-                            .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND));
-            cursorRecordAt = memory.getRecordAt();
+        if (timeline.getCursorRecordAt() != null) {
+            cursorRecordAt = timeline.getCursorRecordAt();
         }
 
         LocalDate parsedDate = getLocalDateOrNull(timeline.getDate());
@@ -57,7 +51,7 @@ public class TimelineServiceImpl implements TimelineService {
         }
     }
 
-    private CustomSliceResponse<?> mapToCustomSliceResponse(Timeline<Memory> timelines) {
+    private CustomSliceResponse<?> mapToCustomSliceResponse(Timeline timelines) {
         List<TimelineResponseDto> result =
                 timelines.getTimelineContents().stream()
                         .map(this::mapToTimelineResponseDto)
@@ -66,7 +60,7 @@ public class TimelineServiceImpl implements TimelineService {
         return CustomSliceResponse.builder()
                 .content(result)
                 .pageSize(timelines.getPageSize())
-                .cursorId(timelines.getCursorId())
+                .cursorRecordAt(getCursorRecordAtResponse(timelines))
                 .hasNext(timelines.isHasNext())
                 .build();
     }
@@ -79,6 +73,12 @@ public class TimelineServiceImpl implements TimelineService {
         return lastDayOfMonth;
     }
 
+    private String getCursorRecordAtResponse(Timeline timelines) {
+        return timelines.getCursorRecordAt() != null
+                ? timelines.getCursorRecordAt().toString()
+                : null;
+    }
+
     @Override
     public TimelineResponseDto mapToTimelineResponseDto(Memory memory) {
         return TimelineResponseDto.builder()
@@ -89,10 +89,7 @@ public class TimelineServiceImpl implements TimelineService {
                 .lane(memory.getLane())
                 .diary(memory.getDiary())
                 .totalMeter(calculateTotalMeter(memory.getStrokes(), memory.getLane()))
-                .memoryDetailId(
-                        memory.getMemoryDetail() != null && memory.getMemoryDetail().getId() != null
-                                ? memory.getMemoryDetail().getId()
-                                : null)
+                .memoryDetailId(getMemoryDetailId(memory))
                 .item(getItemFromMemoryDetail(memory))
                 .heartRate(getHeartRateFromMemoryDetail(memory))
                 .pace(getPaceFromMemoryDetail(memory))
@@ -147,6 +144,12 @@ public class TimelineServiceImpl implements TimelineService {
             }
         }
         return totalMeter;
+    }
+
+    private Long getMemoryDetailId(Memory memory) {
+        return memory.getMemoryDetail() != null && memory.getMemoryDetail().getId() != null
+                ? memory.getMemoryDetail().getId()
+                : null;
     }
 
     private List<StrokeResponse> strokeToDto(List<Stroke> strokes) {
