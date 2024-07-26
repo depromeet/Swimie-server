@@ -1,28 +1,25 @@
 package com.depromeet.image.service;
 
-import static com.depromeet.type.common.CommonErrorType.INTERNAL_SERVER;
-
 import com.depromeet.exception.BadRequestException;
-import com.depromeet.exception.InternalServerException;
-import com.depromeet.exception.NotFoundException;
 import com.depromeet.image.Image;
+import com.depromeet.image.dto.response.ImageUploadResponseDto;
 import com.depromeet.image.repository.ImageRepository;
+import com.depromeet.memory.ImageUploadStatus;
 import com.depromeet.memory.Memory;
-import com.depromeet.memory.repository.MemoryRepository;
 import com.depromeet.type.image.ImageErrorType;
-import com.depromeet.type.memory.MemoryErrorType;
 import com.depromeet.util.ImageNameUtil;
-import java.io.IOException;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
 @Slf4j
 @Service
@@ -30,8 +27,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 @RequiredArgsConstructor
 public class ImageUpdateServiceImpl implements ImageUpdateService {
     private final ImageRepository imageRepository;
-    private final MemoryRepository memoryRepository;
-    private final S3Client s3Client;
+    private final S3Presigner s3Presigner;
 
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucketName;
@@ -39,47 +35,59 @@ public class ImageUpdateServiceImpl implements ImageUpdateService {
     @Value("${cloud-front.domain}")
     private String domain;
 
-    public void updateImages(Long memoryId, List<MultipartFile> images) {
-        try {
-            List<Image> existingImages = imageRepository.findImagesByMemoryId(memoryId);
-            List<String> existingImageNames = getExistingImageNames(existingImages);
+    @Override
+    public List<ImageUploadResponseDto> updateImages(Memory memory, List<String> imageNames) {
+        validateImageIsNotNull(imageNames);
 
-            List<String> updatedImageNames = updateNewImages(memoryId, images, existingImageNames);
-            deleteNonUpdatedImages(existingImages, updatedImageNames);
-        } catch (IOException e) {
-            log.error(e.getMessage());
-            throw new InternalServerException(INTERNAL_SERVER);
+        List<Image> existingImages = imageRepository.findAllByMemoryId(memory.getId());
+        List<String> existingImageNames = getExistingImageNames(existingImages);
+
+        List<ImageUploadResponseDto> updatedImageNames =
+                getImageUploadResponseDto(memory, imageNames, existingImageNames);
+        deleteNonUpdatedImages(existingImages, imageNames);
+        return updatedImageNames;
+    }
+
+    private void validateImageIsNotNull(List<String> imageNames) {
+        if (imageNames == null) {
+            throw new BadRequestException(ImageErrorType.IMAGES_CANNOT_BE_NULL);
         }
+        for (String imageName : imageNames) {
+            if (imageName == null || imageName.isEmpty()) {
+                throw new BadRequestException(ImageErrorType.INVALID_IMAGE_NAME);
+            }
+        }
+    }
+
+    @Override
+    public void changeImageStatus(List<Long> imageIds) {
+        imageRepository.updateByImageIds(imageIds);
     }
 
     private List<String> getExistingImageNames(List<Image> existingImages) {
         return existingImages.stream().map(Image::getImageName).toList();
     }
 
-    private List<String> updateNewImages(
-            Long memoryId, List<MultipartFile> images, List<String> existImagesName)
-            throws IOException {
+    private List<ImageUploadResponseDto> getImageUploadResponseDto(
+            Memory memory, List<String> imageNames, List<String> existImagesName) {
+        List<ImageUploadResponseDto> imageUploadResponseDtos = new ArrayList<>();
 
-        Memory memory = getMemory(memoryId);
-        List<String> updatedImageNames =
-                images.stream().map(MultipartFile::getOriginalFilename).toList();
-
-        for (MultipartFile image : images) {
-            String originImageName = image.getOriginalFilename();
+        for (String originImageName : imageNames) {
             String imageName = generateImageName(originImageName);
 
             if (existImagesName.contains(imageName)) continue;
+            String presignedUrl = getPresignedImageUrl(imageName);
+            Long addedImageId = saveNewImage(originImageName, imageName, memory);
 
-            String imageUrl = upload(imageName, image);
-            saveNewImage(originImageName, imageName, imageUrl, memory);
+            ImageUploadResponseDto imageUploadResponseDto =
+                    ImageUploadResponseDto.builder()
+                            .imageId(addedImageId)
+                            .imageName(originImageName)
+                            .presignedUrl(presignedUrl)
+                            .build();
+            imageUploadResponseDtos.add(imageUploadResponseDto);
         }
-        return updatedImageNames;
-    }
-
-    private Memory getMemory(Long memoryId) {
-        return memoryRepository
-                .findById(memoryId)
-                .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND));
+        return imageUploadResponseDtos;
     }
 
     private String generateImageName(String originImageName) {
@@ -90,35 +98,39 @@ public class ImageUpdateServiceImpl implements ImageUpdateService {
         return ImageNameUtil.createImageName(originImageName);
     }
 
-    private void saveNewImage(
-            String originImageName, String imageName, String imageUrl, Memory memory) {
+    private Long saveNewImage(String originImageName, String imageName, Memory memory) {
         Image newImage =
                 Image.builder()
                         .originImageName(originImageName)
                         .imageName(imageName)
-                        .imageUrl(imageUrl)
+                        .imageUrl(domain + "/" + imageName)
                         .memory(memory)
+                        .imageUploadStatus(ImageUploadStatus.PENDING)
                         .build();
-        imageRepository.save(newImage);
+        return imageRepository.save(newImage);
     }
 
-    private String upload(String imageName, MultipartFile image) throws IOException {
+    private String getPresignedImageUrl(String imageName) {
         PutObjectRequest putObjectRequest =
-                PutObjectRequest.builder()
-                        .bucket(bucketName)
-                        .contentType(image.getContentType())
-                        .contentLength(image.getSize())
-                        .key(imageName)
+                PutObjectRequest.builder().bucket(bucketName).key(imageName).build();
+
+        PutObjectPresignRequest putObjectPresignRequest =
+                PutObjectPresignRequest.builder()
+                        .signatureDuration(Duration.ofMinutes(5))
+                        .putObjectRequest(putObjectRequest)
                         .build();
 
-        RequestBody requestBody = RequestBody.fromBytes(image.getBytes());
+        PresignedPutObjectRequest presignedPutObjectRequest =
+                s3Presigner.presignPutObject(putObjectPresignRequest);
 
-        s3Client.putObject(putObjectRequest, requestBody);
-
-        return domain + "/" + imageName;
+        return presignedPutObjectRequest.url().toString();
     }
 
-    private void deleteNonUpdatedImages(List<Image> existImages, List<String> updatedImageNames) {
+    private void deleteNonUpdatedImages(
+            List<Image> existImages, List<String> updateOriginImageNames) {
+        List<String> updatedImageNames =
+                updateOriginImageNames.stream().map(ImageNameUtil::createImageName).toList();
+
         List<Long> deletedImageIds =
                 existImages.stream()
                         .filter(i -> !updatedImageNames.contains(i.getImageName()))
