@@ -1,5 +1,6 @@
 package com.depromeet.image;
 
+import com.depromeet.memory.ImageUploadStatus;
 import com.depromeet.memory.Memory;
 import java.util.Optional;
 import lombok.Builder;
@@ -12,7 +13,7 @@ public class Image {
     private String originImageName;
     private String imageName;
     private String imageUrl;
-    private boolean isPending;
+    private ImageUploadStatus imageUploadStatus;
 
     @Builder
     public Image(
@@ -21,19 +22,23 @@ public class Image {
             String originImageName,
             String imageName,
             String imageUrl,
-            boolean isPending) {
+            ImageUploadStatus imageUploadStatus) {
         this.id = id;
         this.memory = memory;
         this.originImageName = originImageName;
         this.imageName = imageName;
         this.imageUrl = imageUrl;
-        this.isPending = isPending;
+        this.imageUploadStatus = imageUploadStatus;
     }
 
     public void addMemoryToImage(Memory memory) {
         if (memory != null) {
             this.memory = memory;
         }
+    }
+
+    public void updateHasUploaded() {
+        this.imageUploadStatus = ImageUploadStatus.UPLOADED;
     }
 
     public Optional<Memory> getMemory() {
@@ -46,7 +51,7 @@ public class Image {
                 .originImageName(originImageName)
                 .imageName(imageName)
                 .imageUrl(imageUrl)
-                .isPending(isPending)
+                .imageUploadStatus(imageUploadStatus)
                 .build();
     }
 }

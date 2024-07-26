@@ -1,6 +1,7 @@
 package com.depromeet.image.entity;
 
 import com.depromeet.image.Image;
+import com.depromeet.memory.ImageUploadStatus;
 import com.depromeet.memory.entity.MemoryEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -29,7 +30,8 @@ public class ImageEntity {
 
     @NotNull private String imageUrl;
 
-    private boolean isPending;
+    @Column(name = "upload_status")
+    private ImageUploadStatus imageUploadStatus;
 
     @Builder
     public ImageEntity(
@@ -38,13 +40,13 @@ public class ImageEntity {
             String originImageName,
             String imageName,
             String imageUrl,
-            boolean isPending) {
+            ImageUploadStatus imageUploadStatus) {
         this.id = id;
         this.memory = memory;
         this.originImageName = originImageName;
         this.imageName = imageName;
         this.imageUrl = imageUrl;
-        this.isPending = isPending;
+        this.imageUploadStatus = imageUploadStatus;
     }
 
     public static ImageEntity from(Image image) {
@@ -57,7 +59,7 @@ public class ImageEntity {
                 .originImageName(image.getOriginImageName())
                 .imageName(image.getImageName())
                 .imageUrl(image.getImageUrl())
-                .isPending(image.isPending())
+                .imageUploadStatus(image.getImageUploadStatus())
                 .build();
     }
 
@@ -67,7 +69,7 @@ public class ImageEntity {
                 .originImageName(image.getOriginImageName())
                 .imageName(image.getImageName())
                 .imageUrl(image.getImageUrl())
-                .isPending(image.isPending())
+                .imageUploadStatus(image.getImageUploadStatus())
                 .build();
     }
 
@@ -78,7 +80,7 @@ public class ImageEntity {
                 .originImageName(this.originImageName)
                 .imageName(this.imageName)
                 .imageUrl(this.imageUrl)
-                .isPending(this.isPending)
+                .imageUploadStatus(this.imageUploadStatus)
                 .build();
     }
 
@@ -88,11 +90,16 @@ public class ImageEntity {
                 .originImageName(this.originImageName)
                 .imageName(this.imageName)
                 .imageUrl(this.imageUrl)
-                .isPending(this.isPending)
+                .imageUploadStatus(this.imageUploadStatus)
                 .build();
     }
 
     public Optional<MemoryEntity> getMemory() {
         return Optional.ofNullable(this.memory);
+    }
+
+    public ImageEntity setImageUploadStatus() {
+        this.imageUploadStatus = ImageUploadStatus.UPLOADED;
+        return this;
     }
 }
