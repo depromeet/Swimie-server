@@ -1,9 +1,9 @@
 package com.depromeet.memory.repository;
 
 import com.depromeet.memory.Memory;
-import com.depromeet.memory.Timeline;
 import com.depromeet.memory.entity.MemoryEntity;
 import com.depromeet.memory.entity.QMemoryEntity;
+import com.depromeet.memory.vo.Timeline;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;

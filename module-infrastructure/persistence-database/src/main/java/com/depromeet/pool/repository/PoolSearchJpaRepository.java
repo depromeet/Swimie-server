@@ -5,5 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PoolSearchJpaRepository extends JpaRepository<PoolSearchEntity, Long> {
-    List<PoolSearchEntity> findALlByMemberId(Long memberId);
+    List<PoolSearchEntity> findAllByMemberId(Long memberId);
+
+    List<PoolSearchEntity> findDistinctByMemberId(Long memberId);
 }

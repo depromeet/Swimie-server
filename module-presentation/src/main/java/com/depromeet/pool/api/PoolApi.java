@@ -18,8 +18,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface PoolApi {
     @Operation(summary = "수영장 검색")
     ApiResponse<PoolSearchResponse> searchPoolsByNameQuery(
+            @LoginMember Long memberId,
             @Schema(description = "수영장 검색 입력값", example = "강남") @RequestParam(value = "nameQuery")
-                    String nameQuery);
+                    String nameQuery,
+            @Schema(description = "마지막 수영장 아이디", example = "77")
+                    @RequestParam(value = "cursorId", required = false)
+                    Long cursorId);
 
     @Operation(summary = "즐겨찾기 및 최근 검색 수영장 조회")
     ApiResponse<PoolInitialResponse> getFavoriteAndSearchedPools(@LoginMember Long memberId);
