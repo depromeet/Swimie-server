@@ -6,31 +6,26 @@ import com.depromeet.member.Member;
 import com.depromeet.memory.fixture.MemberFixture;
 import com.depromeet.memory.fixture.PoolFixture;
 import com.depromeet.memory.mock.FakeMemberRepository;
-import com.depromeet.memory.mock.FakePoolRepository;
-import com.depromeet.pool.FavoritePool;
-import com.depromeet.pool.Pool;
-import com.depromeet.pool.PoolSearch;
-import com.depromeet.pool.dto.request.FavoritePoolCreateRequest;
-import com.depromeet.pool.dto.response.PoolInfoResponse;
-import com.depromeet.pool.dto.response.PoolInitialResponse;
-import com.depromeet.pool.dto.response.PoolSearchInfoResponse;
-import com.depromeet.pool.dto.response.PoolSearchResponse;
+import com.depromeet.memory.mock.FakePoolPersistencePort;
+import com.depromeet.pool.domain.FavoritePool;
+import com.depromeet.pool.domain.Pool;
+import com.depromeet.pool.domain.PoolSearch;
+import com.depromeet.pool.port.in.command.FavoritePoolCommand;
 import com.depromeet.pool.service.PoolService;
-import com.depromeet.pool.service.PoolServiceImpl;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class PoolServiceTest {
     private PoolService poolService;
-    private FakePoolRepository poolRepository;
+    private FakePoolPersistencePort poolRepository;
     private FakeMemberRepository memberRepository;
     private Long memberId;
     private Member member;
 
     @BeforeEach
     void init() {
-        poolRepository = new FakePoolRepository();
+        poolRepository = new FakePoolPersistencePort();
         memberRepository = new FakeMemberRepository();
 
         memberId = 1L;
@@ -38,7 +33,8 @@ public class PoolServiceTest {
         member = MemberFixture.make(memberId, memberRole);
         member = memberRepository.save(member);
 
-        poolService = new PoolServiceImpl(poolRepository, memberRepository);
+        // poolService = new PoolService(poolRepository, memberRepository);
+        poolService = new PoolService(poolRepository);
 
         String poolName = "테스트 수영장";
         String poolAddress = "테스트시 테스트구";
@@ -65,14 +61,13 @@ public class PoolServiceTest {
         String nameQuery = "테스트";
 
         // when
-        PoolSearchResponse response = poolService.findPoolsByName(nameQuery);
-        List<PoolInfoResponse> poolInfos = response.poolInfos();
+        List<Pool> pools = poolService.getPoolsByName(nameQuery);
 
         // then
-        assertThat(poolInfos.size()).isEqualTo(2);
-        assertThat(poolInfos.get(0).poolId()).isEqualTo(1L);
-        assertThat(poolInfos.get(0).name()).isEqualTo("테스트 수영장");
-        assertThat(poolInfos.get(0).address()).isEqualTo("테스트시 테스트구");
+        assertThat(pools.size()).isEqualTo(2);
+        assertThat(pools.getFirst().getId()).isEqualTo(1L);
+        assertThat(pools.getFirst().getName()).isEqualTo("테스트 수영장");
+        assertThat(pools.getFirst().getAddress()).isEqualTo("테스트시 테스트구");
     }
 
     @Test
@@ -81,28 +76,27 @@ public class PoolServiceTest {
         memberId = 1L;
 
         // when
-        PoolInitialResponse response = poolService.getFavoriteAndSearchedPools(memberId);
-        List<PoolInfoResponse> favoritePools = response.favoritePools();
-        List<PoolSearchInfoResponse> searchedPools = response.searchedPools();
+        List<FavoritePool> favoritePools = poolService.getFavoritePools(memberId);
+        List<PoolSearch> searchedPools = poolService.getSearchedPools(memberId);
 
         // then
         assertThat(favoritePools.size()).isEqualTo(1);
-        assertThat(favoritePools.getFirst().name()).isEqualTo("테스트 수영장");
-        assertThat(favoritePools.getFirst().address()).isEqualTo("테스트시 테스트구");
+        assertThat(favoritePools.getFirst().getPool().getName()).isEqualTo("테스트 수영장");
+        assertThat(favoritePools.getFirst().getPool().getAddress()).isEqualTo("테스트시 테스트구");
 
         assertThat(searchedPools.size()).isEqualTo(1);
-        assertThat(searchedPools.getFirst().name()).isEqualTo("테스트 수영장");
-        assertThat(searchedPools.getFirst().address()).isEqualTo("테스트시 테스트구");
+        assertThat(searchedPools.getFirst().getPool().getName()).isEqualTo("테스트 수영장");
+        assertThat(searchedPools.getFirst().getPool().getAddress()).isEqualTo("테스트시 테스트구");
     }
 
     @Test
     void 수영장을_즐겨찾기에_등록합니다() throws Exception {
         // given
         Long newFavoritePoolId = 2L;
-        FavoritePoolCreateRequest request = new FavoritePoolCreateRequest(newFavoritePoolId);
+        FavoritePoolCommand command = new FavoritePoolCommand(newFavoritePoolId);
 
         // when
-        String location = poolService.putFavoritePool(memberId, request);
+        String location = poolService.putFavoritePool(memberId, command);
 
         // then
         assertThat(location).isEqualTo(String.valueOf(newFavoritePoolId));
@@ -112,10 +106,10 @@ public class PoolServiceTest {
     void 수영장을_즐겨찾기에서_삭제합니다() throws Exception {
         // given
         Long removeTargetPoolId = 1L;
-        FavoritePoolCreateRequest request = new FavoritePoolCreateRequest(removeTargetPoolId);
+        FavoritePoolCommand command = new FavoritePoolCommand(removeTargetPoolId);
 
         // when
-        String location = poolService.putFavoritePool(memberId, request);
+        String location = poolService.putFavoritePool(memberId, command);
 
         // then
         assertThat(location).isNull();

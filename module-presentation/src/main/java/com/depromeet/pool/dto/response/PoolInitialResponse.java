@@ -1,7 +1,7 @@
 package com.depromeet.pool.dto.response;
 
-import com.depromeet.pool.FavoritePool;
-import com.depromeet.pool.PoolSearch;
+import com.depromeet.pool.domain.FavoritePool;
+import com.depromeet.pool.domain.PoolSearch;
 import java.util.ArrayList;
 import java.util.List;
 

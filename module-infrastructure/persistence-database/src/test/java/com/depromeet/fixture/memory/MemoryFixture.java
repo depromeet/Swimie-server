@@ -3,7 +3,7 @@ package com.depromeet.fixture.memory;
 import com.depromeet.member.Member;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.MemoryDetail;
-import com.depromeet.pool.Pool;
+import com.depromeet.pool.domain.Pool;
 import java.time.LocalDate;
 import java.time.LocalTime;
 

@@ -1,8 +1,8 @@
 package com.depromeet.pool.dto.response;
 
-import com.depromeet.pool.FavoritePool;
-import com.depromeet.pool.Pool;
-import com.depromeet.pool.PoolSearch;
+import com.depromeet.pool.domain.FavoritePool;
+import com.depromeet.pool.domain.Pool;
+import com.depromeet.pool.domain.PoolSearch;
 
 public record PoolInfoResponse(Long poolId, String name, String address) {
     public static PoolInfoResponse of(Pool pool) {
