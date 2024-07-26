@@ -1,8 +1,8 @@
 package com.depromeet.memory.mock;
 
 import com.depromeet.memory.Memory;
-import com.depromeet.memory.Timeline;
 import com.depromeet.memory.repository.MemoryRepository;
+import com.depromeet.memory.vo.Timeline;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

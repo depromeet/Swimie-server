@@ -1,5 +1,6 @@
-package com.depromeet.memory;
+package com.depromeet.memory.vo;
 
+import com.depromeet.memory.Memory;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

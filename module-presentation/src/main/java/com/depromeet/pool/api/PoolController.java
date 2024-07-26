@@ -26,9 +26,12 @@ public class PoolController implements PoolApi {
 
     @GetMapping("/search")
     public ApiResponse<PoolSearchResponse> searchPoolsByNameQuery(
-            @RequestParam(value = "nameQuery") String nameQuery) {
+            @LoginMember Long memberId,
+            @RequestParam(value = "nameQuery") String nameQuery,
+            @RequestParam(value = "cursorId", required = false) Long cursorId) {
         return ApiResponse.success(
-                PoolSuccessType.SEARCH_SUCCESS, poolFacade.findPoolsByName(nameQuery));
+                PoolSuccessType.SEARCH_SUCCESS,
+                poolFacade.findPoolsByName(memberId, nameQuery, cursorId));
     }
 
     @GetMapping("/search/initial")

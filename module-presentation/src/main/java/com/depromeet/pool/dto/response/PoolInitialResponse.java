@@ -1,9 +1,12 @@
 package com.depromeet.pool.dto.response;
 
 import com.depromeet.pool.domain.FavoritePool;
+import com.depromeet.pool.domain.Pool;
 import com.depromeet.pool.domain.PoolSearch;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public record PoolInitialResponse(
         List<PoolInfoResponse> favoritePools, List<PoolSearchInfoResponse> searchedPools) {
@@ -23,11 +26,15 @@ public record PoolInitialResponse(
     private static List<PoolSearchInfoResponse> getSearchedPoolsInfo(
             List<Long> favoritePoolIds, List<PoolSearch> poolSearches) {
         List<PoolSearchInfoResponse> searchedPoolsList = new ArrayList<>();
-        for (PoolSearch search : poolSearches) {
-            if (favoritePoolIds.contains(search.getPool().getId())) {
-                searchedPoolsList.add(PoolSearchInfoResponse.of(search, true));
+        List<Pool> pools = poolSearches.stream().map(PoolSearch::getPool).toList();
+        Set<Pool> poolSet = new HashSet<>(pools);
+        pools = new ArrayList<>(poolSet);
+
+        for (Pool pool : pools) {
+            if (favoritePoolIds.contains(pool.getId())) {
+                searchedPoolsList.add(PoolSearchInfoResponse.of(pool, true));
             } else {
-                searchedPoolsList.add(PoolSearchInfoResponse.of(search, false));
+                searchedPoolsList.add(PoolSearchInfoResponse.of(pool, false));
             }
         }
         return searchedPoolsList;

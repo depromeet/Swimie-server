@@ -11,7 +11,7 @@ import com.depromeet.member.repository.MemberJpaRepository;
 import com.depromeet.member.repository.MemberRepositoryImpl;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.MemoryDetail;
-import com.depromeet.memory.Timeline;
+import com.depromeet.memory.vo.Timeline;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
