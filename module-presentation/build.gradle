@@ -5,6 +5,7 @@ dependencies {
     implementation project(':module-independent')
     implementation project(':module-infrastructure:persistence-database')
     implementation project(':module-infrastructure:persistence-redis')
+    implementation project(':module-infrastructure:object-storage')
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
