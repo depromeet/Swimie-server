@@ -7,9 +7,9 @@ import static com.depromeet.memory.entity.QStrokeEntity.strokeEntity;
 import static com.depromeet.pool.entity.QPoolEntity.poolEntity;
 
 import com.depromeet.memory.Memory;
-import com.depromeet.memory.Timeline;
 import com.depromeet.memory.entity.MemoryEntity;
 import com.depromeet.memory.entity.QMemoryEntity;
+import com.depromeet.memory.vo.Timeline;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;

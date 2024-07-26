@@ -1,7 +1,7 @@
 package com.depromeet.memory.repository;
 
 import com.depromeet.memory.Memory;
-import com.depromeet.memory.Timeline;
+import com.depromeet.memory.vo.Timeline;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
