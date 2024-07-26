@@ -1,7 +1,7 @@
 package com.depromeet.image.entity;
 
-import com.depromeet.image.Image;
-import com.depromeet.memory.ImageUploadStatus;
+import com.depromeet.image.domain.Image;
+import com.depromeet.image.domain.ImageUploadStatus;
 import com.depromeet.memory.entity.MemoryEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -96,10 +96,5 @@ public class ImageEntity {
 
     public Optional<MemoryEntity> getMemory() {
         return Optional.ofNullable(this.memory);
-    }
-
-    public ImageEntity setImageUploadStatus() {
-        this.imageUploadStatus = ImageUploadStatus.UPLOADED;
-        return this;
     }
 }

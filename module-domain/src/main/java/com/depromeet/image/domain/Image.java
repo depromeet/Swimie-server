@@ -1,6 +1,5 @@
-package com.depromeet.image;
+package com.depromeet.image.domain;
 
-import com.depromeet.memory.ImageUploadStatus;
 import com.depromeet.memory.Memory;
 import java.util.Optional;
 import lombok.Builder;

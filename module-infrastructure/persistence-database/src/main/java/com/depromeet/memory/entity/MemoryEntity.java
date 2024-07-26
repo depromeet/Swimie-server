@@ -1,6 +1,6 @@
 package com.depromeet.memory.entity;
 
-import com.depromeet.image.Image;
+import com.depromeet.image.domain.Image;
 import com.depromeet.image.entity.ImageEntity;
 import com.depromeet.member.entity.MemberEntity;
 import com.depromeet.memory.Memory;
