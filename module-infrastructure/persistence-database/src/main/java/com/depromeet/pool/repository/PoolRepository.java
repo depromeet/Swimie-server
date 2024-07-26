@@ -3,6 +3,7 @@ package com.depromeet.pool.repository;
 import static com.depromeet.member.entity.QMemberEntity.*;
 import static com.depromeet.pool.entity.QFavoritePoolEntity.*;
 import static com.depromeet.pool.entity.QPoolEntity.*;
+import static com.depromeet.pool.entity.QPoolSearchEntity.*;
 
 import com.depromeet.member.entity.MemberEntity;
 import com.depromeet.pool.domain.FavoritePool;
@@ -77,8 +78,17 @@ public class PoolRepository implements PoolPersistencePort {
 
     @Override
     public List<PoolSearch> findSearchedPools(Long memberId) {
-        List<PoolSearchEntity> searchedPools = poolSearchJpaRepository.findALlByMemberId(memberId);
-        return searchedPools.stream().map(PoolSearchEntity::toModel).toList();
+        List<PoolSearchEntity> poolSearchEntities =
+                queryFactory
+                        .selectFrom(poolSearchEntity)
+                        .join(poolSearchEntity.member, memberEntity)
+                        .fetchJoin()
+                        .join(poolSearchEntity.pool, poolEntity)
+                        .fetchJoin()
+                        .where(poolSearchEntity.member.id.eq(memberId))
+                        .fetch();
+
+        return poolSearchEntities.stream().map(PoolSearchEntity::toModel).toList();
     }
 
     @Override
