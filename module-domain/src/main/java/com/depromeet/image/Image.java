@@ -47,11 +47,11 @@ public class Image {
 
     public Image withoutMemory() {
         return Image.builder()
-                .id(id)
-                .originImageName(originImageName)
-                .imageName(imageName)
-                .imageUrl(imageUrl)
-                .imageUploadStatus(imageUploadStatus)
+                .id(this.id)
+                .originImageName(this.originImageName)
+                .imageName(this.imageName)
+                .imageUrl(this.imageUrl)
+                .imageUploadStatus(this.imageUploadStatus)
                 .build();
     }
 }

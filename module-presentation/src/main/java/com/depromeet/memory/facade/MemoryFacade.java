@@ -1,6 +1,6 @@
 package com.depromeet.memory.facade;
 
-import static com.depromeet.memory.service.MemoryValidator.*;
+import static com.depromeet.memory.service.MemoryValidator.validatePermission;
 
 import com.depromeet.dto.response.CustomSliceResponse;
 import com.depromeet.image.service.ImageUploadService;
