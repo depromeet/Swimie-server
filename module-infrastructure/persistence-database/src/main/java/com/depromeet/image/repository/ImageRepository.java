@@ -1,27 +1,89 @@
 package com.depromeet.image.repository;
 
-import com.depromeet.image.Image;
+import com.depromeet.image.domain.Image;
+import com.depromeet.image.domain.ImageUploadStatus;
+import com.depromeet.image.entity.ImageEntity;
+import com.depromeet.image.entity.QImageEntity;
+import com.depromeet.image.port.out.persistence.ImagePersistencePort;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
-public interface ImageRepository {
-    Long save(Image image);
+@Repository
+@RequiredArgsConstructor
+public class ImageRepository implements ImagePersistencePort {
+    private final ImageJpaRepository imageJpaRepository;
+    private final JPAQueryFactory queryFactory;
 
-    List<Image> saveAll(List<Image> images);
+    QImageEntity image = QImageEntity.imageEntity;
 
-    void updateByImageIds(List<Long> imageIds);
+    @Override
+    public Long save(Image image) {
+        ImageEntity imageEntity = imageJpaRepository.save(ImageEntity.from(image));
+        return imageEntity.getId();
+    }
 
-    Optional<Image> findById(Long id);
+    @Override
+    public List<Image> saveAll(List<Image> images) {
+        List<ImageEntity> memoryImageEntities = images.stream().map(ImageEntity::from).toList();
 
-    List<Image> findAllByMemoryId(Long memoryId);
+        return imageJpaRepository.saveAll(memoryImageEntities).stream()
+                .map(ImageEntity::toModel)
+                .toList();
+    }
 
-    List<Image> findAllByMemoryIdAndHasUploaded(Long memoryId);
+    @Override
+    public void updateByImageIds(List<Long> imageIds) {
+        queryFactory
+                .update(image)
+                .set(image.imageUploadStatus, ImageUploadStatus.UPLOADED)
+                .where(image.id.in(imageIds));
+    }
 
-    List<Image> findImageByIds(List<Long> ids);
+    @Override
+    public Optional<Image> findById(Long id) {
+        return imageJpaRepository.findById(id).map(ImageEntity::toModel);
+    }
 
-    void deleteById(Long id);
+    @Override
+    public List<Image> findAllByMemoryId(Long memoryId) {
+        return imageJpaRepository.findByMemoryId(memoryId).stream()
+                .map(ImageEntity::toModel)
+                .toList();
+    }
 
-    void deleteAllByIds(List<Long> ids);
+    @Override
+    public List<Image> findAllByMemoryIdAndHasUploaded(Long memoryId) {
+        List<ImageEntity> images =
+                queryFactory
+                        .selectFrom(image)
+                        .where(
+                                image.memory.id.eq(memoryId),
+                                image.imageUploadStatus.eq(ImageUploadStatus.UPLOADED))
+                        .fetch();
 
-    void deleteAllByMemoryId(Long memoryId);
+        return images.stream().map(ImageEntity::toModel).toList();
+    }
+
+    @Override
+    public List<Image> findImageByIds(List<Long> ids) {
+        return imageJpaRepository.findAllByIds(ids).stream().map(ImageEntity::toModel).toList();
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        imageJpaRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteAllByIds(List<Long> ids) {
+        imageJpaRepository.deleteAllById(ids);
+    }
+
+    @Override
+    public void deleteAllByMemoryId(Long memoryId) {
+        imageJpaRepository.deleteAllByMemoryId(memoryId);
+    }
 }
