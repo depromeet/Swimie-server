@@ -6,8 +6,8 @@ import lombok.Getter;
 
 @Getter
 public enum ImageUploadStatus implements CodedEnum<String> {
-    PENDING("pending"),
-    UPLOADED("uploaded");
+    PENDING("PENDING"),
+    UPLOADED("UPLOADED");
 
     private final String value;
 
