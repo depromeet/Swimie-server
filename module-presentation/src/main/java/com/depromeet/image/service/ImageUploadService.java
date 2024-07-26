@@ -1,11 +1,11 @@
 package com.depromeet.image.service;
 
+import com.depromeet.image.dto.response.ImageUploadResponseDto;
 import com.depromeet.memory.Memory;
 import java.util.List;
-import org.springframework.web.multipart.MultipartFile;
 
 public interface ImageUploadService {
-    List<Long> uploadMemoryImages(List<MultipartFile> files);
+    List<ImageUploadResponseDto> getPresignedUrlAndSaveImages(List<String> originImageNames);
 
-    void addMemoryIdToImages(Memory memory, List<Long> imageIds);
+    void changeImageStatusAndAddMemoryIdToImages(Memory memory, List<Long> imageIds);
 }

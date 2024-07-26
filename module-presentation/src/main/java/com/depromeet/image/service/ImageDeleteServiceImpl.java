@@ -35,7 +35,7 @@ public class ImageDeleteServiceImpl implements ImageDeleteService {
 
     @Override
     public void deleteAllImagesByMemoryId(Long memoryId) {
-        List<Image> images = imageRepository.findImagesByMemoryId(memoryId);
+        List<Image> images = imageRepository.findAllByMemoryId(memoryId);
 
         for (Image image : images) {
             deleteImageFromS3(image);

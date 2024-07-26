@@ -25,7 +25,7 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<?>> handleMethodArgumentNotValidException(
             final MethodArgumentNotValidException ex) {
-        ErrorResponse validateDetails = ErrorResponse.of(ex.getBindingResult());
+        ValidationErrorResponse validateDetails = ValidationErrorResponse.of(ex.getBindingResult());
         return new ResponseEntity<>(
                 ApiResponse.fail(CommonErrorType.REQUEST_VALIDATION, 400, validateDetails),
                 HttpStatus.BAD_REQUEST);
@@ -78,7 +78,8 @@ public class GlobalExceptionAdvice {
     protected ResponseEntity<ApiResponse<?>> handlerConstraintViolationException(
             final ConstraintViolationException ex) {
         log.error(ex.getMessage());
-        ErrorResponse constraintViolation = ErrorResponse.of(ex.getConstraintViolations());
+        ValidationErrorResponse constraintViolation =
+                ValidationErrorResponse.of(ex.getConstraintViolations());
         return new ResponseEntity<>(
                 ApiResponse.fail(CommonErrorType.VALIDATION_FAILED, 400, constraintViolation),
                 HttpStatus.BAD_REQUEST);
