@@ -3,7 +3,7 @@ package com.depromeet.memory.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.depromeet.TestQueryDslConfig;
-import com.depromeet.fixture.member.MemberFixture;
+import com.depromeet.fixture.member.MockMember;
 import com.depromeet.fixture.memory.MemoryDetailFixture;
 import com.depromeet.fixture.memory.MemoryFixture;
 import com.depromeet.member.Member;
@@ -43,7 +43,7 @@ public class MemoryRepositoryTest {
         memberRepositoryImpl = new MemberRepositoryImpl(memberJpaRepository);
         memoryRepositoryImpl = new MemoryRepositoryImpl(queryFactory, memoryJpaRepository);
         memoryDetailRepositoryImpl = new MemoryDetailRepositoryImpl(memoryDetailJpaRepository);
-        member = memberRepositoryImpl.save(MemberFixture.memberFixture());
+        member = memberRepositoryImpl.save(MockMember.mockMember());
         List<MemoryDetail> memoryDetailList = MemoryDetailFixture.memoryDetailList();
 
         startRecordAt = LocalDate.of(2024, 7, 1);
