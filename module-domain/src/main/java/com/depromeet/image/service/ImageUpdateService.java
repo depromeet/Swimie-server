@@ -3,8 +3,8 @@ package com.depromeet.image.service;
 import com.depromeet.exception.BadRequestException;
 import com.depromeet.image.domain.Image;
 import com.depromeet.image.domain.ImageUploadStatus;
+import com.depromeet.image.domain.vo.ImagePresignedUrlVo;
 import com.depromeet.image.port.in.ImageUpdateUseCase;
-import com.depromeet.image.port.out.command.ImagePresignedUrlCommand;
 import com.depromeet.image.port.out.persistence.ImagePersistencePort;
 import com.depromeet.image.port.out.s3.S3ManagePort;
 import com.depromeet.memory.Memory;
@@ -28,13 +28,13 @@ public class ImageUpdateService implements ImageUpdateUseCase {
     private String domain;
 
     @Override
-    public List<ImagePresignedUrlCommand> updateImages(Memory memory, List<String> imageNames) {
+    public List<ImagePresignedUrlVo> updateImages(Memory memory, List<String> imageNames) {
         validateImageIsNotNull(imageNames);
 
         List<Image> existingImages = imagePersistencePort.findAllByMemoryId(memory.getId());
         List<String> existingImageNames = getExistingImageNames(existingImages);
 
-        List<ImagePresignedUrlCommand> updatedImageNames =
+        List<ImagePresignedUrlVo> updatedImageNames =
                 getImageUploadResponseDto(memory, imageNames, existingImageNames);
         deleteNonUpdatedImages(existingImages, imageNames);
         return updatedImageNames;
@@ -60,9 +60,9 @@ public class ImageUpdateService implements ImageUpdateUseCase {
         return existingImages.stream().map(Image::getImageName).toList();
     }
 
-    private List<ImagePresignedUrlCommand> getImageUploadResponseDto(
+    private List<ImagePresignedUrlVo> getImageUploadResponseDto(
             Memory memory, List<String> imageNames, List<String> existImagesName) {
-        List<ImagePresignedUrlCommand> imageUploadResponseDtos = new ArrayList<>();
+        List<ImagePresignedUrlVo> imageUploadResponseDtos = new ArrayList<>();
 
         for (String originImageName : imageNames) {
             String imageName = generateImageName(originImageName);
@@ -71,8 +71,8 @@ public class ImageUpdateService implements ImageUpdateUseCase {
             String presignedUrl = s3ManagePort.getPresignedUrl(imageName);
             Long addedImageId = saveNewImage(originImageName, imageName, memory);
 
-            ImagePresignedUrlCommand imageUploadResponseDto =
-                    ImagePresignedUrlCommand.builder()
+            ImagePresignedUrlVo imageUploadResponseDto =
+                    ImagePresignedUrlVo.builder()
                             .imageId(addedImageId)
                             .imageName(originImageName)
                             .presignedUrl(presignedUrl)

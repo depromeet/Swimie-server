@@ -3,8 +3,8 @@ package com.depromeet.image.service;
 import com.depromeet.exception.BadRequestException;
 import com.depromeet.image.domain.Image;
 import com.depromeet.image.domain.ImageUploadStatus;
+import com.depromeet.image.domain.vo.ImagePresignedUrlVo;
 import com.depromeet.image.port.in.ImageUploadUseCase;
-import com.depromeet.image.port.out.command.ImagePresignedUrlCommand;
 import com.depromeet.image.port.out.persistence.ImagePersistencePort;
 import com.depromeet.image.port.out.s3.S3ManagePort;
 import com.depromeet.memory.Memory;
@@ -28,19 +28,18 @@ public class ImageUploadService implements ImageUploadUseCase {
     private String domain;
 
     @Override
-    public List<ImagePresignedUrlCommand> getPresignedUrlAndSaveImages(
-            List<String> originImageNames) {
+    public List<ImagePresignedUrlVo> getPresignedUrlAndSaveImages(List<String> originImageNames) {
         validateImagesIsNotEmpty(originImageNames);
 
-        List<ImagePresignedUrlCommand> imageResponses = new ArrayList<>();
+        List<ImagePresignedUrlVo> imageResponses = new ArrayList<>();
         for (String originImageName : originImageNames) {
             String imageName = getImageName(originImageName);
             String imagePresignedUrl = s3ManagePort.getPresignedUrl(imageName);
 
             Long imageId = saveImage(originImageName, imageName);
-            ImagePresignedUrlCommand imagePresignedUrlCommand =
+            ImagePresignedUrlVo imagePresignedUrlVo =
                     getImageUploadResponseDto(imageId, originImageName, imagePresignedUrl);
-            imageResponses.add(imagePresignedUrlCommand);
+            imageResponses.add(imagePresignedUrlVo);
         }
         return imageResponses;
     }
@@ -69,9 +68,9 @@ public class ImageUploadService implements ImageUploadUseCase {
         return imagePersistencePort.save(image);
     }
 
-    private ImagePresignedUrlCommand getImageUploadResponseDto(
+    private ImagePresignedUrlVo getImageUploadResponseDto(
             Long imageId, String imageName, String imagePresignedUrl) {
-        return ImagePresignedUrlCommand.builder()
+        return ImagePresignedUrlVo.builder()
                 .imageId(imageId)
                 .imageName(imageName)
                 .presignedUrl(imagePresignedUrl)

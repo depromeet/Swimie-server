@@ -43,7 +43,7 @@ public class MemoryRepositoryTest {
         memberRepositoryImpl = new MemberRepositoryImpl(memberJpaRepository);
         memoryRepositoryImpl = new MemoryRepositoryImpl(queryFactory, memoryJpaRepository);
         memoryDetailRepositoryImpl = new MemoryDetailRepositoryImpl(memoryDetailJpaRepository);
-        member = memberRepositoryImpl.save(MemberFixture.mockMember());
+        member = memberRepositoryImpl.save(MemberFixture.memberFixture());
         List<MemoryDetail> memoryDetailList = MemoryDetailFixture.memoryDetailList();
 
         startRecordAt = LocalDate.of(2024, 7, 1);

@@ -4,7 +4,7 @@ import com.depromeet.member.Member;
 import com.depromeet.member.MemberRole;
 
 public class MemberFixture {
-    public static Member mockMember() {
+    public static Member memberFixture() {
         return Member.builder().name("user").email("user@gmail.com").role(MemberRole.USER).build();
     }
 }

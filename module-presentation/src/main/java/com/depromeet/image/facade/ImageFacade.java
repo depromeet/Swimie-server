@@ -1,13 +1,13 @@
 package com.depromeet.image.facade;
 
 import com.depromeet.image.domain.Image;
+import com.depromeet.image.domain.vo.ImagePresignedUrlVo;
 import com.depromeet.image.dto.response.ImageUploadResponseDto;
 import com.depromeet.image.dto.response.MemoryImagesDto;
 import com.depromeet.image.port.in.ImageDeleteUseCase;
 import com.depromeet.image.port.in.ImageGetUseCase;
 import com.depromeet.image.port.in.ImageUpdateUseCase;
 import com.depromeet.image.port.in.ImageUploadUseCase;
-import com.depromeet.image.port.out.command.ImagePresignedUrlCommand;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.service.MemoryService;
 import java.util.List;
@@ -19,23 +19,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class ImageFacade {
+    private final MemoryService memoryService;
+    private final ImageGetUseCase imageGetUseCase;
     private final ImageUploadUseCase imageUploadUseCase;
     private final ImageUpdateUseCase imageUpdateUseCase;
-    private final ImageGetUseCase imageGetUseCase;
     private final ImageDeleteUseCase imageDeleteUseCase;
-    private final MemoryService memoryService;
 
     public List<ImageUploadResponseDto> getPresignedUrlAndSaveImages(List<String> imageNames) {
-        List<ImagePresignedUrlCommand> imagePresignedUrlCommands =
+        List<ImagePresignedUrlVo> imagePresignedUrlVos =
                 imageUploadUseCase.getPresignedUrlAndSaveImages(imageNames);
-        return imagePresignedUrlCommands.stream().map(ImageUploadResponseDto::of).toList();
+        return imagePresignedUrlVos.stream().map(ImageUploadResponseDto::of).toList();
     }
 
     public List<ImageUploadResponseDto> updateImages(Long memoryId, List<String> imageNames) {
         Memory memory = memoryService.findById(memoryId);
-        List<ImagePresignedUrlCommand> imagePresignedUrlCommands =
+        List<ImagePresignedUrlVo> imagePresignedUrlVos =
                 imageUpdateUseCase.updateImages(memory, imageNames);
-        return imagePresignedUrlCommands.stream().map(ImageUploadResponseDto::of).toList();
+        return imagePresignedUrlVos.stream().map(ImageUploadResponseDto::of).toList();
     }
 
     public void changeImageStatus(List<Long> imageIds) {

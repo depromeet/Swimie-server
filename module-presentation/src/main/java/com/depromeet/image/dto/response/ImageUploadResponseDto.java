@@ -1,6 +1,6 @@
 package com.depromeet.image.dto.response;
 
-import com.depromeet.image.port.out.command.ImagePresignedUrlCommand;
+import com.depromeet.image.domain.vo.ImagePresignedUrlVo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 
@@ -9,11 +9,11 @@ public record ImageUploadResponseDto(Long imageId, String imageName, String pres
     @Builder
     public ImageUploadResponseDto {}
 
-    public static ImageUploadResponseDto of(ImagePresignedUrlCommand imagePresignedUrlCommand) {
+    public static ImageUploadResponseDto of(ImagePresignedUrlVo imagePresignedUrlVo) {
         return ImageUploadResponseDto.builder()
-                .imageId(imagePresignedUrlCommand.imageId())
-                .imageName(imagePresignedUrlCommand.imageName())
-                .presignedUrl(imagePresignedUrlCommand.presignedUrl())
+                .imageId(imagePresignedUrlVo.imageId())
+                .imageName(imagePresignedUrlVo.imageName())
+                .presignedUrl(imagePresignedUrlVo.presignedUrl())
                 .build();
     }
 }
