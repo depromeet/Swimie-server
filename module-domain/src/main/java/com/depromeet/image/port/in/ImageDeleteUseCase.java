@@ -1,6 +1,6 @@
-package com.depromeet.image.service;
+package com.depromeet.image.port.in;
 
-public interface ImageDeleteService {
+public interface ImageDeleteUseCase {
     void deleteImage(Long imageId);
 
     void deleteAllImagesByMemoryId(Long memoryId);

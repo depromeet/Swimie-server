@@ -1,4 +1,4 @@
-package com.depromeet.memory;
+package com.depromeet.image.domain;
 
 import com.depromeet.converter.AbstractCodedEnumConverter;
 import com.depromeet.converter.CodedEnum;

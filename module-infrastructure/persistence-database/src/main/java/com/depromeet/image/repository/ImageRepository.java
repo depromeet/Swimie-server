@@ -1,27 +1,103 @@
 package com.depromeet.image.repository;
 
-import com.depromeet.image.Image;
+import static com.depromeet.image.entity.QImageEntity.imageEntity;
+import static com.depromeet.memory.entity.QMemoryEntity.memoryEntity;
+
+import com.depromeet.image.domain.Image;
+import com.depromeet.image.domain.ImageUploadStatus;
+import com.depromeet.image.entity.ImageEntity;
+import com.depromeet.image.port.out.persistence.ImagePersistencePort;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
-public interface ImageRepository {
-    Long save(Image image);
+@Repository
+@RequiredArgsConstructor
+public class ImageRepository implements ImagePersistencePort {
+    private final JPAQueryFactory queryFactory;
+    private final ImageJpaRepository imageJpaRepository;
 
-    List<Image> saveAll(List<Image> images);
+    @Override
+    public Long save(Image image) {
+        ImageEntity imageEntity = imageJpaRepository.save(ImageEntity.from(image));
+        return imageEntity.getId();
+    }
 
-    void updateByImageIds(List<Long> imageIds);
+    @Override
+    public List<Image> saveAll(List<Image> images) {
+        List<ImageEntity> memoryImageEntities = images.stream().map(ImageEntity::from).toList();
 
-    Optional<Image> findById(Long id);
+        return imageJpaRepository.saveAll(memoryImageEntities).stream()
+                .map(ImageEntity::toModel)
+                .toList();
+    }
 
-    List<Image> findAllByMemoryId(Long memoryId);
+    @Override
+    public void updateByImageIds(List<Long> imageIds) {
+        queryFactory
+                .update(imageEntity)
+                .set(imageEntity.imageUploadStatus, ImageUploadStatus.UPLOADED)
+                .where(imageEntity.id.in(imageIds));
+    }
 
-    List<Image> findAllByMemoryIdAndHasUploaded(Long memoryId);
+    @Override
+    public Optional<Image> findById(Long id) {
+        return imageJpaRepository.findById(id).map(ImageEntity::toModel);
+    }
 
-    List<Image> findImageByIds(List<Long> ids);
+    @Override
+    public List<Image> findAllByMemoryId(Long memoryId) {
+        List<ImageEntity> imageEntities =
+                queryFactory
+                        .selectFrom(imageEntity)
+                        .join(imageEntity.memory, memoryEntity)
+                        .fetchJoin()
+                        .where(imageEntity.memory.id.eq(memoryId))
+                        .fetch();
 
-    void deleteById(Long id);
+        return imageEntities.stream().map(ImageEntity::toModel).toList();
+    }
 
-    void deleteAllByIds(List<Long> ids);
+    @Override
+    public List<Image> findAllByMemoryIdAndHasUploaded(Long memoryId) {
+        List<ImageEntity> images =
+                queryFactory
+                        .selectFrom(imageEntity)
+                        .where(
+                                imageEntity.memory.id.eq(memoryId),
+                                imageEntity.imageUploadStatus.eq(ImageUploadStatus.UPLOADED))
+                        .fetch();
 
-    void deleteAllByMemoryId(Long memoryId);
+        return images.stream().map(ImageEntity::toModel).toList();
+    }
+
+    @Override
+    public List<Image> findImageByIds(List<Long> ids) {
+        List<ImageEntity> imageEntities =
+                queryFactory
+                        .selectFrom(imageEntity)
+                        .join(imageEntity.memory, memoryEntity)
+                        .fetchJoin()
+                        .where(imageEntity.id.in(ids))
+                        .fetch();
+
+        return imageEntities.stream().map(ImageEntity::toModel).toList();
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        imageJpaRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteAllByIds(List<Long> ids) {
+        imageJpaRepository.deleteAllByIdInBatch(ids);
+    }
+
+    @Override
+    public void deleteAllByMemoryId(Long memoryId) {
+        imageJpaRepository.deleteAllByMemoryId(memoryId);
+    }
 }

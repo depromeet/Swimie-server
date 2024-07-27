@@ -1,7 +1,7 @@
 package com.depromeet.memory.service;
 
 import com.depromeet.dto.response.CustomSliceResponse;
-import com.depromeet.image.Image;
+import com.depromeet.image.domain.Image;
 import com.depromeet.image.dto.response.MemoryImagesDto;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
@@ -182,7 +182,7 @@ public class TimelineServiceImpl implements TimelineService {
                 .map(
                         image ->
                                 MemoryImagesDto.builder()
-                                        .id(image.getId())
+                                        .imageId(image.getId())
                                         .originImageName(image.getOriginImageName())
                                         .imageName(image.getImageName())
                                         .url(image.getImageUrl())

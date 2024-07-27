@@ -1,11 +1,13 @@
 package com.depromeet.image.facade;
 
+import com.depromeet.image.domain.Image;
+import com.depromeet.image.domain.vo.ImagePresignedUrlVo;
 import com.depromeet.image.dto.response.ImageUploadResponseDto;
 import com.depromeet.image.dto.response.MemoryImagesDto;
-import com.depromeet.image.service.ImageDeleteService;
-import com.depromeet.image.service.ImageGetService;
-import com.depromeet.image.service.ImageUpdateService;
-import com.depromeet.image.service.ImageUploadService;
+import com.depromeet.image.port.in.ImageDeleteUseCase;
+import com.depromeet.image.port.in.ImageGetUseCase;
+import com.depromeet.image.port.in.ImageUpdateUseCase;
+import com.depromeet.image.port.in.ImageUploadUseCase;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.service.MemoryService;
 import java.util.List;
@@ -17,30 +19,44 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class ImageFacade {
-    private final ImageUploadService imageUploadService;
-    private final ImageUpdateService imageUpdateService;
-    private final ImageGetService imageGetService;
-    private final ImageDeleteService imageDeleteService;
     private final MemoryService memoryService;
+    private final ImageGetUseCase imageGetUseCase;
+    private final ImageUploadUseCase imageUploadUseCase;
+    private final ImageUpdateUseCase imageUpdateUseCase;
+    private final ImageDeleteUseCase imageDeleteUseCase;
 
     public List<ImageUploadResponseDto> getPresignedUrlAndSaveImages(List<String> imageNames) {
-        return imageUploadService.getPresignedUrlAndSaveImages(imageNames);
+        List<ImagePresignedUrlVo> imagePresignedUrlVos =
+                imageUploadUseCase.getPresignedUrlAndSaveImages(imageNames);
+        return imagePresignedUrlVos.stream().map(ImageUploadResponseDto::of).toList();
     }
 
     public List<ImageUploadResponseDto> updateImages(Long memoryId, List<String> imageNames) {
         Memory memory = memoryService.findById(memoryId);
-        return imageUpdateService.updateImages(memory, imageNames);
+        List<ImagePresignedUrlVo> imagePresignedUrlVos =
+                imageUpdateUseCase.updateImages(memory, imageNames);
+        return imagePresignedUrlVos.stream().map(ImageUploadResponseDto::of).toList();
     }
 
     public void changeImageStatus(List<Long> imageIds) {
-        imageUpdateService.changeImageStatus(imageIds);
+        imageUpdateUseCase.changeImageStatus(imageIds);
     }
 
     public List<MemoryImagesDto> findImagesByMemoryId(Long memoryId) {
-        return imageGetService.findImagesByMemoryId(memoryId);
+        List<Image> images = imageGetUseCase.findImagesByMemoryId(memoryId);
+        return images.stream()
+                .map(
+                        image ->
+                                MemoryImagesDto.builder()
+                                        .imageId(image.getId())
+                                        .originImageName(image.getOriginImageName())
+                                        .imageName(image.getImageName())
+                                        .url(image.getImageUrl())
+                                        .build())
+                .toList();
     }
 
     public void deleteAllImagesByMemoryId(Long memoryId) {
-        imageDeleteService.deleteAllImagesByMemoryId(memoryId);
+        imageDeleteUseCase.deleteAllImagesByMemoryId(memoryId);
     }
 }
