@@ -4,7 +4,7 @@ import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.pool.dto.request.FavoritePoolCreateRequest;
 import com.depromeet.pool.dto.response.PoolInitialResponse;
 import com.depromeet.pool.dto.response.PoolSearchResponse;
-import com.depromeet.pool.service.PoolService;
+import com.depromeet.pool.facade.PoolFacade;
 import com.depromeet.security.LoginMember;
 import com.depromeet.type.pool.PoolSuccessType;
 import jakarta.validation.Valid;
@@ -22,13 +22,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/pool")
 public class PoolController implements PoolApi {
-    private final PoolService poolService;
+    private final PoolFacade poolFacade;
 
     @GetMapping("/search")
     public ApiResponse<PoolSearchResponse> searchPoolsByNameQuery(
-            @RequestParam(value = "nameQuery") String nameQuery) {
+            @LoginMember Long memberId,
+            @RequestParam(value = "nameQuery") String nameQuery,
+            @RequestParam(value = "cursorId", required = false) Long cursorId) {
         return ApiResponse.success(
-                PoolSuccessType.SEARCH_SUCCESS, poolService.findPoolsByName(nameQuery));
+                PoolSuccessType.SEARCH_SUCCESS,
+                poolFacade.findPoolsByName(memberId, nameQuery, cursorId));
     }
 
     @GetMapping("/search/initial")
@@ -36,13 +39,13 @@ public class PoolController implements PoolApi {
             @LoginMember Long memberId) {
         return ApiResponse.success(
                 PoolSuccessType.INITIAL_GET_SUCCESS,
-                poolService.getFavoriteAndSearchedPools(memberId));
+                poolFacade.getFavoriteAndSearchedPools(memberId));
     }
 
     @PutMapping("/favorite")
     public ResponseEntity<URI> createFavoritePool(
             @LoginMember Long memberId, @Valid @RequestBody FavoritePoolCreateRequest request) {
-        String uri = poolService.putFavoritePool(memberId, request);
+        String uri = poolFacade.putFavoritePool(memberId, request);
 
         if (uri == null) {
             return ResponseEntity.noContent().build();

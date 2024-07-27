@@ -1,9 +1,9 @@
 package com.depromeet.memory.facade;
 
-import static com.depromeet.memory.service.MemoryValidator.*;
+import static com.depromeet.memory.service.MemoryValidator.validatePermission;
 
 import com.depromeet.dto.response.CustomSliceResponse;
-import com.depromeet.image.service.ImageUploadService;
+import com.depromeet.image.port.in.ImageUploadUseCase;
 import com.depromeet.member.Member;
 import com.depromeet.member.service.MemberService;
 import com.depromeet.memory.Memory;
@@ -17,7 +17,7 @@ import com.depromeet.memory.service.CalendarService;
 import com.depromeet.memory.service.MemoryService;
 import com.depromeet.memory.service.StrokeService;
 import com.depromeet.memory.service.TimelineService;
-import com.depromeet.pool.service.PoolService;
+import com.depromeet.pool.port.in.usecase.SearchLogUseCase;
 import java.time.YearMonth;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -28,21 +28,22 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemoryFacade {
-    private final PoolService poolService;
     private final MemberService memberService;
     private final MemoryService memoryService;
     private final StrokeService strokeService;
     private final TimelineService timelineService;
     private final CalendarService calendarService;
-    private final ImageUploadService imageUploadService;
+    private final ImageUploadUseCase imageUploadUseCase;
+    private final SearchLogUseCase poolSearchLogUseCase;
 
     @Transactional
     public void create(Long memberId, MemoryCreateRequest request) {
         Member writer = memberService.findById(memberId);
         Memory newMemory = memoryService.save(writer, request);
         List<Stroke> strokes = strokeService.saveAll(newMemory, request.getStrokes());
-        imageUploadService.addMemoryIdToImages(newMemory, request.getImageIdList());
-        poolService.createSearchLog(writer, request.getPoolId());
+        imageUploadUseCase.changeImageStatusAndAddMemoryIdToImages(
+                newMemory, request.getImageIdList());
+        poolSearchLogUseCase.createSearchLog(writer, request.getPoolId());
     }
 
     @Transactional

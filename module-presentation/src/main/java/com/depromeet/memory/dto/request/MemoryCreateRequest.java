@@ -55,7 +55,7 @@ public class MemoryCreateRequest {
     private List<StrokeCreateRequest> strokes;
 
     // Images
-    @Schema(description = "수영 일기")
+    @Schema(description = "수영 사진")
     private List<Long> imageIdList;
 
     @Builder

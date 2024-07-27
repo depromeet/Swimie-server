@@ -1,7 +1,7 @@
 package com.depromeet.pool.entity;
 
 import com.depromeet.member.entity.MemberEntity;
-import com.depromeet.pool.PoolSearch;
+import com.depromeet.pool.domain.PoolSearch;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

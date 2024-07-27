@@ -1,6 +1,7 @@
 package com.depromeet.image.entity;
 
-import com.depromeet.image.Image;
+import com.depromeet.image.domain.Image;
+import com.depromeet.image.domain.ImageUploadStatus;
 import com.depromeet.memory.entity.MemoryEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -29,18 +30,23 @@ public class ImageEntity {
 
     @NotNull private String imageUrl;
 
+    @Column(name = "upload_status")
+    private ImageUploadStatus imageUploadStatus;
+
     @Builder
     public ImageEntity(
             Long id,
             MemoryEntity memory,
             String originImageName,
             String imageName,
-            String imageUrl) {
+            String imageUrl,
+            ImageUploadStatus imageUploadStatus) {
         this.id = id;
         this.memory = memory;
         this.originImageName = originImageName;
         this.imageName = imageName;
         this.imageUrl = imageUrl;
+        this.imageUploadStatus = imageUploadStatus;
     }
 
     public static ImageEntity from(Image image) {
@@ -53,6 +59,7 @@ public class ImageEntity {
                 .originImageName(image.getOriginImageName())
                 .imageName(image.getImageName())
                 .imageUrl(image.getImageUrl())
+                .imageUploadStatus(image.getImageUploadStatus())
                 .build();
     }
 
@@ -62,6 +69,7 @@ public class ImageEntity {
                 .originImageName(image.getOriginImageName())
                 .imageName(image.getImageName())
                 .imageUrl(image.getImageUrl())
+                .imageUploadStatus(image.getImageUploadStatus())
                 .build();
     }
 
@@ -72,6 +80,7 @@ public class ImageEntity {
                 .originImageName(this.originImageName)
                 .imageName(this.imageName)
                 .imageUrl(this.imageUrl)
+                .imageUploadStatus(this.imageUploadStatus)
                 .build();
     }
 
@@ -81,6 +90,7 @@ public class ImageEntity {
                 .originImageName(this.originImageName)
                 .imageName(this.imageName)
                 .imageUrl(this.imageUrl)
+                .imageUploadStatus(this.imageUploadStatus)
                 .build();
     }
 
