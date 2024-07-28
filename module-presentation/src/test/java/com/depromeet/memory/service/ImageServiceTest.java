@@ -87,7 +87,7 @@ class ImageServiceTest {
     }
 
     @Test
-    void image_status_변경_및_image에_memory_추가() {
+    void image_status_변경_및_image에_memory_추가_테스트() {
         // given
         List<Image> images =
                 ImageFixture.makeImages(originImageNames, null, ImageUploadStatus.PENDING);
@@ -125,7 +125,7 @@ class ImageServiceTest {
     }
 
     @Test
-    void imageStatus_변경() {
+    void imageStatus_변경_테스트() {
         // given
         List<Image> images =
                 ImageFixture.makeImages(originImageNames, memory, ImageUploadStatus.PENDING);
@@ -158,7 +158,7 @@ class ImageServiceTest {
     }
 
     @Test
-    void deleteImageTest() {
+    void image_삭제_테스트() {
         // given
         Image image = ImageFixture.make("originImage.png", memory, ImageUploadStatus.UPLOADED);
         Long imageId = imageRepository.save(image);
@@ -171,7 +171,7 @@ class ImageServiceTest {
     }
 
     @Test
-    void deleteAllImagesByMemoryIdTest() {
+    void memoryId_로_이미지_삭제_테스트() {
         // given
         List<Image> images =
                 ImageFixture.makeImages(originImageNames, memory, ImageUploadStatus.UPLOADED);
