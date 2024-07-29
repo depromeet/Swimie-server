@@ -3,7 +3,7 @@ package com.depromeet.image.api;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.image.dto.request.ImageIdsRequest;
 import com.depromeet.image.dto.request.ImageNameRequest;
-import com.depromeet.image.dto.response.MemoryImagesResponse;
+import com.depromeet.image.dto.response.ImagesResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
@@ -24,7 +24,7 @@ public interface ImageApi {
     ApiResponse<?> changeImageStatusForAddedImages(@RequestBody ImageIdsRequest imageIdsRequest);
 
     @Operation(summary = "수영 기록의 이미지 조회")
-    ApiResponse<List<MemoryImagesResponse>> findImages(@PathVariable("memoryId") Long memoryId);
+    ApiResponse<List<ImagesResponse>> findImages(@PathVariable("memoryId") Long memoryId);
 
     @Operation(summary = "Delete images belongs to memory", description = "수영 기록의 이미지 삭제")
     ResponseEntity<?> deleteImages(@PathVariable("memoryId") Long memoryId);

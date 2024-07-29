@@ -6,7 +6,7 @@ import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.image.dto.request.ImageIdsRequest;
 import com.depromeet.image.dto.request.ImageNameRequest;
 import com.depromeet.image.dto.response.ImageUploadResponse;
-import com.depromeet.image.dto.response.MemoryImagesResponse;
+import com.depromeet.image.dto.response.ImagesResponse;
 import com.depromeet.image.facade.ImageFacade;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -46,9 +46,8 @@ public class ImageController implements ImageApi {
     }
 
     @GetMapping("/memory/{memoryId}")
-    public ApiResponse<List<MemoryImagesResponse>> findImages(
-            @PathVariable("memoryId") Long memoryId) {
-        List<MemoryImagesResponse> memoryImages = imageFacade.findImagesByMemoryId(memoryId);
+    public ApiResponse<List<ImagesResponse>> findImages(@PathVariable("memoryId") Long memoryId) {
+        List<ImagesResponse> memoryImages = imageFacade.findImagesByMemoryId(memoryId);
 
         return ApiResponse.success(GET_IMAGES_SUCCESS, memoryImages);
     }

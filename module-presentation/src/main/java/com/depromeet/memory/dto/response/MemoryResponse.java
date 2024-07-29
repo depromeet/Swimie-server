@@ -6,6 +6,7 @@ import com.depromeet.memory.Memory;
 import com.depromeet.memory.MemoryDetail;
 import com.depromeet.memory.Stroke;
 import com.depromeet.pool.domain.Pool;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MemoryResponse {
     private Long id;
     private MemberSimpleResponse member;

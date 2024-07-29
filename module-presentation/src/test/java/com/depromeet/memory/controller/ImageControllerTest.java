@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.depromeet.image.api.ImageController;
 import com.depromeet.image.dto.response.ImageUploadResponse;
-import com.depromeet.image.dto.response.MemoryImagesResponse;
+import com.depromeet.image.dto.response.ImagesResponse;
 import com.depromeet.image.facade.ImageFacade;
 import com.depromeet.memory.config.ControllerTestConfig;
 import com.depromeet.memory.fixture.dto.ImageUploadResponseDtoFixture;
@@ -118,7 +118,7 @@ public class ImageControllerTest extends ControllerTestConfig {
         // given
         Long memoryId = 1L;
 
-        List<MemoryImagesResponse> images = MemoryImagesDtoFixture.make();
+        List<ImagesResponse> images = MemoryImagesDtoFixture.make();
 
         // when
         when(imageFacade.findImagesByMemoryId(anyLong())).thenReturn(images);

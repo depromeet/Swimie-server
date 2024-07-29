@@ -2,7 +2,7 @@ package com.depromeet.memory.service;
 
 import com.depromeet.dto.response.CustomSliceResponse;
 import com.depromeet.image.domain.Image;
-import com.depromeet.image.dto.response.MemoryImagesResponse;
+import com.depromeet.image.dto.response.ImagesResponse;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
 import com.depromeet.memory.dto.request.TimelineRequest;
@@ -153,7 +153,7 @@ public class TimelineServiceImpl implements TimelineService {
     }
 
     private List<StrokeResponse> strokeToDto(List<Stroke> strokes) {
-        if (strokes == null || strokes.isEmpty()) return null;
+        if (strokes == null || strokes.isEmpty()) return new ArrayList<>();
 
         return strokes.stream()
                 .map(
@@ -175,13 +175,13 @@ public class TimelineServiceImpl implements TimelineService {
         return stroke.getMeter() != null ? stroke.getMeter() : null;
     }
 
-    private List<MemoryImagesResponse> imagesToDto(List<Image> images) {
+    private List<ImagesResponse> imagesToDto(List<Image> images) {
         if (images == null || images.isEmpty()) return new ArrayList<>();
 
         return images.stream()
                 .map(
                         image ->
-                                MemoryImagesResponse.builder()
+                                ImagesResponse.builder()
                                         .imageId(image.getId())
                                         .originImageName(image.getOriginImageName())
                                         .imageName(image.getImageName())
