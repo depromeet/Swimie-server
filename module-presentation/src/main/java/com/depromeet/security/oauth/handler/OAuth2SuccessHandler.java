@@ -6,9 +6,9 @@ import com.depromeet.auth.dto.response.JwtTokenResponse;
 import com.depromeet.auth.service.JwtTokenService;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.exception.NotFoundException;
-import com.depromeet.member.Member;
-import com.depromeet.member.MemberRole;
-import com.depromeet.member.repository.MemberRepository;
+import com.depromeet.member.domain.Member;
+import com.depromeet.member.domain.MemberRole;
+import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import com.depromeet.security.oauth.CustomOAuth2User;
 import com.depromeet.type.auth.AuthSuccessType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JwtTokenService jwtTokenService;
-    private final MemberRepository memberRepository;
+    private final MemberPersistencePort memberPersistencePort;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
@@ -48,7 +48,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String role = auth.getAuthority();
 
         Member member =
-                memberRepository
+                memberPersistencePort
                         .findByEmail(email)
                         .orElseThrow(() -> new NotFoundException(NOT_FOUND));
         MemberRole memberRole = MemberRole.findByValue(role);

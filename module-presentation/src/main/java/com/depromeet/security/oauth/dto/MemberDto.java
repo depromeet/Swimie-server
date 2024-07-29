@@ -1,6 +1,6 @@
 package com.depromeet.security.oauth.dto;
 
-import com.depromeet.member.MemberRole;
+import com.depromeet.member.domain.MemberRole;
 import lombok.Builder;
 import lombok.Getter;
 

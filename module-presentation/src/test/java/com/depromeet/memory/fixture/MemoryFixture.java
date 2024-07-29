@@ -1,6 +1,6 @@
 package com.depromeet.memory.fixture;
 
-import com.depromeet.member.Member;
+import com.depromeet.member.domain.Member;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.MemoryDetail;
 import com.depromeet.pool.domain.Pool;

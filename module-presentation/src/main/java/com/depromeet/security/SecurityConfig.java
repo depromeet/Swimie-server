@@ -1,7 +1,7 @@
 package com.depromeet.security;
 
 import com.depromeet.auth.service.JwtTokenService;
-import com.depromeet.member.repository.MemberRepository;
+import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import com.depromeet.security.filter.JwtAuthenticationFilter;
 import com.depromeet.security.filter.JwtExceptionFilter;
 import com.depromeet.security.oauth.CustomOAuth2UserService;
@@ -31,7 +31,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtTokenService jwtTokenService;
-    private final MemberRepository memberRepository;
+    private final MemberPersistencePort memberPersistencePort;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -124,12 +124,12 @@ public class SecurityConfig {
 
     @Bean
     public CustomOAuth2UserService customOAuth2UserService() {
-        return new CustomOAuth2UserService(memberRepository);
+        return new CustomOAuth2UserService(memberPersistencePort);
     }
 
     @Bean
     public OAuth2SuccessHandler oAuth2SuccessHandler() {
-        return new OAuth2SuccessHandler(jwtTokenService, memberRepository);
+        return new OAuth2SuccessHandler(jwtTokenService, memberPersistencePort);
     }
 
     @Bean

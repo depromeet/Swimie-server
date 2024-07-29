@@ -5,7 +5,7 @@ import static com.depromeet.security.constant.SecurityConstant.*;
 import com.depromeet.auth.service.JwtTokenService;
 import com.depromeet.exception.BadRequestException;
 import com.depromeet.exception.NotFoundException;
-import com.depromeet.member.MemberRole;
+import com.depromeet.member.domain.MemberRole;
 import com.depromeet.security.jwt.util.AccessTokenDto;
 import com.depromeet.security.jwt.util.RefreshTokenDto;
 import com.depromeet.security.oauth.CustomOAuth2User;

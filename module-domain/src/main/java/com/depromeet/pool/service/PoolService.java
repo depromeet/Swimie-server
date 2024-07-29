@@ -1,8 +1,8 @@
 package com.depromeet.pool.service;
 
 import com.depromeet.exception.NotFoundException;
-import com.depromeet.member.Member;
-import com.depromeet.member.MemberRole;
+import com.depromeet.member.domain.Member;
+import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import com.depromeet.pool.domain.FavoritePool;
 import com.depromeet.pool.domain.Pool;
 import com.depromeet.pool.domain.PoolSearch;
@@ -13,6 +13,7 @@ import com.depromeet.pool.port.in.usecase.InitialSearchUseCase;
 import com.depromeet.pool.port.in.usecase.PoolQueryUseCase;
 import com.depromeet.pool.port.in.usecase.SearchLogUseCase;
 import com.depromeet.pool.port.out.persistence.PoolPersistencePort;
+import com.depromeet.type.member.MemberErrorType;
 import com.depromeet.type.pool.PoolErrorType;
 import java.util.List;
 import java.util.Set;
@@ -28,13 +29,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class PoolService
         implements InitialSearchUseCase, PoolQueryUseCase, FavoritePoolUseCase, SearchLogUseCase {
     private final PoolPersistencePort poolPersistencePort;
-
-    // private final MemberRepository memberRepository;
+    private final MemberPersistencePort memberPersistencePort;
 
     @Override
     public String putFavoritePool(Long memberId, FavoritePoolCommand command) {
-        Member member =
-                new Member(1L, 1000, "왕2될상인가", "king2dwellsang@gmail.com", MemberRole.USER, "aa");
+        Member member = getMember(memberId);
         Pool pool = getPool(command.poolId());
         FavoritePool favoritePool = createFavoritePool(member, pool);
 
@@ -84,11 +83,11 @@ public class PoolService
         return PoolSearch.builder().member(member).pool(pool).build();
     }
 
-    // private Member getMember(Long memberId) {
-    //     return memberRepository
-    //             .findById(memberId)
-    //             .orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
-    // }
+    private Member getMember(Long memberId) {
+        return memberPersistencePort
+                .findById(memberId)
+                .orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
+    }
 
     private Pool getPool(Long poolId) {
         return poolPersistencePort

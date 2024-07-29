@@ -6,9 +6,9 @@ import com.depromeet.TestQueryDslConfig;
 import com.depromeet.fixture.member.MockMember;
 import com.depromeet.fixture.memory.MemoryDetailFixture;
 import com.depromeet.fixture.memory.MemoryFixture;
-import com.depromeet.member.Member;
+import com.depromeet.member.domain.Member;
 import com.depromeet.member.repository.MemberJpaRepository;
-import com.depromeet.member.repository.MemberRepositoryImpl;
+import com.depromeet.member.repository.MemberRepository;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.MemoryDetail;
 import com.depromeet.memory.vo.Timeline;
@@ -31,7 +31,7 @@ public class MemoryRepositoryTest {
     @Autowired private MemoryJpaRepository memoryJpaRepository;
     private MemoryRepositoryImpl memoryRepositoryImpl;
     @Autowired private MemberJpaRepository memberJpaRepository;
-    private MemberRepositoryImpl memberRepositoryImpl;
+    private MemberRepository memberRepositoryImpl;
     @Autowired private MemoryDetailJpaRepository memoryDetailJpaRepository;
     private MemoryDetailRepositoryImpl memoryDetailRepositoryImpl;
 
@@ -40,7 +40,7 @@ public class MemoryRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        memberRepositoryImpl = new MemberRepositoryImpl(memberJpaRepository);
+        memberRepositoryImpl = new MemberRepository(memberJpaRepository);
         memoryRepositoryImpl = new MemoryRepositoryImpl(queryFactory, memoryJpaRepository);
         memoryDetailRepositoryImpl = new MemoryDetailRepositoryImpl(memoryDetailJpaRepository);
         member = memberRepositoryImpl.save(MockMember.mockMember());

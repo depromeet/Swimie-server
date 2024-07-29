@@ -3,7 +3,7 @@ package com.depromeet.memory.service;
 import com.depromeet.exception.BadRequestException;
 import com.depromeet.exception.InternalServerException;
 import com.depromeet.exception.NotFoundException;
-import com.depromeet.member.Member;
+import com.depromeet.member.domain.Member;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.MemoryDetail;
 import com.depromeet.memory.Stroke;

@@ -1,4 +1,4 @@
-package com.depromeet.member;
+package com.depromeet.member.domain;
 
 import lombok.Builder;
 import lombok.Getter;

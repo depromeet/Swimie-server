@@ -2,8 +2,8 @@ package com.depromeet.memory.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.depromeet.member.Member;
-import com.depromeet.member.MemberRole;
+import com.depromeet.member.domain.Member;
+import com.depromeet.member.domain.MemberRole;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 public class TimelineServiceTest {
     private FakeMemoryRepository memoryRepository;
     private FakeMemoryDetailRepository memoryDetailRepository;
-    private FakeMemberRepository memberRepository;
+    private FakeMemberPersistencePort memberRepository;
     private FakePoolRepository poolRepository;
     private MemoryService memoryService;
     private FakeStrokeRepository strokeRepository;
@@ -41,7 +41,7 @@ public class TimelineServiceTest {
         memoryRepository = new FakeMemoryRepository();
         memoryDetailRepository = new FakeMemoryDetailRepository();
 
-        memberRepository = new FakeMemberRepository();
+        memberRepository = new FakeMemberPersistencePort();
 
         poolRepository = new FakePoolRepository();
 

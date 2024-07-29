@@ -1,7 +1,7 @@
 package com.depromeet.memory;
 
 import com.depromeet.image.domain.Image;
-import com.depromeet.member.Member;
+import com.depromeet.member.domain.Member;
 import com.depromeet.pool.domain.Pool;
 import java.time.LocalDate;
 import java.time.LocalTime;

@@ -1,4 +1,4 @@
-package com.depromeet.member;
+package com.depromeet.member.domain;
 
 import com.depromeet.converter.AbstractCodedEnumConverter;
 import com.depromeet.converter.CodedEnum;

@@ -9,7 +9,7 @@ import com.depromeet.image.service.ImageDeleteService;
 import com.depromeet.image.service.ImageGetService;
 import com.depromeet.image.service.ImageUpdateService;
 import com.depromeet.image.service.ImageUploadService;
-import com.depromeet.member.Member;
+import com.depromeet.member.domain.Member;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.MemoryDetail;
 import com.depromeet.memory.fixture.*;

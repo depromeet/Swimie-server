@@ -2,10 +2,10 @@ package com.depromeet.memory.service;
 
 import static org.assertj.core.api.Assertions.*;
 
-import com.depromeet.member.Member;
+import com.depromeet.member.domain.Member;
 import com.depromeet.memory.fixture.MemberFixture;
 import com.depromeet.memory.fixture.PoolFixture;
-import com.depromeet.memory.mock.FakeMemberRepository;
+import com.depromeet.memory.mock.FakeMemberPersistencePort;
 import com.depromeet.memory.mock.FakePoolRepository;
 import com.depromeet.pool.domain.FavoritePool;
 import com.depromeet.pool.domain.Pool;
@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 public class PoolServiceTest {
     private PoolService poolService;
     private FakePoolRepository poolRepository;
-    private FakeMemberRepository memberRepository;
+    private FakeMemberPersistencePort memberRepository;
     private Long memberId;
     private Member member;
     private Pool pool;
@@ -32,7 +32,7 @@ public class PoolServiceTest {
     @BeforeEach
     void init() {
         poolRepository = new FakePoolRepository();
-        memberRepository = new FakeMemberRepository();
+        memberRepository = new FakeMemberPersistencePort();
 
         memberId = 1L;
         String memberRole = "USER";
@@ -40,7 +40,7 @@ public class PoolServiceTest {
         member = memberRepository.save(member);
 
         // poolService = new PoolService(poolRepository, memberRepository);
-        poolService = new PoolService(poolRepository);
+        poolService = new PoolService(poolRepository, memberRepository);
 
         String poolName = "테스트 수영장";
         String poolAddress = "테스트시 테스트구";

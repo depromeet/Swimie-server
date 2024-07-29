@@ -1,6 +1,6 @@
 package com.depromeet.security.oauth;
 
-import com.depromeet.member.MemberRole;
+import com.depromeet.member.domain.MemberRole;
 import com.depromeet.security.oauth.dto.MemberDto;
 import java.util.Collection;
 import java.util.List;

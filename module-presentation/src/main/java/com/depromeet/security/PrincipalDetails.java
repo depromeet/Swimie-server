@@ -1,6 +1,6 @@
 package com.depromeet.security;
 
-import com.depromeet.member.MemberRole;
+import com.depromeet.member.domain.MemberRole;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.security.core.GrantedAuthority;

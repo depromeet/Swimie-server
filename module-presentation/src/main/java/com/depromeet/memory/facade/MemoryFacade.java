@@ -4,7 +4,7 @@ import static com.depromeet.memory.service.MemoryValidator.validatePermission;
 
 import com.depromeet.dto.response.CustomSliceResponse;
 import com.depromeet.image.port.in.ImageUploadUseCase;
-import com.depromeet.member.Member;
+import com.depromeet.member.domain.Member;
 import com.depromeet.member.service.MemberService;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;

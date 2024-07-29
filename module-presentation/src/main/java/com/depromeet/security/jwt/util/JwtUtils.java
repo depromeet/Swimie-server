@@ -3,7 +3,7 @@ package com.depromeet.security.jwt.util;
 import static com.depromeet.security.constant.SecurityConstant.ACCESS;
 import static com.depromeet.security.constant.SecurityConstant.REFRESH;
 
-import com.depromeet.member.MemberRole;
+import com.depromeet.member.domain.MemberRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;

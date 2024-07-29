@@ -8,10 +8,10 @@ import com.depromeet.fixture.member.MockMember;
 import com.depromeet.fixture.memory.MemoryDetailFixture;
 import com.depromeet.fixture.memory.MemoryFixture;
 import com.depromeet.image.domain.Image;
-import com.depromeet.member.Member;
+import com.depromeet.member.domain.Member;
+import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import com.depromeet.member.repository.MemberJpaRepository;
 import com.depromeet.member.repository.MemberRepository;
-import com.depromeet.member.repository.MemberRepositoryImpl;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.MemoryDetail;
 import com.depromeet.memory.repository.*;
@@ -36,7 +36,7 @@ public class ImageRepositoryTest {
     @Autowired private MemoryJpaRepository memoryJpaRepository;
     private MemoryRepository memoryRepository;
     @Autowired private MemberJpaRepository memberJpaRepository;
-    private MemberRepository memberRepository;
+    private MemberPersistencePort memberPersistencePort;
     @Autowired private MemoryDetailJpaRepository memoryDetailJpaRepository;
     private MemoryDetailRepository memoryDetailRepository;
     private ImageRepository imageRepository;
@@ -47,10 +47,10 @@ public class ImageRepositoryTest {
     @BeforeEach
     void setUp() {
         imageRepository = new ImageRepository(queryFactory, imageJpaRepository);
-        memberRepository = new MemberRepositoryImpl(memberJpaRepository);
+        memberPersistencePort = new MemberRepository(memberJpaRepository);
         memoryRepository = new MemoryRepositoryImpl(queryFactory, memoryJpaRepository);
         memoryDetailRepository = new MemoryDetailRepositoryImpl(memoryDetailJpaRepository);
-        member = memberRepository.save(MockMember.mockMember());
+        member = memberPersistencePort.save(MockMember.mockMember());
     }
 
     @AfterEach

@@ -1,8 +1,8 @@
 package com.depromeet.security.oauth;
 
-import com.depromeet.member.Member;
+import com.depromeet.member.domain.Member;
 import com.depromeet.member.mapper.MemberMapper;
-import com.depromeet.member.repository.MemberRepository;
+import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import com.depromeet.security.oauth.dto.GoogleResponse;
 import com.depromeet.security.oauth.dto.KakaoResponse;
 import com.depromeet.security.oauth.dto.MemberDto;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
-    private final MemberRepository memberRepository;
+    private final MemberPersistencePort memberPersistencePort;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -53,8 +53,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private Member findByEmailOrSave(String email, String nickname) {
-        return memberRepository
+        return memberPersistencePort
                 .findByEmail(email)
-                .orElseGet(() -> memberRepository.save(MemberMapper.from(nickname, email)));
+                .orElseGet(() -> memberPersistencePort.save(MemberMapper.from(nickname, email)));
     }
 }

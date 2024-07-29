@@ -10,8 +10,9 @@ import com.depromeet.auth.service.JwtTokenService;
 import com.depromeet.auth.util.GoogleClient;
 import com.depromeet.auth.util.KakaoClient;
 import com.depromeet.exception.NotFoundException;
-import com.depromeet.member.Member;
-import com.depromeet.member.service.MemberService;
+import com.depromeet.member.domain.Member;
+import com.depromeet.member.mapper.MemberMapper;
+import com.depromeet.member.port.in.usecase.MemberUseCase;
 import com.depromeet.type.auth.AuthErrorType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AuthFacade {
-    private final MemberService memberService;
+    private final MemberUseCase memberUseCase;
     private final JwtTokenService jwtTokenService;
     private final GoogleClient googleClient;
     private final KakaoClient kakaoClient;
@@ -31,7 +32,7 @@ public class AuthFacade {
         if (profile == null) {
             throw new NotFoundException(AuthErrorType.NOT_FOUND);
         }
-        final Member member = memberService.findOrCreateMemberBy(profile);
+        final Member member = memberUseCase.findOrCreateMemberBy(MemberMapper.toCommand(profile));
         return jwtTokenService.generateToken(member.getId(), member.getRole());
     }
 
@@ -44,7 +45,7 @@ public class AuthFacade {
         AccountProfileResponse account =
                 new AccountProfileResponse(
                         profile.getId(), profile.getNickname(), profile.getEmail());
-        final Member member = memberService.findOrCreateMemberBy(account);
+        final Member member = memberUseCase.findOrCreateMemberBy(MemberMapper.toCommand(account));
         return jwtTokenService.generateToken(member.getId(), member.getRole());
     }
 

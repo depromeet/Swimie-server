@@ -1,7 +1,7 @@
 package com.depromeet.memory.service;
 
-import com.depromeet.member.Member;
-import com.depromeet.member.MemberRole;
+import com.depromeet.member.domain.Member;
+import com.depromeet.member.domain.MemberRole;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
@@ -25,7 +25,7 @@ class MemoryServiceTest {
     private FakeMemoryRepository memoryRepository;
     private FakeMemoryDetailRepository memoryDetailRepository;
 
-    private FakeMemberRepository memberRepository;
+    private FakeMemberPersistencePort memberRepository;
 
     private FakePoolRepository poolRepository;
 
@@ -46,7 +46,7 @@ class MemoryServiceTest {
         memoryRepository = new FakeMemoryRepository();
         memoryDetailRepository = new FakeMemoryDetailRepository();
 
-        memberRepository = new FakeMemberRepository();
+        memberRepository = new FakeMemberPersistencePort();
 
         poolRepository = new FakePoolRepository();
 

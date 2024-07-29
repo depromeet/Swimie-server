@@ -5,9 +5,9 @@ import com.depromeet.auth.dto.response.JwtTokenResponse;
 import com.depromeet.exception.ForbiddenException;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.exception.UnauthorizedException;
-import com.depromeet.member.Member;
-import com.depromeet.member.MemberRole;
-import com.depromeet.member.repository.MemberRepository;
+import com.depromeet.member.domain.Member;
+import com.depromeet.member.domain.MemberRole;
+import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import com.depromeet.security.constant.SecurityConstant;
 import com.depromeet.security.jwt.util.AccessTokenDto;
 import com.depromeet.security.jwt.util.JwtUtils;
@@ -26,13 +26,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class JwtTokenService {
     private final JwtUtils jwtUtils;
-    private final MemberRepository memberRepository;
+    private final MemberPersistencePort memberPersistencePort;
 
     public JwtTokenResponse generateToken(Long memberId, MemberRole memberRole) {
         AccessTokenDto accessToken = jwtUtils.generateAccessToken(memberId, memberRole);
         RefreshTokenDto refreshToken = jwtUtils.generateRefreshToken(memberId, memberRole);
 
-        memberRepository.updateRefresh(memberId, refreshToken.refreshToken());
+        memberPersistencePort.updateRefresh(memberId, refreshToken.refreshToken());
 
         return new JwtTokenResponse(
                 memberId,
@@ -94,7 +94,7 @@ public class JwtTokenService {
 
             Long memberId = refreshTokenDto.memberId();
             Member member =
-                    memberRepository
+                    memberPersistencePort
                             .findById(memberId)
                             .orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
             if (member.getRefreshToken() != null && member.getRefreshToken().equals(refreshToken)) {
@@ -111,7 +111,7 @@ public class JwtTokenService {
     public RefreshTokenDto retrieveRefreshToken(
             RefreshTokenDto refreshTokenDto, String refreshToken) {
         Member member =
-                memberRepository
+                memberPersistencePort
                         .findById(refreshTokenDto.memberId())
                         .orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
         if (member.getRefreshToken() != null && member.getRefreshToken().equals(refreshToken)) {
