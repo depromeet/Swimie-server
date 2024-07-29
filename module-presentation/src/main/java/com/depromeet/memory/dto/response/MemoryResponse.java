@@ -1,6 +1,7 @@
 package com.depromeet.memory.dto.response;
 
 import com.depromeet.image.domain.Image;
+import com.depromeet.image.dto.response.ImageResponse;
 import com.depromeet.member.dto.response.MemberSimpleResponse;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.MemoryDetail;
@@ -21,9 +22,9 @@ public class MemoryResponse {
     private Long id;
     private MemberSimpleResponse member;
     private Pool pool;
-    private MemoryDetail memoryDetail;
-    private List<Stroke> strokes;
-    private List<Image> images;
+    private MemoryDetailResponse memoryDetail;
+    private List<StrokeResponse> strokes;
+    private List<ImageResponse> images;
     private LocalDate recordAt;
     private LocalTime startTime;
     private LocalTime endTime;
@@ -47,20 +48,20 @@ public class MemoryResponse {
             Short lane,
             String diary) {
         // 영법 별 바퀴 수와 미터 수를 계산
-        List<Stroke> resultStrokes = getResultStrokes(strokes, lane);
+        List<StrokeResponse> resultStrokes = getResultStrokes(strokes, lane);
 
         // 기록 전체 바퀴 수와 미터 수를 계산
         Integer totalLap = 0;
         Integer totalMeter = 0;
-        for (Stroke stroke : resultStrokes) {
-            totalLap += stroke.getLaps();
-            totalMeter += stroke.getMeter();
+        for (StrokeResponse stroke : resultStrokes) {
+            totalLap += stroke.laps();
+            totalMeter += stroke.meter();
         }
 
         this.id = id;
         this.member = member;
         this.pool = pool;
-        this.memoryDetail = memoryDetail;
+        this.memoryDetail = getMemoryDetail(memoryDetail);
         this.strokes = resultStrokes;
         this.images = getImageSource(images); // 순환참조 방지를 위해 Memory 필드 제외
         this.recordAt = recordAt;
@@ -73,6 +74,11 @@ public class MemoryResponse {
         this.diary = diary;
     }
 
+    private static MemoryDetailResponse getMemoryDetail(MemoryDetail memoryDetail) {
+        if (memoryDetail == null) return null;
+        return MemoryDetailResponse.of(memoryDetail);
+    }
+
     private static LocalTime getDuration(LocalTime startTime, LocalTime endTime) {
         return LocalTime.of(
                 endTime.minusHours(startTime.getHour()).getHour(),
@@ -80,24 +86,24 @@ public class MemoryResponse {
                 0);
     }
 
-    private static List<Image> getImageSource(List<Image> images) {
-        return images.stream().map(Image::withoutMemory).toList();
+    private static List<ImageResponse> getImageSource(List<Image> images) {
+        return images.stream().map(ImageResponse::of).toList();
     }
 
-    private static List<Stroke> getResultStrokes(List<Stroke> strokes, Short lane) {
+    private static List<StrokeResponse> getResultStrokes(List<Stroke> strokes, Short lane) {
         return strokes.stream()
                 .map(
                         stroke -> {
                             if (stroke.getLaps() != null) {
-                                return Stroke.builder()
-                                        .id(stroke.getId())
+                                return StrokeResponse.builder()
+                                        .strokeId(stroke.getId())
                                         .name(stroke.getName())
                                         .laps(stroke.getLaps())
                                         .meter(stroke.getLaps() * lane)
                                         .build();
                             } else {
-                                return Stroke.builder()
-                                        .id(stroke.getId())
+                                return StrokeResponse.builder()
+                                        .strokeId(stroke.getId())
                                         .name(stroke.getName())
                                         .laps((short) (stroke.getMeter() / lane))
                                         .meter(stroke.getMeter())
