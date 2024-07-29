@@ -8,7 +8,7 @@ import com.depromeet.image.port.in.ImageDeleteUseCase;
 import com.depromeet.image.port.in.ImageGetUseCase;
 import com.depromeet.image.port.in.ImageUpdateUseCase;
 import com.depromeet.image.port.in.ImageUploadUseCase;
-import com.depromeet.memory.Memory;
+import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.service.MemoryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

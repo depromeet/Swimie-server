@@ -1,6 +1,6 @@
 package com.depromeet.memory.entity;
 
-import com.depromeet.memory.MemoryDetail;
+import com.depromeet.memory.domain.MemoryDetail;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
