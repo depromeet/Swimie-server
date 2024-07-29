@@ -2,8 +2,8 @@ package com.depromeet.image.facade;
 
 import com.depromeet.image.domain.Image;
 import com.depromeet.image.domain.vo.ImagePresignedUrlVo;
+import com.depromeet.image.dto.response.ImageResponse;
 import com.depromeet.image.dto.response.ImageUploadResponse;
-import com.depromeet.image.dto.response.ImagesResponse;
 import com.depromeet.image.port.in.ImageDeleteUseCase;
 import com.depromeet.image.port.in.ImageGetUseCase;
 import com.depromeet.image.port.in.ImageUpdateUseCase;
@@ -42,12 +42,12 @@ public class ImageFacade {
         imageUpdateUseCase.changeImageStatus(imageIds);
     }
 
-    public List<ImagesResponse> findImagesByMemoryId(Long memoryId) {
+    public List<ImageResponse> findImagesByMemoryId(Long memoryId) {
         List<Image> images = imageGetUseCase.findImagesByMemoryId(memoryId);
         return images.stream()
                 .map(
                         image ->
-                                ImagesResponse.builder()
+                                ImageResponse.builder()
                                         .imageId(image.getId())
                                         .originImageName(image.getOriginImageName())
                                         .imageName(image.getImageName())

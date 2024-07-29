@@ -9,8 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.depromeet.image.api.ImageController;
+import com.depromeet.image.dto.response.ImageResponse;
 import com.depromeet.image.dto.response.ImageUploadResponse;
-import com.depromeet.image.dto.response.ImagesResponse;
 import com.depromeet.image.facade.ImageFacade;
 import com.depromeet.memory.config.ControllerTestConfig;
 import com.depromeet.memory.fixture.dto.ImageUploadResponseDtoFixture;
@@ -118,7 +118,7 @@ public class ImageControllerTest extends ControllerTestConfig {
         // given
         Long memoryId = 1L;
 
-        List<ImagesResponse> images = MemoryImagesDtoFixture.make();
+        List<ImageResponse> images = MemoryImagesDtoFixture.make();
 
         // when
         when(imageFacade.findImagesByMemoryId(anyLong())).thenReturn(images);

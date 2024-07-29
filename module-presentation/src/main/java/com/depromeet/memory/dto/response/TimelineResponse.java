@@ -1,6 +1,6 @@
 package com.depromeet.memory.dto.response;
 
-import com.depromeet.image.dto.response.ImagesResponse;
+import com.depromeet.image.dto.response.ImageResponse;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 import lombok.Builder;
@@ -20,7 +20,7 @@ public record TimelineResponse(
         String pace,
         Integer kcal,
         List<StrokeResponse> strokes,
-        List<ImagesResponse> images) {
+        List<ImageResponse> images) {
     @Builder
     public TimelineResponse {}
 }
