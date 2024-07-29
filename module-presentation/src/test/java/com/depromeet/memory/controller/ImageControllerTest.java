@@ -34,7 +34,7 @@ public class ImageControllerTest extends ControllerTestConfig {
 
     @Test
     @WithCustomMockMember
-    void 이미지_PresignedUrl을_발급합니다() throws Exception {
+    void 이미지_PresignedUrl을_발급한다() throws Exception {
         // given
         Map<String, Object> requestBody = new HashMap<>();
 
@@ -63,7 +63,7 @@ public class ImageControllerTest extends ControllerTestConfig {
 
     @Test
     @WithCustomMockMember
-    void 이미지_업데이트_테스트() throws Exception {
+    void 이미지를_수정한다() throws Exception {
         // given
         Map<String, Object> requestBody = new HashMap<>();
 
@@ -92,7 +92,7 @@ public class ImageControllerTest extends ControllerTestConfig {
 
     @Test
     @WithCustomMockMember
-    void 이미지_상태변경_테스트() throws Exception {
+    void 이미지_상태변경을_한다() throws Exception {
         // given
         Map<String, Object> requestBody = new HashMap<>();
         List<Long> imageIds = List.of(1L, 2L, 3L);
@@ -114,7 +114,7 @@ public class ImageControllerTest extends ControllerTestConfig {
 
     @Test
     @WithCustomMockMember
-    void memoryId로_이미지_조회_테스트() throws Exception {
+    void memoryId로_이미지를_조회한다() throws Exception {
         // given
         Long memoryId = 1L;
 
@@ -140,7 +140,7 @@ public class ImageControllerTest extends ControllerTestConfig {
 
     @Test
     @WithCustomMockMember
-    void memoryId로_이미지_삭제() throws Exception {
+    void memoryId로_이미지를_삭제한다() throws Exception {
         mockMvc.perform(delete("/image/memory/{memoryId}", 1))
                 .andExpect(status().isNoContent())
                 .andReturn();
