@@ -19,6 +19,7 @@ import com.depromeet.pool.domain.Pool;
 import com.depromeet.util.ImageNameUtil;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -54,7 +55,7 @@ class ImageServiceTest {
     }
 
     @Test
-    void getPresignedUrlAndSaveImages_가_ImagePresignedUrlVo을_리턴하는지_테스트() {
+    void ImagePresignedUrlVo을_리턴한다() {
         // given
         List<ImagePresignedUrlVo> expectedImagePresignedUrlVos = new ArrayList<>();
 
@@ -78,16 +79,23 @@ class ImageServiceTest {
                 actualImagePresignedUrlVos.stream().map(ImagePresignedUrlVo::imageId).toList();
 
         assertThat(actualImageIds).isNotEmpty();
-        for (int i = 0; i < expectedImagePresignedUrlVos.size(); i++) {
-            assertThat(actualImagePresignedUrlVos.get(i).imageName())
-                    .isEqualTo(expectedImagePresignedUrlVos.get(i).imageName());
-            assertThat(actualImagePresignedUrlVos.get(i).presignedUrl())
-                    .isEqualTo(expectedImagePresignedUrlVos.get(i).presignedUrl());
-        }
+
+        IntStream.range(0, expectedImagePresignedUrlVos.size())
+                .forEach(
+                        i ->
+                                assertPresignedUrlVoMatches(
+                                        expectedImagePresignedUrlVos.get(i),
+                                        actualImagePresignedUrlVos.get(i)));
+    }
+
+    private void assertPresignedUrlVoMatches(
+            ImagePresignedUrlVo expected, ImagePresignedUrlVo actual) {
+        assertThat(actual.imageName()).isEqualTo(expected.imageName());
+        assertThat(actual.presignedUrl()).isEqualTo(expected.presignedUrl());
     }
 
     @Test
-    void image_status_변경_및_image에_memory_추가_테스트() {
+    void 이미지_업로드_상태_변경_및_이미지에_수영기록을_추가한다() {
         // given
         List<Image> images =
                 ImageFixture.makeImages(originImageNames, null, ImageUploadStatus.PENDING);
@@ -106,7 +114,7 @@ class ImageServiceTest {
     }
 
     @Test
-    void image_update_테스트() {
+    void 수영기록의_이미지를_수정한다() {
         // given
         List<Image> images =
                 ImageFixture.makeImages(originImageNames, memory, ImageUploadStatus.UPLOADED);
@@ -125,7 +133,7 @@ class ImageServiceTest {
     }
 
     @Test
-    void imageStatus_변경_테스트() {
+    void 이미지_업로드_상태를_변경한다() {
         // given
         List<Image> images =
                 ImageFixture.makeImages(originImageNames, memory, ImageUploadStatus.PENDING);
@@ -144,7 +152,7 @@ class ImageServiceTest {
     }
 
     @Test
-    void memoryId에_해당하는_image조회_테스트() {
+    void memoryId에_해당하는_이미지를_조회한다() {
         // given
         List<Image> images =
                 ImageFixture.makeImages(originImageNames, memory, ImageUploadStatus.UPLOADED);
@@ -158,7 +166,7 @@ class ImageServiceTest {
     }
 
     @Test
-    void image_삭제_테스트() {
+    void 수영기록의_이미지를_삭제한다() {
         // given
         Image image = ImageFixture.make("originImage.png", memory, ImageUploadStatus.UPLOADED);
         Long imageId = imageRepository.save(image);
@@ -171,7 +179,7 @@ class ImageServiceTest {
     }
 
     @Test
-    void memoryId_로_이미지_삭제_테스트() {
+    void memoryId_로_이미지를_삭제한다() {
         // given
         List<Image> images =
                 ImageFixture.makeImages(originImageNames, memory, ImageUploadStatus.UPLOADED);
