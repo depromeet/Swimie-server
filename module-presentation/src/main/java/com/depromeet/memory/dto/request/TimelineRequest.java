@@ -10,7 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TimelineRequestDto {
+public class TimelineRequest {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Schema(description = "최초 조회 이후 나온 timeline 리스트 중 가장 마지막 요소의 memory recordAt")
     private LocalDate cursorRecordAt;

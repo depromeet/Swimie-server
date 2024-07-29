@@ -30,7 +30,7 @@ public class CalendarResponse {
                                                                 : it.getMeter())
                                                 .build())
                         .toList();
-        boolean isAchieved = totalDistance >= memory.getMember().getGoal();
+        boolean isAchieved = isAchieved(memory, totalDistance);
 
         memories.put(key, DayResponse.of(memory, type, totalDistance, strokes, isAchieved));
     }
@@ -58,5 +58,10 @@ public class CalendarResponse {
             }
         }
         return result;
+    }
+
+    private boolean isAchieved(Memory memory, Integer totalDistance) {
+        if (totalDistance == null) return false;
+        return totalDistance >= memory.getMember().getGoal();
     }
 }

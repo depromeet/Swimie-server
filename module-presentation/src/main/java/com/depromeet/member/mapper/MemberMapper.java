@@ -2,10 +2,10 @@ package com.depromeet.member.mapper;
 
 import com.depromeet.member.Member;
 import com.depromeet.member.MemberRole;
-import com.depromeet.member.dto.request.MemberCreateDto;
+import com.depromeet.member.dto.request.MemberCreateRequest;
 
 public class MemberMapper {
-    public static Member from(MemberCreateDto dto) {
+    public static Member from(MemberCreateRequest dto) {
         return Member.builder().name(dto.name()).email(dto.email()).role(MemberRole.USER).build();
     }
 

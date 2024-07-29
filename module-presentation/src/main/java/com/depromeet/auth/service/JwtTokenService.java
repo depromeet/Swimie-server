@@ -1,7 +1,7 @@
 package com.depromeet.auth.service;
 
 import com.depromeet.auth.dto.response.JwtAccessTokenResponse;
-import com.depromeet.auth.dto.response.JwtTokenResponseDto;
+import com.depromeet.auth.dto.response.JwtTokenResponse;
 import com.depromeet.exception.ForbiddenException;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.exception.UnauthorizedException;
@@ -28,13 +28,13 @@ public class JwtTokenService {
     private final JwtUtils jwtUtils;
     private final MemberRepository memberRepository;
 
-    public JwtTokenResponseDto generateToken(Long memberId, MemberRole memberRole) {
+    public JwtTokenResponse generateToken(Long memberId, MemberRole memberRole) {
         AccessTokenDto accessToken = jwtUtils.generateAccessToken(memberId, memberRole);
         RefreshTokenDto refreshToken = jwtUtils.generateRefreshToken(memberId, memberRole);
 
         memberRepository.updateRefresh(memberId, refreshToken.refreshToken());
 
-        return new JwtTokenResponseDto(
+        return new JwtTokenResponse(
                 memberId,
                 SecurityConstant.BEARER_PREFIX.getValue() + accessToken.accessToken(),
                 SecurityConstant.BEARER_PREFIX.getValue() + refreshToken.refreshToken());

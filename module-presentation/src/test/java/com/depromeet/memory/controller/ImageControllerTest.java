@@ -9,8 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.depromeet.image.api.ImageController;
-import com.depromeet.image.dto.response.ImageUploadResponseDto;
-import com.depromeet.image.dto.response.MemoryImagesDto;
+import com.depromeet.image.dto.response.ImageResponse;
+import com.depromeet.image.dto.response.ImageUploadResponse;
 import com.depromeet.image.facade.ImageFacade;
 import com.depromeet.memory.config.ControllerTestConfig;
 import com.depromeet.memory.fixture.dto.ImageUploadResponseDtoFixture;
@@ -41,14 +41,14 @@ public class ImageControllerTest extends ControllerTestConfig {
         List<String> imageNames = List.of("image1.png", "image2.png", "image3.png");
         requestBody.put("imageNames", imageNames);
 
-        List<ImageUploadResponseDto> images = ImageUploadResponseDtoFixture.make(imageNames);
+        List<ImageUploadResponse> images = ImageUploadResponseDtoFixture.make(imageNames);
 
         // when
         when(imageFacade.getPresignedUrlAndSaveImages(anyList())).thenReturn(images);
 
         // then
         mockMvc.perform(
-                        post("/api/image/presigned-url")
+                        post("/image/presigned-url")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isOk())
@@ -70,14 +70,14 @@ public class ImageControllerTest extends ControllerTestConfig {
         List<String> imageNames = List.of("image1.png", "image2.png", "image3.png");
         requestBody.put("imageNames", imageNames);
 
-        List<ImageUploadResponseDto> images = ImageUploadResponseDtoFixture.make(imageNames);
+        List<ImageUploadResponse> images = ImageUploadResponseDtoFixture.make(imageNames);
 
         // when
         when(imageFacade.updateImages(anyLong(), anyList())).thenReturn(images);
 
         // then
         mockMvc.perform(
-                        patch("/api/image/memory/{memoryId}", 1)
+                        patch("/image/memory/{memoryId}", 1)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isOk())
@@ -103,7 +103,7 @@ public class ImageControllerTest extends ControllerTestConfig {
 
         // then
         mockMvc.perform(
-                        patch("/api/image/status")
+                        patch("/image/status")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isOk())
@@ -118,13 +118,13 @@ public class ImageControllerTest extends ControllerTestConfig {
         // given
         Long memoryId = 1L;
 
-        List<MemoryImagesDto> images = MemoryImagesDtoFixture.make();
+        List<ImageResponse> images = MemoryImagesDtoFixture.make();
 
         // when
         when(imageFacade.findImagesByMemoryId(anyLong())).thenReturn(images);
 
         // then
-        mockMvc.perform(get("/api/image/memory/{memoryId}", memoryId))
+        mockMvc.perform(get("/image/memory/{memoryId}", memoryId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("IMAGE_5"))
                 .andExpect(jsonPath("$.message").value("이미지 조회에 성공하였습니다"))
@@ -141,7 +141,7 @@ public class ImageControllerTest extends ControllerTestConfig {
     @Test
     @WithCustomMockMember
     void memoryId로_이미지를_삭제한다() throws Exception {
-        mockMvc.perform(delete("/api/image/memory/{memoryId}", 1))
+        mockMvc.perform(delete("/image/memory/{memoryId}", 1))
                 .andExpect(status().isNoContent())
                 .andReturn();
     }
