@@ -5,8 +5,8 @@ import com.depromeet.exception.InternalServerException;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.member.Member;
 import com.depromeet.member.MemberRole;
-import com.depromeet.member.dto.request.MemberCreateDto;
-import com.depromeet.member.dto.response.MemberFindOneResponseDto;
+import com.depromeet.member.dto.request.MemberCreateRequest;
+import com.depromeet.member.dto.response.MemberFindOneResponse;
 import com.depromeet.member.mapper.MemberMapper;
 import com.depromeet.member.repository.MemberRepository;
 import com.depromeet.type.member.MemberErrorType;
@@ -24,18 +24,18 @@ public class MemberServiceImpl implements MemberService {
 
     @Deprecated
     @Override
-    public Member save(MemberCreateDto memberCreate) {
+    public Member save(MemberCreateRequest memberCreate) {
         Member member = MemberMapper.from(memberCreate);
         return memberRepository.save(member);
     }
 
     @Override
-    public MemberFindOneResponseDto findOneMemberResponseById(Long id) {
+    public MemberFindOneResponse findOneMemberResponseById(Long id) {
         Member member =
                 memberRepository
                         .findById(id)
                         .orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
-        return MemberFindOneResponseDto.builder()
+        return MemberFindOneResponse.builder()
                 .id(member.getId())
                 .name(member.getName())
                 .email(member.getEmail())

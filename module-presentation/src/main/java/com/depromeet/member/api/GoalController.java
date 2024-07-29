@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/goal")
+@RequestMapping("/goal")
 @RequiredArgsConstructor
 public class GoalController implements GoalApi {
     private final MemberService memberService;

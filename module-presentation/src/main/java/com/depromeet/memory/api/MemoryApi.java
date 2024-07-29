@@ -3,7 +3,7 @@ package com.depromeet.memory.api;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
-import com.depromeet.memory.dto.request.TimelineRequestDto;
+import com.depromeet.memory.dto.request.TimelineRequest;
 import com.depromeet.memory.dto.response.CalendarResponse;
 import com.depromeet.memory.dto.response.MemoryResponse;
 import com.depromeet.security.LoginMember;
@@ -35,7 +35,7 @@ public interface MemoryApi {
 
     @Operation(summary = "타임라인 최신순 조회")
     ApiResponse<?> timeline(
-            @LoginMember Long memberId, @ModelAttribute TimelineRequestDto timelineRequestDto);
+            @LoginMember Long memberId, @ModelAttribute TimelineRequest timelineRequest);
 
     @Operation(summary = "캘린더 조회")
     ApiResponse<CalendarResponse> getCalendar(

@@ -74,8 +74,7 @@ public class SecurityConfig {
                                 .permitAll() // oauth2
                                 .requestMatchers("/swagger-ui/**", "/v3/**", "/favicon.ico")
                                 .permitAll() // swagger
-                                .requestMatchers(
-                                        "/api/v1/auth/**", "/api/login/kakao", "/api/login/google")
+                                .requestMatchers("/login/kakao", "/login/google")
                                 .permitAll() // 로그인 및 회원가입
                                 .anyRequest()
                                 .authenticated());

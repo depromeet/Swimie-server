@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/pool")
+@RequestMapping("/pool")
 public class PoolController implements PoolApi {
     private final PoolFacade poolFacade;
 

@@ -14,7 +14,7 @@ public record DayResponse(
     public static DayResponse of(
             Memory memory,
             String type,
-            int totalDistance,
+            Integer totalDistance,
             List<StrokeResponse> strokes,
             boolean isAchieved) {
         String imageUrl = null;

@@ -5,12 +5,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record ImageUploadResponseDto(Long imageId, String imageName, String presignedUrl) {
+public record ImageUploadResponse(Long imageId, String imageName, String presignedUrl) {
     @Builder
-    public ImageUploadResponseDto {}
+    public ImageUploadResponse {}
 
-    public static ImageUploadResponseDto of(ImagePresignedUrlVo imagePresignedUrlVo) {
-        return ImageUploadResponseDto.builder()
+    public static ImageUploadResponse of(ImagePresignedUrlVo imagePresignedUrlVo) {
+        return ImageUploadResponse.builder()
                 .imageId(imagePresignedUrlVo.imageId())
                 .imageName(imagePresignedUrlVo.imageName())
                 .presignedUrl(imagePresignedUrlVo.presignedUrl())
