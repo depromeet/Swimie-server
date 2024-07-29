@@ -68,11 +68,6 @@ public class MemoryFacade {
     public CalendarResponse getCalendar(Long memberId, YearMonth yearMonth) {
         List<Memory> calendarMemories =
                 calendarService.getCalendarByYearAndMonth(memberId, yearMonth);
-
-        CalendarResponse response = new CalendarResponse();
-        for (Memory calendarMemory : calendarMemories) {
-            response.addMemory(calendarMemory);
-        }
-        return response;
+        return CalendarResponse.of(calendarMemories);
     }
 }

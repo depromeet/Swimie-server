@@ -2,40 +2,50 @@ package com.depromeet.memory.dto.response;
 
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
-import java.time.LocalDate;
-import java.util.HashMap;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CalendarResponse {
-    private LocalDate today = LocalDate.now();
-    private Map<Integer, DayResponse> memories = new HashMap<>();
+    private List<CalendarDetailResponse> memories;
 
-    public void addMemory(Memory memory) {
-        int key = memory.getRecordAt().getDayOfMonth();
-        String type = classifyType(memory.getStrokes());
-        Integer totalDistance = getTotalDistance(memory.getLane(), memory.getStrokes());
-        List<StrokeResponse> strokes =
-                memory.getStrokes().stream()
-                        .map(
-                                it ->
-                                        StrokeResponse.builder()
-                                                .name(it.getName())
-                                                .meter(
-                                                        it.getMeter() == null
-                                                                ? it.getLaps()
-                                                                        * memory.getPool().getLane()
-                                                                : it.getMeter())
-                                                .build())
-                        .toList();
-        boolean isAchieved = isAchieved(memory, totalDistance);
+    public static CalendarResponse of(List<Memory> memoryDomains) {
+        List<CalendarDetailResponse> memories = new ArrayList<>();
+        for (Memory memoryDomain : memoryDomains) {
+            String type = classifyType(memoryDomain.getStrokes());
+            Integer totalDistance =
+                    getTotalDistance(memoryDomain.getLane(), memoryDomain.getStrokes());
+            List<StrokeResponse> strokes = getStrokeResponses(memoryDomain);
+            boolean isAchieved = isAchieved(memoryDomain, totalDistance);
 
-        memories.put(key, DayResponse.of(memory, type, totalDistance, strokes, isAchieved));
+            memories.add(
+                    CalendarDetailResponse.of(
+                            memoryDomain, type, totalDistance, strokes, isAchieved));
+        }
+        return new CalendarResponse(memories);
     }
 
-    private String classifyType(List<Stroke> strokes) {
+    public static List<StrokeResponse> getStrokeResponses(Memory memoryDomain) {
+        return memoryDomain.getStrokes().stream()
+                .map(
+                        it ->
+                                StrokeResponse.builder()
+                                        .name(it.getName())
+                                        .meter(
+                                                it.getMeter() == null
+                                                        ? it.getLaps()
+                                                                * memoryDomain.getPool().getLane()
+                                                        : it.getMeter())
+                                        .build())
+                .toList();
+    }
+
+    private static String classifyType(List<Stroke> strokes) {
         if (strokes == null || strokes.isEmpty()) {
             return "NORMAL";
         } else if (strokes.size() == 1) {
@@ -45,7 +55,7 @@ public class CalendarResponse {
         }
     }
 
-    private Integer getTotalDistance(Short lane, List<Stroke> strokes) {
+    private static Integer getTotalDistance(Short lane, List<Stroke> strokes) {
         int result = 0;
         if (strokes == null || strokes.isEmpty()) {
             return null;
@@ -60,7 +70,7 @@ public class CalendarResponse {
         return result;
     }
 
-    private boolean isAchieved(Memory memory, Integer totalDistance) {
+    private static boolean isAchieved(Memory memory, Integer totalDistance) {
         if (totalDistance == null) return false;
         return totalDistance >= memory.getMember().getGoal();
     }
