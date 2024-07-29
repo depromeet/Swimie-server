@@ -1,10 +1,10 @@
 package com.depromeet.memory.dto.response;
 
-import com.depromeet.image.dto.response.MemoryImagesDto;
+import com.depromeet.image.dto.response.MemoryImagesResponse;
 import java.util.List;
 import lombok.Builder;
 
-public record TimelineResponseDto(
+public record TimelineResponse(
         Long memoryId,
         String recordAt,
         String startTime,
@@ -18,9 +18,9 @@ public record TimelineResponseDto(
         String pace,
         Integer kcal,
         List<StrokeResponse> strokes,
-        List<MemoryImagesDto> images) {
+        List<MemoryImagesResponse> images) {
     @Builder
-    public TimelineResponseDto {}
+    public TimelineResponse {}
 }
 
 /*

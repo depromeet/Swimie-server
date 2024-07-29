@@ -2,13 +2,13 @@ package com.depromeet.member.service;
 
 import com.depromeet.auth.dto.response.AccountProfileResponse;
 import com.depromeet.member.Member;
-import com.depromeet.member.dto.request.MemberCreateDto;
-import com.depromeet.member.dto.response.MemberFindOneResponseDto;
+import com.depromeet.member.dto.request.MemberCreateRequest;
+import com.depromeet.member.dto.response.MemberFindOneResponse;
 
 public interface MemberService {
-    Member save(MemberCreateDto memberCreate);
+    Member save(MemberCreateRequest memberCreate);
 
-    MemberFindOneResponseDto findOneMemberResponseById(Long id);
+    MemberFindOneResponse findOneMemberResponseById(Long id);
 
     Member findById(Long id);
 

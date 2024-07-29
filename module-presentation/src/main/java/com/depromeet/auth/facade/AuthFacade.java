@@ -4,7 +4,7 @@ import com.depromeet.auth.dto.request.GoogleLoginRequest;
 import com.depromeet.auth.dto.request.KakaoLoginRequest;
 import com.depromeet.auth.dto.response.AccountProfileResponse;
 import com.depromeet.auth.dto.response.JwtAccessTokenResponse;
-import com.depromeet.auth.dto.response.JwtTokenResponseDto;
+import com.depromeet.auth.dto.response.JwtTokenResponse;
 import com.depromeet.auth.dto.response.KakaoAccountProfileResponse;
 import com.depromeet.auth.service.JwtTokenService;
 import com.depromeet.auth.util.GoogleClient;
@@ -26,7 +26,7 @@ public class AuthFacade {
     private final GoogleClient googleClient;
     private final KakaoClient kakaoClient;
 
-    public JwtTokenResponseDto loginByGoogle(GoogleLoginRequest request) {
+    public JwtTokenResponse loginByGoogle(GoogleLoginRequest request) {
         final AccountProfileResponse profile = googleClient.getGoogleAccountProfile(request.code());
         if (profile == null) {
             throw new NotFoundException(AuthErrorType.NOT_FOUND);
@@ -35,7 +35,7 @@ public class AuthFacade {
         return jwtTokenService.generateToken(member.getId(), member.getRole());
     }
 
-    public JwtTokenResponseDto loginByKakao(KakaoLoginRequest request) {
+    public JwtTokenResponse loginByKakao(KakaoLoginRequest request) {
         final KakaoAccountProfileResponse profile =
                 kakaoClient.getKakaoAccountProfile(request.code());
         if (profile == null) {

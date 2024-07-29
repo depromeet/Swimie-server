@@ -10,7 +10,7 @@ import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
-import com.depromeet.memory.dto.request.TimelineRequestDto;
+import com.depromeet.memory.dto.request.TimelineRequest;
 import com.depromeet.memory.dto.response.CalendarResponse;
 import com.depromeet.memory.dto.response.MemoryResponse;
 import com.depromeet.memory.service.CalendarService;
@@ -61,8 +61,8 @@ public class MemoryFacade {
     }
 
     public CustomSliceResponse<?> getTimelineByMemberIdAndCursorAndDate(
-            Long memberId, TimelineRequestDto timelineRequestDto) {
-        return timelineService.getTimelineByMemberIdAndCursorAndDate(memberId, timelineRequestDto);
+            Long memberId, TimelineRequest timelineRequest) {
+        return timelineService.getTimelineByMemberIdAndCursorAndDate(memberId, timelineRequest);
     }
 
     public CalendarResponse getCalendar(Long memberId, YearMonth yearMonth) {

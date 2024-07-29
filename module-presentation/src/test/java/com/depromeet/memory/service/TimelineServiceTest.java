@@ -8,7 +8,7 @@ import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.StrokeCreateRequest;
-import com.depromeet.memory.dto.response.TimelineResponseDto;
+import com.depromeet.memory.dto.response.TimelineResponse;
 import com.depromeet.memory.mock.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -111,7 +111,7 @@ public class TimelineServiceTest {
         memoryRepository.save(memory);
 
         // when
-        TimelineResponseDto result = timelineService.mapToTimelineResponseDto(memory);
+        TimelineResponse result = timelineService.mapToTimelineResponseDto(memory);
 
         // then
         assertThat(result.totalMeter()).isEqualTo(expectedTotalMeter);
@@ -125,7 +125,7 @@ public class TimelineServiceTest {
         memoryRepository.save(memory);
 
         // when
-        TimelineResponseDto result = timelineService.mapToTimelineResponseDto(memory);
+        TimelineResponse result = timelineService.mapToTimelineResponseDto(memory);
 
         // then
         assertThat(result.totalMeter()).isEqualTo(expectedTotalMeter);

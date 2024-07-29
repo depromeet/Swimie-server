@@ -2,12 +2,12 @@ package com.depromeet.memory.service;
 
 import com.depromeet.dto.response.CustomSliceResponse;
 import com.depromeet.image.domain.Image;
-import com.depromeet.image.dto.response.MemoryImagesDto;
+import com.depromeet.image.dto.response.MemoryImagesResponse;
 import com.depromeet.memory.Memory;
 import com.depromeet.memory.Stroke;
-import com.depromeet.memory.dto.request.TimelineRequestDto;
+import com.depromeet.memory.dto.request.TimelineRequest;
 import com.depromeet.memory.dto.response.StrokeResponse;
-import com.depromeet.memory.dto.response.TimelineResponseDto;
+import com.depromeet.memory.dto.response.TimelineResponse;
 import com.depromeet.memory.repository.MemoryRepository;
 import com.depromeet.memory.vo.Timeline;
 import java.time.LocalDate;
@@ -30,13 +30,13 @@ public class TimelineServiceImpl implements TimelineService {
 
     @Override
     public CustomSliceResponse<?> getTimelineByMemberIdAndCursorAndDate(
-            Long memberId, TimelineRequestDto timeline) {
+            Long memberId, TimelineRequest timeline) {
         Timeline timelines = getTimelines(memberId, timeline);
 
         return mapToCustomSliceResponse(timelines);
     }
 
-    private Timeline getTimelines(Long memberId, TimelineRequestDto timeline) {
+    private Timeline getTimelines(Long memberId, TimelineRequest timeline) {
         LocalDate cursorRecordAt = null;
         if (timeline.getCursorRecordAt() != null) {
             cursorRecordAt = timeline.getCursorRecordAt();
@@ -52,7 +52,7 @@ public class TimelineServiceImpl implements TimelineService {
     }
 
     private CustomSliceResponse<?> mapToCustomSliceResponse(Timeline timelines) {
-        List<TimelineResponseDto> result =
+        List<TimelineResponse> result =
                 timelines.getTimelineContents().stream()
                         .map(this::mapToTimelineResponseDto)
                         .toList();
@@ -80,8 +80,8 @@ public class TimelineServiceImpl implements TimelineService {
     }
 
     @Override
-    public TimelineResponseDto mapToTimelineResponseDto(Memory memory) {
-        return TimelineResponseDto.builder()
+    public TimelineResponse mapToTimelineResponseDto(Memory memory) {
+        return TimelineResponse.builder()
                 .memoryId(memory.getId())
                 .recordAt(memory.getRecordAt().toString())
                 .startTime(localTimeToString(memory.getStartTime()))
@@ -175,13 +175,13 @@ public class TimelineServiceImpl implements TimelineService {
         return stroke.getMeter() != null ? stroke.getMeter() : null;
     }
 
-    private List<MemoryImagesDto> imagesToDto(List<Image> images) {
+    private List<MemoryImagesResponse> imagesToDto(List<Image> images) {
         if (images == null || images.isEmpty()) return new ArrayList<>();
 
         return images.stream()
                 .map(
                         image ->
-                                MemoryImagesDto.builder()
+                                MemoryImagesResponse.builder()
                                         .imageId(image.getId())
                                         .originImageName(image.getOriginImageName())
                                         .imageName(image.getImageName())

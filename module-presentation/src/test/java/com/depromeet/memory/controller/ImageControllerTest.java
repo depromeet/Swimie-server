@@ -9,8 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.depromeet.image.api.ImageController;
-import com.depromeet.image.dto.response.ImageUploadResponseDto;
-import com.depromeet.image.dto.response.MemoryImagesDto;
+import com.depromeet.image.dto.response.ImageUploadResponse;
+import com.depromeet.image.dto.response.MemoryImagesResponse;
 import com.depromeet.image.facade.ImageFacade;
 import com.depromeet.memory.config.ControllerTestConfig;
 import com.depromeet.memory.fixture.dto.ImageUploadResponseDtoFixture;
@@ -41,7 +41,7 @@ public class ImageControllerTest extends ControllerTestConfig {
         List<String> imageNames = List.of("image1.png", "image2.png", "image3.png");
         requestBody.put("imageNames", imageNames);
 
-        List<ImageUploadResponseDto> images = ImageUploadResponseDtoFixture.make(imageNames);
+        List<ImageUploadResponse> images = ImageUploadResponseDtoFixture.make(imageNames);
 
         // when
         when(imageFacade.getPresignedUrlAndSaveImages(anyList())).thenReturn(images);
@@ -70,7 +70,7 @@ public class ImageControllerTest extends ControllerTestConfig {
         List<String> imageNames = List.of("image1.png", "image2.png", "image3.png");
         requestBody.put("imageNames", imageNames);
 
-        List<ImageUploadResponseDto> images = ImageUploadResponseDtoFixture.make(imageNames);
+        List<ImageUploadResponse> images = ImageUploadResponseDtoFixture.make(imageNames);
 
         // when
         when(imageFacade.updateImages(anyLong(), anyList())).thenReturn(images);
@@ -118,7 +118,7 @@ public class ImageControllerTest extends ControllerTestConfig {
         // given
         Long memoryId = 1L;
 
-        List<MemoryImagesDto> images = MemoryImagesDtoFixture.make();
+        List<MemoryImagesResponse> images = MemoryImagesDtoFixture.make();
 
         // when
         when(imageFacade.findImagesByMemoryId(anyLong())).thenReturn(images);

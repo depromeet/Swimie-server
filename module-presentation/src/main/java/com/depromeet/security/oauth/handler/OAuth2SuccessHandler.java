@@ -2,7 +2,7 @@ package com.depromeet.security.oauth.handler;
 
 import static com.depromeet.type.member.MemberErrorType.NOT_FOUND;
 
-import com.depromeet.auth.dto.response.JwtTokenResponseDto;
+import com.depromeet.auth.dto.response.JwtTokenResponse;
 import com.depromeet.auth.service.JwtTokenService;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.exception.NotFoundException;
@@ -53,7 +53,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                         .orElseThrow(() -> new NotFoundException(NOT_FOUND));
         MemberRole memberRole = MemberRole.findByValue(role);
 
-        JwtTokenResponseDto jwtTokenResponseDto =
+        JwtTokenResponse jwtTokenResponse =
                 jwtTokenService.generateToken(member.getId(), memberRole);
 
         // JSON으로 토큰을 응답하는 방식
@@ -64,6 +64,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                         objectMapper.writeValueAsString(
                                 ApiResponse.success(
                                         AuthSuccessType.LOGIN_SUCCESS,
-                                        jwtTokenResponseDto))); // json 응답
+                                        jwtTokenResponse))); // json 응답
     }
 }

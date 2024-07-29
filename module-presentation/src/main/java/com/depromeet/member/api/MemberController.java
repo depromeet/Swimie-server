@@ -1,7 +1,7 @@
 package com.depromeet.member.api;
 
 import com.depromeet.dto.response.ApiResponse;
-import com.depromeet.member.dto.response.MemberFindOneResponseDto;
+import com.depromeet.member.dto.response.MemberFindOneResponse;
 import com.depromeet.member.service.MemberService;
 import com.depromeet.type.member.MemberSuccessType;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class MemberController implements MemberApi {
     private final MemberService memberService;
 
     @GetMapping("/{id}")
-    public ApiResponse<MemberFindOneResponseDto> getMember(@PathVariable("id") Long id) {
+    public ApiResponse<MemberFindOneResponse> getMember(@PathVariable("id") Long id) {
         return ApiResponse.success(
                 MemberSuccessType.GET_SUCCESS, memberService.findOneMemberResponseById(id));
     }
