@@ -53,7 +53,7 @@ public class MemoryControllerTest extends ControllerTestConfig {
         requestBody.put("imageIdList", imageIdList);
 
         mockMvc.perform(
-                        post("/api/memory")
+                        post("/memory")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isOk())
@@ -65,7 +65,7 @@ public class MemoryControllerTest extends ControllerTestConfig {
     @Test
     @WithCustomMockMember
     public void 수영기록을_조회합니다() throws Exception {
-        mockMvc.perform(get("/api/memory/{memoryId}", 1))
+        mockMvc.perform(get("/memory/{memoryId}", 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("MEMORY_2"))
                 .andExpect(jsonPath("$.message").value("수영 기록 조회에 성공하였습니다"))
@@ -81,7 +81,7 @@ public class MemoryControllerTest extends ControllerTestConfig {
         requestBody.put("startTime", "11:00:00");
         requestBody.put("endTime", "11:50:00");
         mockMvc.perform(
-                        patch("/api/memory/{memoryId}", 1)
+                        patch("/memory/{memoryId}", 1)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isOk())
@@ -94,7 +94,7 @@ public class MemoryControllerTest extends ControllerTestConfig {
     @WithCustomMockMember
     public void 수영기록_타임라인을_조회합니다() throws Exception {
         mockMvc.perform(
-                        get("/api/memory/timeline")
+                        get("/memory/timeline")
                                 .param("cursorId", "1L")
                                 .param("date", "2024-07")
                                 .param("size", "5"))
@@ -107,7 +107,7 @@ public class MemoryControllerTest extends ControllerTestConfig {
     @Test
     @WithCustomMockMember
     public void 수영기록_캘린더를_조회합니다() throws Exception {
-        mockMvc.perform(get("/api/memory/calendar").param("yearMonth", "2024-07"))
+        mockMvc.perform(get("/memory/calendar").param("yearMonth", "2024-07"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("MEMORY_5"))
                 .andExpect(jsonPath("$.message").value("캘린더 조회에 성공하였습니다"))

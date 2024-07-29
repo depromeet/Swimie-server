@@ -48,7 +48,7 @@ public class ImageControllerTest extends ControllerTestConfig {
 
         // then
         mockMvc.perform(
-                        post("/api/image/presigned-url")
+                        post("/image/presigned-url")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isOk())
@@ -77,7 +77,7 @@ public class ImageControllerTest extends ControllerTestConfig {
 
         // then
         mockMvc.perform(
-                        patch("/api/image/memory/{memoryId}", 1)
+                        patch("/image/memory/{memoryId}", 1)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isOk())
@@ -103,7 +103,7 @@ public class ImageControllerTest extends ControllerTestConfig {
 
         // then
         mockMvc.perform(
-                        patch("/api/image/status")
+                        patch("/image/status")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isOk())
@@ -124,7 +124,7 @@ public class ImageControllerTest extends ControllerTestConfig {
         when(imageFacade.findImagesByMemoryId(anyLong())).thenReturn(images);
 
         // then
-        mockMvc.perform(get("/api/image/memory/{memoryId}", memoryId))
+        mockMvc.perform(get("/image/memory/{memoryId}", memoryId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("IMAGE_5"))
                 .andExpect(jsonPath("$.message").value("이미지 조회에 성공하였습니다"))
@@ -141,7 +141,7 @@ public class ImageControllerTest extends ControllerTestConfig {
     @Test
     @WithCustomMockMember
     void memoryId로_이미지_삭제() throws Exception {
-        mockMvc.perform(delete("/api/image/memory/{memoryId}", 1))
+        mockMvc.perform(delete("/image/memory/{memoryId}", 1))
                 .andExpect(status().isNoContent())
                 .andReturn();
     }
