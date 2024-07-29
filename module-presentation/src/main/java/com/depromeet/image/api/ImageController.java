@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/image")
+@RequestMapping("/image")
 public class ImageController implements ImageApi {
     private final ImageFacade imageFacade;
 

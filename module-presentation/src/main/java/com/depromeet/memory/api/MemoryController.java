@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/memory")
+@RequestMapping("/memory")
 public class MemoryController implements MemoryApi {
     private final MemoryFacade memoryFacade;
 
