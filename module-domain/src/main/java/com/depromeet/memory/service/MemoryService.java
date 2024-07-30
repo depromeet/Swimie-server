@@ -40,7 +40,11 @@ public class MemoryService implements CreateMemoryUseCase, UpdateMemoryUseCase, 
         if (memoryDetail != null) {
             memoryDetail = memoryDetailPersistencePort.save(memoryDetail);
         }
-        Pool pool = poolPersistencePort.findById(command.poolId()).orElse(null);
+
+        Pool pool = null;
+        if(command.poolId() != null) {
+            pool = poolPersistencePort.findById(command.poolId()).orElse(null);
+        }
         Memory memory =
                 Memory.builder()
                         .member(writer)
