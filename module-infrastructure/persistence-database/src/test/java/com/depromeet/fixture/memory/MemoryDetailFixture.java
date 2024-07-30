@@ -1,6 +1,6 @@
 package com.depromeet.fixture.memory;
 
-import com.depromeet.memory.MemoryDetail;
+import com.depromeet.memory.domain.MemoryDetail;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;

@@ -2,7 +2,7 @@ package com.depromeet.fixture.image;
 
 import com.depromeet.image.domain.Image;
 import com.depromeet.image.domain.ImageUploadStatus;
-import com.depromeet.memory.Memory;
+import com.depromeet.memory.domain.Memory;
 import java.util.ArrayList;
 import java.util.List;
 

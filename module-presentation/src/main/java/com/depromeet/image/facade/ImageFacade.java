@@ -2,13 +2,13 @@ package com.depromeet.image.facade;
 
 import com.depromeet.image.domain.Image;
 import com.depromeet.image.domain.vo.ImagePresignedUrlVo;
-import com.depromeet.image.dto.response.ImageUploadResponseDto;
-import com.depromeet.image.dto.response.MemoryImagesDto;
+import com.depromeet.image.dto.response.ImageResponse;
+import com.depromeet.image.dto.response.ImageUploadResponse;
 import com.depromeet.image.port.in.ImageDeleteUseCase;
 import com.depromeet.image.port.in.ImageGetUseCase;
 import com.depromeet.image.port.in.ImageUpdateUseCase;
 import com.depromeet.image.port.in.ImageUploadUseCase;
-import com.depromeet.memory.Memory;
+import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.service.MemoryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -25,29 +25,29 @@ public class ImageFacade {
     private final ImageUpdateUseCase imageUpdateUseCase;
     private final ImageDeleteUseCase imageDeleteUseCase;
 
-    public List<ImageUploadResponseDto> getPresignedUrlAndSaveImages(List<String> imageNames) {
+    public List<ImageUploadResponse> getPresignedUrlAndSaveImages(List<String> imageNames) {
         List<ImagePresignedUrlVo> imagePresignedUrlVos =
                 imageUploadUseCase.getPresignedUrlAndSaveImages(imageNames);
-        return imagePresignedUrlVos.stream().map(ImageUploadResponseDto::of).toList();
+        return imagePresignedUrlVos.stream().map(ImageUploadResponse::of).toList();
     }
 
-    public List<ImageUploadResponseDto> updateImages(Long memoryId, List<String> imageNames) {
+    public List<ImageUploadResponse> updateImages(Long memoryId, List<String> imageNames) {
         Memory memory = memoryService.findById(memoryId);
         List<ImagePresignedUrlVo> imagePresignedUrlVos =
                 imageUpdateUseCase.updateImages(memory, imageNames);
-        return imagePresignedUrlVos.stream().map(ImageUploadResponseDto::of).toList();
+        return imagePresignedUrlVos.stream().map(ImageUploadResponse::of).toList();
     }
 
     public void changeImageStatus(List<Long> imageIds) {
         imageUpdateUseCase.changeImageStatus(imageIds);
     }
 
-    public List<MemoryImagesDto> findImagesByMemoryId(Long memoryId) {
+    public List<ImageResponse> findImagesByMemoryId(Long memoryId) {
         List<Image> images = imageGetUseCase.findImagesByMemoryId(memoryId);
         return images.stream()
                 .map(
                         image ->
-                                MemoryImagesDto.builder()
+                                ImageResponse.builder()
                                         .imageId(image.getId())
                                         .originImageName(image.getOriginImageName())
                                         .imageName(image.getImageName())

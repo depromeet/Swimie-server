@@ -1,11 +1,11 @@
 package com.depromeet.pool.api;
 
 import com.depromeet.dto.response.ApiResponse;
+import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.pool.dto.request.FavoritePoolCreateRequest;
 import com.depromeet.pool.dto.response.PoolInitialResponse;
 import com.depromeet.pool.dto.response.PoolSearchResponse;
 import com.depromeet.pool.facade.PoolFacade;
-import com.depromeet.security.LoginMember;
 import com.depromeet.type.pool.PoolSuccessType;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/pool")
+@RequestMapping("/pool")
 public class PoolController implements PoolApi {
     private final PoolFacade poolFacade;
 

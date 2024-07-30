@@ -2,54 +2,63 @@ package com.depromeet.auth.facade;
 
 import com.depromeet.auth.dto.request.GoogleLoginRequest;
 import com.depromeet.auth.dto.request.KakaoLoginRequest;
-import com.depromeet.auth.dto.response.AccountProfileResponse;
 import com.depromeet.auth.dto.response.JwtAccessTokenResponse;
-import com.depromeet.auth.dto.response.JwtTokenResponseDto;
-import com.depromeet.auth.dto.response.KakaoAccountProfileResponse;
-import com.depromeet.auth.service.JwtTokenService;
-import com.depromeet.auth.util.GoogleClient;
-import com.depromeet.auth.util.KakaoClient;
+import com.depromeet.auth.dto.response.JwtTokenResponse;
+import com.depromeet.auth.port.in.usecase.CreateTokenUseCase;
+import com.depromeet.auth.port.in.usecase.SocialUseCase;
+import com.depromeet.auth.vo.AccessTokenInfo;
+import com.depromeet.auth.vo.JwtToken;
+import com.depromeet.auth.vo.kakao.KakaoAccountProfile;
+import com.depromeet.dto.auth.AccountProfileResponse;
 import com.depromeet.exception.NotFoundException;
-import com.depromeet.member.Member;
-import com.depromeet.member.service.MemberService;
+import com.depromeet.member.domain.Member;
+import com.depromeet.member.mapper.MemberMapper;
+import com.depromeet.member.port.in.usecase.MemberUseCase;
 import com.depromeet.type.auth.AuthErrorType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class AuthFacade {
-    private final MemberService memberService;
-    private final JwtTokenService jwtTokenService;
-    private final GoogleClient googleClient;
-    private final KakaoClient kakaoClient;
+    private final MemberUseCase memberUseCase;
+    private final SocialUseCase socialUseCase;
+    private final CreateTokenUseCase createTokenUseCase;
 
-    public JwtTokenResponseDto loginByGoogle(GoogleLoginRequest request) {
-        final AccountProfileResponse profile = googleClient.getGoogleAccountProfile(request.code());
+    public JwtTokenResponse loginByGoogle(GoogleLoginRequest request) {
+        final AccountProfileResponse profile =
+                socialUseCase.getGoogleAccountProfile(request.code());
         if (profile == null) {
             throw new NotFoundException(AuthErrorType.NOT_FOUND);
         }
-        final Member member = memberService.findOrCreateMemberBy(profile);
-        return jwtTokenService.generateToken(member.getId(), member.getRole());
+        final Member member = memberUseCase.findOrCreateMemberBy(MemberMapper.toCommand(profile));
+        JwtToken token = createTokenUseCase.generateToken(member.getId(), member.getRole());
+
+        return JwtTokenResponse.of(token);
     }
 
-    public JwtTokenResponseDto loginByKakao(KakaoLoginRequest request) {
-        final KakaoAccountProfileResponse profile =
-                kakaoClient.getKakaoAccountProfile(request.code());
+    public JwtTokenResponse loginByKakao(KakaoLoginRequest request) {
+        final KakaoAccountProfile profile = socialUseCase.getKakaoAccountProfile(request.code());
         if (profile == null) {
             throw new NotFoundException(AuthErrorType.NOT_FOUND);
         }
         AccountProfileResponse account =
                 new AccountProfileResponse(
-                        profile.getId(), profile.getNickname(), profile.getEmail());
-        final Member member = memberService.findOrCreateMemberBy(account);
-        return jwtTokenService.generateToken(member.getId(), member.getRole());
+                        profile.id(),
+                        profile.accountInfo().profileInfo().nickname(),
+                        profile.accountInfo().email());
+        final Member member = memberUseCase.findOrCreateMemberBy(MemberMapper.toCommand(account));
+        JwtToken token = createTokenUseCase.generateToken(member.getId(), member.getRole());
+
+        return JwtTokenResponse.of(token);
     }
 
+    @Transactional(readOnly = true)
     public JwtAccessTokenResponse getReissuedAccessToken(String refreshToken) {
         refreshToken = refreshToken.substring(7);
-        return jwtTokenService.generateAccessToken(refreshToken);
+        AccessTokenInfo accessTokenInfo = createTokenUseCase.generateAccessToken(refreshToken);
+        return JwtAccessTokenResponse.of(accessTokenInfo);
     }
 }
