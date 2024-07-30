@@ -17,5 +17,5 @@ public interface MemberApi {
 
     @Operation(summary = "닉네임 수정")
     ApiResponse<MemberFindOneResponse> updateName(
-            @LoginMember Long id, @Valid @RequestBody NameUpdateRequest updateNameRequest);
+            @LoginMember Long memberId, @Valid @RequestBody NameUpdateRequest updateNameRequest);
 }
