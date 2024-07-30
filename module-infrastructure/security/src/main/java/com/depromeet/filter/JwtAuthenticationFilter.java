@@ -54,7 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String tokenType = jwtTokenService.findTokenType(token);
 
         if (tokenType.equals(ACCESS.getValue())) {
-            if (url.equals("/api/login/refresh")) {
+            if (url.equals("/login/refresh")) {
                 throw new BadRequestException(AuthErrorType.INVALID_JWT_ACCESS_REQUEST);
             }
 
@@ -66,7 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 setAuthentication(accessTokenInfo.memberId(), accessTokenInfo.memberRole());
             }
         } else if (tokenType.equals(REFRESH.getValue())) {
-            if (!url.equals("/api/login/refresh")) {
+            if (!url.equals("/login/refresh")) {
                 throw new BadRequestException(AuthErrorType.INVALID_JWT_REFRESH_REQUEST);
             }
 
@@ -92,19 +92,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 || url.startsWith("/oauth2")
                 || url.startsWith("/login")
                 || url.startsWith("/depromeet-actuator")
-                || url.startsWith("/api/v1/auth")
-                || url.equals("/api/login/kakao")
-                || url.equals("/api/login/google");
+                || url.equals("/login/kakao")
+                || url.equals("/login/google");
     }
-
-    //
-    // private AccessTokenDto addReissuedJwtTokenToHeader(
-    //         HttpServletResponse response, String refreshToken) {
-    //     AccessTokenInfo reissuedAccessToken = jwtTokenService.reissueAccessToken(refreshToken);
-    //
-    //     response.addHeader(AUTH_HEADER.getValue(), reissuedAccessToken.accessToken());
-    //     return reissuedAccessToken;
-    // }
 
     private void setAuthentication(Long memberId, MemberRole memberRole) {
         CustomOAuth2User customOAuth2User =
