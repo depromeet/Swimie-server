@@ -1,5 +1,6 @@
 package com.depromeet.member.service;
 
+import com.depromeet.exception.ForbiddenException;
 import com.depromeet.exception.InternalServerException;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.member.domain.Member;
@@ -53,6 +54,9 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, NameUpda
 
     @Override
     public Member updateName(Long memberId, String name) {
+        if (name == null || name.isBlank()) {
+            throw new ForbiddenException(MemberErrorType.NAME_CANNOT_BE_BLANK);
+        }
         return memberPersistencePort
                 .updateName(memberId, name)
                 .orElseThrow(() -> new InternalServerException(MemberErrorType.UPDATE_NAME_FAILED));

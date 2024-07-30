@@ -60,4 +60,15 @@ public class FakeMemberRepository implements MemberPersistencePort {
                             return member;
                         });
     }
+
+    @Override
+    public Optional<Member> updateName(Long memberId, String name) {
+        return findById(memberId)
+                .map(
+                        item -> {
+                            Member member = item.updateName(name);
+                            save(member);
+                            return member;
+                        });
+    }
 }

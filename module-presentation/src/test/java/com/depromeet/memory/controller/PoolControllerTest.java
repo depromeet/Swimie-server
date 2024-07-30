@@ -5,7 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.depromeet.memory.config.ControllerTestConfig;
+import com.depromeet.config.ControllerTestConfig;
 import com.depromeet.memory.mock.WithCustomMockMember;
 import com.depromeet.pool.api.PoolController;
 import com.depromeet.pool.facade.PoolFacade;
