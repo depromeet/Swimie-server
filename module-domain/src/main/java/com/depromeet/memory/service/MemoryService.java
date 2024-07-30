@@ -42,7 +42,7 @@ public class MemoryService implements CreateMemoryUseCase, UpdateMemoryUseCase, 
         }
 
         Pool pool = null;
-        if(command.poolId() != null) {
+        if (command.poolId() != null) {
             pool = poolPersistencePort.findById(command.poolId()).orElse(null);
         }
         Memory memory =
