@@ -1,9 +1,9 @@
 package com.depromeet.member.api;
 
 import com.depromeet.dto.response.ApiResponse;
+import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.member.dto.request.GoalUpdateRequest;
 import com.depromeet.member.dto.response.MemberSimpleResponse;
-import com.depromeet.security.LoginMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PathVariable;

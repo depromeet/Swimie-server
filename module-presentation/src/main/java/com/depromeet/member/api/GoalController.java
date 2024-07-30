@@ -1,12 +1,12 @@
 package com.depromeet.member.api;
 
 import com.depromeet.dto.response.ApiResponse;
+import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.dto.request.GoalUpdateRequest;
 import com.depromeet.member.dto.response.MemberSimpleResponse;
 import com.depromeet.member.port.in.usecase.GoalUpdateUseCase;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
-import com.depromeet.security.LoginMember;
 import com.depromeet.type.member.MemberSuccessType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
