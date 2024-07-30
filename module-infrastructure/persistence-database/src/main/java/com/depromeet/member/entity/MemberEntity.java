@@ -87,4 +87,9 @@ public class MemberEntity {
         this.goal = goal;
         return this;
     }
+
+    public MemberEntity updateName(String name) {
+        this.name = name;
+        return this;
+    }
 }

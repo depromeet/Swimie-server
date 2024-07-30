@@ -7,6 +7,7 @@ import com.depromeet.member.domain.MemberRole;
 import com.depromeet.member.port.in.command.SocialMemberCommand;
 import com.depromeet.member.port.in.usecase.GoalUpdateUseCase;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
+import com.depromeet.member.port.in.usecase.NameUpdateUseCase;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import com.depromeet.type.member.MemberErrorType;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class MemberService implements MemberUseCase, GoalUpdateUseCase {
+public class MemberService implements MemberUseCase, GoalUpdateUseCase, NameUpdateUseCase {
     private final MemberPersistencePort memberPersistencePort;
 
     @Override
@@ -48,5 +49,12 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase {
         return memberPersistencePort
                 .updateGoal(memberId, goal)
                 .orElseThrow(() -> new InternalServerException(MemberErrorType.UPDATE_GOAL_FAILED));
+    }
+
+    @Override
+    public Member updateName(Long memberId, String name) {
+        return memberPersistencePort
+                .updateName(memberId, name)
+                .orElseThrow(() -> new InternalServerException(MemberErrorType.UPDATE_NAME_FAILED));
     }
 }
