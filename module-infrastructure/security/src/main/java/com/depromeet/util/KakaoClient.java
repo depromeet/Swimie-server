@@ -1,5 +1,7 @@
 package com.depromeet.util;
 
+import com.depromeet.auth.port.out.KakaoPort;
+import com.depromeet.auth.vo.kakao.KakaoAccountProfile;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.oauth.dto.response.KakaoAccessTokenResponse;
 import com.depromeet.oauth.dto.response.KakaoAccountProfileResponse;
@@ -18,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 @RequiredArgsConstructor
-public class KakaoClient {
+public class KakaoClient implements KakaoPort {
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
 
@@ -40,9 +42,12 @@ public class KakaoClient {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public KakaoAccountProfileResponse getKakaoAccountProfile(final String code) {
+    public KakaoAccountProfile getKakaoAccountProfile(final String code) {
         final String accessToken = requestKakaoAccessToken(code);
-        return requestKakaoAccountProfile(accessToken);
+        KakaoAccountProfileResponse response = requestKakaoAccountProfile(accessToken);
+
+        return KakaoAccountProfile.of(
+                response.getId(), response.getEmail(), response.getNickname());
     }
 
     private String requestKakaoAccessToken(final String code) {

@@ -1,5 +1,6 @@
 package com.depromeet.util;
 
+import com.depromeet.auth.port.out.GooglePort;
 import com.depromeet.dto.auth.AccountProfileResponse;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.oauth.dto.request.GoogleAccessTokenRequest;
@@ -19,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 @RequiredArgsConstructor
-public class GoogleClient {
+public class GoogleClient implements GooglePort {
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String clientId;
 
