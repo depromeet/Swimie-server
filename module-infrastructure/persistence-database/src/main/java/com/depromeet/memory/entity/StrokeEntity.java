@@ -1,6 +1,6 @@
 package com.depromeet.memory.entity;
 
-import com.depromeet.memory.Stroke;
+import com.depromeet.memory.domain.Stroke;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;

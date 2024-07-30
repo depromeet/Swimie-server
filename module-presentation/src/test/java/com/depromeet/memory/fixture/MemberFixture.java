@@ -1,7 +1,7 @@
 package com.depromeet.memory.fixture;
 
-import com.depromeet.member.Member;
-import com.depromeet.member.MemberRole;
+import com.depromeet.member.domain.Member;
+import com.depromeet.member.domain.MemberRole;
 
 public class MemberFixture {
     public static Member make(Long userId, String role) {

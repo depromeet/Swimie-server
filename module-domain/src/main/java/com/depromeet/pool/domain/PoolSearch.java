@@ -1,6 +1,6 @@
 package com.depromeet.pool.domain;
 
-import com.depromeet.member.Member;
+import com.depromeet.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 

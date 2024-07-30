@@ -1,7 +1,7 @@
 package com.depromeet.fixture.memory;
 
-import com.depromeet.memory.Memory;
-import com.depromeet.memory.Stroke;
+import com.depromeet.memory.domain.Memory;
+import com.depromeet.memory.domain.Stroke;
 
 public class StrokeFixture {
     public static Stroke mockLapsStroke(Memory memory) {

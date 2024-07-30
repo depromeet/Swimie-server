@@ -7,7 +7,7 @@ import com.depromeet.image.domain.vo.ImagePresignedUrlVo;
 import com.depromeet.image.port.in.ImageUpdateUseCase;
 import com.depromeet.image.port.out.persistence.ImagePersistencePort;
 import com.depromeet.image.port.out.s3.S3ManagePort;
-import com.depromeet.memory.Memory;
+import com.depromeet.memory.domain.Memory;
 import com.depromeet.type.image.ImageErrorType;
 import com.depromeet.util.ImageNameUtil;
 import java.util.ArrayList;

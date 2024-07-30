@@ -1,7 +1,7 @@
 package com.depromeet.memory.dto.response;
 
-import com.depromeet.memory.Memory;
-import com.depromeet.memory.Stroke;
+import com.depromeet.memory.domain.Memory;
+import com.depromeet.memory.domain.Stroke;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.ArrayList;
 import java.util.List;

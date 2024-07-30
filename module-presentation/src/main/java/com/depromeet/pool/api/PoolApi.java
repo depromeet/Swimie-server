@@ -1,10 +1,10 @@
 package com.depromeet.pool.api;
 
 import com.depromeet.dto.response.ApiResponse;
+import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.pool.dto.request.FavoritePoolCreateRequest;
 import com.depromeet.pool.dto.response.PoolInitialResponse;
 import com.depromeet.pool.dto.response.PoolSearchResponse;
-import com.depromeet.security.LoginMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;

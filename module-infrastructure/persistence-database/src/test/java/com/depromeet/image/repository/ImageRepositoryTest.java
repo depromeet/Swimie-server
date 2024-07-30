@@ -8,12 +8,14 @@ import com.depromeet.fixture.member.MockMember;
 import com.depromeet.fixture.memory.MemoryDetailFixture;
 import com.depromeet.fixture.memory.MemoryFixture;
 import com.depromeet.image.domain.Image;
-import com.depromeet.member.Member;
+import com.depromeet.member.domain.Member;
+import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import com.depromeet.member.repository.MemberJpaRepository;
 import com.depromeet.member.repository.MemberRepository;
-import com.depromeet.member.repository.MemberRepositoryImpl;
-import com.depromeet.memory.Memory;
-import com.depromeet.memory.MemoryDetail;
+import com.depromeet.memory.domain.Memory;
+import com.depromeet.memory.domain.MemoryDetail;
+import com.depromeet.memory.port.out.persistence.MemoryDetailPersistencePort;
+import com.depromeet.memory.port.out.persistence.MemoryPersistencePort;
 import com.depromeet.memory.repository.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
@@ -34,11 +36,11 @@ public class ImageRepositoryTest {
     @Autowired private JPAQueryFactory queryFactory;
     @Autowired private ImageJpaRepository imageJpaRepository;
     @Autowired private MemoryJpaRepository memoryJpaRepository;
-    private MemoryRepository memoryRepository;
+    private MemoryPersistencePort memoryPersistencePort;
     @Autowired private MemberJpaRepository memberJpaRepository;
-    private MemberRepository memberRepository;
+    private MemberPersistencePort memberPersistencePort;
     @Autowired private MemoryDetailJpaRepository memoryDetailJpaRepository;
-    private MemoryDetailRepository memoryDetailRepository;
+    private MemoryDetailPersistencePort memoryDetailPersistencePort;
     private ImageRepository imageRepository;
 
     private Memory memory;
@@ -47,10 +49,10 @@ public class ImageRepositoryTest {
     @BeforeEach
     void setUp() {
         imageRepository = new ImageRepository(queryFactory, imageJpaRepository);
-        memberRepository = new MemberRepositoryImpl(memberJpaRepository);
-        memoryRepository = new MemoryRepositoryImpl(queryFactory, memoryJpaRepository);
-        memoryDetailRepository = new MemoryDetailRepositoryImpl(memoryDetailJpaRepository);
-        member = memberRepository.save(MockMember.mockMember());
+        memberPersistencePort = new MemberRepository(memberJpaRepository);
+        memoryPersistencePort = new MemoryRepository(queryFactory, memoryJpaRepository);
+        memoryDetailPersistencePort = new MemoryDetailRepository(memoryDetailJpaRepository);
+        member = memberPersistencePort.save(MockMember.mockMember());
     }
 
     @AfterEach
@@ -116,9 +118,9 @@ public class ImageRepositoryTest {
 
     void saveMemory() {
         MemoryDetail memoryDetail = MemoryDetailFixture.mockMemoryDetail();
-        memoryDetail = memoryDetailRepository.save(memoryDetail);
+        memoryDetail = memoryDetailPersistencePort.save(memoryDetail);
         memory =
-                memoryRepository.save(
+                memoryPersistencePort.save(
                         MemoryFixture.mockMemory(
                                 member, memoryDetail, null, LocalDate.of(2024, 7, 1)));
     }

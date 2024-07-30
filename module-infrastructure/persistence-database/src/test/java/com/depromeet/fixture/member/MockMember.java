@@ -1,7 +1,7 @@
 package com.depromeet.fixture.member;
 
-import com.depromeet.member.Member;
-import com.depromeet.member.MemberRole;
+import com.depromeet.member.domain.Member;
+import com.depromeet.member.domain.MemberRole;
 
 public class MockMember {
     public static Member mockMember() {
