@@ -26,7 +26,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @DataJpaTest
 @Import(TestQueryDslConfig.class)
 @ExtendWith(SpringExtension.class)
-public class MemoryPersistencePortTest {
+public class MemoryRepositoryTest {
     @Autowired private JPAQueryFactory queryFactory;
     @Autowired private MemoryJpaRepository memoryJpaRepository;
     private MemoryRepository memoryRepositoryImpl;
