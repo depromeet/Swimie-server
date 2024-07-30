@@ -2,13 +2,13 @@ package com.depromeet.memory.api;
 
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.dto.response.CustomSliceResponse;
+import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
 import com.depromeet.memory.dto.request.TimelineRequest;
 import com.depromeet.memory.dto.response.CalendarResponse;
 import com.depromeet.memory.dto.response.MemoryResponse;
 import com.depromeet.memory.facade.MemoryFacade;
-import com.depromeet.security.LoginMember;
 import com.depromeet.type.memory.MemorySuccessType;
 import jakarta.validation.Valid;
 import java.time.YearMonth;

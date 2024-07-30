@@ -1,16 +1,43 @@
 package com.depromeet.member.repository;
 
-import com.depromeet.member.Member;
+import com.depromeet.member.domain.Member;
+import com.depromeet.member.entity.MemberEntity;
+import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
-public interface MemberRepository {
-    Optional<Member> findByEmail(String email);
+@Repository
+@RequiredArgsConstructor
+public class MemberRepository implements MemberPersistencePort {
+    private final MemberJpaRepository memberJpaRepository;
 
-    Optional<Member> findById(Long id);
+    @Override
+    public Optional<Member> findByEmail(String email) {
+        return memberJpaRepository.findByEmail(email).map(MemberEntity::toModel);
+    }
 
-    Member save(Member member);
+    @Override
+    public Optional<Member> findById(Long id) {
+        return memberJpaRepository.findById(id).map(MemberEntity::toModel);
+    }
 
-    void updateRefresh(Long memberId, String refreshToken);
+    @Override
+    public Member save(Member member) {
+        return memberJpaRepository.save(MemberEntity.from(member)).toModel();
+    }
 
-    Optional<Member> updateGoal(Long memberId, Integer goal);
+    @Override
+    public void updateRefresh(Long memberId, String refreshToken) {
+        memberJpaRepository
+                .findById(memberId)
+                .map(memberEntity -> memberEntity.updateRefresh(refreshToken));
+    }
+
+    @Override
+    public Optional<Member> updateGoal(Long memberId, Integer goal) {
+        return memberJpaRepository
+                .findById(memberId)
+                .map(memberEntity -> memberEntity.updateGoal(goal).toModel());
+    }
 }

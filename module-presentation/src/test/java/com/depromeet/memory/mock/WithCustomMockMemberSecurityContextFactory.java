@@ -1,6 +1,6 @@
 package com.depromeet.memory.mock;
 
-import com.depromeet.member.Member;
+import com.depromeet.member.domain.Member;
 import com.depromeet.memory.fixture.MemberFixture;
 import java.util.List;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

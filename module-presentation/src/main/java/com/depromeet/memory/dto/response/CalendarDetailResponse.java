@@ -1,6 +1,6 @@
 package com.depromeet.memory.dto.response;
 
-import com.depromeet.memory.Memory;
+import com.depromeet.memory.domain.Memory;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 

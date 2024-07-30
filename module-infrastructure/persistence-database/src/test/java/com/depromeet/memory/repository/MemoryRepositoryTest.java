@@ -6,12 +6,12 @@ import com.depromeet.TestQueryDslConfig;
 import com.depromeet.fixture.member.MockMember;
 import com.depromeet.fixture.memory.MemoryDetailFixture;
 import com.depromeet.fixture.memory.MemoryFixture;
-import com.depromeet.member.Member;
+import com.depromeet.member.domain.Member;
 import com.depromeet.member.repository.MemberJpaRepository;
-import com.depromeet.member.repository.MemberRepositoryImpl;
-import com.depromeet.memory.Memory;
-import com.depromeet.memory.MemoryDetail;
-import com.depromeet.memory.vo.Timeline;
+import com.depromeet.member.repository.MemberRepository;
+import com.depromeet.memory.domain.Memory;
+import com.depromeet.memory.domain.MemoryDetail;
+import com.depromeet.memory.domain.vo.Timeline;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
@@ -29,20 +29,20 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 public class MemoryRepositoryTest {
     @Autowired private JPAQueryFactory queryFactory;
     @Autowired private MemoryJpaRepository memoryJpaRepository;
-    private MemoryRepositoryImpl memoryRepositoryImpl;
+    private MemoryRepository memoryRepositoryImpl;
     @Autowired private MemberJpaRepository memberJpaRepository;
-    private MemberRepositoryImpl memberRepositoryImpl;
+    private MemberRepository memberRepositoryImpl;
     @Autowired private MemoryDetailJpaRepository memoryDetailJpaRepository;
-    private MemoryDetailRepositoryImpl memoryDetailRepositoryImpl;
+    private MemoryDetailRepository memoryDetailRepositoryImpl;
 
     private Member member;
     private LocalDate startRecordAt;
 
     @BeforeEach
     void setUp() {
-        memberRepositoryImpl = new MemberRepositoryImpl(memberJpaRepository);
-        memoryRepositoryImpl = new MemoryRepositoryImpl(queryFactory, memoryJpaRepository);
-        memoryDetailRepositoryImpl = new MemoryDetailRepositoryImpl(memoryDetailJpaRepository);
+        memberRepositoryImpl = new MemberRepository(memberJpaRepository);
+        memoryRepositoryImpl = new MemoryRepository(queryFactory, memoryJpaRepository);
+        memoryDetailRepositoryImpl = new MemoryDetailRepository(memoryDetailJpaRepository);
         member = memberRepositoryImpl.save(MockMember.mockMember());
         List<MemoryDetail> memoryDetailList = MemoryDetailFixture.memoryDetailList();
 

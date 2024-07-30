@@ -1,6 +1,6 @@
 package com.depromeet.memory.dto.response;
 
-import com.depromeet.memory.MemoryDetail;
+import com.depromeet.memory.domain.MemoryDetail;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.LocalTime;
 import lombok.Builder;
