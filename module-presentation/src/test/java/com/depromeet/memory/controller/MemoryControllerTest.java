@@ -64,6 +64,45 @@ public class MemoryControllerTest extends ControllerTestConfig {
 
     @Test
     @WithCustomMockMember
+    void 소수점_바퀴_수는_5만_가능합니다() throws Exception {
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("poolId", 1);
+        requestBody.put("item", "오리발");
+        requestBody.put("heartRate", 115);
+        requestBody.put("pace", "05:00:00");
+        requestBody.put("kcal", 300);
+        requestBody.put("recordAt", "2024-07-24");
+        requestBody.put("startTime", "11:00:00");
+        requestBody.put("endTime", "11:50:00");
+        requestBody.put("lane", 25);
+        requestBody.put("diary", "일기를 기록한다");
+
+        List<Map<String, Object>> strokes = new ArrayList<>();
+        Map<String, Object> stroke = new HashMap<>();
+        stroke.put("name", "자유형");
+        stroke.put("laps", 3.3); // Validation Error
+        stroke.put("meter", 150);
+        strokes.add(stroke);
+
+        requestBody.put("strokes", strokes);
+
+        List<Long> imageIdList = new ArrayList<>();
+        requestBody.put("imageIdList", imageIdList);
+
+        mockMvc.perform(
+                        post("/memory")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(requestBody)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("COMMON_1"))
+                .andExpect(jsonPath("$.message").value("입력 값 검증에 실패하였습니다"))
+                .andExpect(
+                        jsonPath("$.data.fieldErrors[0].reason").value("바퀴 수는 0.5 단위로만 입력 가능합니다"))
+                .andDo(print());
+    }
+
+    @Test
+    @WithCustomMockMember
     public void 수영기록을_조회합니다() throws Exception {
         mockMvc.perform(get("/memory/{memoryId}", 1))
                 .andExpect(status().isOk())
