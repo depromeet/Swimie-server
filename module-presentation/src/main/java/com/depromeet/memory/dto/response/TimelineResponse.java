@@ -70,7 +70,7 @@ public record TimelineResponse(
                 : null;
     }
 
-    private static Short getLapsFromStroke(Stroke stroke) {
+    private static Float getLapsFromStroke(Stroke stroke) {
         return stroke.getLaps() != null ? stroke.getLaps() : null;
     }
 
@@ -126,7 +126,7 @@ public record TimelineResponse(
                 totalMeter += stroke.getMeter();
             } else {
                 if (lane != null) {
-                    totalMeter += (int) stroke.getLaps() * lane;
+                    totalMeter += (int) (stroke.getLaps() * 2) * lane;
                 }
             }
         }

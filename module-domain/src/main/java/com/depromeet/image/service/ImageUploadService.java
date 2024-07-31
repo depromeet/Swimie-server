@@ -79,7 +79,7 @@ public class ImageUploadService implements ImageUploadUseCase {
 
     @Override
     public void changeImageStatusAndAddMemoryIdToImages(Memory memory, List<Long> imageIds) {
-        if (imageIds.isEmpty()) return;
+        if (imageIds == null || imageIds.isEmpty()) return;
         List<Image> images = imagePersistencePort.findImageByIds(imageIds);
         for (Image image : images) {
             image.addMemoryToImage(memory);

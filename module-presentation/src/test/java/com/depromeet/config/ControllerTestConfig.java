@@ -1,4 +1,4 @@
-package com.depromeet.memory.config;
+package com.depromeet.config;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;

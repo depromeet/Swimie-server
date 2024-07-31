@@ -38,7 +38,7 @@ public class CalendarResponse {
                                         .name(it.getName())
                                         .meter(
                                                 it.getMeter() == null
-                                                        ? it.getLaps()
+                                                        ? (int) (it.getLaps() * 2)
                                                                 * memoryDomain.getPool().getLane()
                                                         : it.getMeter())
                                         .build())

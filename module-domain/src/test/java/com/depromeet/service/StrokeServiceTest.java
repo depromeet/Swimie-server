@@ -34,7 +34,7 @@ class StrokeServiceTest {
         // given
         List<CreateStrokeCommand> commands = new ArrayList<>();
         for (int i = 0; i < STROKE_NAME_LIST.size(); i++) {
-            Short laps = 2;
+            Float laps = 2F;
             commands.add(new CreateStrokeCommand(STROKE_NAME_LIST.get(i), laps, 50));
         }
         Memory memory =

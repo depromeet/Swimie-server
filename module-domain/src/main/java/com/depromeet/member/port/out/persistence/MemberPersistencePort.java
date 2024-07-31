@@ -13,4 +13,6 @@ public interface MemberPersistencePort {
     void updateRefresh(Long memberId, String refreshToken);
 
     Optional<Member> updateGoal(Long memberId, Integer goal);
+
+    Optional<Member> updateName(Long memberId, String name);
 }
