@@ -1,4 +1,4 @@
-package com.depromeet.memory.fixture.dto;
+package com.depromeet.image.fixture.dto;
 
 import com.depromeet.image.dto.response.ImageResponse;
 import java.util.ArrayList;
