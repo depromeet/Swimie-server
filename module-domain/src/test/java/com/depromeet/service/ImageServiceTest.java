@@ -124,7 +124,12 @@ class ImageServiceTest {
         List<Image> images =
                 ImageFixture.makeImages(originImageNames, memory, ImageUploadStatus.UPLOADED);
         imageRepository.saveAll(images);
-        List<String> updateOriginImageNames = List.of("image1.png", "image3.png", "image4.png");
+        // image1.png(uuid), image2.png(uuid), image4.png
+        List<String> updateOriginImageNames =
+                List.of(
+                        "8d1e7137-69d5-37db-ae65-870145893168.png",
+                        "1a8f685c-15fe-3f92-8205-38fea13ff231.png",
+                        "image4.png");
 
         // when
         List<ImagePresignedUrlVo> actualImagePresignedUrlVos =

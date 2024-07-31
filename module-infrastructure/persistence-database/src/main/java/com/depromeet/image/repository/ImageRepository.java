@@ -39,7 +39,8 @@ public class ImageRepository implements ImagePersistencePort {
         queryFactory
                 .update(imageEntity)
                 .set(imageEntity.imageUploadStatus, ImageUploadStatus.UPLOADED)
-                .where(imageEntity.id.in(imageIds));
+                .where(imageEntity.id.in(imageIds))
+                .execute();
     }
 
     @Override
@@ -76,12 +77,7 @@ public class ImageRepository implements ImagePersistencePort {
     @Override
     public List<Image> findImageByIds(List<Long> ids) {
         List<ImageEntity> imageEntities =
-                queryFactory
-                        .selectFrom(imageEntity)
-                        .join(imageEntity.memory, memoryEntity)
-                        .fetchJoin()
-                        .where(imageEntity.id.in(ids))
-                        .fetch();
+                queryFactory.selectFrom(imageEntity).where(imageEntity.id.in(ids)).fetch();
 
         return imageEntities.stream().map(ImageEntity::toModel).toList();
     }

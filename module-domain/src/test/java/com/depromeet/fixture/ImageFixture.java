@@ -3,6 +3,7 @@ package com.depromeet.fixture;
 import com.depromeet.image.domain.Image;
 import com.depromeet.image.domain.ImageUploadStatus;
 import com.depromeet.memory.domain.Memory;
+import com.depromeet.util.ImageNameUtil;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,13 +22,15 @@ public class ImageFixture {
             List<String> originImageNames, Memory memory, ImageUploadStatus status) {
         List<Image> images = new ArrayList<>();
         for (int i = 0; i < originImageNames.size(); i++) {
+            String uuidImageName = ImageNameUtil.createImageName(originImageNames.get(i));
+
             Image image =
                     Image.builder()
                             .memory(memory)
                             .originImageName(originImageNames.get(i))
-                            .imageName("imageName" + i + 1 + ".png")
+                            .imageName(uuidImageName)
                             .imageUploadStatus(status)
-                            .imageUrl("http://imageName" + i + 1 + ".png")
+                            .imageUrl("http://" + uuidImageName)
                             .build();
             images.add(image);
         }
