@@ -120,10 +120,8 @@ class MemoryServiceTest {
     @Test
     void 회원은_영법을_수정할_수_있다() {
         // given
-        UpdateStrokeCommand firstCommand =
-                new UpdateStrokeCommand((Long) null, "자유형", (short) 4, null);
-        UpdateStrokeCommand secondCommand =
-                new UpdateStrokeCommand((Long) null, "접영", (short) 2, null);
+        UpdateStrokeCommand firstCommand = new UpdateStrokeCommand((Long) null, "자유형", 4F, null);
+        UpdateStrokeCommand secondCommand = new UpdateStrokeCommand((Long) null, "접영", 2F, null);
 
         List<UpdateStrokeCommand> commands = List.of(firstCommand, secondCommand);
 

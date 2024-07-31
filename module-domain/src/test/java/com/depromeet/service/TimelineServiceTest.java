@@ -98,10 +98,10 @@ public class TimelineServiceTest {
 
     List<Stroke> saveLapsStroke() {
         List<CreateStrokeCommand> commands = new ArrayList<>();
-        Short laps = 2;
+        Float laps = 2F;
         for (int i = 0; i < STROKE_NAME_LIST.size(); i++) {
             commands.add(new CreateStrokeCommand(STROKE_NAME_LIST.get(i), laps, null));
-            expectedTotalMeter += laps * lane;
+            expectedTotalMeter += (int) (laps * 2) * lane;
         }
 
         return strokeService.saveAll(memory, commands);

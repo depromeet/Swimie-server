@@ -1,6 +1,7 @@
 package com.depromeet.memory.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -51,6 +52,7 @@ public class MemoryCreateRequest {
     private String diary;
 
     // Stroke
+    @Valid
     @Schema(description = "영법 목록")
     private List<StrokeCreateRequest> strokes;
 

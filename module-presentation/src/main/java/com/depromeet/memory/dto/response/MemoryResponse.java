@@ -1,7 +1,7 @@
 package com.depromeet.memory.dto.response;
 
 import com.depromeet.image.domain.Image;
-import com.depromeet.image.dto.response.ImageResponse;
+import com.depromeet.image.dto.response.ImageSimpleResponse;
 import com.depromeet.member.dto.response.MemberSimpleResponse;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.MemoryDetail;
@@ -24,13 +24,13 @@ public class MemoryResponse {
     private Pool pool;
     private MemoryDetailResponse memoryDetail;
     private List<StrokeResponse> strokes;
-    private List<ImageResponse> images;
+    private List<ImageSimpleResponse> images;
     private LocalDate recordAt;
     private LocalTime startTime;
     private LocalTime endTime;
     private LocalTime duration;
     private Short lane;
-    private Integer totalLap;
+    private Float totalLap;
     private Integer totalMeter;
     private String diary;
 
@@ -51,7 +51,7 @@ public class MemoryResponse {
         List<StrokeResponse> resultStrokes = getResultStrokes(strokes, lane);
 
         // 기록 전체 바퀴 수와 미터 수를 계산
-        Integer totalLap = 0;
+        Float totalLap = 0F;
         Integer totalMeter = 0;
         for (StrokeResponse stroke : resultStrokes) {
             totalLap += stroke.laps();
@@ -86,8 +86,8 @@ public class MemoryResponse {
                 0);
     }
 
-    private static List<ImageResponse> getImageSource(List<Image> images) {
-        return images.stream().map(ImageResponse::of).toList();
+    private static List<ImageSimpleResponse> getImageSource(List<Image> images) {
+        return images.stream().map(ImageSimpleResponse::of).toList();
     }
 
     private static List<StrokeResponse> getResultStrokes(List<Stroke> strokes, Short lane) {
@@ -99,13 +99,13 @@ public class MemoryResponse {
                                         .strokeId(stroke.getId())
                                         .name(stroke.getName())
                                         .laps(stroke.getLaps())
-                                        .meter(stroke.getLaps() * lane)
+                                        .meter((short) (stroke.getLaps() * 2) * lane)
                                         .build();
                             } else {
                                 return StrokeResponse.builder()
                                         .strokeId(stroke.getId())
                                         .name(stroke.getName())
-                                        .laps((short) (stroke.getMeter() / lane))
+                                        .laps((float) stroke.getMeter() / (lane * 2))
                                         .meter(stroke.getMeter())
                                         .build();
                             }
