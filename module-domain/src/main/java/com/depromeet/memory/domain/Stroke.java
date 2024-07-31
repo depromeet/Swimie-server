@@ -8,11 +8,11 @@ public class Stroke {
     private Long id;
     private Memory memory;
     private String name;
-    private Short laps;
+    private Float laps;
     private Integer meter;
 
     @Builder
-    public Stroke(Long id, Memory memory, String name, Short laps, Integer meter) {
+    public Stroke(Long id, Memory memory, String name, Float laps, Integer meter) {
         this.id = id;
         this.memory = memory;
         this.name = name;

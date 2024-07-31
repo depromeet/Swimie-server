@@ -24,12 +24,12 @@ public class StrokeEntity {
 
     private String name;
 
-    private Short laps;
+    private Float laps;
 
     private Integer meter;
 
     @Builder
-    public StrokeEntity(Long id, MemoryEntity memory, String name, Short laps, Integer meter) {
+    public StrokeEntity(Long id, MemoryEntity memory, String name, Float laps, Integer meter) {
         this.id = id;
         this.memory = memory;
         this.name = name;

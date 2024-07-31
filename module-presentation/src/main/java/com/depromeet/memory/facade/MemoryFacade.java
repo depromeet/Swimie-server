@@ -53,7 +53,9 @@ public class MemoryFacade {
         imageUploadUseCase.changeImageStatusAndAddMemoryIdToImages(
                 newMemory, request.getImageIdList());
 
-        poolSearchLogUseCase.createSearchLog(writer, request.getPoolId());
+        if (request.getPoolId() != null) {
+            poolSearchLogUseCase.createSearchLog(writer, request.getPoolId());
+        }
     }
 
     @Transactional

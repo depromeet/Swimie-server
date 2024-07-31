@@ -30,7 +30,7 @@ public class MemoryResponse {
     private LocalTime endTime;
     private LocalTime duration;
     private Short lane;
-    private Integer totalLap;
+    private Float totalLap;
     private Integer totalMeter;
     private String diary;
 
@@ -51,7 +51,7 @@ public class MemoryResponse {
         List<StrokeResponse> resultStrokes = getResultStrokes(strokes, lane);
 
         // 기록 전체 바퀴 수와 미터 수를 계산
-        Integer totalLap = 0;
+        Float totalLap = 0F;
         Integer totalMeter = 0;
         for (StrokeResponse stroke : resultStrokes) {
             totalLap += stroke.laps();
@@ -99,13 +99,13 @@ public class MemoryResponse {
                                         .strokeId(stroke.getId())
                                         .name(stroke.getName())
                                         .laps(stroke.getLaps())
-                                        .meter(stroke.getLaps() * lane)
+                                        .meter((short) (stroke.getLaps() * 2) * lane)
                                         .build();
                             } else {
                                 return StrokeResponse.builder()
                                         .strokeId(stroke.getId())
                                         .name(stroke.getName())
-                                        .laps((short) (stroke.getMeter() / lane))
+                                        .laps((float) stroke.getMeter() / (lane * 2))
                                         .meter(stroke.getMeter())
                                         .build();
                             }
