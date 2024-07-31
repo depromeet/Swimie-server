@@ -1,7 +1,7 @@
 package com.depromeet.memory.dto.response;
 
 import com.depromeet.image.domain.Image;
-import com.depromeet.image.dto.response.ImageResponse;
+import com.depromeet.image.dto.response.ImageSimpleResponse;
 import com.depromeet.member.dto.response.MemberSimpleResponse;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.MemoryDetail;
@@ -24,7 +24,7 @@ public class MemoryResponse {
     private Pool pool;
     private MemoryDetailResponse memoryDetail;
     private List<StrokeResponse> strokes;
-    private List<ImageResponse> images;
+    private List<ImageSimpleResponse> images;
     private LocalDate recordAt;
     private LocalTime startTime;
     private LocalTime endTime;
@@ -86,8 +86,8 @@ public class MemoryResponse {
                 0);
     }
 
-    private static List<ImageResponse> getImageSource(List<Image> images) {
-        return images.stream().map(ImageResponse::of).toList();
+    private static List<ImageSimpleResponse> getImageSource(List<Image> images) {
+        return images.stream().map(ImageSimpleResponse::of).toList();
     }
 
     private static List<StrokeResponse> getResultStrokes(List<Stroke> strokes, Short lane) {
