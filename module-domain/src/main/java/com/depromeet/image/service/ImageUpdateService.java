@@ -28,15 +28,15 @@ public class ImageUpdateService implements ImageUpdateUseCase {
     private String domain;
 
     @Override
-    public List<ImagePresignedUrlVo> updateImages(Memory memory, List<String> imageNames) {
-        validateImageIsNotNull(imageNames);
+    public List<ImagePresignedUrlVo> updateImages(Memory memory, List<String> newImageNames) {
+        validateImageIsNotNull(newImageNames);
 
         List<Image> existingImages = imagePersistencePort.findAllByMemoryId(memory.getId());
         List<String> existingImageNames = getExistingImageNames(existingImages);
 
         List<ImagePresignedUrlVo> updatedImageNames =
-                getImageUploadResponseDto(memory, imageNames, existingImageNames);
-        deleteNonUpdatedImages(existingImages, imageNames);
+                getImageUploadResponseDto(memory, newImageNames, existingImageNames);
+        deleteNonUpdatedImages(existingImages, newImageNames);
         return updatedImageNames;
     }
 
@@ -61,20 +61,26 @@ public class ImageUpdateService implements ImageUpdateUseCase {
     }
 
     private List<ImagePresignedUrlVo> getImageUploadResponseDto(
-            Memory memory, List<String> imageNames, List<String> existImagesName) {
+            Memory memory, List<String> newImageNames, List<String> existImagesNames) {
         List<ImagePresignedUrlVo> imageUploadResponseDtos = new ArrayList<>();
 
-        for (String originImageName : imageNames) {
-            String imageName = generateImageName(originImageName);
+        for (String imageName : newImageNames) {
+            validateImageName(imageName);
+            boolean isImageExist =
+                    ImageNameUtil.validateImageNameIsUUID(
+                            imageName); // image가 uuid 인지 확인 (기존의 이미지인지 확인)
 
-            if (existImagesName.contains(imageName)) continue;
-            String presignedUrl = s3ManagePort.getPresignedUrl(imageName);
-            Long addedImageId = saveNewImage(originImageName, imageName, memory);
+            if (isImageExist && existImagesNames.contains(imageName))
+                continue; // image가 uuid 이고 기존의 이미지에 존재하면 패스
+            String uuidImageName = ImageNameUtil.createImageName(imageName);
+
+            String presignedUrl = s3ManagePort.getPresignedUrl(uuidImageName);
+            Long addedImageId = saveNewImage(imageName, uuidImageName, memory);
 
             ImagePresignedUrlVo imageUploadResponseDto =
                     ImagePresignedUrlVo.builder()
                             .imageId(addedImageId)
-                            .imageName(originImageName)
+                            .imageName(imageName)
                             .presignedUrl(presignedUrl)
                             .build();
             imageUploadResponseDtos.add(imageUploadResponseDto);
@@ -82,12 +88,10 @@ public class ImageUpdateService implements ImageUpdateUseCase {
         return imageUploadResponseDtos;
     }
 
-    private String generateImageName(String originImageName) {
-        if (originImageName == null || originImageName.isEmpty()) {
+    private void validateImageName(String imageName) {
+        if (imageName == null || imageName.isEmpty()) {
             throw new BadRequestException(ImageErrorType.INVALID_IMAGE_NAME);
         }
-
-        return ImageNameUtil.createImageName(originImageName);
     }
 
     private Long saveNewImage(String originImageName, String imageName, Memory memory) {
@@ -102,11 +106,7 @@ public class ImageUpdateService implements ImageUpdateUseCase {
         return imagePersistencePort.save(newImage);
     }
 
-    private void deleteNonUpdatedImages(
-            List<Image> existImages, List<String> updateOriginImageNames) {
-        List<String> updatedImageNames =
-                updateOriginImageNames.stream().map(ImageNameUtil::createImageName).toList();
-
+    private void deleteNonUpdatedImages(List<Image> existImages, List<String> updatedImageNames) {
         List<Long> deletedImageIds =
                 existImages.stream()
                         .filter(i -> !updatedImageNames.contains(i.getImageName()))
