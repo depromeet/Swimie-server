@@ -40,4 +40,11 @@ public class MemberRepository implements MemberPersistencePort {
                 .findById(memberId)
                 .map(memberEntity -> memberEntity.updateGoal(goal).toModel());
     }
+
+    @Override
+    public Optional<Member> updateName(Long memberId, String name) {
+        return memberJpaRepository
+                .findById(memberId)
+                .map(memberEntity -> memberEntity.updateName(name).toModel());
+    }
 }
