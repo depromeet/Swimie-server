@@ -78,8 +78,6 @@ public class ImageRepository implements ImagePersistencePort {
         List<ImageEntity> imageEntities =
                 queryFactory
                         .selectFrom(imageEntity)
-                        .join(imageEntity.memory, memoryEntity)
-                        .fetchJoin()
                         .where(imageEntity.id.in(ids))
                         .fetch();
 
