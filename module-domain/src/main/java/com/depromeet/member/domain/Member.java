@@ -39,4 +39,9 @@ public class Member {
         this.goal = goal;
         return this;
     }
+
+    public Member updateName(String name) {
+        this.name = name;
+        return this;
+    }
 }

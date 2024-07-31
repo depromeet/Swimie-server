@@ -4,8 +4,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.depromeet.config.ControllerTestConfig;
 import com.depromeet.memory.api.MemoryController;
-import com.depromeet.memory.config.ControllerTestConfig;
 import com.depromeet.memory.facade.MemoryFacade;
 import com.depromeet.memory.mock.WithCustomMockMember;
 import com.fasterxml.jackson.databind.ObjectMapper;

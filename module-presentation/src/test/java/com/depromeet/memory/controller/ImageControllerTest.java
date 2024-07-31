@@ -8,11 +8,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.depromeet.config.ControllerTestConfig;
 import com.depromeet.image.api.ImageController;
 import com.depromeet.image.dto.response.ImageResponse;
 import com.depromeet.image.dto.response.ImageUploadResponse;
 import com.depromeet.image.facade.ImageFacade;
-import com.depromeet.memory.config.ControllerTestConfig;
 import com.depromeet.memory.fixture.dto.ImageUploadResponseDtoFixture;
 import com.depromeet.memory.fixture.dto.MemoryImagesDtoFixture;
 import com.depromeet.memory.mock.WithCustomMockMember;
