@@ -1,7 +1,6 @@
 package com.depromeet.member.service;
 
 import com.depromeet.exception.BadRequestException;
-import com.depromeet.exception.ForbiddenException;
 import com.depromeet.exception.InternalServerException;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.member.domain.Member;
