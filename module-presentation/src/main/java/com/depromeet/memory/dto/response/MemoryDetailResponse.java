@@ -6,8 +6,7 @@ import java.time.LocalTime;
 import lombok.Builder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record MemoryDetailResponse(
-        String item, Short heartRate, LocalTime pace, Integer kcal) {
+public record MemoryDetailResponse(String item, Short heartRate, LocalTime pace, Integer kcal) {
     @Builder
     public MemoryDetailResponse {}
 

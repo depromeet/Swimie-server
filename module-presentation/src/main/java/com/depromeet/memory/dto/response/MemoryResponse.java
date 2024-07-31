@@ -1,7 +1,6 @@
 package com.depromeet.memory.dto.response;
 
 import com.depromeet.image.domain.Image;
-import com.depromeet.image.dto.response.ImageResponse;
 import com.depromeet.image.dto.response.ImageSimpleResponse;
 import com.depromeet.member.dto.response.MemberSimpleResponse;
 import com.depromeet.memory.domain.Memory;
