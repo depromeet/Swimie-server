@@ -10,6 +10,8 @@ import com.depromeet.image.port.out.s3.S3ManagePort;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.type.image.ImageErrorType;
 import com.depromeet.util.ImageNameUtil;
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ImageUploadService implements ImageUploadUseCase {
     private final ImagePersistencePort imagePersistencePort;
     private final S3ManagePort s3ManagePort;
+    private final Clock clock;
 
     @Value("${cloud-front.domain}")
     private String domain;
@@ -54,7 +57,7 @@ public class ImageUploadService implements ImageUploadUseCase {
         if (originImageName == null || originImageName.equals("")) {
             throw new BadRequestException(ImageErrorType.INVALID_IMAGE_NAME);
         }
-        return ImageNameUtil.createImageName(originImageName);
+        return ImageNameUtil.createImageName(originImageName, LocalDateTime.now(clock));
     }
 
     private Long saveImage(String originImageName, String imageNames) {

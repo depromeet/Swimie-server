@@ -2,11 +2,7 @@ package com.depromeet.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.depromeet.fixture.ImageFixture;
-import com.depromeet.fixture.MemberFixture;
-import com.depromeet.fixture.MemoryDetailFixture;
-import com.depromeet.fixture.MemoryFixture;
-import com.depromeet.fixture.PoolFixture;
+import com.depromeet.fixture.*;
 import com.depromeet.image.domain.Image;
 import com.depromeet.image.domain.ImageUploadStatus;
 import com.depromeet.image.domain.vo.ImagePresignedUrlVo;
@@ -21,6 +17,8 @@ import com.depromeet.mock.FakeImageRepository;
 import com.depromeet.mock.FakeS3ImageManager;
 import com.depromeet.pool.domain.Pool;
 import com.depromeet.util.ImageNameUtil;
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -45,6 +43,7 @@ class ImageServiceTest {
     private Member member = MemberFixture.make(memberId, "USER");
     private MemoryDetail memoryDetail = MemoryDetailFixture.make(memoryDetailId);
     private Memory memory = MemoryFixture.make(memoryId, member, pool, memoryDetail);
+    private Clock clock;
 
     List<String> originImageNames = List.of("image1.png", "image2.png", "image3.png");
 
@@ -52,10 +51,11 @@ class ImageServiceTest {
     void init() {
         s3ImageManager = new FakeS3ImageManager();
         imageRepository = new FakeImageRepository();
+        clock = new ClockFixture();
 
         imageGetService = new ImageGetService(imageRepository);
-        imageUploadService = new ImageUploadService(imageRepository, s3ImageManager);
-        imageUpdateService = new ImageUpdateService(imageRepository, s3ImageManager);
+        imageUploadService = new ImageUploadService(imageRepository, s3ImageManager, clock);
+        imageUpdateService = new ImageUpdateService(imageRepository, s3ImageManager, clock);
         imageDeleteService = new ImageDeleteService(imageRepository, s3ImageManager);
     }
 
@@ -65,7 +65,8 @@ class ImageServiceTest {
         List<ImagePresignedUrlVo> expectedImagePresignedUrlVos = new ArrayList<>();
 
         for (String originImageName : originImageNames) {
-            String imageName = ImageNameUtil.createImageName(originImageName);
+            String imageName =
+                    ImageNameUtil.createImageName(originImageName, LocalDateTime.now(clock));
 
             ImagePresignedUrlVo imagePresignedUrlVo =
                     ImagePresignedUrlVo.builder()
@@ -103,7 +104,11 @@ class ImageServiceTest {
     void 이미지_업로드_상태_변경_및_이미지에_수영기록을_추가한다() {
         // given
         List<Image> images =
-                ImageFixture.makeImages(originImageNames, null, ImageUploadStatus.PENDING);
+                ImageFixture.makeImages(
+                        originImageNames,
+                        null,
+                        ImageUploadStatus.PENDING,
+                        LocalDateTime.now(clock));
         images = imageRepository.saveAll(images);
 
         List<Long> imageIds = images.stream().map(Image::getId).toList();
@@ -122,9 +127,18 @@ class ImageServiceTest {
     void 수영기록의_이미지를_수정한다() {
         // given
         List<Image> images =
-                ImageFixture.makeImages(originImageNames, memory, ImageUploadStatus.UPLOADED);
+                ImageFixture.makeImages(
+                        originImageNames,
+                        memory,
+                        ImageUploadStatus.UPLOADED,
+                        LocalDateTime.now(clock));
         imageRepository.saveAll(images);
-        List<String> updateOriginImageNames = List.of("image1.png", "image3.png", "image4.png");
+        // image1.png(uuid), image2.png(uuid), image4.png
+        List<String> updateOriginImageNames =
+                List.of(
+                        "8d1e7137-69d5-37db-ae65-870145893168.png",
+                        "1a8f685c-15fe-3f92-8205-38fea13ff231.png",
+                        "image4.png");
 
         // when
         List<ImagePresignedUrlVo> actualImagePresignedUrlVos =
@@ -141,7 +155,11 @@ class ImageServiceTest {
     void 이미지_업로드_상태를_변경한다() {
         // given
         List<Image> images =
-                ImageFixture.makeImages(originImageNames, memory, ImageUploadStatus.PENDING);
+                ImageFixture.makeImages(
+                        originImageNames,
+                        memory,
+                        ImageUploadStatus.PENDING,
+                        LocalDateTime.now(clock));
         images = imageRepository.saveAll(images);
         List<Long> imageIds = images.stream().map(Image::getId).toList();
 
@@ -160,7 +178,11 @@ class ImageServiceTest {
     void memoryId에_해당하는_이미지를_조회한다() {
         // given
         List<Image> images =
-                ImageFixture.makeImages(originImageNames, memory, ImageUploadStatus.UPLOADED);
+                ImageFixture.makeImages(
+                        originImageNames,
+                        memory,
+                        ImageUploadStatus.UPLOADED,
+                        LocalDateTime.now(clock));
         images = imageRepository.saveAll(images);
 
         // when
@@ -187,7 +209,11 @@ class ImageServiceTest {
     void memoryId_로_이미지를_삭제한다() {
         // given
         List<Image> images =
-                ImageFixture.makeImages(originImageNames, memory, ImageUploadStatus.UPLOADED);
+                ImageFixture.makeImages(
+                        originImageNames,
+                        memory,
+                        ImageUploadStatus.UPLOADED,
+                        LocalDateTime.now(clock));
         images = imageRepository.saveAll(images);
         List<Long> imageIds = images.stream().map(Image::getId).toList();
 

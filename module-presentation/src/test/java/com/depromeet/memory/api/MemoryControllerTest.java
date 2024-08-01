@@ -1,13 +1,12 @@
-package com.depromeet.memory.controller;
+package com.depromeet.memory.api;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.depromeet.config.ControllerTestConfig;
-import com.depromeet.memory.api.MemoryController;
+import com.depromeet.config.mock.WithCustomMockMember;
 import com.depromeet.memory.facade.MemoryFacade;
-import com.depromeet.memory.mock.WithCustomMockMember;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.HashMap;

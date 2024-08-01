@@ -1,4 +1,4 @@
-package com.depromeet.memory.controller;
+package com.depromeet.memory.api;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.depromeet.config.ControllerTestConfig;
-import com.depromeet.memory.mock.WithCustomMockMember;
+import com.depromeet.config.mock.WithCustomMockMember;
 import com.depromeet.pool.api.PoolController;
 import com.depromeet.pool.facade.PoolFacade;
 import com.fasterxml.jackson.databind.ObjectMapper;
