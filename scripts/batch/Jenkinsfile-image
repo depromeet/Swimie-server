@@ -1,0 +1,28 @@
+pipeline {
+    agent any
+    triggers {
+        cron('H 3 * * *')
+    }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '3'))
+    }
+    environment {
+        TARGET_HOST = credentials('REMOTE_SERVER_ADDR')
+    }
+    stages {
+        stage('원격 서버에 접속하여 PENDING Image 일괄 삭제 배치 작업 실행') {
+            steps {
+                script {
+                    def remoteCommands = """
+                        cd ~ &&
+                        ./batch-image.sh
+                    """
+
+                    sshagent (credentials: ['jenkins-ssh']) {
+                        sh "ssh ${TARGET_HOST} '${remoteCommands}'"
+                    }
+                }
+            }
+        }
+    }
+}
