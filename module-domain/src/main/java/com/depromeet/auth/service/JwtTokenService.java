@@ -16,11 +16,13 @@ import com.depromeet.type.auth.AuthErrorType;
 import com.depromeet.type.member.MemberErrorType;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
+@Profile("!batch")
 @RequiredArgsConstructor
 public class JwtTokenService implements CreateTokenUseCase {
     private final SecurityPort securityPort;
