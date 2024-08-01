@@ -11,7 +11,6 @@ import com.depromeet.memory.dto.response.MemoryResponse;
 import com.depromeet.memory.facade.MemoryFacade;
 import com.depromeet.type.memory.MemorySuccessType;
 import jakarta.validation.Valid;
-import java.time.YearMonth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,8 +53,10 @@ public class MemoryController implements MemoryApi {
 
     @GetMapping("/calendar")
     public ApiResponse<CalendarResponse> getCalendar(
-            @LoginMember Long memberId, @RequestParam("yearMonth") YearMonth yearMonth) {
-        CalendarResponse response = memoryFacade.getCalendar(memberId, yearMonth);
+            @LoginMember Long memberId,
+            @RequestParam("year") Integer year,
+            @RequestParam("month") Short month) {
+        CalendarResponse response = memoryFacade.getCalendar(memberId, year, month);
         return ApiResponse.success(MemorySuccessType.GET_CALENDAR_SUCCESS, response);
     }
 }

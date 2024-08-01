@@ -1,0 +1,7 @@
+FROM amazoncorretto:21
+
+WORKDIR /app
+
+COPY module-batch/build/libs/module-batch.jar /app/batch-image.jar
+
+CMD ["java", "-Duser.timezone=Asia/Seoul", "-jar", "-Dspring.profiles.active=batch", "batch-image.jar"]

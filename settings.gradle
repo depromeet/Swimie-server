@@ -7,4 +7,5 @@ include 'module-infrastructure:security'
 include 'module-infrastructure:object-storage'
 include 'module-infrastructure:persistence-redis'
 include 'module-infrastructure:persistence-database'
-include 'module-infrastructure:security'
+include 'module-batch'
+
