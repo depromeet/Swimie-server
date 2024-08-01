@@ -86,7 +86,8 @@ public class MemoryFacade {
         return MemoryMapper.toSliceResponse(timeline);
     }
 
-    public CalendarResponse getCalendar(Long memberId, YearMonth yearMonth) {
+    public CalendarResponse getCalendar(Long memberId, Integer year, Short month) {
+        YearMonth yearMonth = YearMonth.of(year, month);
         List<Memory> calendarMemories =
                 calendarService.getCalendarByYearAndMonth(memberId, yearMonth);
         return CalendarResponse.of(calendarMemories);

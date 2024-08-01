@@ -10,7 +10,6 @@ import com.depromeet.memory.dto.response.MemoryResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.time.YearMonth;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,5 +38,7 @@ public interface MemoryApi {
 
     @Operation(summary = "캘린더 조회")
     ApiResponse<CalendarResponse> getCalendar(
-            @LoginMember Long memberId, @RequestParam("yearMonth") YearMonth yearMonth);
+            @LoginMember Long memberId,
+            @RequestParam("year") Integer year,
+            @RequestParam("month") Short month);
 }
