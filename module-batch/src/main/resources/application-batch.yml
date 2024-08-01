@@ -1,0 +1,44 @@
+spring:
+  config:
+    import: optional:application-secret.properties
+    activate:
+      on-profile: batch
+  datasource:
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+  batch:
+    job:
+      enabled: true
+    jdbc:
+      initialize-schema: never
+  cloud:
+    aws:
+      credentials:
+        access-key: ${AWS_ACCESS_KEY_ID}
+        secret-key: ${AWS_SECRET_ACCESS_KEY}
+      s3:
+        bucket: ${AWS_BUCKET}
+      region:
+        static: ${AWS_REGION}
+
+cloud-front:
+  domain: ${AWS_CLOUD_FRONT_DOMAIN}
+
+logging:
+  level:
+    org:
+        orm:
+          jpa: INFO
+server:
+  port: 9090
+
+
