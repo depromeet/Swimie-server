@@ -1,26 +1,19 @@
 package com.depromeet.memory.mapper;
 
-import com.depromeet.dto.response.CustomSliceResponse;
 import com.depromeet.memory.domain.vo.Timeline;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
 import com.depromeet.memory.dto.request.StrokeCreateRequest;
 import com.depromeet.memory.dto.request.StrokeUpdateRequest;
-import com.depromeet.memory.dto.request.TimelineRequest;
 import com.depromeet.memory.dto.response.TimelineResponse;
+import com.depromeet.memory.dto.response.TimelineSliceResponse;
 import com.depromeet.memory.port.in.command.CreateMemoryCommand;
 import com.depromeet.memory.port.in.command.CreateStrokeCommand;
 import com.depromeet.memory.port.in.command.UpdateMemoryCommand;
 import com.depromeet.memory.port.in.command.UpdateStrokeCommand;
-import com.depromeet.memory.port.in.query.TimelineQuery;
 import java.util.List;
 
 public class MemoryMapper {
-    public static TimelineQuery toQuery(TimelineRequest request) {
-        return new TimelineQuery(
-                request.getCursorRecordAt(), request.getDate(), request.isShowNewer());
-    }
-
     public static CreateStrokeCommand toCommand(StrokeCreateRequest request) {
         return new CreateStrokeCommand(request.name(), request.laps(), request.meter());
     }
@@ -73,13 +66,13 @@ public class MemoryMapper {
                 .build();
     }
 
-    public static CustomSliceResponse<?> toSliceResponse(Timeline timeline) {
+    public static TimelineSliceResponse toSliceResponse(Timeline timeline) {
         List<TimelineResponse> result =
                 timeline.getTimelineContents().stream()
                         .map(TimelineResponse::mapToTimelineResponseDto)
                         .toList();
 
-        return CustomSliceResponse.builder()
+        return TimelineSliceResponse.builder()
                 .content(result)
                 .pageSize(timeline.getPageSize())
                 .cursorRecordAt(getCursorRecordAtResponse(timeline))

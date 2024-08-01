@@ -1,7 +1,6 @@
 package com.depromeet.memory.service;
 
 import com.depromeet.memory.domain.vo.Timeline;
-import com.depromeet.memory.port.in.query.TimelineQuery;
 import com.depromeet.memory.port.in.usecase.TimelineUseCase;
 import com.depromeet.memory.port.out.persistence.MemoryPersistencePort;
 import java.time.LocalDate;
@@ -16,26 +15,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class TimelineService implements TimelineUseCase {
     private final MemoryPersistencePort memoryPersistencePort;
 
-    private Timeline getTimelines(Long memberId, TimelineQuery query) {
-        LocalDate cursorRecordAt = null;
-        if (query.cursorRecordAt() != null) {
-            cursorRecordAt = query.cursorRecordAt();
-        }
+    @Override
+    public Timeline getTimelineByMemberIdAndCursorAndDate(
+            Long memberId, LocalDate cursorRecordAt, YearMonth date, boolean showNewer) {
+        return getTimelines(memberId, cursorRecordAt, date, showNewer);
+    }
 
-        LocalDate parsedDate = getLocalDateOrNull(query.date());
+    private Timeline getTimelines(
+            Long memberId, LocalDate cursorRecordAt, YearMonth date, boolean showNewer) {
+        LocalDate parsedDate = getLocalDateOrNull(date); // date 파라미터 임시 제거로 인해 임시 null 처리
 
-        if (query.showNewer()) {
+        if (showNewer) {
             return memoryPersistencePort.findNextMemoryByMemberId(
                     memberId, cursorRecordAt, parsedDate);
         } else {
             return memoryPersistencePort.findPrevMemoryByMemberId(
                     memberId, cursorRecordAt, parsedDate);
         }
-    }
-
-    @Override
-    public Timeline getTimelineByMemberIdAndCursorAndDate(Long memberId, TimelineQuery query) {
-        return getTimelines(memberId, query);
     }
 
     private LocalDate getLocalDateOrNull(YearMonth date) {

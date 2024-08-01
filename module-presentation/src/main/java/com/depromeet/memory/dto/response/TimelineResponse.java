@@ -5,6 +5,7 @@ import com.depromeet.image.dto.response.ImageResponse;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.Stroke;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -13,20 +14,20 @@ import lombok.Builder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record TimelineResponse(
-        Long memoryId,
-        String recordAt,
-        String startTime,
-        String endTime,
-        Short lane,
-        String diary,
-        Integer totalMeter,
-        Long memoryDetailId,
-        String item,
-        Short heartRate,
-        String pace,
-        Integer kcal,
-        List<StrokeResponse> strokes,
-        List<ImageResponse> images) {
+        @Schema(description = "memory PK", example = "1") Long memoryId,
+        @Schema(description = "수영기록 등록 날짜", example = "2024-07-31") String recordAt,
+        @Schema(description = "수영 시작 시간", example = "11:00") String startTime,
+        @Schema(description = "수영 시작 시간", example = "12:00") String endTime,
+        @Schema(description = "수영장 레인 길이", example = "25") Short lane,
+        @Schema(description = "수영 기록 일기", example = "오늘 수영을 열심히 했다") String diary,
+        @Schema(description = "총 수영 거리", example = "175") Integer totalMeter,
+        @Schema(description = "memoryDetail PK", example = "1") Long memoryDetailId,
+        @Schema(description = "수영시 사용한 아이템", example = "킥판, 구명조끼") String item,
+        @Schema(description = "심박수", example = "100") Short heartRate,
+        @Schema(description = "페이스", example = "10") String pace,
+        @Schema(description = "소모한 칼로리", example = "100") Integer kcal,
+        @Schema(description = "영법별 거리 리스트") List<StrokeResponse> strokes,
+        @Schema(description = "이미지") List<ImageResponse> images) {
     @Builder
     public TimelineResponse {}
 
