@@ -1,8 +1,10 @@
 package com.depromeet.memory.port.in.usecase;
 
 import com.depromeet.memory.domain.vo.Timeline;
-import com.depromeet.memory.port.in.query.TimelineQuery;
+import java.time.LocalDate;
+import java.time.YearMonth;
 
 public interface TimelineUseCase {
-    Timeline getTimelineByMemberIdAndCursorAndDate(Long memberId, TimelineQuery query);
+    Timeline getTimelineByMemberIdAndCursorAndDate(
+            Long memberId, LocalDate cursorRecordAt, YearMonth date, boolean showNewer);
 }
