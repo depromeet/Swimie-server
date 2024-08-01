@@ -4,6 +4,7 @@ import com.depromeet.image.domain.Image;
 import com.depromeet.image.domain.ImageUploadStatus;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.util.ImageNameUtil;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,10 +20,14 @@ public class ImageFixture {
     }
 
     public static List<Image> makeImages(
-            List<String> originImageNames, Memory memory, ImageUploadStatus status) {
+            List<String> originImageNames,
+            Memory memory,
+            ImageUploadStatus status,
+            LocalDateTime localDateTime) {
         List<Image> images = new ArrayList<>();
         for (int i = 0; i < originImageNames.size(); i++) {
-            String uuidImageName = ImageNameUtil.createImageName(originImageNames.get(i));
+            String uuidImageName =
+                    ImageNameUtil.createImageName(originImageNames.get(i), localDateTime);
 
             Image image =
                     Image.builder()

@@ -10,6 +10,8 @@ import com.depromeet.image.port.out.s3.S3ManagePort;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.type.image.ImageErrorType;
 import com.depromeet.util.ImageNameUtil;
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ImageUpdateService implements ImageUpdateUseCase {
     private final ImagePersistencePort imagePersistencePort;
     private final S3ManagePort s3ManagePort;
+    private final Clock clock;
 
     @Value("${cloud-front.domain}")
     private String domain;
@@ -72,7 +75,8 @@ public class ImageUpdateService implements ImageUpdateUseCase {
 
             if (isImageExist && existImagesNames.contains(imageName))
                 continue; // image가 uuid 이고 기존의 이미지에 존재하면 패스
-            String uuidImageName = ImageNameUtil.createImageName(imageName);
+            String uuidImageName =
+                    ImageNameUtil.createImageName(imageName, LocalDateTime.now(clock));
 
             String presignedUrl = s3ManagePort.getPresignedUrl(uuidImageName);
             Long addedImageId = saveNewImage(imageName, uuidImageName, memory);

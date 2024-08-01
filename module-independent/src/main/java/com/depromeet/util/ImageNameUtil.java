@@ -1,13 +1,18 @@
 package com.depromeet.util;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 public class ImageNameUtil {
-    public static String createImageName(String originalImageName) {
-
+    public static String createImageName(String originalImageName, LocalDateTime localDateTime) {
         int extensionIdx = originalImageName.lastIndexOf(".") + 1;
         String extension = originalImageName.substring(extensionIdx).toLowerCase();
-        String imageName = originalImageName + System.currentTimeMillis();
+
+        String localDateTimeFormat =
+                localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS"));
+
+        String imageName = originalImageName + localDateTimeFormat;
 
         UUID imageUUID = UUID.nameUUIDFromBytes(imageName.getBytes());
 
