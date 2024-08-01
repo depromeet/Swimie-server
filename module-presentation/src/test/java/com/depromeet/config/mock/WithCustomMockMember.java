@@ -1,4 +1,4 @@
-package com.depromeet.memory.mock;
+package com.depromeet.config.mock;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -1,4 +1,4 @@
-package com.depromeet.memory.controller;
+package com.depromeet.image.api;
 
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -9,13 +9,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.depromeet.config.ControllerTestConfig;
-import com.depromeet.image.api.ImageController;
+import com.depromeet.config.mock.WithCustomMockMember;
 import com.depromeet.image.dto.response.ImageResponse;
 import com.depromeet.image.dto.response.ImageUploadResponse;
 import com.depromeet.image.facade.ImageFacade;
-import com.depromeet.memory.fixture.dto.ImageUploadResponseDtoFixture;
-import com.depromeet.memory.fixture.dto.MemoryImagesDtoFixture;
-import com.depromeet.memory.mock.WithCustomMockMember;
+import com.depromeet.image.fixture.dto.ImageUploadResponseDtoFixture;
+import com.depromeet.image.fixture.dto.MemoryImagesDtoFixture;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.List;

@@ -9,11 +9,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.depromeet.config.ControllerTestConfig;
+import com.depromeet.config.mock.WithCustomMockMember;
 import com.depromeet.member.api.MemberController;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberRole;
 import com.depromeet.member.facade.MemberFacade;
-import com.depromeet.memory.mock.WithCustomMockMember;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.Map;

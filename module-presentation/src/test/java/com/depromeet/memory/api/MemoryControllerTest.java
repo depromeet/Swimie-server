@@ -1,13 +1,12 @@
-package com.depromeet.memory.controller;
+package com.depromeet.memory.api;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.depromeet.config.ControllerTestConfig;
-import com.depromeet.memory.api.MemoryController;
+import com.depromeet.config.mock.WithCustomMockMember;
 import com.depromeet.memory.facade.MemoryFacade;
-import com.depromeet.memory.mock.WithCustomMockMember;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -146,7 +145,7 @@ public class MemoryControllerTest extends ControllerTestConfig {
     @Test
     @WithCustomMockMember
     public void 수영기록_캘린더를_조회합니다() throws Exception {
-        mockMvc.perform(get("/memory/calendar").param("yearMonth", "2024-07"))
+        mockMvc.perform(get("/memory/calendar").param("year", "2024").param("month", "7"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("MEMORY_5"))
                 .andExpect(jsonPath("$.message").value("캘린더 조회에 성공하였습니다"))

@@ -6,9 +6,11 @@ import com.depromeet.auth.port.out.KakaoPort;
 import com.depromeet.auth.vo.kakao.KakaoAccountProfile;
 import com.depromeet.dto.auth.AccountProfileResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
+@Profile("!batch")
 @RequiredArgsConstructor
 public class SocialService implements SocialUseCase {
     private final KakaoPort kakaoPort;

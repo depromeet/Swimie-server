@@ -39,7 +39,8 @@ public class ImageRepository implements ImagePersistencePort {
         queryFactory
                 .update(imageEntity)
                 .set(imageEntity.imageUploadStatus, ImageUploadStatus.UPLOADED)
-                .where(imageEntity.id.in(imageIds));
+                .where(imageEntity.id.in(imageIds))
+                .execute();
     }
 
     @Override
