@@ -2,7 +2,6 @@ package com.depromeet.memory.facade;
 
 import static com.depromeet.memory.service.MemoryValidator.validatePermission;
 
-import com.depromeet.dto.response.CustomSliceResponse;
 import com.depromeet.image.port.in.ImageUploadUseCase;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
@@ -11,9 +10,9 @@ import com.depromeet.memory.domain.Stroke;
 import com.depromeet.memory.domain.vo.Timeline;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
-import com.depromeet.memory.dto.request.TimelineRequest;
 import com.depromeet.memory.dto.response.CalendarResponse;
 import com.depromeet.memory.dto.response.MemoryResponse;
+import com.depromeet.memory.dto.response.TimelineSliceResponse;
 import com.depromeet.memory.mapper.MemoryMapper;
 import com.depromeet.memory.port.in.command.CreateStrokeCommand;
 import com.depromeet.memory.port.in.command.UpdateMemoryCommand;
@@ -23,6 +22,7 @@ import com.depromeet.memory.service.CalendarService;
 import com.depromeet.memory.service.MemoryService;
 import com.depromeet.memory.service.StrokeService;
 import com.depromeet.pool.port.in.usecase.SearchLogUseCase;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -77,11 +77,11 @@ public class MemoryFacade {
         return MemoryResponse.from(memory);
     }
 
-    public CustomSliceResponse<?> getTimelineByMemberIdAndCursorAndDate(
-            Long memberId, TimelineRequest request) {
+    public TimelineSliceResponse getTimelineByMemberIdAndCursorAndDate(
+            Long memberId, LocalDate cursorRecordAt, YearMonth date, boolean showNewer) {
         Timeline timeline =
                 timelineUseCase.getTimelineByMemberIdAndCursorAndDate(
-                        memberId, MemoryMapper.toQuery(request));
+                        memberId, cursorRecordAt, date, showNewer);
 
         return MemoryMapper.toSliceResponse(timeline);
     }

@@ -131,11 +131,7 @@ public class MemoryControllerTest extends ControllerTestConfig {
     @Test
     @WithCustomMockMember
     public void 수영기록_타임라인을_조회합니다() throws Exception {
-        mockMvc.perform(
-                        get("/memory/timeline")
-                                .param("cursorId", "1L")
-                                .param("date", "2024-07")
-                                .param("size", "5"))
+        mockMvc.perform(get("/memory/timeline"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("MEMORY_4"))
                 .andExpect(jsonPath("$.message").value("타임라인 조회에 성공하였습니다"))
