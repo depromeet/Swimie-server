@@ -145,7 +145,7 @@ public class MemoryControllerTest extends ControllerTestConfig {
     @Test
     @WithCustomMockMember
     public void 수영기록_캘린더를_조회합니다() throws Exception {
-        mockMvc.perform(get("/memory/calendar").param("yearMonth", "2024-07"))
+        mockMvc.perform(get("/memory/calendar").param("year", "2024").param("month", "7"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("MEMORY_5"))
                 .andExpect(jsonPath("$.message").value("캘린더 조회에 성공하였습니다"))
