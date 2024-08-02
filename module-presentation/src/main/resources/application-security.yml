@@ -11,6 +11,7 @@ spring:
             client-id: ${KAKAO_CLIENT_ID}
             client-secret: ${KAKAO_CLIENT_SECRET}
             redirect-uri: ${KAKAO_REDIRECT_URL}
+            client-redirect-uri: ${KAKAO_CLIENT_REDIRECT_URL}
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
             client-name: kakao
@@ -22,6 +23,7 @@ spring:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
             redirect-uri: ${GOOGLE_REDIRECT_URL}
+            client-redirect-uri: ${GOOGLE_CLIENT_REDIRECT_URL}
             authorization-code: ${GOOGLE_AUTH_CODE}
             scope: profile,email
             access-token-url: https://oauth2.googleapis.com/token

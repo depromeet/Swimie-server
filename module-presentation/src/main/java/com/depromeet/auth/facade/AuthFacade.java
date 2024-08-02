@@ -27,9 +27,9 @@ public class AuthFacade {
     private final SocialUseCase socialUseCase;
     private final CreateTokenUseCase createTokenUseCase;
 
-    public JwtTokenResponse loginByGoogle(GoogleLoginRequest request) {
+    public JwtTokenResponse loginByGoogle(GoogleLoginRequest request, String origin) {
         final AccountProfileResponse profile =
-                socialUseCase.getGoogleAccountProfile(request.code());
+                socialUseCase.getGoogleAccountProfile(request.code(), origin);
         if (profile == null) {
             throw new NotFoundException(AuthErrorType.NOT_FOUND);
         }
@@ -39,8 +39,8 @@ public class AuthFacade {
         return JwtTokenResponse.of(token);
     }
 
-    public JwtTokenResponse loginByKakao(KakaoLoginRequest request) {
-        final KakaoAccountProfile profile = socialUseCase.getKakaoAccountProfile(request.code());
+    public JwtTokenResponse loginByKakao(KakaoLoginRequest request, String origin) {
+        final KakaoAccountProfile profile = socialUseCase.getKakaoAccountProfile(request.code(), origin);
         if (profile == null) {
             throw new NotFoundException(AuthErrorType.NOT_FOUND);
         }
