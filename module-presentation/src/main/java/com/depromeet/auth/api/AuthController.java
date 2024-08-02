@@ -12,8 +12,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/login")
@@ -34,7 +32,8 @@ public class AuthController implements AuthApi {
             @Valid @RequestBody final KakaoLoginRequest request,
             HttpServletRequest httpServletRequest) {
         String origin = getOrigin(httpServletRequest);
-        return ApiResponse.success(AuthSuccessType.LOGIN_SUCCESS, authFacade.loginByKakao(request, origin));
+        return ApiResponse.success(
+                AuthSuccessType.LOGIN_SUCCESS, authFacade.loginByKakao(request, origin));
     }
 
     @PostMapping("/refresh")

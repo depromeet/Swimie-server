@@ -40,7 +40,8 @@ public class AuthFacade {
     }
 
     public JwtTokenResponse loginByKakao(KakaoLoginRequest request, String origin) {
-        final KakaoAccountProfile profile = socialUseCase.getKakaoAccountProfile(request.code(), origin);
+        final KakaoAccountProfile profile =
+                socialUseCase.getKakaoAccountProfile(request.code(), origin);
         if (profile == null) {
             throw new NotFoundException(AuthErrorType.NOT_FOUND);
         }
