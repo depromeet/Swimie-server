@@ -98,6 +98,11 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
     }
 
     @Override
+    public int findOrderInMonth(Long memberId, Long memoryId, int month) {
+        return 0;
+    }
+
+    @Override
     public Timeline findPrevMemoryByMemberId(
             Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
         return null;

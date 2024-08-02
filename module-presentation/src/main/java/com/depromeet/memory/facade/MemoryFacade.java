@@ -11,16 +11,19 @@ import com.depromeet.memory.domain.vo.Timeline;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
 import com.depromeet.memory.dto.response.CalendarResponse;
+import com.depromeet.memory.dto.response.MemoryCreateResponse;
 import com.depromeet.memory.dto.response.MemoryResponse;
 import com.depromeet.memory.dto.response.TimelineSliceResponse;
 import com.depromeet.memory.mapper.MemoryMapper;
 import com.depromeet.memory.port.in.command.CreateStrokeCommand;
 import com.depromeet.memory.port.in.command.UpdateMemoryCommand;
 import com.depromeet.memory.port.in.command.UpdateStrokeCommand;
+import com.depromeet.memory.port.in.usecase.CalendarUseCase;
+import com.depromeet.memory.port.in.usecase.CreateMemoryUseCase;
+import com.depromeet.memory.port.in.usecase.GetMemoryUseCase;
+import com.depromeet.memory.port.in.usecase.StrokeUseCase;
 import com.depromeet.memory.port.in.usecase.TimelineUseCase;
-import com.depromeet.memory.service.CalendarService;
-import com.depromeet.memory.service.MemoryService;
-import com.depromeet.memory.service.StrokeService;
+import com.depromeet.memory.port.in.usecase.UpdateMemoryUseCase;
 import com.depromeet.pool.port.in.usecase.SearchLogUseCase;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -34,21 +37,26 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MemoryFacade {
     private final MemberUseCase memberUseCase;
-    private final MemoryService memoryService;
-    private final StrokeService strokeService;
+    private final StrokeUseCase strokeUseCase;
+    private final CalendarUseCase calendarUseCase;
     private final TimelineUseCase timelineUseCase;
-    private final CalendarService calendarService;
+    private final GetMemoryUseCase getMemoryUseCase;
     private final ImageUploadUseCase imageUploadUseCase;
     private final SearchLogUseCase poolSearchLogUseCase;
+    private final CreateMemoryUseCase createMemoryUseCase;
+    private final UpdateMemoryUseCase updateMemoryUseCase;
 
     @Transactional
-    public void create(Long memberId, MemoryCreateRequest request) {
+    public MemoryCreateResponse create(Long memberId, MemoryCreateRequest request) {
         Member writer = memberUseCase.findById(memberId);
-        Memory newMemory = memoryService.save(writer, MemoryMapper.toCommand(request));
+        Memory newMemory = createMemoryUseCase.save(writer, MemoryMapper.toCommand(request));
+        Long memoryId = newMemory.getId();
+        int month = request.getRecordAt().getMonth().getValue();
+        int rank = getMemoryUseCase.findOrderInMonth(memberId, memoryId, month);
 
         List<CreateStrokeCommand> commands =
                 request.getStrokes().stream().map(MemoryMapper::toCommand).toList();
-        List<Stroke> strokes = strokeService.saveAll(newMemory, commands);
+        List<Stroke> strokes = strokeUseCase.saveAll(newMemory, commands);
 
         imageUploadUseCase.changeImageStatusAndAddMemoryIdToImages(
                 newMemory, request.getImageIdList());
@@ -56,23 +64,25 @@ public class MemoryFacade {
         if (request.getPoolId() != null) {
             poolSearchLogUseCase.createSearchLog(writer, request.getPoolId());
         }
+
+        return MemoryCreateResponse.of(rank, memoryId);
     }
 
     @Transactional
     public MemoryResponse update(Long memberId, Long memoryId, MemoryUpdateRequest request) {
-        Memory memory = memoryService.findById(memoryId);
+        Memory memory = getMemoryUseCase.findById(memoryId);
         validatePermission(memory.getMember().getId(), memberId);
 
         List<UpdateStrokeCommand> commands =
                 request.getStrokes().stream().map(MemoryMapper::toCommand).toList();
-        List<Stroke> strokes = strokeService.updateAll(memory, commands);
+        List<Stroke> strokes = strokeUseCase.updateAll(memory, commands);
         UpdateMemoryCommand command = MemoryMapper.toCommand(request);
 
-        return MemoryResponse.from(memoryService.update(memoryId, command, strokes));
+        return MemoryResponse.from(updateMemoryUseCase.update(memoryId, command, strokes));
     }
 
     public MemoryResponse findById(Long memberId, Long memoryId) {
-        Memory memory = memoryService.findById(memoryId);
+        Memory memory = getMemoryUseCase.findById(memoryId);
         validatePermission(memory.getMember().getId(), memberId);
         return MemoryResponse.from(memory);
     }
@@ -89,7 +99,7 @@ public class MemoryFacade {
     public CalendarResponse getCalendar(Long memberId, Integer year, Short month) {
         YearMonth yearMonth = YearMonth.of(year, month);
         List<Memory> calendarMemories =
-                calendarService.getCalendarByYearAndMonth(memberId, yearMonth);
+                calendarUseCase.getCalendarByYearAndMonth(memberId, yearMonth);
         return CalendarResponse.of(calendarMemories);
     }
 }

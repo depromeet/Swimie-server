@@ -19,7 +19,10 @@ public interface PoolApi {
             @LoginMember Long memberId,
             @Schema(description = "수영장 검색 입력값", example = "강남") @RequestParam(value = "nameQuery")
                     String nameQuery,
-            @Schema(description = "마지막 수영장 아이디", example = "77")
+            @Schema(
+                            description =
+                                    "마지막 수영장 아이디, 이전 검색 시 cursorId 필드를 그대로 넣으면 됨. 제일 처음에는 cursorId 필드 없이 조회",
+                            example = "77")
                     @RequestParam(value = "cursorId", required = false)
                     Long cursorId);
 
