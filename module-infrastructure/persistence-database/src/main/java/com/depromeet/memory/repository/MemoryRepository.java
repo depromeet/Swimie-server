@@ -81,6 +81,18 @@ public class MemoryRepository implements MemoryPersistencePort {
     }
 
     @Override
+    public int findOrderInMonth(Long memberId, Long memoryId, int month) {
+        return queryFactory
+                        .select(memory.id)
+                        .from(memory)
+                        .where(memberEq(memberId), memory.recordAt.month().eq(month))
+                        .orderBy(memory.id.asc())
+                        .fetch()
+                        .indexOf(memoryId)
+                + 1;
+    }
+
+    @Override
     public Timeline findPrevMemoryByMemberId(
             Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "recordAt");

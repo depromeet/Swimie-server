@@ -15,6 +15,8 @@ public interface MemoryPersistencePort {
 
     Optional<Memory> update(Long memoryId, Memory memoryUpdate);
 
+    int findOrderInMonth(Long memberId, Long memoryId, int month);
+
     Timeline findPrevMemoryByMemberId(Long memberId, LocalDate cursorRecordAt, LocalDate recordAt);
 
     Timeline findNextMemoryByMemberId(Long memberId, LocalDate cursorRecordAt, LocalDate recordAt);

@@ -5,6 +5,7 @@ import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
 import com.depromeet.memory.dto.response.CalendarResponse;
+import com.depromeet.memory.dto.response.MemoryCreateResponse;
 import com.depromeet.memory.dto.response.MemoryResponse;
 import com.depromeet.memory.dto.response.TimelineSliceResponse;
 import com.depromeet.memory.facade.MemoryFacade;
@@ -22,11 +23,11 @@ public class MemoryController implements MemoryApi {
     private final MemoryFacade memoryFacade;
 
     @PostMapping
-    public ApiResponse<?> create(
+    public ApiResponse<MemoryCreateResponse> create(
             @LoginMember Long memberId,
             @Valid @RequestBody MemoryCreateRequest memoryCreateRequest) {
-        memoryFacade.create(memberId, memoryCreateRequest);
-        return ApiResponse.success(MemorySuccessType.POST_RESULT_SUCCESS);
+        MemoryCreateResponse response = memoryFacade.create(memberId, memoryCreateRequest);
+        return ApiResponse.success(MemorySuccessType.POST_RESULT_SUCCESS, response);
     }
 
     @GetMapping("/{memoryId}")
