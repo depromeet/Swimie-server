@@ -8,9 +8,7 @@ import com.depromeet.pool.dto.response.PoolSearchResponse;
 import com.depromeet.pool.facade.PoolFacade;
 import com.depromeet.type.pool.PoolSuccessType;
 import jakarta.validation.Valid;
-import java.net.URI;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,13 +41,13 @@ public class PoolController implements PoolApi {
     }
 
     @PutMapping("/favorite")
-    public ResponseEntity<URI> createFavoritePool(
+    public ApiResponse<?> createFavoritePool(
             @LoginMember Long memberId, @Valid @RequestBody FavoritePoolCreateRequest request) {
         String uri = poolFacade.putFavoritePool(memberId, request);
 
         if (uri == null) {
-            return ResponseEntity.noContent().build();
+            return ApiResponse.success(PoolSuccessType.FAVORITE_POOL_DELETE_SUCCESS);
         }
-        return ResponseEntity.created(URI.create(uri)).build();
+        return ApiResponse.success(PoolSuccessType.FAVORITE_POOL_CREATE_SUCCESS);
     }
 }
