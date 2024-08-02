@@ -1,4 +1,4 @@
-package com.depromeet.memory.api;
+package com.depromeet.pool.api;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.depromeet.config.ControllerTestConfig;
 import com.depromeet.config.mock.WithCustomMockMember;
-import com.depromeet.pool.api.PoolController;
 import com.depromeet.pool.facade.PoolFacade;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
@@ -56,7 +55,9 @@ public class PoolControllerTest extends ControllerTestConfig {
                         put("/pool/favorite")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestBody)))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("POOL_3"))
+                .andExpect(jsonPath("$.message").value("수영장 즐겨찾기 등록에 성공하였습니다"))
                 .andDo(print());
     }
 
@@ -71,7 +72,9 @@ public class PoolControllerTest extends ControllerTestConfig {
                         put("/pool/favorite")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestBody)))
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("POOL_4"))
+                .andExpect(jsonPath("$.message").value("수영장 즐겨찾기 삭제에 성공하였습니다"))
                 .andDo(print());
     }
 }
