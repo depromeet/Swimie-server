@@ -8,6 +8,7 @@ import com.depromeet.memory.domain.MemoryDetail;
 import com.depromeet.memory.domain.Stroke;
 import com.depromeet.pool.domain.Pool;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -25,10 +26,19 @@ public class MemoryResponse {
     private MemoryDetailResponse memoryDetail;
     private List<StrokeResponse> strokes;
     private List<ImageSimpleResponse> images;
+
+    @Schema(description = "작성일자", example = "2024-08-01", maxLength = 10, type = "string")
     private LocalDate recordAt;
+
+    @Schema(description = "시작시간", example = "11:00", maxLength = 8, type = "string")
     private LocalTime startTime;
+
+    @Schema(description = "종료시간", example = "11:50", maxLength = 8, type = "string")
     private LocalTime endTime;
+
+    @Schema(description = "운동시간", example = "00:50", maxLength = 8, type = "string")
     private LocalTime duration;
+
     private Short lane;
     private Float totalLap;
     private Integer totalMeter;

@@ -27,7 +27,7 @@ public class GoogleClient implements GooglePort {
     @Value("${spring.security.oauth2.client.registration.google.client-secret}")
     private String clientSecret;
 
-    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
+    @Value("${spring.security.oauth2.client.registration.google.client-redirect-uri}")
     private String redirectUri;
 
     @Value("${spring.security.oauth2.client.registration.google.authorization-grant-type}")
@@ -41,12 +41,12 @@ public class GoogleClient implements GooglePort {
 
     private final RestTemplate restTemplate;
 
-    public AccountProfileResponse getGoogleAccountProfile(final String code) {
-        final String accessToken = requestGoogleAccessToken(code);
+    public AccountProfileResponse getGoogleAccountProfile(final String code, String origin) {
+        final String accessToken = requestGoogleAccessToken(code, origin);
         return requestGoogleAccountProfile(accessToken);
     }
 
-    private String requestGoogleAccessToken(final String code) {
+    private String requestGoogleAccessToken(final String code, String origin) {
         final String decodedCode = URLDecoder.decode(code, StandardCharsets.UTF_8);
         final HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
@@ -56,7 +56,7 @@ public class GoogleClient implements GooglePort {
                                 decodedCode,
                                 clientId,
                                 clientSecret,
-                                redirectUri,
+                                origin + redirectUri,
                                 authorizationCode),
                         headers);
         final GoogleAccessTokenResponse response =

@@ -7,6 +7,7 @@ import com.depromeet.auth.dto.response.JwtTokenResponse;
 import com.depromeet.auth.facade.AuthFacade;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.type.auth.AuthSuccessType;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -19,15 +20,20 @@ public class AuthController implements AuthApi {
 
     @PostMapping("/google")
     public ApiResponse<JwtTokenResponse> loginByGoogle(
-            @Valid @RequestBody final GoogleLoginRequest request) {
+            @Valid @RequestBody final GoogleLoginRequest request,
+            HttpServletRequest httpServletRequest) {
+        String origin = getOrigin(httpServletRequest);
         return ApiResponse.success(
-                AuthSuccessType.LOGIN_SUCCESS, authFacade.loginByGoogle(request));
+                AuthSuccessType.LOGIN_SUCCESS, authFacade.loginByGoogle(request, origin));
     }
 
     @PostMapping("/kakao")
     public ApiResponse<JwtTokenResponse> loginByKakao(
-            @Valid @RequestBody final KakaoLoginRequest request) {
-        return ApiResponse.success(AuthSuccessType.LOGIN_SUCCESS, authFacade.loginByKakao(request));
+            @Valid @RequestBody final KakaoLoginRequest request,
+            HttpServletRequest httpServletRequest) {
+        String origin = getOrigin(httpServletRequest);
+        return ApiResponse.success(
+                AuthSuccessType.LOGIN_SUCCESS, authFacade.loginByKakao(request, origin));
     }
 
     @PostMapping("/refresh")
@@ -36,5 +42,10 @@ public class AuthController implements AuthApi {
         return ApiResponse.success(
                 AuthSuccessType.REISSUE_ACCESS_TOKEN_SUCCESS,
                 authFacade.getReissuedAccessToken(refreshToken));
+    }
+
+    private static String getOrigin(HttpServletRequest httpServletRequest) {
+        String[] url = httpServletRequest.getHeader("Referer").split("/");
+        return url[0] + "//" + url[2];
     }
 }
