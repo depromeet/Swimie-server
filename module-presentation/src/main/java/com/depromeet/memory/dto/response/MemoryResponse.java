@@ -7,6 +7,7 @@ import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.MemoryDetail;
 import com.depromeet.memory.domain.Stroke;
 import com.depromeet.pool.domain.Pool;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
@@ -32,12 +33,15 @@ public class MemoryResponse {
     private LocalDate recordAt;
 
     @Schema(description = "시작시간", example = "11:00", maxLength = 8, type = "string")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime startTime;
 
     @Schema(description = "종료시간", example = "11:50", maxLength = 8, type = "string")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime endTime;
 
     @Schema(description = "운동시간", example = "00:50", maxLength = 8, type = "string")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime duration;
 
     private Short lane;

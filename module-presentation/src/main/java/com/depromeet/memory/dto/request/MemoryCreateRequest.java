@@ -24,8 +24,11 @@ public class MemoryCreateRequest {
     @Schema(description = "심박수", example = "129")
     private Short heartRate;
 
-    @Schema(description = "페이스", example = "05:00:00", maxLength = 8, type = "string")
-    private LocalTime pace;
+    @Schema(description = "페이스 분", example = "5", maxLength = 3, type = "int")
+    private int paceMinutes;
+
+    @Schema(description = "페이스 초", example = "30", maxLength = 2, type = "int")
+    private int paceSeconds;
 
     @Schema(description = "칼로리", example = "300")
     private Integer kcal;
@@ -65,7 +68,8 @@ public class MemoryCreateRequest {
             Long poolId,
             String item,
             Short heartRate,
-            LocalTime pace,
+            int paceMinutes,
+            int paceSeconds,
             Integer kcal,
             LocalDate recordAt,
             LocalTime startTime,
@@ -77,7 +81,8 @@ public class MemoryCreateRequest {
         this.poolId = poolId;
         this.item = item;
         this.heartRate = heartRate;
-        this.pace = pace;
+        this.paceMinutes = paceMinutes;
+        this.paceSeconds = paceSeconds;
         this.kcal = kcal;
         this.recordAt = recordAt;
         this.startTime = startTime;

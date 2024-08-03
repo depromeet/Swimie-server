@@ -1,12 +1,14 @@
 package com.depromeet.memory.dto.response;
 
 import com.depromeet.memory.domain.MemoryDetail;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.LocalTime;
 import lombok.Builder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record MemoryDetailResponse(String item, Short heartRate, LocalTime pace, Integer kcal) {
+public record MemoryDetailResponse(
+        String item, Short heartRate, @JsonFormat(pattern = "mm:ss") LocalTime pace, Integer kcal) {
     @Builder
     public MemoryDetailResponse {}
 
