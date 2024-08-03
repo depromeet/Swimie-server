@@ -113,8 +113,7 @@ public class GlobalExceptionAdvice {
     public ResponseEntity<ApiResponse<?>> handleNullPointException(final NullPointerException ex) {
         log.error(ex.getMessage());
         return new ResponseEntity<>(
-                ApiResponse.fail(CommonErrorType.REQUEST_NULL, 500),
-                HttpStatus.INTERNAL_SERVER_ERROR);
+                ApiResponse.fail(CommonErrorType.NULL, 500), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(NoSuchElementException.class)
