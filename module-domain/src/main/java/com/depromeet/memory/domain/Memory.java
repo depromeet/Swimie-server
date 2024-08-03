@@ -71,7 +71,17 @@ public class Memory {
                 .build();
     }
 
-    public Integer calculateTotalMeter() {
+    public String classifyType() {
+        if (this.strokes == null || this.strokes.isEmpty()) {
+            return "NORMAL";
+        } else if (this.strokes.size() == 1) {
+            return "SINGLE";
+        } else {
+            return "MULTI";
+        }
+    }
+
+    public Integer calculateTotalDistance() {
         if (this.strokes == null || this.strokes.isEmpty()) return null;
 
         int totalDistance = 0;
@@ -87,8 +97,8 @@ public class Memory {
         return totalDistance;
     }
 
-    public boolean isAchieved(Integer totalMeter) {
-        if (totalMeter == null) return false;
-        return totalMeter >= this.member.getGoal();
+    public boolean isAchieved(Integer totalDistance) {
+        if (totalDistance == null) return false;
+        return totalDistance >= this.member.getGoal();
     }
 }

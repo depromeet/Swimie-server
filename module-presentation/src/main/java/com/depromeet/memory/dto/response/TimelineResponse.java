@@ -1,7 +1,6 @@
 package com.depromeet.memory.dto.response;
 
 import com.depromeet.image.domain.Image;
-import com.depromeet.image.dto.response.ImageResponse;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.Stroke;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -20,17 +19,17 @@ public record TimelineResponse(
         @Schema(description = "수영 시작 시간", example = "12:00") String endTime,
         @Schema(description = "수영장 레인 길이", example = "25") Short lane,
         @Schema(description = "수영 기록 일기", example = "오늘 수영을 열심히 했다") String diary,
-        @Schema(description = "총 수영 거리", example = "175") Integer totalMeter,
+        @Schema(description = "총 수영 거리", example = "175") Integer totalDistance,
         @Schema(description = "달성 여부", example = "false") boolean isAchieved,
-        @Schema(description = "memoryDetail PK", example = "1") Long memoryDetailId,
         @Schema(description = "소모한 칼로리", example = "100") Integer kcal,
+        @Schema(description = "영법 타입(NORMAL, SINGLE, MULTI)", example = "NORMAL") String type,
         @Schema(description = "영법별 거리 리스트") List<StrokeResponse> strokes,
-        @Schema(description = "이미지") List<ImageResponse> images) {
+        @Schema(description = "이미지") String imageUrl) {
     @Builder
     public TimelineResponse {}
 
     public static TimelineResponse mapToTimelineResponseDto(Memory memory) {
-        int totalMeter = memory.calculateTotalMeter();
+        Integer totalDistance = memory.calculateTotalDistance();
 
         return TimelineResponse.builder()
                 .memoryId(memory.getId())
@@ -39,12 +38,12 @@ public record TimelineResponse(
                 .endTime(localTimeToString(memory.getEndTime()))
                 .lane(memory.getLane())
                 .diary(memory.getDiary())
-                .totalMeter(totalMeter)
-                .isAchieved(memory.isAchieved(totalMeter))
-                .memoryDetailId(getMemoryDetailId(memory))
+                .totalDistance(totalDistance)
+                .isAchieved(memory.isAchieved(totalDistance))
                 .kcal(getKcalFromMemoryDetail(memory))
+                .type(memory.classifyType())
                 .strokes(strokeToDto(memory.getStrokes()))
-                .images(imagesToDto(memory.getImages()))
+                .imageUrl(imagesToDto(memory.getImages()))
                 .build();
     }
 
@@ -63,12 +62,6 @@ public record TimelineResponse(
                 .toList();
     }
 
-    private static Long getMemoryDetailId(Memory memory) {
-        return memory.getMemoryDetail() != null && memory.getMemoryDetail().getId() != null
-                ? memory.getMemoryDetail().getId()
-                : null;
-    }
-
     private static Float getLapsFromStroke(Stroke stroke) {
         return stroke.getLaps() != null ? stroke.getLaps() : null;
     }
@@ -77,19 +70,11 @@ public record TimelineResponse(
         return stroke.getMeter() != null ? stroke.getMeter() : null;
     }
 
-    private static List<ImageResponse> imagesToDto(List<Image> images) {
-        if (images == null || images.isEmpty()) return new ArrayList<>();
+    private static String imagesToDto(List<Image> images) {
+        if (images == null || images.isEmpty()) return null;
 
-        return images.stream()
-                .map(
-                        image ->
-                                ImageResponse.builder()
-                                        .imageId(image.getId())
-                                        .originImageName(image.getOriginImageName())
-                                        .imageName(image.getImageName())
-                                        .url(image.getImageUrl())
-                                        .build())
-                .toList();
+        Image image = images.getFirst();
+        return image.getImageUrl();
     }
 
     private static Integer getKcalFromMemoryDetail(Memory memory) {
