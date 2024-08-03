@@ -65,7 +65,7 @@ public class MemoryFacade {
             poolSearchLogUseCase.createSearchLog(writer, request.getPoolId());
         }
 
-        return MemoryCreateResponse.of(rank, memoryId);
+        return MemoryCreateResponse.of(month, rank, memoryId);
     }
 
     @Transactional
