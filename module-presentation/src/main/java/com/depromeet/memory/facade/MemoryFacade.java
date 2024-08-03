@@ -89,19 +89,19 @@ public class MemoryFacade {
 
     public TimelineSliceResponse getTimelineByMemberIdAndCursorAndDate(
             Long memberId, LocalDate cursorRecordAt, YearMonth date, boolean showNewer) {
+        Member member = memberUseCase.findById(memberId);
         Timeline timeline =
                 timelineUseCase.getTimelineByMemberIdAndCursorAndDate(
                         memberId, cursorRecordAt, date, showNewer);
-        Member member = timeline.getTimelineContents().getFirst().getMember();
 
         return MemoryMapper.toSliceResponse(member, timeline);
     }
 
     public CalendarResponse getCalendar(Long memberId, Integer year, Short month) {
         YearMonth yearMonth = YearMonth.of(year, month);
+        Member member = memberUseCase.findById(memberId);
         List<Memory> calendarMemories =
                 calendarUseCase.getCalendarByYearAndMonth(memberId, yearMonth);
-        Member member = calendarMemories.getFirst().getMember();
         return CalendarResponse.of(member, calendarMemories);
     }
 }

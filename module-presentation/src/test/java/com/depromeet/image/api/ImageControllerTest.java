@@ -1,7 +1,6 @@
 package com.depromeet.image.api;
 
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -10,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.depromeet.config.ControllerTestConfig;
 import com.depromeet.config.mock.WithCustomMockMember;
+import com.depromeet.image.dto.request.ImageNameRequest;
 import com.depromeet.image.dto.response.ImageResponse;
 import com.depromeet.image.dto.response.ImageUploadResponse;
 import com.depromeet.image.facade.ImageFacade;
@@ -43,7 +43,8 @@ public class ImageControllerTest extends ControllerTestConfig {
         List<ImageUploadResponse> images = ImageUploadResponseDtoFixture.make(imageNames);
 
         // when
-        when(imageFacade.getPresignedUrlAndSaveImages(anyList())).thenReturn(images);
+        when(imageFacade.getPresignedUrlAndSaveImages(any(ImageNameRequest.class)))
+                .thenReturn(images);
 
         // then
         mockMvc.perform(
@@ -72,7 +73,7 @@ public class ImageControllerTest extends ControllerTestConfig {
         List<ImageUploadResponse> images = ImageUploadResponseDtoFixture.make(imageNames);
 
         // when
-        when(imageFacade.updateImages(anyLong(), anyList())).thenReturn(images);
+        when(imageFacade.updateImages(anyLong(), any(ImageNameRequest.class))).thenReturn(images);
 
         // then
         mockMvc.perform(
