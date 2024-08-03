@@ -27,7 +27,7 @@ public class KakaoClient implements KakaoPort {
     @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
     private String clientSecret;
 
-    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
+    @Value("${spring.security.oauth2.client.registration.kakao.client-redirect-uri}")
     private String redirectUri;
 
     @Value("${spring.security.oauth2.client.registration.kakao.authorization-grant-type}")
@@ -42,15 +42,15 @@ public class KakaoClient implements KakaoPort {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public KakaoAccountProfile getKakaoAccountProfile(final String code) {
-        final String accessToken = requestKakaoAccessToken(code);
+    public KakaoAccountProfile getKakaoAccountProfile(final String code, String origin) {
+        final String accessToken = requestKakaoAccessToken(code, origin);
         KakaoAccountProfileResponse response = requestKakaoAccountProfile(accessToken);
 
         return KakaoAccountProfile.of(
                 response.getId(), response.getEmail(), response.getNickname());
     }
 
-    private String requestKakaoAccessToken(final String code) {
+    private String requestKakaoAccessToken(final String code, String origin) {
         final String decodedCode = URLDecoder.decode(code, StandardCharsets.UTF_8);
         final HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
@@ -59,7 +59,7 @@ public class KakaoClient implements KakaoPort {
         body.add("code", decodedCode);
         body.add("client_id", clientId);
         body.add("client_secret", clientSecret);
-        body.add("redirect_uri", redirectUri);
+        body.add("redirect_uri", origin + redirectUri);
         body.add("grant_type", grantType);
         final HttpEntity<MultiValueMap<String, String>> httpEntity =
                 new HttpEntity<>(body, headers);
