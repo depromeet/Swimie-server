@@ -38,14 +38,14 @@ public class MemoryCreateRequest {
     @NotNull(message = "수영을 한 날짜를 입력하세요")
     private LocalDate recordAt;
 
-    @DateTimeFormat(pattern = "HH:mm:ss")
+    @DateTimeFormat(pattern = "HH:mm")
     @NotNull(message = "수영을 시작한 시간을 입력하세요")
-    @Schema(description = "수영 시작 시간", example = "11:00:00", maxLength = 8, type = "string")
+    @Schema(description = "수영 시작 시간", example = "11:00", maxLength = 8, type = "string")
     private LocalTime startTime;
 
-    @DateTimeFormat(pattern = "HH:mm:ss")
+    @DateTimeFormat(pattern = "HH:mm")
     @NotNull(message = "수영을 종료한 시간을 입력하세요")
-    @Schema(description = "수영 종료 시간", example = "11:50:00", maxLength = 8, type = "string")
+    @Schema(description = "수영 종료 시간", example = "11:50", maxLength = 8, type = "string")
     private LocalTime endTime;
 
     @Schema(description = "레인 길이", example = "25")
