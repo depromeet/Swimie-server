@@ -21,8 +21,8 @@ public record TimelineResponse(
         @Schema(description = "수영 기록 일기", example = "오늘 수영을 열심히 했다") String diary,
         @Schema(description = "총 수영 거리", example = "175") Integer totalDistance,
         @Schema(description = "달성 여부", example = "false") boolean isAchieved,
-        @Schema(description = "소모한 칼로리", example = "NORMAL") Integer kcal,
-        @Schema(description = "영법 타입(NORMAL, SINGLE, MULTIPLE)", example = "100") String type,
+        @Schema(description = "소모한 칼로리", example = "100") Integer kcal,
+        @Schema(description = "영법 타입(NORMAL, SINGLE, MULTIPLE)", example = "NORMAL") String type,
         @Schema(description = "영법별 거리 리스트") List<StrokeResponse> strokes,
         @Schema(description = "이미지") String imageUrl) {
     @Builder
@@ -41,20 +41,10 @@ public record TimelineResponse(
                 .totalDistance(totalDistance)
                 .isAchieved(memory.isAchieved(totalDistance))
                 .kcal(getKcalFromMemoryDetail(memory))
-                .type(classifyType(memory.getStrokes()))
+                .type(memory.classifyType())
                 .strokes(strokeToDto(memory.getStrokes()))
                 .imageUrl(imagesToDto(memory.getImages()))
                 .build();
-    }
-
-    private static String classifyType(List<Stroke> strokes) {
-        if (strokes == null || strokes.isEmpty()) {
-            return "NORMAL";
-        } else if (strokes.size() == 1) {
-            return "SINGLE";
-        } else {
-            return "MULTI";
-        }
     }
 
     private static List<StrokeResponse> strokeToDto(List<Stroke> strokes) {

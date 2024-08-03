@@ -24,6 +24,7 @@ public class MemoryResponse {
     private MemberSimpleResponse member;
     private Pool pool;
     private MemoryDetailResponse memoryDetail;
+    private String type;
     private List<StrokeResponse> strokes;
     private List<ImageSimpleResponse> images;
 
@@ -50,6 +51,7 @@ public class MemoryResponse {
             MemberSimpleResponse member,
             Pool pool,
             MemoryDetail memoryDetail,
+            String type,
             List<Stroke> strokes,
             List<Image> images,
             LocalDate recordAt,
@@ -72,6 +74,7 @@ public class MemoryResponse {
         this.member = member;
         this.pool = pool;
         this.memoryDetail = getMemoryDetail(memoryDetail);
+        this.type = type;
         this.strokes = resultStrokes;
         this.images = getImageSource(images); // 순환참조 방지를 위해 Memory 필드 제외
         this.recordAt = recordAt;
@@ -132,6 +135,7 @@ public class MemoryResponse {
                 .member(memberSimple)
                 .pool(memory.getPool())
                 .memoryDetail(memory.getMemoryDetail())
+                .type(memory.classifyType())
                 .strokes(memory.getStrokes())
                 .images(memory.getImages())
                 .recordAt(memory.getRecordAt())
