@@ -70,4 +70,25 @@ public class Memory {
                 .diary(updateMemory.getDiary())
                 .build();
     }
+
+    public Integer calculateTotalMeter() {
+        if (this.strokes == null || this.strokes.isEmpty()) return null;
+
+        int totalDistance = 0;
+        for (Stroke stroke : this.strokes) {
+            if (stroke.getMeter() != null) {
+                totalDistance += stroke.getMeter();
+            } else {
+                if (this.lane != null) {
+                    totalDistance += (int) (stroke.getLaps() * 2) * this.lane;
+                }
+            }
+        }
+        return totalDistance;
+    }
+
+    public boolean isAchieved(Integer totalMeter) {
+        if (totalMeter == null) return false;
+        return totalMeter >= this.member.getGoal();
+    }
 }
