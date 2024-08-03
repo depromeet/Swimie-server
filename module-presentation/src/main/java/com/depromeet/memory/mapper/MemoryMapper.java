@@ -13,6 +13,7 @@ import com.depromeet.memory.port.in.command.CreateMemoryCommand;
 import com.depromeet.memory.port.in.command.CreateStrokeCommand;
 import com.depromeet.memory.port.in.command.UpdateMemoryCommand;
 import com.depromeet.memory.port.in.command.UpdateStrokeCommand;
+import java.time.LocalTime;
 import java.util.List;
 
 public class MemoryMapper {
@@ -26,11 +27,13 @@ public class MemoryMapper {
     }
 
     public static CreateMemoryCommand toCommand(MemoryCreateRequest request) {
+        LocalTime pace = LocalTime.of(0, request.getPaceMinutes(), request.getPaceSeconds());
+
         return CreateMemoryCommand.builder()
                 .poolId(request.getPoolId())
                 .item(request.getItem())
                 .heartRate(request.getHeartRate())
-                .pace(request.getPace())
+                .pace(pace)
                 .kcal(request.getKcal())
                 .recordAt(request.getRecordAt())
                 .startTime(request.getStartTime())
@@ -48,11 +51,13 @@ public class MemoryMapper {
     }
 
     public static UpdateMemoryCommand toCommand(MemoryUpdateRequest request) {
+        LocalTime pace = LocalTime.of(0, request.getPaceMinutes(), request.getPaceSeconds());
+
         return UpdateMemoryCommand.builder()
                 .poolId(request.getPoolId())
                 .item(request.getItem())
                 .heartRate(request.getHeartRate())
-                .pace(request.getPace())
+                .pace(pace)
                 .kcal(request.getKcal())
                 .recordAt(request.getRecordAt())
                 .startTime(request.getStartTime())

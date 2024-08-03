@@ -7,6 +7,7 @@ import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.MemoryDetail;
 import com.depromeet.memory.domain.Stroke;
 import com.depromeet.pool.domain.Pool;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ public class MemoryResponse {
     private MemberSimpleResponse member;
     private Pool pool;
     private MemoryDetailResponse memoryDetail;
+    private String type;
     private List<StrokeResponse> strokes;
     private List<ImageSimpleResponse> images;
 
@@ -31,12 +33,15 @@ public class MemoryResponse {
     private LocalDate recordAt;
 
     @Schema(description = "시작시간", example = "11:00", maxLength = 8, type = "string")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime startTime;
 
     @Schema(description = "종료시간", example = "11:50", maxLength = 8, type = "string")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime endTime;
 
     @Schema(description = "운동시간", example = "00:50", maxLength = 8, type = "string")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime duration;
 
     private Short lane;
@@ -50,6 +55,7 @@ public class MemoryResponse {
             MemberSimpleResponse member,
             Pool pool,
             MemoryDetail memoryDetail,
+            String type,
             List<Stroke> strokes,
             List<Image> images,
             LocalDate recordAt,
@@ -72,6 +78,7 @@ public class MemoryResponse {
         this.member = member;
         this.pool = pool;
         this.memoryDetail = getMemoryDetail(memoryDetail);
+        this.type = type;
         this.strokes = resultStrokes;
         this.images = getImageSource(images); // 순환참조 방지를 위해 Memory 필드 제외
         this.recordAt = recordAt;
@@ -132,6 +139,7 @@ public class MemoryResponse {
                 .member(memberSimple)
                 .pool(memory.getPool())
                 .memoryDetail(memory.getMemoryDetail())
+                .type(memory.classifyType())
                 .strokes(memory.getStrokes())
                 .images(memory.getImages())
                 .recordAt(memory.getRecordAt())

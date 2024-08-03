@@ -3,7 +3,6 @@ package com.depromeet.memory.dto.response;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.dto.response.MemberSimpleResponse;
 import com.depromeet.memory.domain.Memory;
-import com.depromeet.memory.domain.Stroke;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +19,10 @@ public class CalendarResponse {
     public static CalendarResponse of(Member member, List<Memory> memoryDomains) {
         List<CalendarDetailResponse> memories = new ArrayList<>();
         for (Memory memoryDomain : memoryDomains) {
-            String type = classifyType(memoryDomain.getStrokes());
-            Integer totalDistance =
-                    getTotalDistance(memoryDomain.getLane(), memoryDomain.getStrokes());
+            String type = memoryDomain.classifyType();
+            Integer totalDistance = memoryDomain.calculateTotalDistance();
             List<StrokeResponse> strokes = getStrokeResponses(memoryDomain);
-            boolean isAchieved = isAchieved(memoryDomain, totalDistance);
+            boolean isAchieved = memoryDomain.isAchieved(totalDistance);
 
             memories.add(
                     CalendarDetailResponse.of(
@@ -47,35 +45,5 @@ public class CalendarResponse {
                                                         : it.getMeter())
                                         .build())
                 .toList();
-    }
-
-    private static String classifyType(List<Stroke> strokes) {
-        if (strokes == null || strokes.isEmpty()) {
-            return "NORMAL";
-        } else if (strokes.size() == 1) {
-            return "SINGLE";
-        } else {
-            return "MULTI";
-        }
-    }
-
-    private static Integer getTotalDistance(Short lane, List<Stroke> strokes) {
-        int result = 0;
-        if (strokes == null || strokes.isEmpty()) {
-            return null;
-        }
-        for (Stroke stroke : strokes) {
-            if (stroke.getMeter() != null) {
-                result += stroke.getMeter();
-            } else {
-                result += stroke.getLaps() * lane;
-            }
-        }
-        return result;
-    }
-
-    private static boolean isAchieved(Memory memory, Integer totalDistance) {
-        if (totalDistance == null) return false;
-        return totalDistance >= memory.getMember().getGoal();
     }
 }

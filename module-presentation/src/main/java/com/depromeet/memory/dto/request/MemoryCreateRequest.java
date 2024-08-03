@@ -24,8 +24,11 @@ public class MemoryCreateRequest {
     @Schema(description = "심박수", example = "129")
     private Short heartRate;
 
-    @Schema(description = "페이스", example = "05:00:00", maxLength = 8, type = "string")
-    private LocalTime pace;
+    @Schema(description = "페이스 분", example = "5", maxLength = 3, type = "int")
+    private int paceMinutes;
+
+    @Schema(description = "페이스 초", example = "30", maxLength = 2, type = "int")
+    private int paceSeconds;
 
     @Schema(description = "칼로리", example = "300")
     private Integer kcal;
@@ -35,14 +38,14 @@ public class MemoryCreateRequest {
     @NotNull(message = "수영을 한 날짜를 입력하세요")
     private LocalDate recordAt;
 
-    @DateTimeFormat(pattern = "HH:mm:ss")
+    @DateTimeFormat(pattern = "HH:mm")
     @NotNull(message = "수영을 시작한 시간을 입력하세요")
-    @Schema(description = "수영 시작 시간", example = "11:00:00", maxLength = 8, type = "string")
+    @Schema(description = "수영 시작 시간", example = "11:00", maxLength = 8, type = "string")
     private LocalTime startTime;
 
-    @DateTimeFormat(pattern = "HH:mm:ss")
+    @DateTimeFormat(pattern = "HH:mm")
     @NotNull(message = "수영을 종료한 시간을 입력하세요")
-    @Schema(description = "수영 종료 시간", example = "11:50:00", maxLength = 8, type = "string")
+    @Schema(description = "수영 종료 시간", example = "11:50", maxLength = 8, type = "string")
     private LocalTime endTime;
 
     @Schema(description = "레인 길이", example = "25")
@@ -65,7 +68,8 @@ public class MemoryCreateRequest {
             Long poolId,
             String item,
             Short heartRate,
-            LocalTime pace,
+            int paceMinutes,
+            int paceSeconds,
             Integer kcal,
             LocalDate recordAt,
             LocalTime startTime,
@@ -77,7 +81,8 @@ public class MemoryCreateRequest {
         this.poolId = poolId;
         this.item = item;
         this.heartRate = heartRate;
-        this.pace = pace;
+        this.paceMinutes = paceMinutes;
+        this.paceSeconds = paceSeconds;
         this.kcal = kcal;
         this.recordAt = recordAt;
         this.startTime = startTime;
