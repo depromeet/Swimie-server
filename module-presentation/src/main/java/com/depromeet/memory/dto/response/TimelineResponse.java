@@ -22,7 +22,7 @@ public record TimelineResponse(
         @Schema(description = "총 수영 거리", example = "175") Integer totalDistance,
         @Schema(description = "달성 여부", example = "false") boolean isAchieved,
         @Schema(description = "소모한 칼로리", example = "100") Integer kcal,
-        @Schema(description = "영법 타입(NORMAL, SINGLE, MULTIPLE)", example = "NORMAL") String type,
+        @Schema(description = "영법 타입(NORMAL, SINGLE, MULTI)", example = "NORMAL") String type,
         @Schema(description = "영법별 거리 리스트") List<StrokeResponse> strokes,
         @Schema(description = "이미지") String imageUrl) {
     @Builder
