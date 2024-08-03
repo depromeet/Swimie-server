@@ -24,7 +24,11 @@ public class S3ImageManager implements S3ManagePort {
     @Override
     public String getPresignedUrl(String imageName) {
         PutObjectRequest putObjectRequest =
-                PutObjectRequest.builder().bucket(bucketName).key(imageName).build();
+                PutObjectRequest.builder()
+                        .bucket(bucketName)
+                        .contentType("image/jpeg")
+                        .key(imageName)
+                        .build();
 
         PutObjectPresignRequest putObjectPresignRequest =
                 PutObjectPresignRequest.builder()
