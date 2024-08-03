@@ -45,7 +45,6 @@ public class AuthController implements AuthApi {
     }
 
     private static String getOrigin(HttpServletRequest httpServletRequest) {
-        String[] url = httpServletRequest.getHeader("Referer").split("/");
-        return url[0] + "//" + url[2];
+        return httpServletRequest.getHeader("Origin");
     }
 }
