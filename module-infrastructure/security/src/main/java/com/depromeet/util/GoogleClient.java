@@ -2,22 +2,27 @@ package com.depromeet.util;
 
 import com.depromeet.auth.port.out.GooglePort;
 import com.depromeet.dto.auth.AccountProfileResponse;
+import com.depromeet.exception.InternalServerException;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.oauth.dto.request.GoogleAccessTokenRequest;
-import com.depromeet.oauth.dto.response.GoogleAccessTokenResponse;
 import com.depromeet.type.auth.AuthErrorType;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
+import com.depromeet.type.common.CommonErrorType;
+import com.google.api.client.auth.oauth2.TokenResponseException;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
+import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class GoogleClient implements GooglePort {
@@ -42,34 +47,31 @@ public class GoogleClient implements GooglePort {
     private final RestTemplate restTemplate;
 
     public AccountProfileResponse getGoogleAccountProfile(final String code, String origin) {
-        final String accessToken = requestGoogleAccessToken(code, origin);
+        final String accessToken = requestAccessToken(code, origin);
         return requestGoogleAccountProfile(accessToken);
     }
 
-    private String requestGoogleAccessToken(final String code, String origin) {
-        final String decodedCode = URLDecoder.decode(code, StandardCharsets.UTF_8);
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-        final HttpEntity<GoogleAccessTokenRequest> httpEntity =
-                new HttpEntity<>(
-                        new GoogleAccessTokenRequest(
-                                decodedCode,
-                                clientId,
-                                clientSecret,
-                                origin + redirectUri,
-                                authorizationCode),
-                        headers);
-        final GoogleAccessTokenResponse response =
-                restTemplate
-                        .exchange(
-                                accessTokenUrl,
-                                HttpMethod.POST,
-                                httpEntity,
-                                GoogleAccessTokenResponse.class)
-                        .getBody();
-        return Optional.ofNullable(response)
-                .orElseThrow(() -> new NotFoundException(AuthErrorType.NOT_FOUND))
-                .accessToken();
+    private String requestAccessToken(String code, String origin) {
+        try {
+            GoogleTokenResponse response =
+                    new GoogleAuthorizationCodeTokenRequest(
+                                    new NetHttpTransport(),
+                                    new GsonFactory(),
+                                    clientId,
+                                    clientSecret,
+                                    code,
+                                    origin + redirectUri)
+                            .execute();
+            return response.getAccessToken();
+        } catch (TokenResponseException e) {
+            if (e.getDetails() != null) {
+                throw new NotFoundException(AuthErrorType.NOT_FOUND);
+            } else {
+                throw new InternalServerException(AuthErrorType.LOGIN_FAILED);
+            }
+        } catch (IOException e) {
+            throw new InternalServerException(CommonErrorType.IO_EXCEPTION);
+        }
     }
 
     private AccountProfileResponse requestGoogleAccountProfile(final String accessToken) {

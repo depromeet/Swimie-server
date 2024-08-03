@@ -13,4 +13,8 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+    // google oauth2
+    implementation 'com.google.auth:google-auth-library-oauth2-http:1.19.0'
+    implementation 'com.google.api-client:google-api-client:1.32.1'
 }
