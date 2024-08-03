@@ -7,4 +7,6 @@ public interface MemberUseCase {
     Member findById(Long id);
 
     Member findOrCreateMemberBy(SocialMemberCommand command);
+
+    void deleteRefreshTokenByMemberId(Long memberId);
 }

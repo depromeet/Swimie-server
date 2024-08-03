@@ -1,5 +1,6 @@
 package com.depromeet.oauth;
 
+import com.depromeet.auth.domain.AccountType;
 import com.depromeet.member.domain.MemberRole;
 import com.depromeet.oauth.dto.MemberDto;
 import java.util.Collection;
@@ -15,12 +16,14 @@ public class CustomOAuth2User implements OAuth2User, UserDetails {
     private String name;
     private String email;
     private MemberRole memberRole;
+    private AccountType accountType;
 
     public CustomOAuth2User(MemberDto memberDto) {
         this.id = memberDto.getId();
         this.name = memberDto.getName();
         this.email = memberDto.getEmail();
         this.memberRole = memberDto.getMemberRole();
+        this.accountType = memberDto.getAccountType();
     }
 
     @Override
@@ -58,5 +61,9 @@ public class CustomOAuth2User implements OAuth2User, UserDetails {
 
     public MemberRole getMemberRole() {
         return this.memberRole;
+    }
+
+    public AccountType getAccountType() {
+        return this.accountType;
     }
 }

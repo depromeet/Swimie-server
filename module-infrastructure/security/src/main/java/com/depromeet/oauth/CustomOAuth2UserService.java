@@ -1,5 +1,6 @@
 package com.depromeet.oauth;
 
+import com.depromeet.auth.domain.AccountType;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberRole;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
@@ -28,10 +29,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
         OAuth2Response oAuth2Response;
+        AccountType accountType;
         if (registrationId.equals("kakao")) {
             oAuth2Response = new KakaoResponse(oAuth2User.getAttributes());
+            accountType = AccountType.KAKAO;
         } else if (registrationId.equals("google")) {
             oAuth2Response = new GoogleResponse(oAuth2User.getAttributes());
+            accountType = AccountType.GOOGLE;
         } else {
             throw new OAuth2AuthenticationException(
                     "failed to resolve registration id " + registrationId);
@@ -40,7 +44,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String nickname = oAuth2Response.getName();
         String email = oAuth2Response.getEmail();
 
-        Member member = findByEmailOrSave(email, nickname);
+        Member member = findByEmailOrSave(email, nickname, accountType);
 
         MemberDto memberDto =
                 MemberDto.builder()
@@ -48,17 +52,26 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                         .name(member.getName())
                         .email(member.getEmail())
                         .memberRole(member.getRole())
+                        .accountType(accountType)
                         .build();
         return new CustomOAuth2User(memberDto);
     }
 
-    private Member findByEmailOrSave(String email, String nickname) {
+    private Member findByEmailOrSave(String email, String nickname, AccountType accountType) {
         return memberPersistencePort
-                .findByEmail(email)
-                .orElseGet(() -> memberPersistencePort.save(createMember(nickname, email)));
+                .findByEmailAndAccountType(email, accountType)
+                .orElseGet(
+                        () ->
+                                memberPersistencePort.save(
+                                        createMember(nickname, email, accountType)));
     }
 
-    private Member createMember(String nickname, String email) {
-        return Member.builder().name(nickname).email(email).role(MemberRole.USER).build();
+    private Member createMember(String nickname, String email, AccountType accountType) {
+        return Member.builder()
+                .name(nickname)
+                .email(email)
+                .role(MemberRole.USER)
+                .accountType(accountType)
+                .build();
     }
 }

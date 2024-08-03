@@ -1,5 +1,6 @@
 package com.depromeet.member.entity;
 
+import com.depromeet.auth.domain.AccountType;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberRole;
 import jakarta.persistence.Column;
@@ -22,16 +23,16 @@ public class MemberEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column private String name;
 
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "role")
-    private MemberRole role;
+    @Column private MemberRole role;
 
     @Column private String refreshToken;
+
+    @Column private AccountType accountType;
 
     private Integer goal;
 
@@ -42,12 +43,14 @@ public class MemberEntity {
             String email,
             MemberRole role,
             String refreshToken,
+            AccountType accountType,
             Integer goal) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;
         this.refreshToken = refreshToken;
+        this.accountType = accountType;
         this.goal = goal;
     }
 
@@ -63,6 +66,7 @@ public class MemberEntity {
                 .email(member.getEmail())
                 .role(member.getRole())
                 .refreshToken(member.getRefreshToken())
+                .accountType(member.getAccountType())
                 .goal(member.getGoal())
                 .build();
     }
@@ -74,6 +78,7 @@ public class MemberEntity {
                 .email(email)
                 .role(role)
                 .refreshToken(refreshToken)
+                .accountType(accountType)
                 .goal(goal)
                 .build();
     }

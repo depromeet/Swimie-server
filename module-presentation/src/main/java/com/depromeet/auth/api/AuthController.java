@@ -6,6 +6,7 @@ import com.depromeet.auth.dto.response.JwtAccessTokenResponse;
 import com.depromeet.auth.dto.response.JwtTokenResponse;
 import com.depromeet.auth.facade.AuthFacade;
 import com.depromeet.dto.response.ApiResponse;
+import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.type.auth.AuthSuccessType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -14,11 +15,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/login")
 public class AuthController implements AuthApi {
     public final AuthFacade authFacade;
 
-    @PostMapping("/google")
+    @PostMapping("/login/google")
     public ApiResponse<JwtTokenResponse> loginByGoogle(
             @Valid @RequestBody final GoogleLoginRequest request,
             HttpServletRequest httpServletRequest) {
@@ -27,7 +27,7 @@ public class AuthController implements AuthApi {
                 AuthSuccessType.LOGIN_SUCCESS, authFacade.loginByGoogle(request, origin));
     }
 
-    @PostMapping("/kakao")
+    @PostMapping("/login/kakao")
     public ApiResponse<JwtTokenResponse> loginByKakao(
             @Valid @RequestBody final KakaoLoginRequest request,
             HttpServletRequest httpServletRequest) {
@@ -36,12 +36,18 @@ public class AuthController implements AuthApi {
                 AuthSuccessType.LOGIN_SUCCESS, authFacade.loginByKakao(request, origin));
     }
 
-    @PostMapping("/refresh")
+    @PostMapping("/login/refresh")
     public ApiResponse<JwtAccessTokenResponse> reissueAccessToken(
             @RequestHeader("Authorization") String refreshToken) {
         return ApiResponse.success(
                 AuthSuccessType.REISSUE_ACCESS_TOKEN_SUCCESS,
                 authFacade.getReissuedAccessToken(refreshToken));
+    }
+
+    @PostMapping("/auth/logout")
+    public ApiResponse<?> logout(@LoginMember Long memberId) {
+        authFacade.logout(memberId);
+        return ApiResponse.success(AuthSuccessType.LOGOUT_SUCCESS);
     }
 
     private static String getOrigin(HttpServletRequest httpServletRequest) {

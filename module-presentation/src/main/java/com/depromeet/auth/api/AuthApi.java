@@ -5,6 +5,7 @@ import com.depromeet.auth.dto.request.KakaoLoginRequest;
 import com.depromeet.auth.dto.response.JwtAccessTokenResponse;
 import com.depromeet.auth.dto.response.JwtTokenResponse;
 import com.depromeet.dto.response.ApiResponse;
+import com.depromeet.member.annotation.LoginMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,4 +28,7 @@ public interface AuthApi {
     @Operation(summary = "Access 토큰 재발급 요청")
     ApiResponse<JwtAccessTokenResponse> reissueAccessToken(
             @RequestHeader("Authorization") String refreshToken);
+
+    @Operation(summary = "로그아웃")
+    ApiResponse<?> logout(@LoginMember Long memberId);
 }

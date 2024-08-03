@@ -1,5 +1,6 @@
 package com.depromeet.member.domain;
 
+import com.depromeet.auth.domain.AccountType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,6 +12,7 @@ public class Member {
     private String email;
     private MemberRole role;
     private String refreshToken;
+    private AccountType accountType;
 
     @Builder
     public Member(
@@ -19,13 +21,15 @@ public class Member {
             String name,
             String email,
             MemberRole role,
-            String refreshToken) {
+            String refreshToken,
+            AccountType accountType) {
         this.id = id;
         this.goal = goal;
         this.name = name;
         this.email = email;
         this.role = role;
         this.refreshToken = refreshToken;
+        this.accountType = accountType;
     }
 
     public Member updateRefreshToken(String refreshToken) {

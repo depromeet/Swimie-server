@@ -1,5 +1,6 @@
 package com.depromeet.auth.facade;
 
+import com.depromeet.auth.domain.AccountType;
 import com.depromeet.auth.dto.request.GoogleLoginRequest;
 import com.depromeet.auth.dto.request.KakaoLoginRequest;
 import com.depromeet.auth.dto.response.JwtAccessTokenResponse;
@@ -33,7 +34,9 @@ public class AuthFacade {
         if (profile == null) {
             throw new NotFoundException(AuthErrorType.NOT_FOUND);
         }
-        final Member member = memberUseCase.findOrCreateMemberBy(MemberMapper.toCommand(profile));
+        final Member member =
+                memberUseCase.findOrCreateMemberBy(
+                        MemberMapper.toCommand(profile, AccountType.GOOGLE));
         JwtToken token = createTokenUseCase.generateToken(member.getId(), member.getRole());
 
         return JwtTokenResponse.of(token);
@@ -50,7 +53,9 @@ public class AuthFacade {
                         profile.id(),
                         profile.accountInfo().profileInfo().nickname(),
                         profile.accountInfo().email());
-        final Member member = memberUseCase.findOrCreateMemberBy(MemberMapper.toCommand(account));
+        final Member member =
+                memberUseCase.findOrCreateMemberBy(
+                        MemberMapper.toCommand(account, AccountType.KAKAO));
         JwtToken token = createTokenUseCase.generateToken(member.getId(), member.getRole());
 
         return JwtTokenResponse.of(token);
@@ -61,5 +66,9 @@ public class AuthFacade {
         refreshToken = refreshToken.substring(7);
         AccessTokenInfo accessTokenInfo = createTokenUseCase.generateAccessToken(refreshToken);
         return JwtAccessTokenResponse.of(accessTokenInfo);
+    }
+
+    public void logout(Long memberId) {
+        memberUseCase.deleteRefreshTokenByMemberId(memberId);
     }
 }
