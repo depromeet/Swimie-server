@@ -1,5 +1,6 @@
 package com.depromeet.memory.api;
 
+import com.depromeet.config.Logging;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
@@ -23,6 +24,7 @@ public class MemoryController implements MemoryApi {
     private final MemoryFacade memoryFacade;
 
     @PostMapping
+    @Logging(item = "Memory", action = "POST")
     public ApiResponse<MemoryCreateResponse> create(
             @LoginMember Long memberId,
             @Valid @RequestBody MemoryCreateRequest memoryCreateRequest) {
@@ -31,6 +33,7 @@ public class MemoryController implements MemoryApi {
     }
 
     @GetMapping("/{memoryId}")
+    @Logging(item = "Memory", action = "GET")
     public ApiResponse<MemoryResponse> read(
             @LoginMember Long memberId, @PathVariable("memoryId") Long memoryId) {
         MemoryResponse response = memoryFacade.findById(memberId, memoryId);
@@ -38,6 +41,7 @@ public class MemoryController implements MemoryApi {
     }
 
     @PatchMapping("/{memoryId}")
+    @Logging(item = "Memory", action = "PATCH")
     public ApiResponse<MemoryResponse> update(
             @LoginMember Long memberId,
             @PathVariable("memoryId") Long memoryId,
@@ -47,6 +51,7 @@ public class MemoryController implements MemoryApi {
     }
 
     @GetMapping("/timeline")
+    @Logging(item = "Memory", action = "GET")
     public ApiResponse<TimelineSliceResponse> timeline(
             @LoginMember Long memberId,
             @RequestParam(name = "cursorRecordAt", required = false)
@@ -59,6 +64,7 @@ public class MemoryController implements MemoryApi {
     }
 
     @GetMapping("/calendar")
+    @Logging(item = "Memory", action = "GET")
     public ApiResponse<CalendarResponse> getCalendar(
             @LoginMember Long memberId,
             @RequestParam("year") Integer year,

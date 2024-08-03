@@ -64,18 +64,18 @@ public class MemoryResponse {
             Short lane,
             String diary) {
         // 영법 별 바퀴 수와 미터 수를 계산
-        List<StrokeResponse> resultStrokes = getResultStrokes(strokes);
+        List<StrokeResponse> resultStrokes = getResultStrokes(strokes, lane);
 
         // 기록 전체 바퀴 수와 미터 수를 계산
         Float totalLap = 0F;
         Integer totalMeter = 0;
-
         for (StrokeResponse stroke : resultStrokes) {
-            totalLap += stroke.laps();
-            if (stroke.meter() == 0) {
-                totalMeter += (int) (stroke.laps() * lane);
+            if (stroke.laps() != null) {
+                totalLap += stroke.laps();
             }
-            totalMeter += stroke.meter();
+            if (stroke.meter() != null) {
+                totalMeter += stroke.meter();
+            }
         }
 
         this.id = id;
@@ -111,16 +111,26 @@ public class MemoryResponse {
         return images.stream().map(ImageSimpleResponse::of).toList();
     }
 
-    private static List<StrokeResponse> getResultStrokes(List<Stroke> strokes) {
+    private static List<StrokeResponse> getResultStrokes(List<Stroke> strokes, Short lane) {
         return strokes.stream()
                 .map(
-                        stroke ->
-                                StrokeResponse.builder()
+                        stroke -> {
+                            if (stroke.getLaps() != null) {
+                                return StrokeResponse.builder()
                                         .strokeId(stroke.getId())
                                         .name(stroke.getName())
                                         .laps(stroke.getLaps())
+                                        .meter((short) (stroke.getLaps() * 2) * lane)
+                                        .build();
+                            } else {
+                                return StrokeResponse.builder()
+                                        .strokeId(stroke.getId())
+                                        .name(stroke.getName())
+                                        .laps((float) stroke.getMeter() / (lane * 2))
                                         .meter(stroke.getMeter())
-                                        .build())
+                                        .build();
+                            }
+                        })
                 .toList();
     }
 

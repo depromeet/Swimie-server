@@ -29,7 +29,7 @@ pipeline {
                 sh 'chmod u+w ./module-presentation/src/main/resources/'
                 sh 'cp ~/application-secret.properties ./module-presentation/src/main/resources/'
                 sh 'chmod +x ./gradlew'
-                sh ' ./gradlew :module-presentation:build'
+                sh './gradlew :module-presentation:build'
             }
         }
 
