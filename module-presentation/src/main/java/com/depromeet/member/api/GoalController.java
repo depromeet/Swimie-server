@@ -1,5 +1,6 @@
 package com.depromeet.member.api;
 
+import com.depromeet.config.Logging;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.member.domain.Member;
@@ -19,6 +20,7 @@ public class GoalController implements GoalApi {
     private final GoalUpdateUseCase goalUpdateUseCase;
 
     @PatchMapping
+    @Logging(item = "Goal", action = "PATCH")
     public ApiResponse<MemberSimpleResponse> update(
             @LoginMember Long memberId, @RequestBody GoalUpdateRequest goalUpdateRequest) {
         Member member = goalUpdateUseCase.updateGoal(memberId, goalUpdateRequest.goal());
@@ -28,6 +30,7 @@ public class GoalController implements GoalApi {
     }
 
     @GetMapping("/{memberId}")
+    @Logging(item = "Goal", action = "GET")
     public ApiResponse<MemberSimpleResponse> findGoal(@PathVariable("memberId") Long memberId) {
         Member member = memberUseCase.findById(memberId);
         return ApiResponse.success(

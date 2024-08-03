@@ -149,19 +149,15 @@ public class GlobalExceptionAdvice {
             final IOException ex, final HttpServletRequest request) {
         log.error(ex.getMessage());
         return new ResponseEntity<>(
-                ApiResponse.fail(CommonErrorType.INTERNAL_SERVER, 500),
-                HttpStatus.INTERNAL_SERVER_ERROR);
+                ApiResponse.fail(CommonErrorType.IO, 500), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse<?>> handlerRuntimeException(
             final RuntimeException ex, final HttpServletRequest request) {
         log.error(ex.getMessage());
-        String[] message = ex.getMessage().split(" ");
-        int code = Integer.parseInt(message[0]);
-        HttpStatus httpStatus = HttpStatus.resolve(code);
-        CommonErrorType errorType = CommonErrorType.valueOf(message[1]);
-        return new ResponseEntity<>(ApiResponse.fail(errorType, code), httpStatus);
+        return new ResponseEntity<>(
+                ApiResponse.fail(CommonErrorType.RUNTIME, 500), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /** CUSTOM */
