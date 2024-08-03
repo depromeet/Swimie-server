@@ -71,7 +71,7 @@ public class Memory {
                 .build();
     }
 
-    public Integer calculateTotalMeter() {
+    public Integer calculateTotalDistance() {
         if (this.strokes == null || this.strokes.isEmpty()) return null;
 
         int totalDistance = 0;
