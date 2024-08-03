@@ -1,5 +1,6 @@
 package com.depromeet.member.api;
 
+import com.depromeet.config.Logging;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.member.domain.Member;
@@ -18,12 +19,14 @@ public class MemberController implements MemberApi {
     private final MemberFacade memberFacade;
 
     @GetMapping("/{id}")
+    @Logging(item = "Member", action = "GET")
     public ApiResponse<MemberFindOneResponse> getMember(@PathVariable("id") Long id) {
         Member member = memberFacade.findById(id);
         return ApiResponse.success(MemberSuccessType.GET_SUCCESS, MemberFindOneResponse.of(member));
     }
 
     @PatchMapping
+    @Logging(item = "Member", action = "PATCH")
     public ApiResponse<MemberFindOneResponse> updateName(
             @LoginMember Long memberId, @Valid @RequestBody NameUpdateRequest updateNameRequest) {
         Member member = memberFacade.updateName(memberId, updateNameRequest.name());
