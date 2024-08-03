@@ -30,7 +30,7 @@ public record TimelineResponse(
     public TimelineResponse {}
 
     public static TimelineResponse mapToTimelineResponseDto(Memory memory) {
-        int totalMeter = calculateTotalMeter(memory.getStrokes(), memory.getLane());
+        int totalMeter = memory.calculateTotalMeter();
 
         return TimelineResponse.builder()
                 .memoryId(memory.getId())
@@ -40,7 +40,7 @@ public record TimelineResponse(
                 .lane(memory.getLane())
                 .diary(memory.getDiary())
                 .totalMeter(totalMeter)
-                .isAchieved(isAchieved(memory, totalMeter))
+                .isAchieved(memory.isAchieved(totalMeter))
                 .memoryDetailId(getMemoryDetailId(memory))
                 .kcal(getKcalFromMemoryDetail(memory))
                 .strokes(strokeToDto(memory.getStrokes()))
@@ -96,27 +96,6 @@ public record TimelineResponse(
         return memory.getMemoryDetail() != null && memory.getMemoryDetail().getKcal() != null
                 ? memory.getMemoryDetail().getKcal()
                 : null;
-    }
-
-    private static Integer calculateTotalMeter(List<Stroke> strokes, Short lane) {
-        if (strokes == null || strokes.isEmpty()) return null;
-
-        int totalMeter = 0;
-        for (Stroke stroke : strokes) {
-            if (stroke.getMeter() != null) {
-                totalMeter += stroke.getMeter();
-            } else {
-                if (lane != null) {
-                    totalMeter += (int) (stroke.getLaps() * 2) * lane;
-                }
-            }
-        }
-        return totalMeter;
-    }
-
-    private static boolean isAchieved(Memory memory, Integer totalDistance) {
-        if (totalDistance == null) return false;
-        return totalDistance >= memory.getMember().getGoal();
     }
 
     private static String localTimeToString(LocalTime time) {

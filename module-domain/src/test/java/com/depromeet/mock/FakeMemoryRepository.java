@@ -105,13 +105,84 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
     @Override
     public Timeline findPrevMemoryByMemberId(
             Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
-        return null;
+        List<Memory> memories;
+        if (cursorRecordAt == null) {
+            memories =
+                    data.stream()
+                            .filter(memory -> memory.getMember().getId().equals(memberId))
+                            .toList();
+        } else {
+            LocalDate finalCursorRecordAt = cursorRecordAt;
+            memories =
+                    data.stream()
+                            .filter(memory -> memory.getMember().getId().equals(memberId))
+                            .filter(memory -> memory.getRecordAt().isBefore(finalCursorRecordAt))
+                            .toList();
+        }
+        memories = new ArrayList<>(memories);
+        memories.sort((memory1, memory2) -> memory2.getRecordAt().compareTo(memory1.getRecordAt()));
+        if (memories.size() > 10) {
+            memories = memories.subList(0, 10);
+        }
+
+        boolean hasNext = false;
+        cursorRecordAt = null;
+        if (!memories.isEmpty() && memories.size() >= 10) {
+            Memory lastMemory = memories.get(memories.size() - 1);
+            cursorRecordAt = lastMemory.getRecordAt();
+            hasNext = true;
+        }
+
+        return Timeline.builder()
+                .timelineContents(memories)
+                .pageSize(10)
+                .cursorRecordAt(cursorRecordAt)
+                .hasNext(hasNext)
+                .build();
     }
 
     @Override
     public Timeline findNextMemoryByMemberId(
             Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
-        return null;
+        List<Memory> memories;
+        if (cursorRecordAt == null) {
+            memories =
+                    data.stream()
+                            .filter(memory -> memory.getMember().getId().equals(memberId))
+                            .toList();
+            memories.sort(
+                    (memory1, memory2) -> memory2.getRecordAt().compareTo(memory1.getRecordAt()));
+            if (memories.size() > 10) {
+                memories = memories.subList(0, 10);
+            }
+        } else {
+            LocalDate finalCursorRecordAt = cursorRecordAt;
+            memories =
+                    data.stream()
+                            .filter(memory -> memory.getMember().getId().equals(memberId))
+                            .filter(memory -> memory.getRecordAt().isAfter(finalCursorRecordAt))
+                            .toList();
+            if (memories.size() > 10) {
+                memories = memories.subList(0, 10);
+            }
+            memories.sort(
+                    (memory1, memory2) -> memory2.getRecordAt().compareTo(memory1.getRecordAt()));
+        }
+
+        boolean hasNext = false;
+        cursorRecordAt = null;
+        if (!memories.isEmpty()) {
+            Memory lastMemory = memories.get(0);
+            cursorRecordAt = lastMemory.getRecordAt();
+            hasNext = true;
+        }
+
+        return Timeline.builder()
+                .timelineContents(memories)
+                .pageSize(10)
+                .cursorRecordAt(cursorRecordAt)
+                .hasNext(hasNext)
+                .build();
     }
 
     @Override
