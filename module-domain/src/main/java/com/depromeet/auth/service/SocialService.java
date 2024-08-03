@@ -17,12 +17,12 @@ public class SocialService implements SocialUseCase {
     private final GooglePort googlePort;
 
     @Override
-    public AccountProfileResponse getGoogleAccountProfile(String code) {
-        return googlePort.getGoogleAccountProfile(code);
+    public AccountProfileResponse getGoogleAccountProfile(String code, String origin) {
+        return googlePort.getGoogleAccountProfile(code, origin);
     }
 
     @Override
-    public KakaoAccountProfile getKakaoAccountProfile(String code) {
-        return kakaoPort.getKakaoAccountProfile(code);
+    public KakaoAccountProfile getKakaoAccountProfile(String code, String origin) {
+        return kakaoPort.getKakaoAccountProfile(code, origin);
     }
 }
