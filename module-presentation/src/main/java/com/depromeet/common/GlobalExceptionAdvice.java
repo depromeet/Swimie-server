@@ -10,6 +10,7 @@ import jakarta.validation.UnexpectedTypeException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -108,6 +109,23 @@ public class GlobalExceptionAdvice {
     }
 
     /** 500 INTERNEL_SERVER */
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<ApiResponse<?>> handleNullPointException(final NullPointerException ex) {
+        log.error(ex.getMessage());
+        return new ResponseEntity<>(
+                ApiResponse.fail(CommonErrorType.REQUEST_NULL, 500),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ApiResponse<?>> handleNoSuchElementException(
+            final NoSuchElementException ex) {
+        log.error(ex.getMessage());
+        return new ResponseEntity<>(
+                ApiResponse.fail(CommonErrorType.NO_SUCH_ELEMENT, 500),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<?>> handleException(
             final Exception ex, final HttpServletRequest request) throws IOException {
