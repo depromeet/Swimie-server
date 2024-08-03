@@ -21,10 +21,8 @@ public record TimelineResponse(
         @Schema(description = "수영장 레인 길이", example = "25") Short lane,
         @Schema(description = "수영 기록 일기", example = "오늘 수영을 열심히 했다") String diary,
         @Schema(description = "총 수영 거리", example = "175") Integer totalMeter,
+        @Schema(description = "달성 여부", example = "false") boolean isAchieved,
         @Schema(description = "memoryDetail PK", example = "1") Long memoryDetailId,
-        @Schema(description = "수영시 사용한 아이템", example = "킥판, 구명조끼") String item,
-        @Schema(description = "심박수", example = "100") Short heartRate,
-        @Schema(description = "페이스", example = "10") String pace,
         @Schema(description = "소모한 칼로리", example = "100") Integer kcal,
         @Schema(description = "영법별 거리 리스트") List<StrokeResponse> strokes,
         @Schema(description = "이미지") List<ImageResponse> images) {
@@ -32,6 +30,8 @@ public record TimelineResponse(
     public TimelineResponse {}
 
     public static TimelineResponse mapToTimelineResponseDto(Memory memory) {
+        int totalMeter = calculateTotalMeter(memory.getStrokes(), memory.getLane());
+
         return TimelineResponse.builder()
                 .memoryId(memory.getId())
                 .recordAt(memory.getRecordAt().toString())
@@ -39,11 +39,9 @@ public record TimelineResponse(
                 .endTime(localTimeToString(memory.getEndTime()))
                 .lane(memory.getLane())
                 .diary(memory.getDiary())
-                .totalMeter(calculateTotalMeter(memory.getStrokes(), memory.getLane()))
+                .totalMeter(totalMeter)
+                .isAchieved(isAchieved(memory, totalMeter))
                 .memoryDetailId(getMemoryDetailId(memory))
-                .item(getItemFromMemoryDetail(memory))
-                .heartRate(getHeartRateFromMemoryDetail(memory))
-                .pace(getPaceFromMemoryDetail(memory))
                 .kcal(getKcalFromMemoryDetail(memory))
                 .strokes(strokeToDto(memory.getStrokes()))
                 .images(imagesToDto(memory.getImages()))
@@ -94,24 +92,6 @@ public record TimelineResponse(
                 .toList();
     }
 
-    private static String getItemFromMemoryDetail(Memory memory) {
-        return memory.getMemoryDetail() != null && memory.getMemoryDetail().getItem() != null
-                ? memory.getMemoryDetail().getItem()
-                : null;
-    }
-
-    private static Short getHeartRateFromMemoryDetail(Memory memory) {
-        return memory.getMemoryDetail() != null && memory.getMemoryDetail().getHeartRate() != null
-                ? memory.getMemoryDetail().getHeartRate()
-                : null;
-    }
-
-    private static String getPaceFromMemoryDetail(Memory memory) {
-        return memory.getMemoryDetail() != null && memory.getMemoryDetail().getPace() != null
-                ? localTimeToString(memory.getMemoryDetail().getPace())
-                : null;
-    }
-
     private static Integer getKcalFromMemoryDetail(Memory memory) {
         return memory.getMemoryDetail() != null && memory.getMemoryDetail().getKcal() != null
                 ? memory.getMemoryDetail().getKcal()
@@ -121,7 +101,7 @@ public record TimelineResponse(
     private static Integer calculateTotalMeter(List<Stroke> strokes, Short lane) {
         if (strokes == null || strokes.isEmpty()) return null;
 
-        Integer totalMeter = 0;
+        int totalMeter = 0;
         for (Stroke stroke : strokes) {
             if (stroke.getMeter() != null) {
                 totalMeter += stroke.getMeter();
@@ -132,6 +112,11 @@ public record TimelineResponse(
             }
         }
         return totalMeter;
+    }
+
+    private static boolean isAchieved(Memory memory, Integer totalDistance) {
+        if (totalDistance == null) return false;
+        return totalDistance >= memory.getMember().getGoal();
     }
 
     private static String localTimeToString(LocalTime time) {

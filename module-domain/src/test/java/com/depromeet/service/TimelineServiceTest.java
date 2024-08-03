@@ -106,32 +106,22 @@ public class TimelineServiceTest {
 
         return strokeService.saveAll(memory, commands);
     }
+
+    //     @Test
+    //     void 사용자의_타임라인_기록_조회() {
+    //         // given
     //
-    // @Test
-    // void TimelineResponseDto로_변환_테스트_Stroke_meter로_저장() {
-    //     // given
-    //     List<Stroke> strokes = saveMeterStroke();
-    //     memory.setStrokes(strokes);
-    //     memoryRepository.save(memory);
+    //         // when
     //
-    //     // when
-    //     TimelineResponse result = timelineService.mapToTimelineResponseDto(memory);
+    //         // then
+    //     }
     //
-    //     // then
-    //     assertThat(result.totalMeter()).isEqualTo(expectedTotalMeter);
-    // }
+    //     @Test
+    //     void 타임라인_최초조회이후_cursorRecordAt로_다음_페이지_조회() {
+    //         // given
     //
-    // @Test
-    // void TimelineResponseDto로_변환_테스트_Stroke_laps로_저장() {
-    //     // given
-    //     List<Stroke> strokes = saveLapsStroke();
-    //     memory.setStrokes(strokes);
-    //     memoryRepository.save(memory);
+    //         // when
     //
-    //     // when
-    //     TimelineResponse result = timelineService.mapToTimelineResponseDto(memory);
-    //
-    //     // then
-    //     assertThat(result.totalMeter()).isEqualTo(expectedTotalMeter);
-    // }
+    //         // then
+    //     }
 }
