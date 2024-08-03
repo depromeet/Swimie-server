@@ -23,7 +23,7 @@ public class ImageController implements ImageApi {
     public ApiResponse<?> getPresignedUrlForUploadImage(
             @RequestBody ImageNameRequest imageNameRequest) {
         List<ImageUploadResponse> imageUploadResponses =
-                imageFacade.getPresignedUrlAndSaveImages(imageNameRequest.imageNames());
+                imageFacade.getPresignedUrlAndSaveImages(imageNameRequest);
 
         return ApiResponse.success(GENERATE_PRESIGNED_URL_SUCCESS, imageUploadResponses);
     }
@@ -31,8 +31,7 @@ public class ImageController implements ImageApi {
     @PatchMapping("/memory/{memoryId}")
     public ApiResponse<?> updateImages(
             @PathVariable("memoryId") Long memoryId, @RequestBody ImageNameRequest imageNames) {
-        List<ImageUploadResponse> images =
-                imageFacade.updateImages(memoryId, imageNames.imageNames());
+        List<ImageUploadResponse> images = imageFacade.updateImages(memoryId, imageNames);
 
         return ApiResponse.success(UPDATE_AND_GET_PRESIGNED_URL_SUCCESS, images);
     }

@@ -8,7 +8,7 @@ public class HalfFloatValidator implements ConstraintValidator<HalfFloatCheck, F
     @Override
     public boolean isValid(Float value, ConstraintValidatorContext constraintValidatorContext) {
         if (value == null) {
-            return false;
+            return true;
         }
         return value % 0.5 == 0F;
     }

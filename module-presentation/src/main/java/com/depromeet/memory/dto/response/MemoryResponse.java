@@ -64,13 +64,17 @@ public class MemoryResponse {
             Short lane,
             String diary) {
         // 영법 별 바퀴 수와 미터 수를 계산
-        List<StrokeResponse> resultStrokes = getResultStrokes(strokes, lane);
+        List<StrokeResponse> resultStrokes = getResultStrokes(strokes);
 
         // 기록 전체 바퀴 수와 미터 수를 계산
         Float totalLap = 0F;
         Integer totalMeter = 0;
+
         for (StrokeResponse stroke : resultStrokes) {
             totalLap += stroke.laps();
+            if (stroke.meter() == 0) {
+                totalMeter += (int) (stroke.laps() * lane);
+            }
             totalMeter += stroke.meter();
         }
 
@@ -107,26 +111,16 @@ public class MemoryResponse {
         return images.stream().map(ImageSimpleResponse::of).toList();
     }
 
-    private static List<StrokeResponse> getResultStrokes(List<Stroke> strokes, Short lane) {
+    private static List<StrokeResponse> getResultStrokes(List<Stroke> strokes) {
         return strokes.stream()
                 .map(
-                        stroke -> {
-                            if (stroke.getLaps() != null) {
-                                return StrokeResponse.builder()
+                        stroke ->
+                                StrokeResponse.builder()
                                         .strokeId(stroke.getId())
                                         .name(stroke.getName())
                                         .laps(stroke.getLaps())
-                                        .meter((short) (stroke.getLaps() * 2) * lane)
-                                        .build();
-                            } else {
-                                return StrokeResponse.builder()
-                                        .strokeId(stroke.getId())
-                                        .name(stroke.getName())
-                                        .laps((float) stroke.getMeter() / (lane * 2))
                                         .meter(stroke.getMeter())
-                                        .build();
-                            }
-                        })
+                                        .build())
                 .toList();
     }
 

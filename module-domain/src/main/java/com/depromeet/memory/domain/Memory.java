@@ -86,7 +86,7 @@ public class Memory {
 
         int totalDistance = 0;
         for (Stroke stroke : this.strokes) {
-            if (stroke.getMeter() != null) {
+            if (stroke.getMeter() != null && stroke.getMeter() != 0) {
                 totalDistance += stroke.getMeter();
             } else {
                 if (this.lane != null) {
