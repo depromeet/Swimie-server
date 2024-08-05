@@ -21,22 +21,50 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MemoryResponse {
+    @Schema(
+            description = "memory PK",
+            example = "1",
+            type = "long",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private Long id;
+
     private MemberSimpleResponse member;
     private Pool pool;
     private MemoryDetailResponse memoryDetail;
+
+    @Schema(
+            description = "영법 타입(NORMAL, SINGLE, MULTI)",
+            example = "NORMAL",
+            type = "string",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String type;
+
     private List<StrokeResponse> strokes;
     private List<ImageSimpleResponse> images;
 
-    @Schema(description = "작성일자", example = "2024-08-01", maxLength = 10, type = "string")
+    @Schema(
+            description = "작성일자",
+            example = "2024-08-01",
+            maxLength = 10,
+            type = "string",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDate recordAt;
 
-    @Schema(description = "시작시간", example = "11:00", maxLength = 8, type = "string")
+    @Schema(
+            description = "시작시간",
+            example = "11:00",
+            maxLength = 8,
+            type = "string",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     @JsonFormat(pattern = "HH:mm")
     private LocalTime startTime;
 
-    @Schema(description = "종료시간", example = "11:50", maxLength = 8, type = "string")
+    @Schema(
+            description = "종료시간",
+            example = "11:50",
+            maxLength = 8,
+            type = "string",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     @JsonFormat(pattern = "HH:mm")
     private LocalTime endTime;
 
@@ -44,9 +72,35 @@ public class MemoryResponse {
     @JsonFormat(pattern = "HH:mm")
     private LocalTime duration;
 
+    @Schema(
+            description = "레인 길이",
+            example = "25",
+            maxLength = 3,
+            type = "int",
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Short lane;
+
+    @Schema(
+            description = "총 바퀴",
+            example = "3",
+            maxLength = 3,
+            type = "int",
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Float totalLap;
+
+    @Schema(
+            description = "총 미터",
+            example = "500",
+            maxLength = 8,
+            type = "int",
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Integer totalMeter;
+
+    @Schema(
+            description = "일기",
+            example = "수영 기록",
+            type = "string",
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String diary;
 
     @Builder
