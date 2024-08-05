@@ -11,7 +11,7 @@ public interface MemoryPersistencePort {
 
     Optional<Memory> findById(Long memoryId);
 
-    Optional<Memory> findByRecordAt(LocalDate recordAt);
+    Optional<Memory> findByRecordAtAndMemberId(LocalDate recordAt, Long memberId);
 
     Optional<Memory> update(Long memoryId, Memory memoryUpdate);
 
