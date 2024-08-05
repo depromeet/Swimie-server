@@ -65,8 +65,9 @@ public class MemoryRepository implements MemoryPersistencePort {
     }
 
     @Override
-    public Optional<Memory> findByRecordAt(LocalDate recordAt) {
-        Optional<MemoryEntity> nullableMemoryEntity = memoryJpaRepository.findByRecordAt(recordAt);
+    public Optional<Memory> findByRecordAtAndMemberId(LocalDate recordAt, Long memberId) {
+        Optional<MemoryEntity> nullableMemoryEntity =
+                memoryJpaRepository.findByRecordAtAndMemberId(recordAt, memberId);
         if (nullableMemoryEntity.isEmpty()) {
             return Optional.empty();
         }
