@@ -35,7 +35,7 @@ public class MemoryService implements CreateMemoryUseCase, UpdateMemoryUseCase, 
     @Transactional
     public Memory save(Member writer, CreateMemoryCommand command) {
         MemoryDetail memoryDetail = getMemoryDetail(command);
-        checkMemoryAlreadyExist(command);
+        checkMemoryAlreadyExist(command, writer.getId());
 
         if (memoryDetail != null) {
             memoryDetail = memoryDetailPersistencePort.save(memoryDetail);
@@ -101,9 +101,9 @@ public class MemoryService implements CreateMemoryUseCase, UpdateMemoryUseCase, 
                 .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND));
     }
 
-    private void checkMemoryAlreadyExist(CreateMemoryCommand command) {
+    private void checkMemoryAlreadyExist(CreateMemoryCommand command, Long memberId) {
         Optional<Memory> memoryByRecordAt =
-                memoryPersistencePort.findByRecordAt(command.recordAt());
+                memoryPersistencePort.findByRecordAtAndMemberId(command.recordAt(), memberId);
 
         if (memoryByRecordAt.isPresent()) {
             throw new BadRequestException(MemoryErrorType.ALREADY_CREATED);
