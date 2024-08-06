@@ -124,7 +124,7 @@ public class MemoryResponse {
         Float totalLap = 0F;
         Integer totalMeter = 0;
         for (StrokeResponse stroke : resultStrokes) {
-            if (stroke.laps() != null) {
+            if (stroke.laps() != null && stroke.laps() != 0) {
                 totalLap += stroke.laps();
             }
             if (stroke.meter() != null) {
