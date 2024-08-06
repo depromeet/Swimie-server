@@ -2,6 +2,7 @@ package com.depromeet.auth.service;
 
 import com.depromeet.auth.port.in.usecase.CreateTokenUseCase;
 import com.depromeet.auth.port.out.SecurityPort;
+import com.depromeet.auth.port.out.persistence.RefreshRedisPersistencePort;
 import com.depromeet.auth.vo.AccessTokenInfo;
 import com.depromeet.auth.vo.JwtToken;
 import com.depromeet.auth.vo.RefreshTokenInfo;
@@ -16,6 +17,7 @@ import com.depromeet.type.auth.AuthErrorType;
 import com.depromeet.type.member.MemberErrorType;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,12 +29,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class JwtTokenService implements CreateTokenUseCase {
     private final SecurityPort securityPort;
     private final MemberPersistencePort memberPersistencePort;
+    private final RefreshRedisPersistencePort refreshRedisPersistencePort;
+
+    @Value("${jwt.refresh-token-expiration-time}")
+    private Long expireTime;
 
     public JwtToken generateToken(Long memberId, MemberRole memberRole) {
         AccessTokenInfo accessTokenInfo = securityPort.generateAccessToken(memberId, memberRole);
         RefreshTokenInfo refreshTokenInfo = securityPort.generateRefreshToken(memberId, memberRole);
 
-        memberPersistencePort.updateRefresh(memberId, refreshTokenInfo.refreshToken());
+        refreshRedisPersistencePort.setData(memberId, refreshTokenInfo.refreshToken(), expireTime);
 
         return new JwtToken(
                 memberId,
@@ -70,7 +76,7 @@ public class JwtTokenService implements CreateTokenUseCase {
                         .findById(memberId)
                         .orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
 
-        if (member.getRefreshToken() != null && member.getRefreshToken().equals(refreshToken)) {
+        if (validateRefreshToken(memberId, refreshToken)) {
             MemberRole memberRole = member.getRole();
             return securityPort.generateAccessToken(memberId, memberRole);
         } else {
@@ -78,15 +84,26 @@ public class JwtTokenService implements CreateTokenUseCase {
         }
     }
 
-    public RefreshTokenInfo retrieveRefreshToken(
-            RefreshTokenInfo refreshTokenInfoDto, String refreshToken) {
-        Member member =
-                memberPersistencePort
-                        .findById(refreshTokenInfoDto.memberId())
-                        .orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
-        if (member.getRefreshToken() != null && member.getRefreshToken().equals(refreshToken)) {
-            return refreshTokenInfoDto;
+    public boolean validateRefreshToken(Long memberId, String refreshToken) {
+        String refreshTokenData = refreshRedisPersistencePort.getData(memberId);
+        if (refreshTokenData.isBlank()) {
+            throw new NotFoundException(AuthErrorType.JWT_REFRESH_TOKEN_NOT_FOUND);
+        }
+        if (refreshTokenData.equals(refreshToken)) {
+            return true;
         }
         throw new ForbiddenException(AuthErrorType.REFRESH_TOKEN_NOT_MATCH);
+    }
+
+    public void destroyRefreshToken(String header) {
+        String token = header.substring(7);
+        AccessTokenInfo accessTokenInfo =
+                securityPort
+                        .parseAccessToken(token)
+                        .orElseThrow(
+                                () ->
+                                        new UnauthorizedException(
+                                                AuthErrorType.INVALID_JWT_ACCESS_TOKEN));
+        refreshRedisPersistencePort.deleteData(accessTokenInfo.memberId());
     }
 }

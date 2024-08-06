@@ -10,9 +10,9 @@ public interface MemberPersistencePort {
 
     Member save(Member member);
 
-    void updateRefresh(Long memberId, String refreshToken);
-
     Optional<Member> updateGoal(Long memberId, Integer goal);
 
     Optional<Member> updateName(Long memberId, String name);
+
+    Optional<Member> findByProviderId(String providerId);
 }
