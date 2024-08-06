@@ -1,5 +1,7 @@
 package com.depromeet.memory.mapper;
 
+import com.depromeet.member.domain.Member;
+import com.depromeet.member.dto.response.MemberSimpleResponse;
 import com.depromeet.memory.domain.vo.Timeline;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
@@ -11,6 +13,7 @@ import com.depromeet.memory.port.in.command.CreateMemoryCommand;
 import com.depromeet.memory.port.in.command.CreateStrokeCommand;
 import com.depromeet.memory.port.in.command.UpdateMemoryCommand;
 import com.depromeet.memory.port.in.command.UpdateStrokeCommand;
+import java.time.LocalTime;
 import java.util.List;
 
 public class MemoryMapper {
@@ -24,11 +27,13 @@ public class MemoryMapper {
     }
 
     public static CreateMemoryCommand toCommand(MemoryCreateRequest request) {
+        LocalTime pace = LocalTime.of(0, request.getPaceMinutes(), request.getPaceSeconds());
+
         return CreateMemoryCommand.builder()
                 .poolId(request.getPoolId())
                 .item(request.getItem())
                 .heartRate(request.getHeartRate())
-                .pace(request.getPace())
+                .pace(pace)
                 .kcal(request.getKcal())
                 .recordAt(request.getRecordAt())
                 .startTime(request.getStartTime())
@@ -46,11 +51,13 @@ public class MemoryMapper {
     }
 
     public static UpdateMemoryCommand toCommand(MemoryUpdateRequest request) {
+        LocalTime pace = LocalTime.of(0, request.getPaceMinutes(), request.getPaceSeconds());
+
         return UpdateMemoryCommand.builder()
                 .poolId(request.getPoolId())
                 .item(request.getItem())
                 .heartRate(request.getHeartRate())
-                .pace(request.getPace())
+                .pace(pace)
                 .kcal(request.getKcal())
                 .recordAt(request.getRecordAt())
                 .startTime(request.getStartTime())
@@ -66,7 +73,7 @@ public class MemoryMapper {
                 .build();
     }
 
-    public static TimelineSliceResponse toSliceResponse(Timeline timeline) {
+    public static TimelineSliceResponse toSliceResponse(Member member, Timeline timeline) {
         List<TimelineResponse> result =
                 timeline.getTimelineContents().stream()
                         .map(TimelineResponse::mapToTimelineResponseDto)
@@ -74,6 +81,7 @@ public class MemoryMapper {
 
         return TimelineSliceResponse.builder()
                 .content(result)
+                .member(MemberSimpleResponse.from(member.getGoal()))
                 .pageSize(timeline.getPageSize())
                 .cursorRecordAt(getCursorRecordAtResponse(timeline))
                 .hasNext(timeline.isHasNext())

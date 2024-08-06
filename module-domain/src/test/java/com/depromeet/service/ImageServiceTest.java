@@ -13,11 +13,11 @@ import com.depromeet.image.service.ImageUploadService;
 import com.depromeet.member.domain.Member;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.MemoryDetail;
-import com.depromeet.mock.FakeImageRepository;
-import com.depromeet.mock.FakeS3ImageManager;
+import com.depromeet.mock.*;
 import com.depromeet.pool.domain.Pool;
 import com.depromeet.util.ImageNameUtil;
 import java.time.Clock;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +29,10 @@ import org.junit.jupiter.api.Test;
 class ImageServiceTest {
     private FakeS3ImageManager s3ImageManager;
     private FakeImageRepository imageRepository;
+    private FakeMemoryRepository memoryRepository;
+    private FakeMemoryDetailRepository memoryDetailRepository;
+    private FakeMemberRepository memberRepository;
+    private FakePoolRepository poolRepository;
 
     private ImageGetService imageGetService;
     private ImageUploadService imageUploadService;
@@ -36,13 +40,8 @@ class ImageServiceTest {
     private ImageDeleteService imageDeleteService;
 
     private Long memberId = 1L;
-    private Long memoryDetailId = 1L;
-    private Long memoryId = 1L;
 
-    private final Pool pool = PoolFixture.make("testPool", "test address", 25);
-    private Member member = MemberFixture.make(memberId, "USER");
-    private MemoryDetail memoryDetail = MemoryDetailFixture.make(memoryDetailId);
-    private Memory memory = MemoryFixture.make(memoryId, member, pool, memoryDetail);
+    private Memory memory;
     private Clock clock;
 
     List<String> originImageNames = List.of("image1.png", "image2.png", "image3.png");
@@ -51,7 +50,23 @@ class ImageServiceTest {
     void init() {
         s3ImageManager = new FakeS3ImageManager();
         imageRepository = new FakeImageRepository();
+        memoryRepository = new FakeMemoryRepository();
+        memoryDetailRepository = new FakeMemoryDetailRepository();
+        memberRepository = new FakeMemberRepository();
+        poolRepository = new FakePoolRepository();
         clock = new ClockFixture();
+
+        Member member = MemberFixture.make(memberId, "USER");
+        member = memberRepository.save(member);
+
+        Pool pool = PoolFixture.make("testPool", "test address", 25);
+        pool = poolRepository.save(pool);
+
+        MemoryDetail memoryDetail = MemoryDetailFixture.make();
+        memoryDetail = memoryDetailRepository.save(memoryDetail);
+
+        memory = MemoryFixture.make(member, pool, memoryDetail, LocalDate.of(2024, 7, 1));
+        memory = memoryRepository.save(memory);
 
         imageGetService = new ImageGetService(imageRepository);
         imageUploadService = new ImageUploadService(imageRepository, s3ImageManager, clock);
@@ -67,11 +82,12 @@ class ImageServiceTest {
         for (String originImageName : originImageNames) {
             String imageName =
                     ImageNameUtil.createImageName(originImageName, LocalDateTime.now(clock));
+            String contentType = ImageNameUtil.getContentType(originImageName);
 
             ImagePresignedUrlVo imagePresignedUrlVo =
                     ImagePresignedUrlVo.builder()
                             .imageName(originImageName)
-                            .presignedUrl(s3ImageManager.getPresignedUrl(imageName))
+                            .presignedUrl(s3ImageManager.getPresignedUrl(imageName, contentType))
                             .build();
             expectedImagePresignedUrlVos.add(imagePresignedUrlVo);
         }

@@ -7,6 +7,7 @@ import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.MemoryDetail;
 import com.depromeet.memory.domain.Stroke;
 import com.depromeet.pool.domain.Pool;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
@@ -20,28 +21,86 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MemoryResponse {
+    @Schema(
+            description = "memory PK",
+            example = "1",
+            type = "long",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private Long id;
+
     private MemberSimpleResponse member;
     private Pool pool;
     private MemoryDetailResponse memoryDetail;
+
+    @Schema(
+            description = "영법 타입(NORMAL, SINGLE, MULTI)",
+            example = "NORMAL",
+            type = "string",
+            requiredMode = Schema.RequiredMode.REQUIRED)
+    private String type;
+
     private List<StrokeResponse> strokes;
     private List<ImageSimpleResponse> images;
 
-    @Schema(description = "작성일자", example = "2024-08-01", maxLength = 10, type = "string")
+    @Schema(
+            description = "작성일자",
+            example = "2024-08-01",
+            maxLength = 10,
+            type = "string",
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDate recordAt;
 
-    @Schema(description = "시작시간", example = "11:00", maxLength = 8, type = "string")
+    @Schema(
+            description = "시작시간",
+            example = "11:00",
+            maxLength = 8,
+            type = "string",
+            requiredMode = Schema.RequiredMode.REQUIRED)
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime startTime;
 
-    @Schema(description = "종료시간", example = "11:50", maxLength = 8, type = "string")
+    @Schema(
+            description = "종료시간",
+            example = "11:50",
+            maxLength = 8,
+            type = "string",
+            requiredMode = Schema.RequiredMode.REQUIRED)
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime endTime;
 
     @Schema(description = "운동시간", example = "00:50", maxLength = 8, type = "string")
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime duration;
 
+    @Schema(
+            description = "레인 길이",
+            example = "25",
+            maxLength = 3,
+            type = "int",
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Short lane;
+
+    @Schema(
+            description = "총 바퀴",
+            example = "3",
+            maxLength = 3,
+            type = "int",
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Float totalLap;
+
+    @Schema(
+            description = "총 미터",
+            example = "500",
+            maxLength = 8,
+            type = "int",
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Integer totalMeter;
+
+    @Schema(
+            description = "일기",
+            example = "수영 기록",
+            type = "string",
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String diary;
 
     @Builder
@@ -50,6 +109,7 @@ public class MemoryResponse {
             MemberSimpleResponse member,
             Pool pool,
             MemoryDetail memoryDetail,
+            String type,
             List<Stroke> strokes,
             List<Image> images,
             LocalDate recordAt,
@@ -64,14 +124,19 @@ public class MemoryResponse {
         Float totalLap = 0F;
         Integer totalMeter = 0;
         for (StrokeResponse stroke : resultStrokes) {
-            totalLap += stroke.laps();
-            totalMeter += stroke.meter();
+            if (stroke.laps() != null) {
+                totalLap += stroke.laps();
+            }
+            if (stroke.meter() != null) {
+                totalMeter += stroke.meter();
+            }
         }
 
         this.id = id;
         this.member = member;
         this.pool = pool;
         this.memoryDetail = getMemoryDetail(memoryDetail);
+        this.type = type;
         this.strokes = resultStrokes;
         this.images = getImageSource(images); // 순환참조 방지를 위해 Memory 필드 제외
         this.recordAt = recordAt;
@@ -132,6 +197,7 @@ public class MemoryResponse {
                 .member(memberSimple)
                 .pool(memory.getPool())
                 .memoryDetail(memory.getMemoryDetail())
+                .type(memory.classifyType())
                 .strokes(memory.getStrokes())
                 .images(memory.getImages())
                 .recordAt(memory.getRecordAt())

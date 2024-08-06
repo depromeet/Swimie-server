@@ -2,11 +2,11 @@ package com.depromeet.memory.dto.response;
 
 import com.depromeet.memory.domain.MemoryDetail;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import java.time.LocalTime;
 import lombok.Builder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record MemoryDetailResponse(String item, Short heartRate, LocalTime pace, Integer kcal) {
+public record MemoryDetailResponse(
+        String item, Short heartRate, int paceMinutes, int paceSeconds, Integer kcal) {
     @Builder
     public MemoryDetailResponse {}
 
@@ -14,7 +14,8 @@ public record MemoryDetailResponse(String item, Short heartRate, LocalTime pace,
         return MemoryDetailResponse.builder()
                 .item(memoryDetail.getItem())
                 .heartRate(memoryDetail.getHeartRate())
-                .pace(memoryDetail.getPace())
+                .paceMinutes(memoryDetail.getPace().getMinute())
+                .paceSeconds(memoryDetail.getPace().getSecond())
                 .kcal(memoryDetail.getKcal())
                 .build();
     }

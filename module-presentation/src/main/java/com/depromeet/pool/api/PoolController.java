@@ -1,5 +1,6 @@
 package com.depromeet.pool.api;
 
+import com.depromeet.config.Logging;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.pool.dto.request.FavoritePoolCreateRequest;
@@ -23,6 +24,7 @@ public class PoolController implements PoolApi {
     private final PoolFacade poolFacade;
 
     @GetMapping("/search")
+    @Logging(item = "Pool", action = "GET")
     public ApiResponse<PoolSearchResponse> searchPoolsByNameQuery(
             @LoginMember Long memberId,
             @RequestParam(value = "nameQuery") String nameQuery,
@@ -33,6 +35,7 @@ public class PoolController implements PoolApi {
     }
 
     @GetMapping("/search/initial")
+    @Logging(item = "Pool", action = "GET")
     public ApiResponse<PoolInitialResponse> getFavoriteAndSearchedPools(
             @LoginMember Long memberId) {
         return ApiResponse.success(
@@ -41,6 +44,7 @@ public class PoolController implements PoolApi {
     }
 
     @PutMapping("/favorite")
+    @Logging(item = "Pool", action = "PUT")
     public ApiResponse<?> createFavoritePool(
             @LoginMember Long memberId, @Valid @RequestBody FavoritePoolCreateRequest request) {
         String uri = poolFacade.putFavoritePool(memberId, request);

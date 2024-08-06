@@ -65,7 +65,7 @@ public class MemoryFacade {
             poolSearchLogUseCase.createSearchLog(writer, request.getPoolId());
         }
 
-        return MemoryCreateResponse.of(rank, memoryId);
+        return MemoryCreateResponse.of(month, rank, memoryId);
     }
 
     @Transactional
@@ -89,17 +89,19 @@ public class MemoryFacade {
 
     public TimelineSliceResponse getTimelineByMemberIdAndCursorAndDate(
             Long memberId, LocalDate cursorRecordAt, YearMonth date, boolean showNewer) {
+        Member member = memberUseCase.findById(memberId);
         Timeline timeline =
                 timelineUseCase.getTimelineByMemberIdAndCursorAndDate(
                         memberId, cursorRecordAt, date, showNewer);
 
-        return MemoryMapper.toSliceResponse(timeline);
+        return MemoryMapper.toSliceResponse(member, timeline);
     }
 
     public CalendarResponse getCalendar(Long memberId, Integer year, Short month) {
         YearMonth yearMonth = YearMonth.of(year, month);
+        Member member = memberUseCase.findById(memberId);
         List<Memory> calendarMemories =
                 calendarUseCase.getCalendarByYearAndMonth(memberId, yearMonth);
-        return CalendarResponse.of(calendarMemories);
+        return CalendarResponse.of(member, calendarMemories);
     }
 }

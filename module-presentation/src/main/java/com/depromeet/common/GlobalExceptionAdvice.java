@@ -10,6 +10,7 @@ import jakarta.validation.UnexpectedTypeException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -108,6 +109,22 @@ public class GlobalExceptionAdvice {
     }
 
     /** 500 INTERNEL_SERVER */
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<ApiResponse<?>> handleNullPointException(final NullPointerException ex) {
+        log.error(ex.getMessage());
+        return new ResponseEntity<>(
+                ApiResponse.fail(CommonErrorType.NULL, 500), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ApiResponse<?>> handleNoSuchElementException(
+            final NoSuchElementException ex) {
+        log.error(ex.getMessage());
+        return new ResponseEntity<>(
+                ApiResponse.fail(CommonErrorType.NO_SUCH_ELEMENT, 500),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<?>> handleException(
             final Exception ex, final HttpServletRequest request) throws IOException {
@@ -131,19 +148,15 @@ public class GlobalExceptionAdvice {
             final IOException ex, final HttpServletRequest request) {
         log.error(ex.getMessage());
         return new ResponseEntity<>(
-                ApiResponse.fail(CommonErrorType.INTERNAL_SERVER, 500),
-                HttpStatus.INTERNAL_SERVER_ERROR);
+                ApiResponse.fail(CommonErrorType.IO, 500), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse<?>> handlerRuntimeException(
             final RuntimeException ex, final HttpServletRequest request) {
         log.error(ex.getMessage());
-        String[] message = ex.getMessage().split(" ");
-        int code = Integer.parseInt(message[0]);
-        HttpStatus httpStatus = HttpStatus.resolve(code);
-        CommonErrorType errorType = CommonErrorType.valueOf(message[1]);
-        return new ResponseEntity<>(ApiResponse.fail(errorType, code), httpStatus);
+        return new ResponseEntity<>(
+                ApiResponse.fail(CommonErrorType.RUNTIME, 500), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /** CUSTOM */

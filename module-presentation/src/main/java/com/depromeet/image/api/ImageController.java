@@ -2,6 +2,7 @@ package com.depromeet.image.api;
 
 import static com.depromeet.type.image.ImageSuccessType.*;
 
+import com.depromeet.config.Logging;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.image.dto.request.ImageIdsRequest;
 import com.depromeet.image.dto.request.ImageNameRequest;
@@ -20,24 +21,26 @@ public class ImageController implements ImageApi {
     private final ImageFacade imageFacade;
 
     @PostMapping("/presigned-url")
+    @Logging(item = "Image", action = "POST")
     public ApiResponse<?> getPresignedUrlForUploadImage(
             @RequestBody ImageNameRequest imageNameRequest) {
         List<ImageUploadResponse> imageUploadResponses =
-                imageFacade.getPresignedUrlAndSaveImages(imageNameRequest.imageNames());
+                imageFacade.getPresignedUrlAndSaveImages(imageNameRequest);
 
         return ApiResponse.success(GENERATE_PRESIGNED_URL_SUCCESS, imageUploadResponses);
     }
 
     @PatchMapping("/memory/{memoryId}")
+    @Logging(item = "Image", action = "PATCH")
     public ApiResponse<?> updateImages(
             @PathVariable("memoryId") Long memoryId, @RequestBody ImageNameRequest imageNames) {
-        List<ImageUploadResponse> images =
-                imageFacade.updateImages(memoryId, imageNames.imageNames());
+        List<ImageUploadResponse> images = imageFacade.updateImages(memoryId, imageNames);
 
         return ApiResponse.success(UPDATE_AND_GET_PRESIGNED_URL_SUCCESS, images);
     }
 
     @PatchMapping("/status")
+    @Logging(item = "Image", action = "PATCH")
     public ApiResponse<?> changeImageStatusForAddedImages(
             @RequestBody ImageIdsRequest imageIdsRequest) {
         imageFacade.changeImageStatus(imageIdsRequest.imageIds());
@@ -46,6 +49,7 @@ public class ImageController implements ImageApi {
     }
 
     @GetMapping("/memory/{memoryId}")
+    @Logging(item = "Image", action = "GET")
     public ApiResponse<List<ImageResponse>> findImages(@PathVariable("memoryId") Long memoryId) {
         List<ImageResponse> memoryImages = imageFacade.findImagesByMemoryId(memoryId);
 
@@ -53,6 +57,7 @@ public class ImageController implements ImageApi {
     }
 
     @DeleteMapping("/memory/{memoryId}")
+    @Logging(item = "Image", action = "DELETE")
     public ResponseEntity<?> deleteImages(@PathVariable("memoryId") Long memoryId) {
         imageFacade.deleteAllImagesByMemoryId(memoryId);
 

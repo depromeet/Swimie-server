@@ -70,4 +70,35 @@ public class Memory {
                 .diary(updateMemory.getDiary())
                 .build();
     }
+
+    public String classifyType() {
+        if (this.strokes == null || this.strokes.isEmpty()) {
+            return "NORMAL";
+        } else if (this.strokes.size() == 1) {
+            return "SINGLE";
+        } else {
+            return "MULTI";
+        }
+    }
+
+    public Integer calculateTotalDistance() {
+        if (this.strokes == null || this.strokes.isEmpty()) return null;
+
+        int totalDistance = 0;
+        for (Stroke stroke : this.strokes) {
+            if (stroke.getMeter() != null && stroke.getMeter() != 0) {
+                totalDistance += stroke.getMeter();
+            } else {
+                if (this.lane != null) {
+                    totalDistance += (int) (stroke.getLaps() * 2) * this.lane;
+                }
+            }
+        }
+        return totalDistance;
+    }
+
+    public boolean isAchieved(Integer totalDistance) {
+        if (totalDistance == null) return false;
+        return totalDistance >= this.member.getGoal();
+    }
 }
