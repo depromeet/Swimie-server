@@ -6,7 +6,6 @@ import com.depromeet.auth.dto.response.JwtAccessTokenResponse;
 import com.depromeet.auth.dto.response.JwtTokenResponse;
 import com.depromeet.auth.facade.AuthFacade;
 import com.depromeet.dto.response.ApiResponse;
-import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.type.auth.AuthSuccessType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -42,12 +41,6 @@ public class AuthController implements AuthApi {
         return ApiResponse.success(
                 AuthSuccessType.REISSUE_ACCESS_TOKEN_SUCCESS,
                 authFacade.getReissuedAccessToken(refreshToken));
-    }
-
-    @PostMapping("/auth/logout")
-    public ApiResponse<?> logout(@LoginMember Long memberId) {
-        authFacade.logout(memberId);
-        return ApiResponse.success(AuthSuccessType.LOGOUT_SUCCESS);
     }
 
     private static String getOrigin(HttpServletRequest httpServletRequest) {

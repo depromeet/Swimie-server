@@ -5,6 +5,7 @@ import com.depromeet.filter.JwtAuthenticationFilter;
 import com.depromeet.filter.JwtExceptionFilter;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import com.depromeet.oauth.CustomOAuth2UserService;
+import com.depromeet.oauth.handler.CustomLogoutSuccessHandler;
 import com.depromeet.oauth.handler.OAuth2FailureHandler;
 import com.depromeet.oauth.handler.OAuth2SuccessHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -89,6 +90,9 @@ public class SecurityConfig {
                         exception.authenticationEntryPoint(
                                 (request, response, authException) -> response.setStatus(401)));
 
+        // 로그아웃
+        http.logout(logout -> logout.logoutSuccessHandler(customLogoutSuccessHandler()));
+
         return http.build();
     }
 
@@ -135,5 +139,10 @@ public class SecurityConfig {
     @Bean
     public OAuth2FailureHandler oAuth2FailureHandler() {
         return new OAuth2FailureHandler();
+    }
+
+    @Bean
+    public CustomLogoutSuccessHandler customLogoutSuccessHandler() {
+        return new CustomLogoutSuccessHandler(jwtTokenService);
     }
 }
