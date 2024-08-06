@@ -73,12 +73,12 @@ public class ImageUpdateService implements ImageUpdateUseCase {
                     ImageNameUtil.validateImageNameIsUUID(
                             imageName); // image가 uuid 인지 확인 (기존의 이미지인지 확인)
 
-            if (isImageExist && existImagesNames.contains(imageName))
-                continue; // image가 uuid 이고 기존의 이미지에 존재하면 패스
+            if (isImageExist && existImagesNames.contains(imageName)) continue;
             String uuidImageName =
                     ImageNameUtil.createImageName(imageName, LocalDateTime.now(clock));
+            String contentType = ImageNameUtil.getContentType(imageName);
 
-            String presignedUrl = s3ManagePort.getPresignedUrl(uuidImageName);
+            String presignedUrl = s3ManagePort.getPresignedUrl(uuidImageName, imageName);
             Long addedImageId = saveNewImage(imageName, uuidImageName, memory);
 
             ImagePresignedUrlVo imageUploadResponseDto =
