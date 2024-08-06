@@ -70,7 +70,7 @@ public class GoogleClient implements GooglePort {
                 throw new InternalServerException(AuthErrorType.LOGIN_FAILED);
             }
         } catch (IOException e) {
-            throw new InternalServerException(CommonErrorType.IO_EXCEPTION);
+            throw new InternalServerException(CommonErrorType.IO);
         }
     }
 
