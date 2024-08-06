@@ -32,7 +32,7 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, NameUpda
     @Override
     public Member findOrCreateMemberBy(SocialMemberCommand command) {
         return memberPersistencePort
-                .findByEmail(command.email())
+                .findByProviderId(command.providerId())
                 .orElseGet(
                         () -> {
                             Member member =
@@ -40,6 +40,7 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, NameUpda
                                             .name(command.name())
                                             .email(command.email())
                                             .role(MemberRole.USER)
+                                            .providerId(command.providerId())
                                             .build();
                             return memberPersistencePort.save(member);
                         });

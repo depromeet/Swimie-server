@@ -22,32 +22,25 @@ public class MemberEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column private String name;
 
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "role")
-    private MemberRole role;
+    @Column private MemberRole role;
 
-    @Column private String refreshToken;
+    @Column private String providerId;
 
     private Integer goal;
 
     @Builder
     public MemberEntity(
-            Long id,
-            String name,
-            String email,
-            MemberRole role,
-            String refreshToken,
-            Integer goal) {
+            Long id, String name, String email, MemberRole role, String providerId, Integer goal) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;
-        this.refreshToken = refreshToken;
+        this.providerId = providerId;
         this.goal = goal;
     }
 
@@ -62,7 +55,7 @@ public class MemberEntity {
                 .name(member.getName())
                 .email(member.getEmail())
                 .role(member.getRole())
-                .refreshToken(member.getRefreshToken())
+                .providerId(member.getProviderId())
                 .goal(member.getGoal())
                 .build();
     }
@@ -73,14 +66,9 @@ public class MemberEntity {
                 .name(name)
                 .email(email)
                 .role(role)
-                .refreshToken(refreshToken)
+                .providerId(providerId)
                 .goal(goal)
                 .build();
-    }
-
-    public MemberEntity updateRefresh(String refreshToken) {
-        if (refreshToken != null) this.refreshToken = refreshToken;
-        return this;
     }
 
     public MemberEntity updateGoal(Integer goal) {

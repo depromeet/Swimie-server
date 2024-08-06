@@ -15,12 +15,14 @@ public class CustomOAuth2User implements OAuth2User, UserDetails {
     private String name;
     private String email;
     private MemberRole memberRole;
+    private String providerId;
 
     public CustomOAuth2User(MemberDto memberDto) {
         this.id = memberDto.getId();
         this.name = memberDto.getName();
         this.email = memberDto.getEmail();
         this.memberRole = memberDto.getMemberRole();
+        this.providerId = memberDto.getProviderId();
     }
 
     @Override
@@ -58,5 +60,9 @@ public class CustomOAuth2User implements OAuth2User, UserDetails {
 
     public MemberRole getMemberRole() {
         return this.memberRole;
+    }
+
+    public String getProviderId() {
+        return this.providerId;
     }
 }

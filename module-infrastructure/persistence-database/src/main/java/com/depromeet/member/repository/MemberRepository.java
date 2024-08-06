@@ -28,13 +28,6 @@ public class MemberRepository implements MemberPersistencePort {
     }
 
     @Override
-    public void updateRefresh(Long memberId, String refreshToken) {
-        memberJpaRepository
-                .findById(memberId)
-                .map(memberEntity -> memberEntity.updateRefresh(refreshToken));
-    }
-
-    @Override
     public Optional<Member> updateGoal(Long memberId, Integer goal) {
         return memberJpaRepository
                 .findById(memberId)
@@ -46,5 +39,10 @@ public class MemberRepository implements MemberPersistencePort {
         return memberJpaRepository
                 .findById(memberId)
                 .map(memberEntity -> memberEntity.updateName(name).toModel());
+    }
+
+    @Override
+    public Optional<Member> findByProviderId(String providerId) {
+        return memberJpaRepository.findByProviderId(providerId).map(MemberEntity::toModel);
     }
 }

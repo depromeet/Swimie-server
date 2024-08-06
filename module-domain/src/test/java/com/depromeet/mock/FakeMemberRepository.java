@@ -40,17 +40,6 @@ public class FakeMemberRepository implements MemberPersistencePort {
     }
 
     @Override
-    public void updateRefresh(Long memberId, String refreshToken) {
-        findById(memberId)
-                .map(
-                        item -> {
-                            Member member = item.updateRefreshToken(refreshToken);
-                            save(member);
-                            return member;
-                        });
-    }
-
-    @Override
     public Optional<Member> updateGoal(Long memberId, Integer goal) {
         return findById(memberId)
                 .map(
@@ -70,5 +59,10 @@ public class FakeMemberRepository implements MemberPersistencePort {
                             save(member);
                             return member;
                         });
+    }
+
+    @Override
+    public Optional<Member> findByProviderId(String providerId) {
+        return data.stream().filter(member -> member.getProviderId().equals(providerId)).findAny();
     }
 }

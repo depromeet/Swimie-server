@@ -33,7 +33,9 @@ public class AuthFacade {
         if (profile == null) {
             throw new NotFoundException(AuthErrorType.NOT_FOUND);
         }
-        final Member member = memberUseCase.findOrCreateMemberBy(MemberMapper.toCommand(profile));
+        final Member member =
+                memberUseCase.findOrCreateMemberBy(
+                        MemberMapper.toCommand(profile, "google " + profile.id()));
         JwtToken token = createTokenUseCase.generateToken(member.getId(), member.getRole());
 
         return JwtTokenResponse.of(token);
@@ -50,7 +52,9 @@ public class AuthFacade {
                         profile.id(),
                         profile.accountInfo().profileInfo().nickname(),
                         profile.accountInfo().email());
-        final Member member = memberUseCase.findOrCreateMemberBy(MemberMapper.toCommand(account));
+        final Member member =
+                memberUseCase.findOrCreateMemberBy(
+                        MemberMapper.toCommand(account, "kakao " + profile.id()));
         JwtToken token = createTokenUseCase.generateToken(member.getId(), member.getRole());
 
         return JwtTokenResponse.of(token);

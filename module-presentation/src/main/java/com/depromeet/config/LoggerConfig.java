@@ -1,7 +1,5 @@
 package com.depromeet.config;
 
-import static org.springframework.http.HttpStatus.*;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
