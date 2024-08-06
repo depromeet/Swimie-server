@@ -1,6 +1,5 @@
 package com.depromeet.member.entity;
 
-import com.depromeet.auth.domain.AccountType;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberRole;
 import jakarta.persistence.Column;
@@ -30,27 +29,18 @@ public class MemberEntity {
 
     @Column private MemberRole role;
 
-    @Column private String refreshToken;
-
-    @Column private AccountType accountType;
+    @Column private String providerId;
 
     private Integer goal;
 
     @Builder
     public MemberEntity(
-            Long id,
-            String name,
-            String email,
-            MemberRole role,
-            String refreshToken,
-            AccountType accountType,
-            Integer goal) {
+            Long id, String name, String email, MemberRole role, String providerId, Integer goal) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;
-        this.refreshToken = refreshToken;
-        this.accountType = accountType;
+        this.providerId = providerId;
         this.goal = goal;
     }
 
@@ -65,8 +55,7 @@ public class MemberEntity {
                 .name(member.getName())
                 .email(member.getEmail())
                 .role(member.getRole())
-                .refreshToken(member.getRefreshToken())
-                .accountType(member.getAccountType())
+                .providerId(member.getProviderId())
                 .goal(member.getGoal())
                 .build();
     }
@@ -77,15 +66,9 @@ public class MemberEntity {
                 .name(name)
                 .email(email)
                 .role(role)
-                .refreshToken(refreshToken)
-                .accountType(accountType)
+                .providerId(providerId)
                 .goal(goal)
                 .build();
-    }
-
-    public MemberEntity updateRefresh(String refreshToken) {
-        if (refreshToken != null) this.refreshToken = refreshToken;
-        return this;
     }
 
     public MemberEntity updateGoal(Integer goal) {

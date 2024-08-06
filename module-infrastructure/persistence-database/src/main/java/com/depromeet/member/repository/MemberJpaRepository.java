@@ -1,6 +1,5 @@
 package com.depromeet.member.repository;
 
-import com.depromeet.auth.domain.AccountType;
 import com.depromeet.member.entity.MemberEntity;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface MemberJpaRepository extends JpaRepository<MemberEntity, Long> {
     Optional<MemberEntity> findByEmail(String email);
 
-    Optional<MemberEntity> findByEmailAndAccountType(String email, AccountType accountType);
+    Optional<MemberEntity> findByProviderId(String providerId);
 }

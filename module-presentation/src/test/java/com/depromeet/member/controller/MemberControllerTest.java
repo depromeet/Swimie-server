@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.depromeet.auth.domain.AccountType;
 import com.depromeet.config.ControllerTestConfig;
 import com.depromeet.config.mock.WithCustomMockMember;
 import com.depromeet.member.api.MemberController;
@@ -35,7 +36,14 @@ public class MemberControllerTest extends ControllerTestConfig {
         Map<String, String> requestBody = new HashMap<>();
         requestBody.put("name", "테스트");
 
-        Member member = new Member(1L, 3000, "테스트", "test@gmail.com", MemberRole.USER, "aa");
+        Member member =
+                new Member(
+                        1L,
+                        "테스트",
+                        "test@gmail.com",
+                        MemberRole.USER,
+                        "google 1234",
+                        3000);
         when(memberFacade.updateName(anyLong(), anyString())).thenReturn(member);
 
         mockMvc.perform(

@@ -1,6 +1,5 @@
 package com.depromeet.auth.facade;
 
-import com.depromeet.auth.domain.AccountType;
 import com.depromeet.auth.dto.request.GoogleLoginRequest;
 import com.depromeet.auth.dto.request.KakaoLoginRequest;
 import com.depromeet.auth.dto.response.JwtAccessTokenResponse;
@@ -36,7 +35,7 @@ public class AuthFacade {
         }
         final Member member =
                 memberUseCase.findOrCreateMemberBy(
-                        MemberMapper.toCommand(profile, AccountType.GOOGLE));
+                        MemberMapper.toCommand(profile, "google " + profile.id()));
         JwtToken token = createTokenUseCase.generateToken(member.getId(), member.getRole());
 
         return JwtTokenResponse.of(token);
@@ -55,7 +54,7 @@ public class AuthFacade {
                         profile.accountInfo().email());
         final Member member =
                 memberUseCase.findOrCreateMemberBy(
-                        MemberMapper.toCommand(account, AccountType.KAKAO));
+                        MemberMapper.toCommand(account, "kakao " + profile.id()));
         JwtToken token = createTokenUseCase.generateToken(member.getId(), member.getRole());
 
         return JwtTokenResponse.of(token);
@@ -66,9 +65,5 @@ public class AuthFacade {
         refreshToken = refreshToken.substring(7);
         AccessTokenInfo accessTokenInfo = createTokenUseCase.generateAccessToken(refreshToken);
         return JwtAccessTokenResponse.of(accessTokenInfo);
-    }
-
-    public void logout(Long memberId) {
-        memberUseCase.deleteRefreshTokenByMemberId(memberId);
     }
 }
