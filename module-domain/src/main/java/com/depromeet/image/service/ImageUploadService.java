@@ -36,8 +36,11 @@ public class ImageUploadService implements ImageUploadUseCase {
 
         List<ImagePresignedUrlVo> imageResponses = new ArrayList<>();
         for (String originImageName : originImageNames) {
-            String imageName = getImageName(originImageName);
-            String imagePresignedUrl = s3ManagePort.getPresignedUrl(imageName);
+            String imageName =
+                    ImageNameUtil.createImageName(originImageName, LocalDateTime.now(clock));
+            String contentType = ImageNameUtil.getContentType(originImageName);
+
+            String imagePresignedUrl = s3ManagePort.getPresignedUrl(imageName, contentType);
 
             Long imageId = saveImage(originImageName, imageName);
             ImagePresignedUrlVo imagePresignedUrlVo =
@@ -51,13 +54,6 @@ public class ImageUploadService implements ImageUploadUseCase {
         if (originImageNames.isEmpty()) {
             throw new BadRequestException(ImageErrorType.IMAGES_CANNOT_BE_EMPTY);
         }
-    }
-
-    private String getImageName(String originImageName) {
-        if (originImageName == null || originImageName.equals("")) {
-            throw new BadRequestException(ImageErrorType.INVALID_IMAGE_NAME);
-        }
-        return ImageNameUtil.createImageName(originImageName, LocalDateTime.now(clock));
     }
 
     private Long saveImage(String originImageName, String imageNames) {
