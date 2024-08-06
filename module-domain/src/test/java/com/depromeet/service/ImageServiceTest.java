@@ -82,11 +82,12 @@ class ImageServiceTest {
         for (String originImageName : originImageNames) {
             String imageName =
                     ImageNameUtil.createImageName(originImageName, LocalDateTime.now(clock));
+            String contentType = ImageNameUtil.getContentType(originImageName);
 
             ImagePresignedUrlVo imagePresignedUrlVo =
                     ImagePresignedUrlVo.builder()
                             .imageName(originImageName)
-                            .presignedUrl(s3ImageManager.getPresignedUrl(imageName))
+                            .presignedUrl(s3ImageManager.getPresignedUrl(imageName, contentType))
                             .build();
             expectedImagePresignedUrlVos.add(imagePresignedUrlVo);
         }

@@ -78,7 +78,7 @@ public class ImageUpdateService implements ImageUpdateUseCase {
                     ImageNameUtil.createImageName(imageName, LocalDateTime.now(clock));
             String contentType = ImageNameUtil.getContentType(imageName);
 
-            String presignedUrl = s3ManagePort.getPresignedUrl(uuidImageName, imageName);
+            String presignedUrl = s3ManagePort.getPresignedUrl(uuidImageName, contentType);
             Long addedImageId = saveNewImage(imageName, uuidImageName, memory);
 
             ImagePresignedUrlVo imageUploadResponseDto =
