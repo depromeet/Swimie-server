@@ -169,7 +169,7 @@ public class MemoryResponse {
         return strokes.stream()
                 .map(
                         stroke -> {
-                            if (stroke.getLaps() != null) {
+                            if (stroke.getLaps() != null && stroke.getLaps() != 0) {
                                 return StrokeResponse.builder()
                                         .strokeId(stroke.getId())
                                         .name(stroke.getName())
