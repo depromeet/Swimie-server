@@ -11,16 +11,24 @@ public class Member {
     private MemberRole role;
     private String providerId;
     private Integer goal;
+    private MemberGender gender;
 
     @Builder
     public Member(
-            Long id, String name, String email, MemberRole role, String providerId, Integer goal) {
+            Long id,
+            String name,
+            String email,
+            MemberRole role,
+            String providerId,
+            Integer goal,
+            MemberGender gender) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;
         this.providerId = providerId;
         this.goal = goal;
+        this.gender = gender;
     }
 
     public Member updateGoal(Integer goal) {
@@ -30,6 +38,11 @@ public class Member {
 
     public Member updateName(String name) {
         this.name = name;
+        return this;
+    }
+
+    public Member updateGender(MemberGender gender) {
+        this.gender = gender;
         return this;
     }
 }
