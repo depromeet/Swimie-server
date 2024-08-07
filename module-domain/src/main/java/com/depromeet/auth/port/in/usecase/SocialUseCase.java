@@ -7,4 +7,6 @@ public interface SocialUseCase {
     AccountProfileResponse getGoogleAccountProfile(String code, String origin);
 
     KakaoAccountProfile getKakaoAccountProfile(String code, String origin);
+
+    void revokeAccount(String accountType);
 }
