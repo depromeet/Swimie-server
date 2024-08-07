@@ -1,5 +1,6 @@
 package com.depromeet.member.service;
 
+import com.depromeet.auth.port.out.persistence.RefreshRedisPersistencePort;
 import com.depromeet.exception.BadRequestException;
 import com.depromeet.exception.InternalServerException;
 import com.depromeet.exception.NotFoundException;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberService implements MemberUseCase, GoalUpdateUseCase, NameUpdateUseCase {
     private final MemberPersistencePort memberPersistencePort;
+    private final RefreshRedisPersistencePort refreshRedisPersistencePort;
 
     @Override
     @Transactional(readOnly = true)
@@ -44,6 +46,13 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, NameUpda
                                             .build();
                             return memberPersistencePort.save(member);
                         });
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        findById(id);
+        memberPersistencePort.deleteById(id);
+        refreshRedisPersistencePort.deleteData(id);
     }
 
     @Override

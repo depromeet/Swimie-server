@@ -15,4 +15,6 @@ public interface MemberPersistencePort {
     Optional<Member> updateName(Long memberId, String name);
 
     Optional<Member> findByProviderId(String providerId);
+
+    void deleteById(Long id);
 }

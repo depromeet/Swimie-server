@@ -66,4 +66,11 @@ public class AuthFacade {
         AccessTokenInfo accessTokenInfo = createTokenUseCase.generateAccessToken(refreshToken);
         return JwtAccessTokenResponse.of(accessTokenInfo);
     }
+
+    public void deleteAccount(Long memberId) {
+        Member member = memberUseCase.findById(memberId);
+        String accountType = member.getProviderId();
+        socialUseCase.revokeAccount(accountType);
+        memberUseCase.deleteById(memberId);
+    }
 }
