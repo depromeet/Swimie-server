@@ -37,7 +37,14 @@ public class MemberControllerTest extends ControllerTestConfig {
         requestBody.put("name", "테스트");
 
         Member member =
-                new Member(1L, "테스트", "test@gmail.com", MemberRole.USER, "google 1234", 3000, MemberGender.M);
+                new Member(
+                        1L,
+                        "테스트",
+                        "test@gmail.com",
+                        MemberRole.USER,
+                        "google 1234",
+                        3000,
+                        MemberGender.M);
         when(memberFacade.updateName(anyLong(), anyString())).thenReturn(member);
 
         mockMvc.perform(
