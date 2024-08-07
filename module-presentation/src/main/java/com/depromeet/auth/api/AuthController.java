@@ -7,6 +7,7 @@ import com.depromeet.auth.dto.response.JwtTokenResponse;
 import com.depromeet.auth.facade.AuthFacade;
 import com.depromeet.config.Logging;
 import com.depromeet.dto.response.ApiResponse;
+import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.type.auth.AuthSuccessType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -15,11 +16,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/login")
 public class AuthController implements AuthApi {
     public final AuthFacade authFacade;
 
-    @PostMapping("/google")
+    @PostMapping("/login/google")
     @Logging(item = "Auth", action = "POST")
     public ApiResponse<JwtTokenResponse> loginByGoogle(
             @Valid @RequestBody final GoogleLoginRequest request,
@@ -29,7 +29,7 @@ public class AuthController implements AuthApi {
                 AuthSuccessType.LOGIN_SUCCESS, authFacade.loginByGoogle(request, origin));
     }
 
-    @PostMapping("/kakao")
+    @PostMapping("/login/kakao")
     @Logging(item = "Auth", action = "POST")
     public ApiResponse<JwtTokenResponse> loginByKakao(
             @Valid @RequestBody final KakaoLoginRequest request,
@@ -39,13 +39,20 @@ public class AuthController implements AuthApi {
                 AuthSuccessType.LOGIN_SUCCESS, authFacade.loginByKakao(request, origin));
     }
 
-    @PostMapping("/refresh")
+    @PostMapping("/login/refresh")
     @Logging(item = "Auth", action = "POST")
     public ApiResponse<JwtAccessTokenResponse> reissueAccessToken(
             @RequestHeader("Authorization") String refreshToken) {
         return ApiResponse.success(
                 AuthSuccessType.REISSUE_ACCESS_TOKEN_SUCCESS,
                 authFacade.getReissuedAccessToken(refreshToken));
+    }
+
+    @DeleteMapping("/auth/delete")
+    @Logging(item = "Auth", action = "DELETE")
+    public ApiResponse<?> deleteAccount(@LoginMember Long memberId) {
+        authFacade.deleteAccount(memberId);
+        return ApiResponse.success(AuthSuccessType.DELETE_ACCOUNT_SUCCESS);
     }
 
     private static String getOrigin(HttpServletRequest httpServletRequest) {
