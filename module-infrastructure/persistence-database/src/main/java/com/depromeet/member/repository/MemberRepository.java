@@ -48,6 +48,11 @@ public class MemberRepository implements MemberPersistencePort {
     }
 
     @Override
+    public void deleteById(Long id) {
+        memberJpaRepository.deleteById(id);
+    }
+
+    @Override
     public Optional<Member> updateGender(Long memberId, MemberGender gender) {
         return memberJpaRepository
                 .findById(memberId)

@@ -18,4 +18,6 @@ public interface MemberPersistencePort {
     Optional<Member> findByProviderId(String providerId);
 
     Optional<Member> updateGender(Long memberId, MemberGender gender);
+
+    void deleteById(Long id);
 }
