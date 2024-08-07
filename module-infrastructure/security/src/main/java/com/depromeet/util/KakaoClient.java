@@ -76,7 +76,7 @@ public class KakaoClient implements KakaoPort {
             // access token 만료되었으면 refresh token 가져오기
             String refreshToken = socialRedisPersistencePort.getRTData(providerId);
             // refresh token 없으면 오류 (재로그인 필요)
-            if (refreshToken == null) {
+            if (refreshToken == null || refreshToken.isEmpty() || refreshToken.isBlank()) {
                 throw new NotFoundException(AuthErrorType.OAUTH_REFRESH_TOKEN_NOT_FOUND);
             }
             // refresh token 으로 access token 재발급 하기

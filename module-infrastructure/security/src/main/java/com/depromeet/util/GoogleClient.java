@@ -70,7 +70,7 @@ public class GoogleClient implements GooglePort {
     public void revokeAccount(String providerId) {
         // refresh token 가져오기
         String refreshToken = socialRedisPersistencePort.getRTData(providerId);
-        if (refreshToken.isEmpty() || refreshToken.isBlank()) {
+        if (refreshToken == null || refreshToken.isEmpty() || refreshToken.isBlank()) {
             // refresh token 없으면 오류 (재로그인 필요)
             throw new NotFoundException(AuthErrorType.OAUTH_ACCESS_TOKEN_NOT_FOUND);
         }
