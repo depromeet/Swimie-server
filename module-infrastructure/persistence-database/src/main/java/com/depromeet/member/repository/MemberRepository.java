@@ -45,4 +45,9 @@ public class MemberRepository implements MemberPersistencePort {
     public Optional<Member> findByProviderId(String providerId) {
         return memberJpaRepository.findByProviderId(providerId).map(MemberEntity::toModel);
     }
+
+    @Override
+    public void deleteById(Long id) {
+        memberJpaRepository.deleteById(id);
+    }
 }

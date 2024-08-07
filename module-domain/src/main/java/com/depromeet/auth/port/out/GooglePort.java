@@ -4,4 +4,6 @@ import com.depromeet.dto.auth.AccountProfileResponse;
 
 public interface GooglePort {
     AccountProfileResponse getGoogleAccountProfile(String code, String origin);
+
+    void revokeAccount(String providerId);
 }

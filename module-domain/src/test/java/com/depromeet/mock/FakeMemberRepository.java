@@ -65,4 +65,9 @@ public class FakeMemberRepository implements MemberPersistencePort {
     public Optional<Member> findByProviderId(String providerId) {
         return data.stream().filter(member -> member.getProviderId().equals(providerId)).findAny();
     }
+
+    @Override
+    public void deleteById(Long id) {
+        data.removeIf(member -> member.getId().equals(id));
+    }
 }

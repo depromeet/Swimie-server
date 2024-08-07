@@ -16,7 +16,11 @@ public enum AuthErrorType implements ErrorType {
     JWT_TOKEN_PREFIX("AUTH_11", "JWT 토큰이 Bearer로 시작하지 않습니다"),
     INVALID_JWT_TOKEN("AUTH_12", "유효하지 않은 JWT 토큰입니다"),
     INVALID_JWT_REFRESH_REQUEST("AUTH_14", "JWT REFRESH 토큰 재발급 요청 URL이 올바르지 않습니다"),
-    INVALID_JWT_ACCESS_REQUEST("AUTH_15", "JWT ACCESS 토큰 사용 요청 URL이 올바르지 않습니다");
+    INVALID_JWT_ACCESS_REQUEST("AUTH_15", "JWT ACCESS 토큰 사용 요청 URL이 올바르지 않습니다"),
+    OAUTH_ACCESS_TOKEN_NOT_FOUND("AUTH_16", "OAUTH ACCESS 토큰을 찾을 수 없습니다"),
+    INVALID_OAUTH_ACCESS_TOKEN("AUTH_17", "OAUTH ACCESS 토큰이 올바르지 않습니다"),
+    OAUTH_REFRESH_TOKEN_NOT_FOUND("AUTH_18", "OAUTH REFRESH 토큰을 찾을 수 없습니다"),
+    REVOKE_GOOGLE_ACCOUNT_FAILED("AUTH_19", "GOOGLE 계정 연결 끊기에 실패하였습니다");
 
     private final String code;
     private final String message;
