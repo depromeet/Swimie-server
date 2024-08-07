@@ -4,4 +4,6 @@ import com.depromeet.auth.vo.kakao.KakaoAccountProfile;
 
 public interface KakaoPort {
     KakaoAccountProfile getKakaoAccountProfile(final String code, String origin);
+
+    void revokeAccount(String providerId);
 }
