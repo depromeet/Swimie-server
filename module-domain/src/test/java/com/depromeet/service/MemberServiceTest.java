@@ -45,7 +45,7 @@ class MemberServiceTest {
         String newName = "테스트";
 
         // when
-        Member member1 = memberService.updateName(memberId, newName);
+        Member member1 = memberService.updateNickname(memberId, newName);
 
         // then
         Assertions.assertThat(member1.getNickname()).isEqualTo(newName);
@@ -60,7 +60,7 @@ class MemberServiceTest {
         // when
 
         // then
-        Assertions.assertThatThrownBy(() -> memberService.updateName(memberId, newName))
+        Assertions.assertThatThrownBy(() -> memberService.updateNickname(memberId, newName))
                 .hasMessage("멤버의 이름은 공백이 허용되지 않습니다");
     }
 }

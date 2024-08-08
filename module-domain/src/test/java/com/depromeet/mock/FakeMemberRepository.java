@@ -52,11 +52,11 @@ public class FakeMemberRepository implements MemberPersistencePort {
     }
 
     @Override
-    public Optional<Member> updateNickname(Long memberId, String name) {
+    public Optional<Member> updateNickname(Long memberId, String nickname) {
         return findById(memberId)
                 .map(
                         item -> {
-                            Member member = item.updateNickname(name);
+                            Member member = item.updateNickname(nickname);
                             save(member);
                             return member;
                         });

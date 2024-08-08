@@ -3,7 +3,8 @@ package com.depromeet.auth.dto.response;
 import com.depromeet.auth.vo.JwtToken;
 import java.util.Objects;
 
-public record JwtTokenResponse(Long userId, String nickname, String accessToken, String refreshToken) {
+public record JwtTokenResponse(
+        Long userId, String nickname, String accessToken, String refreshToken) {
     public JwtTokenResponse {
         Objects.requireNonNull(userId);
         Objects.requireNonNull(accessToken);
