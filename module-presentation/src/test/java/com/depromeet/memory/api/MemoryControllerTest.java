@@ -32,7 +32,8 @@ public class MemoryControllerTest extends ControllerTestConfig {
         requestBody.put("poolId", 1);
         requestBody.put("item", "오리발");
         requestBody.put("heartRate", 115);
-        requestBody.put("pace", "05:00:00");
+        requestBody.put("paceMinutes", 5);
+        requestBody.put("paceSeconds", 30);
         requestBody.put("kcal", 300);
         requestBody.put("recordAt", "2024-07-24");
         requestBody.put("startTime", "11:00:00");
@@ -44,7 +45,7 @@ public class MemoryControllerTest extends ControllerTestConfig {
         Map<String, Object> stroke = new HashMap<>();
         stroke.put("name", "자유형");
         stroke.put("laps", 3);
-        stroke.put("meter", 150);
+        stroke.put("meter", null);
         strokes.add(stroke);
 
         requestBody.put("strokes", strokes);
