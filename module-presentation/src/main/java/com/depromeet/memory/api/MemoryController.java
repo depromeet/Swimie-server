@@ -5,10 +5,7 @@ import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
-import com.depromeet.memory.dto.response.CalendarResponse;
-import com.depromeet.memory.dto.response.MemoryCreateResponse;
-import com.depromeet.memory.dto.response.MemoryResponse;
-import com.depromeet.memory.dto.response.TimelineSliceResponse;
+import com.depromeet.memory.dto.response.*;
 import com.depromeet.memory.facade.MemoryFacade;
 import com.depromeet.type.memory.MemorySuccessType;
 import jakarta.validation.Valid;
@@ -37,6 +34,14 @@ public class MemoryController implements MemoryApi {
     public ApiResponse<MemoryResponse> read(
             @LoginMember Long memberId, @PathVariable("memoryId") Long memoryId) {
         MemoryResponse response = memoryFacade.findById(memberId, memoryId);
+        return ApiResponse.success(MemorySuccessType.GET_RESULT_SUCCESS, response);
+    }
+
+    @GetMapping("/{memoryId}/edit-data")
+    @Logging(item = "Memory", action = "GET")
+    public ApiResponse<MemoryReadUpdateResponse> readForUpdate(
+            @LoginMember Long memberId, @PathVariable("memoryId") Long memoryId) {
+        MemoryReadUpdateResponse response = memoryFacade.getMemoryForUpdate(memberId, memoryId);
         return ApiResponse.success(MemorySuccessType.GET_RESULT_SUCCESS, response);
     }
 

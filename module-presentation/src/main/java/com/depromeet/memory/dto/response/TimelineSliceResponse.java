@@ -1,6 +1,5 @@
 package com.depromeet.memory.dto.response;
 
-import com.depromeet.member.dto.response.MemberSimpleResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import lombok.Builder;
@@ -12,7 +11,7 @@ public record TimelineSliceResponse(
                         description = "멤버 목표",
                         example = "1000",
                         requiredMode = Schema.RequiredMode.REQUIRED)
-                MemberSimpleResponse member,
+                Integer goal,
         @Schema(description = "페이지 크기", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
                 int pageSize,
         @Schema(
