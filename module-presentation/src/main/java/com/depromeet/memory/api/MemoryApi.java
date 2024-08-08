@@ -7,6 +7,7 @@ import com.depromeet.memory.dto.request.MemoryUpdateRequest;
 import com.depromeet.memory.dto.response.CalendarResponse;
 import com.depromeet.memory.dto.response.MemoryCreateResponse;
 import com.depromeet.memory.dto.response.MemoryResponse;
+import com.depromeet.memory.dto.response.MemoryUpdateResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,6 +24,10 @@ public interface MemoryApi {
     ApiResponse<MemoryCreateResponse> create(
             @LoginMember Long memberId,
             @Valid @RequestBody MemoryCreateRequest memoryCreateRequest);
+
+    @Operation(summary = "수영 기록 수정을 위한 단일 조회")
+    ApiResponse<MemoryUpdateResponse> readForUpdate(
+            @LoginMember Long memberId, @PathVariable("memoryId") Long memoryId);
 
     @Operation(summary = "수영 기록 단일 조회")
     ApiResponse<MemoryResponse> read(

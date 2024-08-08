@@ -1,7 +1,6 @@
 package com.depromeet.memory.mapper;
 
 import com.depromeet.member.domain.Member;
-import com.depromeet.member.dto.response.MemberSimpleResponse;
 import com.depromeet.memory.domain.vo.Timeline;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
@@ -81,7 +80,7 @@ public class MemoryMapper {
 
         return TimelineSliceResponse.builder()
                 .content(result)
-                .member(MemberSimpleResponse.from(member.getGoal()))
+                .goal(member.getGoal())
                 .pageSize(timeline.getPageSize())
                 .cursorRecordAt(getCursorRecordAtResponse(timeline))
                 .hasNext(timeline.isHasNext())
