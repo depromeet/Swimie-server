@@ -39,8 +39,8 @@ docker pull ${user_id}/${server_name}
 
 # green_port로 서버 실행
 echo "> ${green_port} 포트로 서버 실행"
-echo "> docker run -d --name ${server_name}-${green_port} -p ${green_port}:8080 -e TZ=Asia/Seoul ${user_id}/${server_name}"
-docker run -d --name ${server_name}-${green_port} -p ${green_port}:8080 -e TZ=Asia/Seoul ${user_id}/${server_name}
+echo "> docker run -d --name ${server_name}-${green_port} --network swimie-network -p ${green_port}:8080 -e TZ=Asia/Seoul ${user_id}/${server_name}"
+docker run -d --name ${server_name}-${green_port} --network swimie-network -p ${green_port}:8080 -e TZ=Asia/Seoul ${user_id}/${server_name}
 echo "----------------------------------------------------------------------"
 
 # green_port 서버 제대로 실행 중인지 확인
