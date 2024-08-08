@@ -10,5 +10,6 @@ import org.springframework.data.repository.query.Param;
 public interface MemoryJpaRepository extends JpaRepository<MemoryEntity, Long> {
 
     @Query("select m from MemoryEntity m where m.recordAt = :recordAt and m.member.id = :memberId")
-    Optional<MemoryEntity> findByRecordAtAndMemberId(@Param("recordAt") LocalDate recordAt, @Param("memberId") Long memberId);
+    Optional<MemoryEntity> findByRecordAtAndMemberId(
+            @Param("recordAt") LocalDate recordAt, @Param("memberId") Long memberId);
 }

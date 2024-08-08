@@ -30,7 +30,8 @@ public class MemberController implements MemberApi {
     @PatchMapping("/nickname")
     @Logging(item = "Member", action = "PATCH")
     public ApiResponse<MemberFindOneResponse> updateNickname(
-            @LoginMember Long memberId, @Valid @RequestBody NicknameUpdateRequest updateNicknameRequest) {
+            @LoginMember Long memberId,
+            @Valid @RequestBody NicknameUpdateRequest updateNicknameRequest) {
         Member member = memberFacade.updateNickname(memberId, updateNicknameRequest.nickname());
         return ApiResponse.success(
                 MemberSuccessType.UPDATE_NAME_SUCCESS, MemberFindOneResponse.of(member));
