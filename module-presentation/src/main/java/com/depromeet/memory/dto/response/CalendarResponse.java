@@ -1,7 +1,6 @@
 package com.depromeet.memory.dto.response;
 
 import com.depromeet.member.domain.Member;
-import com.depromeet.member.dto.response.MemberSimpleResponse;
 import com.depromeet.memory.domain.Memory;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CalendarResponse {
-    private MemberSimpleResponse member;
+    private Integer goal;
     private List<CalendarDetailResponse> memories;
 
     public static CalendarResponse of(Member member, List<Memory> memoryDomains) {
@@ -28,8 +27,7 @@ public class CalendarResponse {
                     CalendarDetailResponse.of(
                             memoryDomain, type, totalDistance, strokes, isAchieved));
         }
-        return new CalendarResponse(
-                MemberSimpleResponse.of(member.getGoal(), member.getNickname()), memories);
+        return new CalendarResponse(member.getGoal(), memories);
     }
 
     public static List<StrokeResponse> getStrokeResponses(Memory memoryDomain) {
