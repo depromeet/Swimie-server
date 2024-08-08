@@ -60,7 +60,7 @@ class MemoryServiceTest {
         member =
                 Member.builder()
                         .id(userId)
-                        .name("member1")
+                        .nickname("member1")
                         .email("member1@gmail.com")
                         .role(MemberRole.USER)
                         .build();

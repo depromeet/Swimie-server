@@ -34,7 +34,7 @@ public class MemberControllerTest extends ControllerTestConfig {
     @WithCustomMockMember
     void 회원의_이름을_수정합니다() throws Exception {
         Map<String, String> requestBody = new HashMap<>();
-        requestBody.put("name", "테스트");
+        requestBody.put("nickname", "테스트");
 
         Member member =
                 new Member(
@@ -45,16 +45,16 @@ public class MemberControllerTest extends ControllerTestConfig {
                         "google 1234",
                         3000,
                         MemberGender.M);
-        when(memberFacade.updateName(anyLong(), anyString())).thenReturn(member);
+        when(memberFacade.updateNickname(anyLong(), anyString())).thenReturn(member);
 
         mockMvc.perform(
-                        patch("/member")
+                        patch("/member/nickname")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("MEMBER_4"))
                 .andExpect(jsonPath("$.message").value("멤버 이름 수정에 성공하였습니다"))
-                .andExpect(jsonPath("$.data.name").value("테스트"))
+                .andExpect(jsonPath("$.data.nickname").value("테스트"))
                 .andDo(print());
     }
 
@@ -62,10 +62,10 @@ public class MemberControllerTest extends ControllerTestConfig {
     @WithCustomMockMember
     void 회원의_이름은_Null을_허용하지_않습니다() throws Exception {
         Map<String, String> requestBody = new HashMap<>();
-        requestBody.put("name", null);
+        requestBody.put("nickname", null);
 
         mockMvc.perform(
-                        patch("/member")
+                        patch("/member/nickname")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isBadRequest())
@@ -79,10 +79,10 @@ public class MemberControllerTest extends ControllerTestConfig {
     @WithCustomMockMember
     void 회원의_이름은_공백을_허용하지_않습니다() throws Exception {
         Map<String, String> requestBody = new HashMap<>();
-        requestBody.put("name", "");
+        requestBody.put("nickname", "");
 
         mockMvc.perform(
-                        patch("/member")
+                        patch("/member/nickname")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isBadRequest())
@@ -99,7 +99,7 @@ public class MemberControllerTest extends ControllerTestConfig {
         requestBody.put("name", " ");
 
         mockMvc.perform(
-                        patch("/member")
+                        patch("/member/nickname")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isBadRequest())

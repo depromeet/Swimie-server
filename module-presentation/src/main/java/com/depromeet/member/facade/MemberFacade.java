@@ -24,7 +24,7 @@ public class MemberFacade {
         return memberUseCase.findOrCreateMemberBy(command);
     }
 
-    public Member updateName(Long memberId, String name) {
+    public Member updateNickname(Long memberId, String name) {
         return memberUpdateUseCase.updateName(memberId, name);
     }
 

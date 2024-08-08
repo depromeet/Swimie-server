@@ -29,7 +29,7 @@ class MemberServiceTest {
         member =
                 Member.builder()
                         .id(userId)
-                        .name("member1")
+                        .nickname("member1")
                         .email("member1@gmail.com")
                         .role(MemberRole.USER)
                         .build();
@@ -48,7 +48,7 @@ class MemberServiceTest {
         Member member1 = memberService.updateName(memberId, newName);
 
         // then
-        Assertions.assertThat(member1.getName()).isEqualTo(newName);
+        Assertions.assertThat(member1.getNickname()).isEqualTo(newName);
     }
 
     @Test

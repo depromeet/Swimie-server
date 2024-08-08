@@ -8,7 +8,7 @@ import lombok.Getter;
 @Builder
 public class MemberDto {
     private Long id;
-    private String name;
+    private String nickname;
     private String email;
     private MemberRole memberRole;
     private String providerId;

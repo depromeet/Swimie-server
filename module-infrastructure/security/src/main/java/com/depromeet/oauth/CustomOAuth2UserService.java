@@ -46,7 +46,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         MemberDto memberDto =
                 MemberDto.builder()
                         .id(member.getId())
-                        .name(member.getName())
+                        .nickname(member.getNickname())
                         .email(member.getEmail())
                         .memberRole(member.getRole())
                         .providerId(providerId)
@@ -62,7 +62,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private Member createMember(String name, String email, String providerId) {
         return Member.builder()
-                .name(name)
+                .nickname(name)
                 .email(email)
                 .role(MemberRole.USER)
                 .providerId(providerId)

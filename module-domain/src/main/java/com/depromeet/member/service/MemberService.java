@@ -40,7 +40,7 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUp
                         () -> {
                             Member member =
                                     Member.builder()
-                                            .name(command.name())
+                                            .nickname(command.name())
                                             .email(command.email())
                                             .role(MemberRole.USER)
                                             .providerId(command.providerId())
@@ -69,7 +69,7 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUp
             throw new BadRequestException(MemberErrorType.NAME_CANNOT_BE_BLANK);
         }
         return memberPersistencePort
-                .updateName(memberId, name)
+                .updateNickname(memberId, name)
                 .orElseThrow(() -> new InternalServerException(MemberErrorType.UPDATE_NAME_FAILED));
     }
 

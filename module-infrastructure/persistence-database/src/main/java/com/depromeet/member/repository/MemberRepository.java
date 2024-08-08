@@ -36,10 +36,10 @@ public class MemberRepository implements MemberPersistencePort {
     }
 
     @Override
-    public Optional<Member> updateName(Long memberId, String name) {
+    public Optional<Member> updateNickname(Long memberId, String nickname) {
         return memberJpaRepository
                 .findById(memberId)
-                .map(memberEntity -> memberEntity.updateName(name).toModel());
+                .map(memberEntity -> memberEntity.updateNickname(nickname).toModel());
     }
 
     @Override

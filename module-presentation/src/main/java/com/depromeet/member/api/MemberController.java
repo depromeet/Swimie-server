@@ -5,7 +5,7 @@ import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.dto.request.GenderUpdateRequest;
-import com.depromeet.member.dto.request.NameUpdateRequest;
+import com.depromeet.member.dto.request.NicknameUpdateRequest;
 import com.depromeet.member.dto.response.MemberFindOneResponse;
 import com.depromeet.member.dto.response.MemberGenderResponse;
 import com.depromeet.member.facade.MemberFacade;
@@ -27,11 +27,11 @@ public class MemberController implements MemberApi {
         return ApiResponse.success(MemberSuccessType.GET_SUCCESS, MemberFindOneResponse.of(member));
     }
 
-    @PatchMapping
+    @PatchMapping("/nickname")
     @Logging(item = "Member", action = "PATCH")
-    public ApiResponse<MemberFindOneResponse> updateName(
-            @LoginMember Long memberId, @Valid @RequestBody NameUpdateRequest updateNameRequest) {
-        Member member = memberFacade.updateName(memberId, updateNameRequest.name());
+    public ApiResponse<MemberFindOneResponse> updateNickname(
+            @LoginMember Long memberId, @Valid @RequestBody NicknameUpdateRequest updateNicknameRequest) {
+        Member member = memberFacade.updateNickname(memberId, updateNicknameRequest.nickname());
         return ApiResponse.success(
                 MemberSuccessType.UPDATE_NAME_SUCCESS, MemberFindOneResponse.of(member));
     }
