@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class MemoryUpdateResponse {
+public class MemoryReadUpdateResponse {
     @Schema(
             description = "memory PK",
             example = "1",
@@ -104,7 +104,7 @@ public class MemoryUpdateResponse {
     private String diary;
 
     @Builder
-    public MemoryUpdateResponse(
+    public MemoryReadUpdateResponse(
             Long id,
             MemberSimpleResponse member,
             Pool pool,
@@ -193,12 +193,12 @@ public class MemoryUpdateResponse {
                 .toList();
     }
 
-    public static MemoryUpdateResponse from(Memory memory) {
+    public static MemoryReadUpdateResponse from(Memory memory) {
         Integer goal = memory.getMember().getGoal();
         String nickname = memory.getMember().getNickname();
 
         MemberSimpleResponse memberSimple = MemberSimpleResponse.of(goal, nickname);
-        return MemoryUpdateResponse.builder()
+        return MemoryReadUpdateResponse.builder()
                 .id(memory.getId())
                 .member(memberSimple)
                 .pool(memory.getPool())

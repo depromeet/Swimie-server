@@ -78,10 +78,10 @@ public class MemoryFacade {
         return MemoryResponse.from(updateMemoryUseCase.update(memoryId, command, strokes));
     }
 
-    public MemoryUpdateResponse getMemoryForUpdate(Long memberId, Long memoryId) {
+    public MemoryReadUpdateResponse getMemoryForUpdate(Long memberId, Long memoryId) {
         Memory memory = getMemoryUseCase.findById(memoryId);
         validatePermission(memory.getMember().getId(), memberId);
-        return MemoryUpdateResponse.from(memory);
+        return MemoryReadUpdateResponse.from(memory);
     }
 
     public MemoryResponse findById(Long memberId, Long memoryId) {

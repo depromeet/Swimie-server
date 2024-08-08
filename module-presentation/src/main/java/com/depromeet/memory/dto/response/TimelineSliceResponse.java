@@ -8,7 +8,7 @@ public record TimelineSliceResponse(
         @Schema(description = "타임라인 리스트", requiredMode = Schema.RequiredMode.REQUIRED)
                 List<TimelineResponse> content,
         @Schema(
-                        description = "사용자 목표",
+                        description = "멤버 목표",
                         example = "1000",
                         requiredMode = Schema.RequiredMode.REQUIRED)
                 Integer goal,

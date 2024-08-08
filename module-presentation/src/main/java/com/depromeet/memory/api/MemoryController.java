@@ -39,9 +39,9 @@ public class MemoryController implements MemoryApi {
 
     @GetMapping("/{memoryId}/edit-data")
     @Logging(item = "Memory", action = "GET")
-    public ApiResponse<MemoryUpdateResponse> readForUpdate(
+    public ApiResponse<MemoryReadUpdateResponse> readForUpdate(
             @LoginMember Long memberId, @PathVariable("memoryId") Long memoryId) {
-        MemoryUpdateResponse response = memoryFacade.getMemoryForUpdate(memberId, memoryId);
+        MemoryReadUpdateResponse response = memoryFacade.getMemoryForUpdate(memberId, memoryId);
         return ApiResponse.success(MemorySuccessType.GET_RESULT_SUCCESS, response);
     }
 
