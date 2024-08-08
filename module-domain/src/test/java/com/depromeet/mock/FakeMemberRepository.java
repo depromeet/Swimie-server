@@ -1,6 +1,7 @@
 package com.depromeet.mock;
 
 import com.depromeet.member.domain.Member;
+import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +65,17 @@ public class FakeMemberRepository implements MemberPersistencePort {
     @Override
     public Optional<Member> findByProviderId(String providerId) {
         return data.stream().filter(member -> member.getProviderId().equals(providerId)).findAny();
+    }
+
+    @Override
+    public Optional<Member> updateGender(Long memberId, MemberGender gender) {
+        return findById(memberId)
+                .map(
+                        item -> {
+                            Member member = item.updateGender(gender);
+                            save(member);
+                            return member;
+                        });
     }
 
     @Override

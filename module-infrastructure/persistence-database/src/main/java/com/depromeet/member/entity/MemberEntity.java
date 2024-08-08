@@ -1,6 +1,7 @@
 package com.depromeet.member.entity;
 
 import com.depromeet.member.domain.Member;
+import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.domain.MemberRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,22 +32,33 @@ public class MemberEntity {
 
     @Column private String providerId;
 
-    private Integer goal;
+    @Column private Integer goal;
+
+    @Column(columnDefinition = "char", nullable = false)
+    private MemberGender gender;
 
     @Builder
     public MemberEntity(
-            Long id, String name, String email, MemberRole role, String providerId, Integer goal) {
+            Long id,
+            String name,
+            String email,
+            MemberRole role,
+            String providerId,
+            Integer goal,
+            MemberGender gender) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;
         this.providerId = providerId;
         this.goal = goal;
+        this.gender = gender;
     }
 
     @PrePersist
     public void prePersist() {
         this.goal = 1000;
+        this.gender = MemberGender.M;
     }
 
     public static MemberEntity from(Member member) {
@@ -57,6 +69,7 @@ public class MemberEntity {
                 .role(member.getRole())
                 .providerId(member.getProviderId())
                 .goal(member.getGoal())
+                .gender(member.getGender())
                 .build();
     }
 
@@ -68,6 +81,7 @@ public class MemberEntity {
                 .role(role)
                 .providerId(providerId)
                 .goal(goal)
+                .gender(gender)
                 .build();
     }
 
@@ -78,6 +92,11 @@ public class MemberEntity {
 
     public MemberEntity updateName(String name) {
         this.name = name;
+        return this;
+    }
+
+    public MemberEntity updateGender(MemberGender gender) {
+        this.gender = gender;
         return this;
     }
 }

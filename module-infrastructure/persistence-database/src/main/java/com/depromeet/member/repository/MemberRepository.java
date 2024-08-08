@@ -1,6 +1,7 @@
 package com.depromeet.member.repository;
 
 import com.depromeet.member.domain.Member;
+import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.entity.MemberEntity;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import java.util.Optional;
@@ -49,5 +50,12 @@ public class MemberRepository implements MemberPersistencePort {
     @Override
     public void deleteById(Long id) {
         memberJpaRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<Member> updateGender(Long memberId, MemberGender gender) {
+        return memberJpaRepository
+                .findById(memberId)
+                .map(memberEntity -> memberEntity.updateGender(gender).toModel());
     }
 }

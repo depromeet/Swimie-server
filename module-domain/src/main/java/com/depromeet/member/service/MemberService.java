@@ -5,11 +5,12 @@ import com.depromeet.exception.BadRequestException;
 import com.depromeet.exception.InternalServerException;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.member.domain.Member;
+import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.domain.MemberRole;
 import com.depromeet.member.port.in.command.SocialMemberCommand;
 import com.depromeet.member.port.in.usecase.GoalUpdateUseCase;
+import com.depromeet.member.port.in.usecase.MemberUpdateUseCase;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
-import com.depromeet.member.port.in.usecase.NameUpdateUseCase;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import com.depromeet.type.member.MemberErrorType;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class MemberService implements MemberUseCase, GoalUpdateUseCase, NameUpdateUseCase {
+public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUpdateUseCase {
     private final MemberPersistencePort memberPersistencePort;
     private final RefreshRedisPersistencePort refreshRedisPersistencePort;
 
@@ -70,5 +71,16 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, NameUpda
         return memberPersistencePort
                 .updateName(memberId, name)
                 .orElseThrow(() -> new InternalServerException(MemberErrorType.UPDATE_NAME_FAILED));
+    }
+
+    @Override
+    public Member updateGender(Long memberId, MemberGender gender) {
+        if (gender == null) {
+            throw new BadRequestException(MemberErrorType.GENDER_CANNOT_BE_BLANK);
+        }
+        return memberPersistencePort
+                .updateGender(memberId, gender)
+                .orElseThrow(
+                        () -> new InternalServerException(MemberErrorType.UPDATE_GENDER_FAILED));
     }
 }
