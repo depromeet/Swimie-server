@@ -38,7 +38,7 @@ public class AuthFacade {
                         MemberMapper.toCommand(profile, "google " + profile.id()));
         JwtToken token = createTokenUseCase.generateToken(member.getId(), member.getRole());
 
-        return JwtTokenResponse.of(token, member.getName());
+        return JwtTokenResponse.of(token, member.getNickname());
     }
 
     public JwtTokenResponse loginByKakao(KakaoLoginRequest request, String origin) {
@@ -57,7 +57,7 @@ public class AuthFacade {
                         MemberMapper.toCommand(account, "kakao " + profile.id()));
         JwtToken token = createTokenUseCase.generateToken(member.getId(), member.getRole());
 
-        return JwtTokenResponse.of(token, member.getName());
+        return JwtTokenResponse.of(token, member.getNickname());
     }
 
     @Transactional(readOnly = true)

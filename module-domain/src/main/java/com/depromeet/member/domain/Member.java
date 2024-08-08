@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class Member {
     private Long id;
-    private String name;
+    private String nickname;
     private String email;
     private MemberRole role;
     private String providerId;
@@ -16,14 +16,14 @@ public class Member {
     @Builder
     public Member(
             Long id,
-            String name,
+            String nickname,
             String email,
             MemberRole role,
             String providerId,
             Integer goal,
             MemberGender gender) {
         this.id = id;
-        this.name = name;
+        this.nickname = nickname;
         this.email = email;
         this.role = role;
         this.providerId = providerId;
@@ -36,8 +36,8 @@ public class Member {
         return this;
     }
 
-    public Member updateName(String name) {
-        this.name = name;
+    public Member updateNickname(String nickname) {
+        this.nickname = nickname;
         return this;
     }
 

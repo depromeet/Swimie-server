@@ -191,7 +191,7 @@ public class MemoryResponse {
     public static MemoryResponse from(Memory memory) {
         MemberSimpleResponse memberSimple =
                 new MemberSimpleResponse(
-                        memory.getMember().getGoal(), memory.getMember().getName());
+                        memory.getMember().getGoal(), memory.getMember().getNickname());
         return MemoryResponse.builder()
                 .id(memory.getId())
                 .member(memberSimple)

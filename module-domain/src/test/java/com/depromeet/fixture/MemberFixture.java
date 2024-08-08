@@ -7,7 +7,7 @@ public class MemberFixture {
     public static Member make(Long userId, String role) {
         return Member.builder()
                 .id(userId)
-                .name("member")
+                .nickname("member")
                 .email("test@gmail.com")
                 .role(MemberRole.valueOf(role))
                 .goal(1000)
