@@ -11,11 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class MemberFacade {
     private final MemberUseCase memberUseCase;
     private final MemberUpdateUseCase memberUpdateUseCase;
 
+    @Transactional(readOnly = true)
     public Member findById(Long memberId) {
         return memberUseCase.findById(memberId);
     }
@@ -24,8 +25,8 @@ public class MemberFacade {
         return memberUseCase.findOrCreateMemberBy(command);
     }
 
-    public Member updateNickname(Long memberId, String name) {
-        return memberUpdateUseCase.updateName(memberId, name);
+    public Member updateNickname(Long memberId, String nickname) {
+        return memberUpdateUseCase.updateNickname(memberId, nickname);
     }
 
     public Member updateGender(Long memberId, String gender) {
