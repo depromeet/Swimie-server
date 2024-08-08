@@ -10,10 +10,7 @@ import com.depromeet.memory.domain.Stroke;
 import com.depromeet.memory.domain.vo.Timeline;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
-import com.depromeet.memory.dto.response.CalendarResponse;
-import com.depromeet.memory.dto.response.MemoryCreateResponse;
-import com.depromeet.memory.dto.response.MemoryResponse;
-import com.depromeet.memory.dto.response.TimelineSliceResponse;
+import com.depromeet.memory.dto.response.*;
 import com.depromeet.memory.mapper.MemoryMapper;
 import com.depromeet.memory.port.in.command.CreateStrokeCommand;
 import com.depromeet.memory.port.in.command.UpdateMemoryCommand;
@@ -79,6 +76,12 @@ public class MemoryFacade {
         UpdateMemoryCommand command = MemoryMapper.toCommand(request);
 
         return MemoryResponse.from(updateMemoryUseCase.update(memoryId, command, strokes));
+    }
+
+    public MemoryReadUpdateResponse getMemoryForUpdate(Long memberId, Long memoryId) {
+        Memory memory = getMemoryUseCase.findById(memoryId);
+        validatePermission(memory.getMember().getId(), memberId);
+        return MemoryReadUpdateResponse.from(memory);
     }
 
     public MemoryResponse findById(Long memberId, Long memoryId) {
