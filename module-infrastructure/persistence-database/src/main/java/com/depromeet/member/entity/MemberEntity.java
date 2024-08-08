@@ -23,7 +23,7 @@ public class MemberEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column private String name;
+    @Column private String nickname;
 
     @Column(name = "email", nullable = false)
     private String email;
@@ -40,14 +40,14 @@ public class MemberEntity {
     @Builder
     public MemberEntity(
             Long id,
-            String name,
+            String nickname,
             String email,
             MemberRole role,
             String providerId,
             Integer goal,
             MemberGender gender) {
         this.id = id;
-        this.name = name;
+        this.nickname = nickname;
         this.email = email;
         this.role = role;
         this.providerId = providerId;
@@ -64,7 +64,7 @@ public class MemberEntity {
     public static MemberEntity from(Member member) {
         return builder()
                 .id(member.getId())
-                .name(member.getName())
+                .nickname(member.getNickname())
                 .email(member.getEmail())
                 .role(member.getRole())
                 .providerId(member.getProviderId())
@@ -76,7 +76,7 @@ public class MemberEntity {
     public Member toModel() {
         return Member.builder()
                 .id(id)
-                .name(name)
+                .nickname(nickname)
                 .email(email)
                 .role(role)
                 .providerId(providerId)
@@ -90,8 +90,8 @@ public class MemberEntity {
         return this;
     }
 
-    public MemberEntity updateName(String name) {
-        this.name = name;
+    public MemberEntity updateNickname(String nickname) {
+        this.nickname = nickname;
         return this;
     }
 

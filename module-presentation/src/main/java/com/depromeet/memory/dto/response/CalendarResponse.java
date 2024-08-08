@@ -29,7 +29,7 @@ public class CalendarResponse {
                             memoryDomain, type, totalDistance, strokes, isAchieved));
         }
         return new CalendarResponse(
-                MemberSimpleResponse.of(member.getGoal(), member.getName()), memories);
+                MemberSimpleResponse.of(member.getGoal(), member.getNickname()), memories);
     }
 
     public static List<StrokeResponse> getStrokeResponses(Memory memoryDomain) {

@@ -19,7 +19,7 @@ public class CustomOAuth2User implements OAuth2User, UserDetails {
 
     public CustomOAuth2User(MemberDto memberDto) {
         this.id = memberDto.getId();
-        this.name = memberDto.getName();
+        this.name = memberDto.getNickname();
         this.email = memberDto.getEmail();
         this.memberRole = memberDto.getMemberRole();
         this.providerId = memberDto.getProviderId();

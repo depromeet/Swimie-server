@@ -26,7 +26,7 @@ public class GoalController implements GoalApi {
         Member member = goalUpdateUseCase.updateGoal(memberId, goalUpdateRequest.goal());
         return ApiResponse.success(
                 MemberSuccessType.UPDATE_GOAL_SUCCESS,
-                new MemberSimpleResponse(member.getGoal(), member.getName()));
+                new MemberSimpleResponse(member.getGoal(), member.getNickname()));
     }
 
     @GetMapping("/{memberId}")
@@ -35,6 +35,6 @@ public class GoalController implements GoalApi {
         Member member = memberUseCase.findById(memberId);
         return ApiResponse.success(
                 MemberSuccessType.GET_GOAL_SUCCESS,
-                new MemberSimpleResponse(member.getGoal(), member.getName()));
+                new MemberSimpleResponse(member.getGoal(), member.getNickname()));
     }
 }

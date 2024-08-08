@@ -29,7 +29,7 @@ class MemberServiceTest {
         member =
                 Member.builder()
                         .id(userId)
-                        .name("member1")
+                        .nickname("member1")
                         .email("member1@gmail.com")
                         .role(MemberRole.USER)
                         .build();
@@ -45,10 +45,10 @@ class MemberServiceTest {
         String newName = "테스트";
 
         // when
-        Member member1 = memberService.updateName(memberId, newName);
+        Member member1 = memberService.updateNickname(memberId, newName);
 
         // then
-        Assertions.assertThat(member1.getName()).isEqualTo(newName);
+        Assertions.assertThat(member1.getNickname()).isEqualTo(newName);
     }
 
     @Test
@@ -60,7 +60,7 @@ class MemberServiceTest {
         // when
 
         // then
-        Assertions.assertThatThrownBy(() -> memberService.updateName(memberId, newName))
+        Assertions.assertThatThrownBy(() -> memberService.updateNickname(memberId, newName))
                 .hasMessage("멤버의 이름은 공백이 허용되지 않습니다");
     }
 }

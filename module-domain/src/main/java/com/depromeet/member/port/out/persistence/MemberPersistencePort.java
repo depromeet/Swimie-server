@@ -13,7 +13,7 @@ public interface MemberPersistencePort {
 
     Optional<Member> updateGoal(Long memberId, Integer goal);
 
-    Optional<Member> updateName(Long memberId, String name);
+    Optional<Member> updateNickname(Long memberId, String nickname);
 
     Optional<Member> findByProviderId(String providerId);
 
