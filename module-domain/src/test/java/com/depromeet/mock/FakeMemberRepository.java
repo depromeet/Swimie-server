@@ -1,6 +1,7 @@
 package com.depromeet.mock;
 
 import com.depromeet.member.domain.Member;
+import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,17 +41,6 @@ public class FakeMemberRepository implements MemberPersistencePort {
     }
 
     @Override
-    public void updateRefresh(Long memberId, String refreshToken) {
-        findById(memberId)
-                .map(
-                        item -> {
-                            Member member = item.updateRefreshToken(refreshToken);
-                            save(member);
-                            return member;
-                        });
-    }
-
-    @Override
     public Optional<Member> updateGoal(Long memberId, Integer goal) {
         return findById(memberId)
                 .map(
@@ -70,5 +60,26 @@ public class FakeMemberRepository implements MemberPersistencePort {
                             save(member);
                             return member;
                         });
+    }
+
+    @Override
+    public Optional<Member> findByProviderId(String providerId) {
+        return data.stream().filter(member -> member.getProviderId().equals(providerId)).findAny();
+    }
+
+    @Override
+    public Optional<Member> updateGender(Long memberId, MemberGender gender) {
+        return findById(memberId)
+                .map(
+                        item -> {
+                            Member member = item.updateGender(gender);
+                            save(member);
+                            return member;
+                        });
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        data.removeIf(member -> member.getId().equals(id));
     }
 }

@@ -1,6 +1,7 @@
 package com.depromeet.member.entity;
 
 import com.depromeet.member.domain.Member;
+import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.domain.MemberRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,18 +23,19 @@ public class MemberEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column private String name;
 
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "role")
-    private MemberRole role;
+    @Column private MemberRole role;
 
-    @Column private String refreshToken;
+    @Column private String providerId;
 
-    private Integer goal;
+    @Column private Integer goal;
+
+    @Column(columnDefinition = "char", nullable = false)
+    private MemberGender gender;
 
     @Builder
     public MemberEntity(
@@ -41,19 +43,22 @@ public class MemberEntity {
             String name,
             String email,
             MemberRole role,
-            String refreshToken,
-            Integer goal) {
+            String providerId,
+            Integer goal,
+            MemberGender gender) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;
-        this.refreshToken = refreshToken;
+        this.providerId = providerId;
         this.goal = goal;
+        this.gender = gender;
     }
 
     @PrePersist
     public void prePersist() {
         this.goal = 1000;
+        this.gender = MemberGender.M;
     }
 
     public static MemberEntity from(Member member) {
@@ -62,8 +67,9 @@ public class MemberEntity {
                 .name(member.getName())
                 .email(member.getEmail())
                 .role(member.getRole())
-                .refreshToken(member.getRefreshToken())
+                .providerId(member.getProviderId())
                 .goal(member.getGoal())
+                .gender(member.getGender())
                 .build();
     }
 
@@ -73,14 +79,10 @@ public class MemberEntity {
                 .name(name)
                 .email(email)
                 .role(role)
-                .refreshToken(refreshToken)
+                .providerId(providerId)
                 .goal(goal)
+                .gender(gender)
                 .build();
-    }
-
-    public MemberEntity updateRefresh(String refreshToken) {
-        if (refreshToken != null) this.refreshToken = refreshToken;
-        return this;
     }
 
     public MemberEntity updateGoal(Integer goal) {
@@ -90,6 +92,11 @@ public class MemberEntity {
 
     public MemberEntity updateName(String name) {
         this.name = name;
+        return this;
+    }
+
+    public MemberEntity updateGender(MemberGender gender) {
+        this.gender = gender;
         return this;
     }
 }

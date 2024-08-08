@@ -124,7 +124,7 @@ public class MemoryResponse {
         Float totalLap = 0F;
         Integer totalMeter = 0;
         for (StrokeResponse stroke : resultStrokes) {
-            if (stroke.laps() != null) {
+            if (stroke.laps() != null && stroke.laps() != 0) {
                 totalLap += stroke.laps();
             }
             if (stroke.meter() != null) {
@@ -169,7 +169,7 @@ public class MemoryResponse {
         return strokes.stream()
                 .map(
                         stroke -> {
-                            if (stroke.getLaps() != null) {
+                            if (stroke.getLaps() != null && stroke.getLaps() != 0) {
                                 return StrokeResponse.builder()
                                         .strokeId(stroke.getId())
                                         .name(stroke.getName())

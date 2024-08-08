@@ -1,14 +1,16 @@
 package com.depromeet.member.service;
 
+import com.depromeet.auth.port.out.persistence.RefreshRedisPersistencePort;
 import com.depromeet.exception.BadRequestException;
 import com.depromeet.exception.InternalServerException;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.member.domain.Member;
+import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.domain.MemberRole;
 import com.depromeet.member.port.in.command.SocialMemberCommand;
 import com.depromeet.member.port.in.usecase.GoalUpdateUseCase;
+import com.depromeet.member.port.in.usecase.MemberUpdateUseCase;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
-import com.depromeet.member.port.in.usecase.NameUpdateUseCase;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import com.depromeet.type.member.MemberErrorType;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class MemberService implements MemberUseCase, GoalUpdateUseCase, NameUpdateUseCase {
+public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUpdateUseCase {
     private final MemberPersistencePort memberPersistencePort;
+    private final RefreshRedisPersistencePort refreshRedisPersistencePort;
 
     @Override
     @Transactional(readOnly = true)
@@ -32,7 +35,7 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, NameUpda
     @Override
     public Member findOrCreateMemberBy(SocialMemberCommand command) {
         return memberPersistencePort
-                .findByEmail(command.email())
+                .findByProviderId(command.providerId())
                 .orElseGet(
                         () -> {
                             Member member =
@@ -40,9 +43,17 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, NameUpda
                                             .name(command.name())
                                             .email(command.email())
                                             .role(MemberRole.USER)
+                                            .providerId(command.providerId())
                                             .build();
                             return memberPersistencePort.save(member);
                         });
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        findById(id);
+        memberPersistencePort.deleteById(id);
+        refreshRedisPersistencePort.deleteData(id);
     }
 
     @Override
@@ -60,5 +71,16 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, NameUpda
         return memberPersistencePort
                 .updateName(memberId, name)
                 .orElseThrow(() -> new InternalServerException(MemberErrorType.UPDATE_NAME_FAILED));
+    }
+
+    @Override
+    public Member updateGender(Long memberId, MemberGender gender) {
+        if (gender == null) {
+            throw new BadRequestException(MemberErrorType.GENDER_CANNOT_BE_BLANK);
+        }
+        return memberPersistencePort
+                .updateGender(memberId, gender)
+                .orElseThrow(
+                        () -> new InternalServerException(MemberErrorType.UPDATE_GENDER_FAILED));
     }
 }

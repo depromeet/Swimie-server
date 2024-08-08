@@ -1,6 +1,7 @@
 package com.depromeet.member.repository;
 
 import com.depromeet.member.domain.Member;
+import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.entity.MemberEntity;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import java.util.Optional;
@@ -28,13 +29,6 @@ public class MemberRepository implements MemberPersistencePort {
     }
 
     @Override
-    public void updateRefresh(Long memberId, String refreshToken) {
-        memberJpaRepository
-                .findById(memberId)
-                .map(memberEntity -> memberEntity.updateRefresh(refreshToken));
-    }
-
-    @Override
     public Optional<Member> updateGoal(Long memberId, Integer goal) {
         return memberJpaRepository
                 .findById(memberId)
@@ -46,5 +40,22 @@ public class MemberRepository implements MemberPersistencePort {
         return memberJpaRepository
                 .findById(memberId)
                 .map(memberEntity -> memberEntity.updateName(name).toModel());
+    }
+
+    @Override
+    public Optional<Member> findByProviderId(String providerId) {
+        return memberJpaRepository.findByProviderId(providerId).map(MemberEntity::toModel);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        memberJpaRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<Member> updateGender(Long memberId, MemberGender gender) {
+        return memberJpaRepository
+                .findById(memberId)
+                .map(memberEntity -> memberEntity.updateGender(gender).toModel());
     }
 }

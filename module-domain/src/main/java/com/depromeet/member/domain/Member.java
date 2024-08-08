@@ -6,33 +6,29 @@ import lombok.Getter;
 @Getter
 public class Member {
     private Long id;
-    private Integer goal;
     private String name;
     private String email;
     private MemberRole role;
-    private String refreshToken;
+    private String providerId;
+    private Integer goal;
+    private MemberGender gender;
 
     @Builder
     public Member(
             Long id,
-            Integer goal,
             String name,
             String email,
             MemberRole role,
-            String refreshToken) {
+            String providerId,
+            Integer goal,
+            MemberGender gender) {
         this.id = id;
-        this.goal = goal;
         this.name = name;
         this.email = email;
         this.role = role;
-        this.refreshToken = refreshToken;
-    }
-
-    public Member updateRefreshToken(String refreshToken) {
-        if (refreshToken != null) {
-            this.refreshToken = refreshToken;
-        }
-        return this;
+        this.providerId = providerId;
+        this.goal = goal;
+        this.gender = gender;
     }
 
     public Member updateGoal(Integer goal) {
@@ -42,6 +38,11 @@ public class Member {
 
     public Member updateName(String name) {
         this.name = name;
+        return this;
+    }
+
+    public Member updateGender(MemberGender gender) {
+        this.gender = gender;
         return this;
     }
 }

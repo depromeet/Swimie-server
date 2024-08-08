@@ -12,6 +12,7 @@ import com.depromeet.config.ControllerTestConfig;
 import com.depromeet.config.mock.WithCustomMockMember;
 import com.depromeet.member.api.MemberController;
 import com.depromeet.member.domain.Member;
+import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.domain.MemberRole;
 import com.depromeet.member.facade.MemberFacade;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,7 +36,15 @@ public class MemberControllerTest extends ControllerTestConfig {
         Map<String, String> requestBody = new HashMap<>();
         requestBody.put("name", "테스트");
 
-        Member member = new Member(1L, 3000, "테스트", "test@gmail.com", MemberRole.USER, "aa");
+        Member member =
+                new Member(
+                        1L,
+                        "테스트",
+                        "test@gmail.com",
+                        MemberRole.USER,
+                        "google 1234",
+                        3000,
+                        MemberGender.M);
         when(memberFacade.updateName(anyLong(), anyString())).thenReturn(member);
 
         mockMvc.perform(

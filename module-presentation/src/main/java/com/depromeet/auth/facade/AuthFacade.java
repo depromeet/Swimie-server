@@ -33,10 +33,12 @@ public class AuthFacade {
         if (profile == null) {
             throw new NotFoundException(AuthErrorType.NOT_FOUND);
         }
-        final Member member = memberUseCase.findOrCreateMemberBy(MemberMapper.toCommand(profile));
+        final Member member =
+                memberUseCase.findOrCreateMemberBy(
+                        MemberMapper.toCommand(profile, "google " + profile.id()));
         JwtToken token = createTokenUseCase.generateToken(member.getId(), member.getRole());
 
-        return JwtTokenResponse.of(token);
+        return JwtTokenResponse.of(token, member.getName());
     }
 
     public JwtTokenResponse loginByKakao(KakaoLoginRequest request, String origin) {
@@ -50,10 +52,12 @@ public class AuthFacade {
                         profile.id(),
                         profile.accountInfo().profileInfo().nickname(),
                         profile.accountInfo().email());
-        final Member member = memberUseCase.findOrCreateMemberBy(MemberMapper.toCommand(account));
+        final Member member =
+                memberUseCase.findOrCreateMemberBy(
+                        MemberMapper.toCommand(account, "kakao " + profile.id()));
         JwtToken token = createTokenUseCase.generateToken(member.getId(), member.getRole());
 
-        return JwtTokenResponse.of(token);
+        return JwtTokenResponse.of(token, member.getName());
     }
 
     @Transactional(readOnly = true)
@@ -61,5 +65,12 @@ public class AuthFacade {
         refreshToken = refreshToken.substring(7);
         AccessTokenInfo accessTokenInfo = createTokenUseCase.generateAccessToken(refreshToken);
         return JwtAccessTokenResponse.of(accessTokenInfo);
+    }
+
+    public void deleteAccount(Long memberId) {
+        Member member = memberUseCase.findById(memberId);
+        String accountType = member.getProviderId();
+        socialUseCase.revokeAccount(accountType);
+        memberUseCase.deleteById(memberId);
     }
 }

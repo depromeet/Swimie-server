@@ -40,7 +40,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         log.info("start oauth success handler");
 
         CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
-        String email = customOAuth2User.getEmail();
+        String providerId = customOAuth2User.getProviderId();
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -49,7 +49,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         Member member =
                 memberPersistencePort
-                        .findByEmail(email)
+                        .findByProviderId(providerId)
                         .orElseThrow(() -> new NotFoundException(NOT_FOUND));
         MemberRole memberRole = MemberRole.findByValue(role);
 

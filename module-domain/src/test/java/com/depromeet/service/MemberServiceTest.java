@@ -1,16 +1,19 @@
 package com.depromeet.service;
 
+import com.depromeet.auth.port.out.persistence.RefreshRedisPersistencePort;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberRole;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import com.depromeet.member.service.MemberService;
 import com.depromeet.mock.FakeMemberRepository;
+import com.depromeet.mock.FakeRefreshRedisRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class MemberServiceTest {
     private MemberPersistencePort fakeMemberRepository;
+    private RefreshRedisPersistencePort fakeRefreshRedisPersistencePort;
 
     private MemberService memberService;
 
@@ -20,6 +23,7 @@ class MemberServiceTest {
     @BeforeEach
     void init() {
         fakeMemberRepository = new FakeMemberRepository();
+        fakeRefreshRedisPersistencePort = new FakeRefreshRedisRepository();
 
         // Member create
         member =
@@ -31,7 +35,7 @@ class MemberServiceTest {
                         .build();
         fakeMemberRepository.save(member);
 
-        memberService = new MemberService(fakeMemberRepository);
+        memberService = new MemberService(fakeMemberRepository, fakeRefreshRedisPersistencePort);
     }
 
     @Test

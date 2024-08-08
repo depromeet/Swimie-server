@@ -1,6 +1,7 @@
 package com.depromeet.member.port.out.persistence;
 
 import com.depromeet.member.domain.Member;
+import com.depromeet.member.domain.MemberGender;
 import java.util.Optional;
 
 public interface MemberPersistencePort {
@@ -10,9 +11,13 @@ public interface MemberPersistencePort {
 
     Member save(Member member);
 
-    void updateRefresh(Long memberId, String refreshToken);
-
     Optional<Member> updateGoal(Long memberId, Integer goal);
 
     Optional<Member> updateName(Long memberId, String name);
+
+    Optional<Member> findByProviderId(String providerId);
+
+    Optional<Member> updateGender(Long memberId, MemberGender gender);
+
+    void deleteById(Long id);
 }
