@@ -3,11 +3,26 @@ package com.depromeet.friend.repository;
 import static com.depromeet.friend.entity.QFriendEntity.friendEntity;
 
 import com.depromeet.friend.domain.Friend;
+import com.depromeet.friend.domain.vo.FollowSlice;
+import com.depromeet.friend.domain.vo.Follower;
+import com.depromeet.friend.domain.vo.Following;
 import com.depromeet.friend.entity.FriendEntity;
+import com.depromeet.friend.entity.QFriendEntity;
 import com.depromeet.friend.port.out.persistence.FriendPersistencePort;
+import com.depromeet.member.entity.QMemberEntity;
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -16,9 +31,12 @@ public class FriendRepository implements FriendPersistencePort {
     private final JPAQueryFactory queryFactory;
     private final FriendJpaRepository friendJpaRepository;
 
+    private QFriendEntity friend = QFriendEntity.friendEntity;
+
     @Override
-    public Long addFollowing(Friend friend) {
-        return friendJpaRepository.save(FriendEntity.from(friend)).getId();
+    public Friend addFollowing(Friend friend) {
+        FriendEntity friendEntity = friendJpaRepository.save(FriendEntity.from(friend));
+        return friendEntity.toModel();
     }
 
     @Override
@@ -37,10 +55,124 @@ public class FriendRepository implements FriendPersistencePort {
     @Override
     public void deleteByMemberIdAndFollowingId(Long memberId, Long followingId) {
         queryFactory
-                .delete(friendEntity)
-                .where(
-                        friendEntity.member.id.eq(memberId),
-                        friendEntity.following.id.eq(followingId))
+                .delete(friend)
+                .where(friend.member.id.eq(memberId), friend.following.id.eq(followingId))
                 .execute();
+    }
+
+    @Override
+    public FollowSlice<Following> findFollowingsByMemberIdAndCursorId(
+            Long memberId, Long cursorId) {
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id");
+
+        List<Following> content =
+                queryFactory
+                        .select(
+                                Projections.constructor(
+                                        Following.class,
+                                        friend.id.as("friendId"),
+                                        friend.following.id.as("memberId"),
+                                        friend.following.nickname.as("nickname")))
+                        .from(friend)
+                        .where(friend.member.id.eq(memberId), ltCursorId(cursorId))
+                        .limit(pageable.getPageSize() + 1)
+                        .orderBy(friend.id.desc())
+                        .fetch();
+
+        boolean hasNext = false;
+        Long nextCursorId = null;
+        if (content.size() > pageable.getPageSize()) {
+            content = new ArrayList<>(content);
+            content.removeLast();
+            hasNext = true;
+            nextCursorId = content.getLast().getFriendId();
+        }
+
+        return FollowSlice.<Following>builder()
+                .followContents(content)
+                .pageSize(10)
+                .cursorId(nextCursorId)
+                .hasNext(hasNext)
+                .build();
+    }
+
+    @Override
+    public FollowSlice<Follower> findFollowersByMemberIdAndCursorId(Long memberId, Long cursorId) {
+        QFriendEntity subFriend = new QFriendEntity("sub");
+        QMemberEntity member1 = new QMemberEntity("member1");
+        QMemberEntity member2 = new QMemberEntity("member2");
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id");
+
+        List<Follower> result =
+                queryFactory
+                        .select(
+                                Projections.constructor(
+                                        Follower.class,
+                                        friend.id.as("friendId"),
+                                        friend.member.id.as("memberId"),
+                                        friend.member.nickname.as("name"),
+                                        ExpressionUtils.as(
+                                                JPAExpressions.select(Expressions.constant(true))
+                                                        .from(subFriend)
+                                                        .where(
+                                                                friend.member.id.eq(
+                                                                        subFriend.following.id),
+                                                                friend.following.id.eq(
+                                                                        subFriend.member.id)),
+                                                "hasFollowedBack")))
+                        .from(friend)
+                        .join(friend.member, member1)
+                        .join(friend.following, member2)
+                        .where(friend.following.id.eq(memberId), ltCursorId(cursorId))
+                        .limit(pageable.getPageSize() + 1)
+                        .orderBy(friend.id.desc())
+                        .fetch();
+
+        boolean hasNext = false;
+        Long nextCursorId = null;
+        if (result.size() > pageable.getPageSize()) {
+            result = new ArrayList<>(result);
+            result.removeLast();
+            hasNext = true;
+            nextCursorId = result.getLast().getFriendId();
+        }
+
+        return FollowSlice.<Follower>builder()
+                .followContents(result)
+                .pageSize(10)
+                .cursorId(nextCursorId)
+                .hasNext(hasNext)
+                .build();
+    }
+
+    @Override
+    public int countFollowingByMemberId(Long memberId) {
+        Long count =
+                queryFactory
+                        .select(friend.count())
+                        .from(friend)
+                        .where(friend.member.id.eq(memberId))
+                        .fetchFirst();
+        return count != null ? Math.toIntExact(count) : 0;
+    }
+
+    @Override
+    public int countFollowerByMemberId(Long memberId) {
+        Long count =
+                queryFactory
+                        .select(friend.count())
+                        .from(friend)
+                        .where(friend.following.id.eq(memberId))
+                        .fetchFirst();
+        return count != null ? Math.toIntExact(count) : 0;
+    }
+
+    private BooleanExpression ltCursorId(Long cursorId) {
+        if (cursorId == null) {
+            return null;
+        }
+
+        return friendEntity.id.lt(cursorId);
     }
 }
