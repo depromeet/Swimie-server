@@ -137,6 +137,18 @@ public class MemoryEntity {
                 .build();
     }
 
+    public Memory toModelWithMemberOnly() {
+        return Memory.builder()
+                .id(this.id)
+                .member(this.member.toModel())
+                .recordAt(this.recordAt)
+                .startTime(this.startTime)
+                .endTime(this.endTime)
+                .lane(this.lane)
+                .diary(this.diary)
+                .build();
+    }
+
     private List<Image> getImageListOrNull() {
         return this.images != null
                 ? this.images.stream().map(ImageEntity::pureToModel).toList()

@@ -70,6 +70,13 @@ public class MemoryService implements CreateMemoryUseCase, UpdateMemoryUseCase, 
     }
 
     @Override
+    public Memory findByIdWithMember(Long memoryId) {
+        return memoryPersistencePort
+                .findByIdWithMember(memoryId)
+                .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND));
+    }
+
+    @Override
     public int findOrderInMonth(Long memberId, Long memoryId, int month) {
         return memoryPersistencePort.findOrderInMonth(memberId, memoryId, month);
     }
