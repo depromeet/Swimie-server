@@ -10,7 +10,6 @@ import com.depromeet.friend.facade.FollowFacade;
 import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.type.friend.FollowSuccessType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,14 +21,19 @@ public class FollowController implements FollowApi {
     @PostMapping
     public ApiResponse<?> addOrDeleteFollowing(
             @LoginMember Long memberId, FollowingRequest followingRequest) {
-        followFacade.addFollowing(memberId, followingRequest);
+        boolean hasFollowingAdded = followFacade.addFollowing(memberId, followingRequest);
 
-        return ApiResponse.success(FollowSuccessType.ADD_FOLLOWING_SUCCESS);
+        if (hasFollowingAdded) {
+            return ApiResponse.success(FollowSuccessType.ADD_FOLLOWING_SUCCESS);
+        }
+
+        return ApiResponse.success(FollowSuccessType.DELETE_FOLLOWING_SUCCESS);
     }
 
     @GetMapping("/following")
     public ApiResponse<FollowSliceResponse<FollowingResponse>> findFollowingList(
-            @LoginMember Long memberId, @RequestParam("cursorId") Long cursorId) {
+            @LoginMember Long memberId,
+            @RequestParam(value = "cursorId", required = false) Long cursorId) {
         FollowSliceResponse<FollowingResponse> response =
                 followFacade.findFollowingList(memberId, cursorId);
 
@@ -38,18 +42,20 @@ public class FollowController implements FollowApi {
 
     @GetMapping("/follower")
     public ApiResponse<FollowSliceResponse<FollowerResponse>> findFollowerList(
-            @LoginMember Long memberId) {
-        return null;
+            @LoginMember Long memberId,
+            @RequestParam(value = "cursorId", required = false) Long cursorId) {
+        FollowSliceResponse<FollowerResponse> response =
+                followFacade.findFollowerList(memberId, cursorId);
+
+        return ApiResponse.success(FollowSuccessType.GET_FOLLOWERS_SUCCESS, response);
     }
 
     @GetMapping("/count")
     public ApiResponse<FollowerFollowingCountResponse> getFollowerFollowingCount(
             @LoginMember Long memberId) {
-        return null;
-    }
+        FollowerFollowingCountResponse response = followFacade.countFollowerAndFollowing(memberId);
 
-    @DeleteMapping
-    public ResponseEntity<?> cancelFollowing(@LoginMember Long memberId, Long followingId) {
-        return null;
+        return ApiResponse.success(
+                FollowSuccessType.GET_FOLLOWER_FOLLOWING_COUNT_SUCCESS, response);
     }
 }
