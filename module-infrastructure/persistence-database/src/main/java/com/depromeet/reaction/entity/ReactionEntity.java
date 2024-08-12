@@ -3,6 +3,7 @@ package com.depromeet.reaction.entity;
 import com.depromeet.basetime.BaseTimeEntity;
 import com.depromeet.member.entity.MemberEntity;
 import com.depromeet.memory.entity.MemoryEntity;
+import com.depromeet.reaction.domain.Reaction;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -48,5 +49,25 @@ public class ReactionEntity extends BaseTimeEntity {
         this.memory = memory;
         this.emoji = emoji;
         this.comment = comment;
+    }
+
+    public static ReactionEntity from(Reaction reaction) {
+        return ReactionEntity.builder()
+                .member(MemberEntity.from(reaction.getMember()))
+                .memory(MemoryEntity.from(reaction.getMemory()))
+                .emoji(reaction.getEmoji())
+                .comment(reaction.getComment())
+                .build();
+    }
+
+    public Reaction toModel() {
+        return Reaction.builder()
+                .id(this.id)
+                .member(this.member.toModel())
+                .memory(this.memory.toModel())
+                .emoji(this.emoji)
+                .comment(this.comment)
+                .createdAt(this.getCreatedAt())
+                .build();
     }
 }
