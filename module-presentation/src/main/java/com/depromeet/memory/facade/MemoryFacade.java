@@ -1,5 +1,6 @@
 package com.depromeet.memory.facade;
 
+import static com.depromeet.memory.service.MemoryValidator.validateMyMemory;
 import static com.depromeet.memory.service.MemoryValidator.validatePermission;
 
 import com.depromeet.image.port.in.ImageUploadUseCase;
@@ -86,8 +87,7 @@ public class MemoryFacade {
 
     public MemoryResponse findById(Long memberId, Long memoryId) {
         Memory memory = getMemoryUseCase.findById(memoryId);
-        // validatePermission(memory.getMember().getId(), memberId);
-        Boolean isMyMemory = memory.getMember().getId().equals(memberId);
+        Boolean isMyMemory = validateMyMemory(memory.getMember().getId(), memberId);
         return MemoryResponse.from(memory, isMyMemory);
     }
 
