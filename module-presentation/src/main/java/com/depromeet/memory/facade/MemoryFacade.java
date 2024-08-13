@@ -86,8 +86,9 @@ public class MemoryFacade {
 
     public MemoryResponse findById(Long memberId, Long memoryId) {
         Memory memory = getMemoryUseCase.findById(memoryId);
-        validatePermission(memory.getMember().getId(), memberId);
-        return MemoryResponse.from(memory);
+//        validatePermission(memory.getMember().getId(), memberId);
+        Boolean isMyMemory = memory.getMember().getId().equals(memberId);
+        return MemoryResponse.from(memory, isMyMemory);
     }
 
     public TimelineSliceResponse getTimelineByMemberIdAndCursorAndDate(
