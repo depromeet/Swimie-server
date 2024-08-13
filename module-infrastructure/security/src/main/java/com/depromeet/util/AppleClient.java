@@ -132,7 +132,7 @@ public class AppleClient implements ApplePort {
     private String createClientSecret() {
         LocalDateTime now = LocalDateTime.now();
         Date expirationDate =
-                Date.from(now.plusDays(30).atZone(ZoneId.systemDefault()).toInstant());
+                Date.from(now.plusHours(2).atZone(ZoneId.systemDefault()).toInstant());
 
         try {
             return Jwts.builder()
