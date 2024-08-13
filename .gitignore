@@ -5,6 +5,7 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 **/application-secret.properties
+**/Swimie_AuthKey_B52ZG9MWCW.p8
 **/data.sql
 generated
 

@@ -1,5 +1,6 @@
 package com.depromeet.auth.api;
 
+import com.depromeet.auth.dto.request.AppleLoginRequest;
 import com.depromeet.auth.dto.request.GoogleLoginRequest;
 import com.depromeet.auth.dto.request.KakaoLoginRequest;
 import com.depromeet.auth.dto.response.JwtAccessTokenResponse;
@@ -24,6 +25,9 @@ public interface AuthApi {
     ApiResponse<JwtTokenResponse> loginByKakao(
             @Valid @RequestBody final KakaoLoginRequest request,
             HttpServletRequest httpServletRequest);
+
+    @Operation(summary = "애플 소셜로그인")
+    ApiResponse<JwtTokenResponse> loginByApple(@Valid @RequestBody final AppleLoginRequest request);
 
     @Operation(summary = "Access 토큰 재발급 요청")
     ApiResponse<JwtAccessTokenResponse> reissueAccessToken(
