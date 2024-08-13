@@ -103,10 +103,7 @@ public class MemoryResponse {
             requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String diary;
 
-    @Schema(
-            description = "자신의 글이라면 true, 아니라면 false",
-            example = "true",
-            type = "boolean")
+    @Schema(description = "자신의 글이라면 true, 아니라면 false", example = "true", type = "boolean")
     private Boolean isMyMemory;
 
     @Builder
