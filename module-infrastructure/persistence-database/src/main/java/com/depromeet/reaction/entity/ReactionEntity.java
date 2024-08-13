@@ -70,4 +70,14 @@ public class ReactionEntity extends BaseTimeEntity {
                 .createdAt(this.getCreatedAt())
                 .build();
     }
+
+    public Reaction toModelWithMemberOnly() {
+        return Reaction.builder()
+                .id(this.id)
+                .member(this.member.toModel())
+                .emoji(this.emoji)
+                .comment(this.comment)
+                .createdAt(this.getCreatedAt())
+                .build();
+    }
 }

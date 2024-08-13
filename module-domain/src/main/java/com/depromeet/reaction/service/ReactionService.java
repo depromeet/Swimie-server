@@ -6,6 +6,7 @@ import com.depromeet.memory.domain.Memory;
 import com.depromeet.reaction.domain.Reaction;
 import com.depromeet.reaction.port.in.command.CreateReactionCommand;
 import com.depromeet.reaction.port.in.usecase.CreateReactionUseCase;
+import com.depromeet.reaction.port.in.usecase.GetReactionUseCase;
 import com.depromeet.reaction.port.out.persistence.ReactionPersistencePort;
 import com.depromeet.type.reaction.ReactionErrorType;
 import java.util.List;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ReactionService implements CreateReactionUseCase {
+public class ReactionService implements CreateReactionUseCase, GetReactionUseCase {
     private final ReactionPersistencePort reactionPersistencePort;
     private static final int MAXIMUM_REACTION_NUMBER = 3;
 
@@ -41,6 +42,11 @@ public class ReactionService implements CreateReactionUseCase {
                         .build();
 
         return reactionPersistencePort.save(reaction);
+    }
+
+    @Override
+    public List<Reaction> getReactionsOfMemory(Long memoryId) {
+        return reactionPersistencePort.getAllByMemoryId(memoryId);
     }
 
     private static boolean isOverMaximumCreationLimit(List<Reaction> reactions) {

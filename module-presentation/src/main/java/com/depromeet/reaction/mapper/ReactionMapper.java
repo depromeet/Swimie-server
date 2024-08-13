@@ -1,6 +1,6 @@
 package com.depromeet.reaction.mapper;
 
-import com.depromeet.reaction.dto.ReactionCreateRequest;
+import com.depromeet.reaction.dto.request.ReactionCreateRequest;
 import com.depromeet.reaction.port.in.command.CreateReactionCommand;
 
 public class ReactionMapper {

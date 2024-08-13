@@ -7,4 +7,6 @@ public interface ReactionPersistencePort {
     Reaction save(Reaction reaction);
 
     List<Reaction> getAllByMemberAndMemory(Long memberId, Long memoryId);
+
+    List<Reaction> getAllByMemoryId(Long memoryId);
 }

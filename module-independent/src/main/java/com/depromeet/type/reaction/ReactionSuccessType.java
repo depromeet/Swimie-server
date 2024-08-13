@@ -3,7 +3,8 @@ package com.depromeet.type.reaction;
 import com.depromeet.type.SuccessType;
 
 public enum ReactionSuccessType implements SuccessType {
-    POST_REACTION_SUCCESS("REACTION_1", "응원 등록에 성공하였습니다");
+    POST_REACTION_SUCCESS("REACTION_1", "응원 등록에 성공하였습니다"),
+    GET_MEMORY_REACTIONS_SUCCESS("REACTION_2", "응원 목록 조회에 성공하였습니다");
 
     private final String code;
     private final String message;

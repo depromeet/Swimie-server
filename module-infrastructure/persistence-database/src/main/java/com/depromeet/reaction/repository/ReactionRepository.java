@@ -39,6 +39,20 @@ public class ReactionRepository implements ReactionPersistencePort {
         return reactionEntities.stream().map(ReactionEntity::toModel).toList();
     }
 
+    @Override
+    public List<Reaction> getAllByMemoryId(Long memoryId) {
+        return queryFactory
+                .selectFrom(reactionEntity)
+                .join(reactionEntity.member, memberEntity)
+                .fetchJoin()
+                .where(memoryEq(memoryId))
+                .orderBy(reactionEntity.createdAt.desc())
+                .fetch()
+                .stream()
+                .map(ReactionEntity::toModelWithMemberOnly)
+                .toList();
+    }
+
     private BooleanExpression memberEq(Long memberId) {
         if (memberId == null) {
             return null;
