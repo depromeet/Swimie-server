@@ -64,7 +64,7 @@ public class ReactionEntity extends BaseTimeEntity {
         return Reaction.builder()
                 .id(this.id)
                 .member(this.member.toModel())
-                .memory(this.memory.toModel())
+                .memory(this.memory.toModelWithMemberOnly())
                 .emoji(this.emoji)
                 .comment(this.comment)
                 .createdAt(this.getCreatedAt())

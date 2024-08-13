@@ -8,6 +8,7 @@ import com.depromeet.reaction.port.in.command.CreateReactionCommand;
 import com.depromeet.reaction.port.in.usecase.CreateReactionUseCase;
 import com.depromeet.reaction.port.out.persistence.ReactionPersistencePort;
 import com.depromeet.type.reaction.ReactionErrorType;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,12 +18,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ReactionService implements CreateReactionUseCase {
     private final ReactionPersistencePort reactionPersistencePort;
+    private static final int MAXIMUM_REACTION_NUMBER = 3;
 
     @Override
     @Transactional
     public Reaction save(Long memberId, Memory memory, CreateReactionCommand command) {
         if (isOwnMemory(memberId, memory)) {
             throw new BadRequestException(ReactionErrorType.SAME_USER);
+        }
+
+        List<Reaction> reactions = getAllByMemberAndMemory(memberId, memory.getId());
+        if (isOverMaximumCreationLimit(reactions)) {
+            throw new BadRequestException(ReactionErrorType.MAXIMUM_FAILED);
         }
 
         Reaction reaction =
@@ -34,6 +41,14 @@ public class ReactionService implements CreateReactionUseCase {
                         .build();
 
         return reactionPersistencePort.save(reaction);
+    }
+
+    private static boolean isOverMaximumCreationLimit(List<Reaction> reactions) {
+        return !reactions.isEmpty() && reactions.size() >= MAXIMUM_REACTION_NUMBER;
+    }
+
+    private List<Reaction> getAllByMemberAndMemory(Long memberId, Long memoryId) {
+        return reactionPersistencePort.getAllByMemberAndMemory(memberId, memoryId);
     }
 
     private boolean isOwnMemory(Long memberId, Memory memory) {
