@@ -118,16 +118,20 @@ public class FriendRepositoryTest {
         friends = friends.subList(0, 10);
 
         List<Following> expectedFollowing = getExpectedFollowing(friends);
+        List<String> expectedFollowingNames =
+                expectedFollowing.stream().map(Following::getName).toList();
 
         // when
         FollowSlice<Following> result =
                 friendRepository.findFollowingsByMemberIdAndCursorId(member.getId(), null);
+        List<String> resultFollowingNames =
+                result.getFollowContents().stream().map(Following::getName).toList();
 
         // then
         assertThat(result.getFollowContents()).isNotNull();
         assertThat(result.getFollowContents()).hasSize(10);
-        assertThat(result.getFollowContents())
-                .containsExactlyInAnyOrderElementsOf(expectedFollowing);
+        assertThat(resultFollowingNames)
+                .containsExactlyInAnyOrderElementsOf(expectedFollowingNames);
     }
 
     @Test
@@ -147,21 +151,22 @@ public class FriendRepositoryTest {
                                                 .memberId(friend.getMember().getId())
                                                 .name(friend.getMember().getNickname())
                                                 .hasFollowedBack(
-                                                        friend.getMember().getId() % 2 == 0
-                                                                ? true
-                                                                : false)
+                                                        friend.getMember().getId() % 2 == 0)
                                                 .build())
                         .toList();
+        List<String> expectedFollowerNames =
+                expectedFollowers.stream().map(Follower::getName).toList();
 
         // when
         FollowSlice<Follower> result =
                 friendRepository.findFollowersByMemberIdAndCursorId(member.getId(), null);
+        List<String> resultFollowerNames =
+                result.getFollowContents().stream().map(Follower::getName).toList();
 
         // then
         assertThat(result.getFollowContents()).isNotNull();
         assertThat(result.getFollowContents()).hasSize(10);
-        assertThat(result.getFollowContents())
-                .containsExactlyInAnyOrderElementsOf(expectedFollowers);
+        assertThat(resultFollowerNames).containsExactlyInAnyOrderElementsOf(expectedFollowerNames);
     }
 
     @Test

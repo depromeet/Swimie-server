@@ -25,17 +25,4 @@ public class Following {
         this.profileImageUrl = profileImageUrl;
         this.introduction = introduction;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Following following = (Following) o;
-        return friendId.equals(following.friendId)
-                && memberId.equals(following.memberId)
-                && name.equals(following.name)
-                && profileImageUrl.equals(following.profileImageUrl)
-                && introduction.equals(following.introduction);
-    }
 }

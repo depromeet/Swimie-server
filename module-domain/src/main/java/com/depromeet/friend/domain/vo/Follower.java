@@ -31,18 +31,4 @@ public class Follower {
         this.introduction = introduction;
         this.hasFollowedBack = hasFollowedBack;
     }
-
-    @Override // 테스트를 위해 추가
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Follower follower = (Follower) o;
-        return hasFollowedBack == follower.hasFollowedBack
-                && friendId.equals(follower.friendId)
-                && memberId.equals(follower.memberId)
-                && name.equals(follower.name)
-                && profileImageUrl.equals(follower.profileImageUrl)
-                && introduction.equals(follower.introduction);
-    }
 }
