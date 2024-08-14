@@ -37,6 +37,10 @@ public class MemberEntity {
     @Column(columnDefinition = "char", nullable = false)
     private MemberGender gender;
 
+    @Column private String profileImageUrl;
+
+    @Column private String introduction;
+
     @Builder
     public MemberEntity(
             Long id,
@@ -45,7 +49,9 @@ public class MemberEntity {
             MemberRole role,
             String providerId,
             Integer goal,
-            MemberGender gender) {
+            MemberGender gender,
+            String profileImageUrl,
+            String introduction) {
         this.id = id;
         this.nickname = nickname;
         this.email = email;
@@ -53,6 +59,8 @@ public class MemberEntity {
         this.providerId = providerId;
         this.goal = goal;
         this.gender = gender;
+        this.profileImageUrl = profileImageUrl;
+        this.introduction = introduction;
     }
 
     @PrePersist
@@ -70,6 +78,8 @@ public class MemberEntity {
                 .providerId(member.getProviderId())
                 .goal(member.getGoal())
                 .gender(member.getGender())
+                .profileImageUrl(member.getProfileImageUrl())
+                .introduction(member.getIntroduction())
                 .build();
     }
 
@@ -82,6 +92,8 @@ public class MemberEntity {
                 .providerId(providerId)
                 .goal(goal)
                 .gender(gender)
+                .profileImageUrl(profileImageUrl)
+                .introduction(introduction)
                 .build();
     }
 

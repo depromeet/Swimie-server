@@ -9,4 +9,8 @@ public class MemoryValidator {
             throw new ForbiddenException(MemoryErrorType.FORBIDDEN);
         }
     }
+
+    public static Boolean isMyMemory(Long memoryMemberId, Long requestMemberId) {
+        return memoryMemberId.equals(requestMemberId);
+    }
 }

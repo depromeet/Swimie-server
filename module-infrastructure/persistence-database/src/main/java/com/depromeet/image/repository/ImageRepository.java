@@ -28,7 +28,6 @@ public class ImageRepository implements ImagePersistencePort {
     @Override
     public List<Image> saveAll(List<Image> images) {
         List<ImageEntity> memoryImageEntities = images.stream().map(ImageEntity::from).toList();
-
         return imageJpaRepository.saveAll(memoryImageEntities).stream()
                 .map(ImageEntity::toModel)
                 .toList();
@@ -57,7 +56,6 @@ public class ImageRepository implements ImagePersistencePort {
                         .fetchJoin()
                         .where(imageEntity.memory.id.eq(memoryId))
                         .fetch();
-
         return imageEntities.stream().map(ImageEntity::toModel).toList();
     }
 
@@ -70,7 +68,6 @@ public class ImageRepository implements ImagePersistencePort {
                                 imageEntity.memory.id.eq(memoryId),
                                 imageEntity.imageUploadStatus.eq(ImageUploadStatus.UPLOADED))
                         .fetch();
-
         return images.stream().map(ImageEntity::toModel).toList();
     }
 
@@ -78,7 +75,6 @@ public class ImageRepository implements ImagePersistencePort {
     public List<Image> findImageByIds(List<Long> ids) {
         List<ImageEntity> imageEntities =
                 queryFactory.selectFrom(imageEntity).where(imageEntity.id.in(ids)).fetch();
-
         return imageEntities.stream().map(ImageEntity::toModel).toList();
     }
 

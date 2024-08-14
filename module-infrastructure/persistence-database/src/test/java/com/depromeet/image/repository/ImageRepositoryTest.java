@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.depromeet.TestQueryDslConfig;
 import com.depromeet.fixture.image.ImageFixture;
-import com.depromeet.fixture.member.MockMember;
+import com.depromeet.fixture.member.MemberFixture;
 import com.depromeet.fixture.memory.MemoryDetailFixture;
 import com.depromeet.fixture.memory.MemoryFixture;
 import com.depromeet.image.domain.Image;
@@ -49,10 +49,10 @@ public class ImageRepositoryTest {
     @BeforeEach
     void setUp() {
         imageRepository = new ImageRepository(queryFactory, imageJpaRepository);
-        memberPersistencePort = new MemberRepository(memberJpaRepository);
+        memberPersistencePort = new MemberRepository(queryFactory, memberJpaRepository);
         memoryPersistencePort = new MemoryRepository(queryFactory, memoryJpaRepository);
         memoryDetailPersistencePort = new MemoryDetailRepository(memoryDetailJpaRepository);
-        member = memberPersistencePort.save(MockMember.mockMember());
+        member = memberPersistencePort.save(MemberFixture.make());
     }
 
     @AfterEach

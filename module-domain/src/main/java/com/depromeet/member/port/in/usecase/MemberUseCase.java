@@ -1,6 +1,7 @@
 package com.depromeet.member.port.in.usecase;
 
 import com.depromeet.member.domain.Member;
+import com.depromeet.member.domain.vo.MemberSearchPage;
 import com.depromeet.member.port.in.command.SocialMemberCommand;
 
 public interface MemberUseCase {
@@ -9,4 +10,6 @@ public interface MemberUseCase {
     Member findOrCreateMemberBy(SocialMemberCommand command);
 
     void deleteById(Long id);
+
+    MemberSearchPage searchMemberByName(String nameQuery, Long cursorId);
 }
