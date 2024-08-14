@@ -27,7 +27,7 @@ pipeline {
         stage('빌드') {
             steps {
                 sh 'chmod u+w ./module-presentation/src/main/resources/'
-                sh 'cp ~/application-secret.properties ./module-presentation/src/main/resources/'
+                sh 'cp ~/Swimie_AuthKey_B52ZG9MWCW.p8 ./module-presentation/src/main/resources/'
                 sh 'chmod +x ./gradlew'
                 sh './gradlew :module-presentation:build'
             }
@@ -56,6 +56,8 @@ pipeline {
 
         stage('원격 서버에 접속하여 deploy 스크립트 실행') {
             steps {
+                sh "scp -i .ssh/id_rsa ~/application-secret.properties root@${TARGET_HOST}:~/"
+                sh "scp -i .ssh/id_rsa ./scripts/shell/deploy.sh root@${TARGET_HOST}:~/"
                 script {
                     def remoteCommands = """
                         cd ~ &&
