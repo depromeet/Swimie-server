@@ -63,7 +63,8 @@ public class AuthFacade {
 
     public JwtTokenResponse loginByApple(AppleLoginRequest request) {
         final AccountProfileResponse profile =
-                socialUseCase.getAppleAccountToken(request.code(), "https://unduly-light-chimp.ngrok-free.app");
+                socialUseCase.getAppleAccountToken(
+                        request.code(), "https://unduly-light-chimp.ngrok-free.app");
         if (profile == null) {
             throw new NotFoundException(AuthErrorType.NOT_FOUND);
         }
