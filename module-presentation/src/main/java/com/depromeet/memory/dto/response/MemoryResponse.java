@@ -103,6 +103,9 @@ public class MemoryResponse {
             requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String diary;
 
+    @Schema(description = "자신의 글이라면 true, 아니라면 false", example = "true", type = "boolean")
+    private Boolean isMyMemory;
+
     @Builder
     public MemoryResponse(
             Long id,
@@ -116,7 +119,8 @@ public class MemoryResponse {
             LocalTime startTime,
             LocalTime endTime,
             Short lane,
-            String diary) {
+            String diary,
+            Boolean isMyMemory) {
         // 영법 별 바퀴 수와 미터 수를 계산
         List<StrokeResponse> resultStrokes = getResultStrokes(strokes, lane);
 
@@ -147,6 +151,7 @@ public class MemoryResponse {
         this.totalLap = totalLap;
         this.totalMeter = totalMeter;
         this.diary = diary;
+        this.isMyMemory = isMyMemory;
     }
 
     private static MemoryDetailResponse getMemoryDetail(MemoryDetail memoryDetail) {
@@ -205,6 +210,27 @@ public class MemoryResponse {
                 .endTime(memory.getEndTime())
                 .lane(memory.getLane())
                 .diary(memory.getDiary())
+                .build();
+    }
+
+    public static MemoryResponse from(Memory memory, Boolean isMyMemory) {
+        MemberSimpleResponse memberSimple =
+                new MemberSimpleResponse(
+                        memory.getMember().getGoal(), memory.getMember().getNickname());
+        return MemoryResponse.builder()
+                .id(memory.getId())
+                .member(memberSimple)
+                .pool(memory.getPool())
+                .memoryDetail(memory.getMemoryDetail())
+                .type(memory.classifyType())
+                .strokes(memory.getStrokes())
+                .images(memory.getImages())
+                .recordAt(memory.getRecordAt())
+                .startTime(memory.getStartTime())
+                .endTime(memory.getEndTime())
+                .lane(memory.getLane())
+                .diary(memory.getDiary())
+                .isMyMemory(isMyMemory)
                 .build();
     }
 }
