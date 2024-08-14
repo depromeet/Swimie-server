@@ -67,6 +67,7 @@ public class FollowMapper {
                                                 getProfileImageUrl(
                                                         profileImageDomain,
                                                         follower.getProfileImageUrl()))
+                                        .introduction(follower.getIntroduction())
                                         .hasFollowedBack(follower.isHasFollowedBack())
                                         .build())
                 .toList();
