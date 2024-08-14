@@ -26,7 +26,6 @@ public class ImageController implements ImageApi {
             @RequestBody ImageNameRequest imageNameRequest) {
         List<ImageUploadResponse> imageUploadResponses =
                 imageFacade.getPresignedUrlAndSaveImages(imageNameRequest);
-
         return ApiResponse.success(GENERATE_PRESIGNED_URL_SUCCESS, imageUploadResponses);
     }
 
@@ -35,7 +34,6 @@ public class ImageController implements ImageApi {
     public ApiResponse<?> updateImages(
             @PathVariable("memoryId") Long memoryId, @RequestBody ImageNameRequest imageNames) {
         List<ImageUploadResponse> images = imageFacade.updateImages(memoryId, imageNames);
-
         return ApiResponse.success(UPDATE_AND_GET_PRESIGNED_URL_SUCCESS, images);
     }
 
@@ -44,7 +42,6 @@ public class ImageController implements ImageApi {
     public ApiResponse<?> changeImageStatusForAddedImages(
             @RequestBody ImageIdsRequest imageIdsRequest) {
         imageFacade.changeImageStatus(imageIdsRequest.imageIds());
-
         return ApiResponse.success(CHANGE_IMAGE_STATUS_SUCCESS);
     }
 
@@ -52,7 +49,6 @@ public class ImageController implements ImageApi {
     @Logging(item = "Image", action = "GET")
     public ApiResponse<List<ImageResponse>> findImages(@PathVariable("memoryId") Long memoryId) {
         List<ImageResponse> memoryImages = imageFacade.findImagesByMemoryId(memoryId);
-
         return ApiResponse.success(GET_IMAGES_SUCCESS, memoryImages);
     }
 
@@ -60,7 +56,6 @@ public class ImageController implements ImageApi {
     @Logging(item = "Image", action = "DELETE")
     public ResponseEntity<?> deleteImages(@PathVariable("memoryId") Long memoryId) {
         imageFacade.deleteAllImagesByMemoryId(memoryId);
-
         return ResponseEntity.noContent().build();
     }
 }

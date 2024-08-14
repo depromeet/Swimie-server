@@ -95,7 +95,6 @@ public class MemoryService implements CreateMemoryUseCase, UpdateMemoryUseCase, 
                         .lane(command.lane())
                         .diary(command.diary())
                         .build();
-
         return memoryPersistencePort
                 .update(memoryId, updateMemory)
                 .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND));

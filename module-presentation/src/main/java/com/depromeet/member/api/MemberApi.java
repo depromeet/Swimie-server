@@ -6,11 +6,13 @@ import com.depromeet.member.dto.request.GenderUpdateRequest;
 import com.depromeet.member.dto.request.NicknameUpdateRequest;
 import com.depromeet.member.dto.response.MemberFindOneResponse;
 import com.depromeet.member.dto.response.MemberGenderResponse;
+import com.depromeet.member.dto.response.MemberSearchResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "사용자(members)")
 public interface MemberApi {
@@ -26,4 +28,9 @@ public interface MemberApi {
     ApiResponse<MemberGenderResponse> updateGender(
             @LoginMember Long memberId,
             @Valid @RequestBody GenderUpdateRequest genderUpdateRequest);
+
+    @Operation(summary = "사용자 검색")
+    ApiResponse<MemberSearchResponse> searchMember(
+            @RequestParam(name = "nameQuery", required = false) String nameQuery,
+            @RequestParam(name = "cursorId", required = false) Long cursorId);
 }
