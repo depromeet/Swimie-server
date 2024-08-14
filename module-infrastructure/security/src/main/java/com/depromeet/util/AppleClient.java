@@ -21,8 +21,6 @@ import java.io.StringReader;
 import java.math.BigInteger;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -41,7 +39,6 @@ import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -67,8 +64,8 @@ public class AppleClient implements ApplePort {
     @Value("${apple.bundle-id}")
     private String appleBundleId;
 
-    @Value("${apple.sign-key-file-path}")
-    private String appleSignKeyFilePath;
+    @Value("${apple.sign-key}")
+    private String appleSignKey;
 
     @Value("${jwt.access-token-expiration-time}")
     private Long ATExpireTime;
@@ -157,10 +154,7 @@ public class AppleClient implements ApplePort {
     }
 
     private PrivateKey getPrivateKey() throws IOException {
-        ClassPathResource resource = new ClassPathResource(appleSignKeyFilePath);
-        String privateKey = new String(Files.readAllBytes(Paths.get(resource.getURI())));
-
-        Reader pemReader = new StringReader(privateKey);
+        Reader pemReader = new StringReader(appleSignKey);
         PEMParser pemParser = new PEMParser(pemReader);
         JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
         PrivateKeyInfo object = (PrivateKeyInfo) pemParser.readObject();
