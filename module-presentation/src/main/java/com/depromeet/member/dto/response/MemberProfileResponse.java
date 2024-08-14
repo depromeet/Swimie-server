@@ -11,7 +11,11 @@ public record MemberProfileResponse(
         Integer followingCount,
         Boolean isMyProfile) {
     public static MemberProfileResponse of(
-            Member member, String profileImageDomain, Integer followerCount, Integer followingCount, Boolean isMyProfile) {
+            Member member,
+            String profileImageDomain,
+            Integer followerCount,
+            Integer followingCount,
+            Boolean isMyProfile) {
         return new MemberProfileResponse(
                 member.getId(),
                 member.getNickname(),
