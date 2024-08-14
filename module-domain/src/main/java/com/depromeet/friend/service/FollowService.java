@@ -1,5 +1,6 @@
 package com.depromeet.friend.service;
 
+import com.depromeet.exception.BadRequestException;
 import com.depromeet.friend.domain.Friend;
 import com.depromeet.friend.domain.vo.FollowSlice;
 import com.depromeet.friend.domain.vo.Follower;
@@ -7,6 +8,7 @@ import com.depromeet.friend.domain.vo.Following;
 import com.depromeet.friend.port.in.FollowUseCase;
 import com.depromeet.friend.port.out.persistence.FriendPersistencePort;
 import com.depromeet.member.domain.Member;
+import com.depromeet.type.friend.FollowErrorType;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,10 @@ public class FollowService implements FollowUseCase {
 
     @Transactional
     public boolean addOrDeleteFollow(Member member, Member following) {
+        if (member.getId().equals(following.getId())) {
+            throw new BadRequestException(FollowErrorType.SELF_FOLLOWING_NOT_ALLOWED);
+        }
+
         Optional<Friend> existedFollowing =
                 friendPersistencePort.findByMemberIdAndFollowingId(
                         member.getId(), following.getId());
