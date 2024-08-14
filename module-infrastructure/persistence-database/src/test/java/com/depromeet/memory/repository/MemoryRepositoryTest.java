@@ -40,7 +40,7 @@ public class MemoryRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        memberRepositoryImpl = new MemberRepository(memberJpaRepository);
+        memberRepositoryImpl = new MemberRepository(queryFactory, memberJpaRepository);
         memoryRepositoryImpl = new MemoryRepository(queryFactory, memoryJpaRepository);
         memoryDetailRepositoryImpl = new MemoryDetailRepository(memoryDetailJpaRepository);
         member = memberRepositoryImpl.save(MemberFixture.make());
