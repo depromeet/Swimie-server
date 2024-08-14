@@ -13,6 +13,7 @@ import com.depromeet.friend.port.in.FollowUseCase;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class FollowFacade {
     private final FollowUseCase followUseCase;
     private final MemberUseCase memberUseCase;
+
+    @Value("${cloud-front.domain}")
+    private String profileImageDomain;
 
     public boolean addFollowing(Long memberId, FollowingRequest followingRequest) {
         Member member = memberUseCase.findById(memberId);
@@ -34,14 +38,14 @@ public class FollowFacade {
         FollowSlice<Following> followingSlice =
                 followUseCase.getFollowingByMemberIdAndCursorId(memberId, cursorId);
 
-        return FollowMapper.toFollowingSliceResponse(followingSlice);
+        return FollowMapper.toFollowingSliceResponse(followingSlice, profileImageDomain);
     }
 
     public FollowSliceResponse<FollowerResponse> findFollowerList(Long memberId, Long cursorId) {
         FollowSlice<Follower> followerSlice =
                 followUseCase.getFollowerByMemberIdAndCursorId(memberId, cursorId);
 
-        return FollowMapper.toFollowerSliceResponses(followerSlice);
+        return FollowMapper.toFollowerSliceResponses(followerSlice, profileImageDomain);
     }
 
     public FollowerFollowingCountResponse countFollowerAndFollowing(Long memberId) {

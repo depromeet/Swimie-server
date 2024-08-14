@@ -11,8 +11,9 @@ import java.util.List;
 
 public class FollowMapper {
     public static FollowSliceResponse<FollowingResponse> toFollowingSliceResponse(
-            FollowSlice<Following> followingSlice) {
-        List<FollowingResponse> followingResponses = getFollowingResponses(followingSlice);
+            FollowSlice<Following> followingSlice, String profileImageDomain) {
+        List<FollowingResponse> followingResponses =
+                getFollowingResponses(followingSlice, profileImageDomain);
 
         return FollowSliceResponse.<FollowingResponse>builder()
                 .contents(followingResponses)
@@ -23,8 +24,9 @@ public class FollowMapper {
     }
 
     public static FollowSliceResponse<FollowerResponse> toFollowerSliceResponses(
-            FollowSlice<Follower> followingSlice) {
-        List<FollowerResponse> followingResponses = getFollowerResponses(followingSlice);
+            FollowSlice<Follower> followingSlice, String profileImageDomain) {
+        List<FollowerResponse> followingResponses =
+                getFollowerResponses(followingSlice, profileImageDomain);
 
         return FollowSliceResponse.<FollowerResponse>builder()
                 .contents(followingResponses)
@@ -35,7 +37,7 @@ public class FollowMapper {
     }
 
     private static List<FollowingResponse> getFollowingResponses(
-            FollowSlice<Following> followingSlice) {
+            FollowSlice<Following> followingSlice, String profileImageDomain) {
         return followingSlice.getFollowContents().stream()
                 .map(
                         following ->
@@ -43,12 +45,17 @@ public class FollowMapper {
                                         .friendId(following.getFriendId())
                                         .memberId(following.getMemberId())
                                         .name(following.getName())
+                                        .profileImageUrl(
+                                                getProfileImageUrl(
+                                                        profileImageDomain,
+                                                        following.getProfileImageUrl()))
+                                        .introduction(following.getIntroduction())
                                         .build())
                 .toList();
     }
 
     private static List<FollowerResponse> getFollowerResponses(
-            FollowSlice<Follower> followingSlice) {
+            FollowSlice<Follower> followingSlice, String profileImageDomain) {
         return followingSlice.getFollowContents().stream()
                 .map(
                         follower ->
@@ -56,9 +63,20 @@ public class FollowMapper {
                                         .friendId(follower.getFriendId())
                                         .memberId(follower.getMemberId())
                                         .name(follower.getName())
+                                        .profileImageUrl(
+                                                getProfileImageUrl(
+                                                        profileImageDomain,
+                                                        follower.getProfileImageUrl()))
                                         .hasFollowedBack(follower.isHasFollowedBack())
                                         .build())
                 .toList();
+    }
+
+    private static String getProfileImageUrl(String profileImageDomain, String profileImageUrl) {
+        if (profileImageUrl != null) {
+            return profileImageDomain + "/" + profileImageUrl;
+        }
+        return null;
     }
 
     public static FollowerFollowingCountResponse toFollowerFollowingCountResponse(

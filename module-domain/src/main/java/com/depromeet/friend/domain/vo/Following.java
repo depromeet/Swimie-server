@@ -1,9 +1,6 @@
 package com.depromeet.friend.domain.vo;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @ToString
@@ -12,15 +9,21 @@ public class Following {
     private Long friendId;
     private Long memberId;
     private String name;
-
-    //    private String profile;
-    //    private String message;
+    private String profileImageUrl;
+    private String introduction;
 
     @Builder
-    public Following(Long friendId, Long memberId, String name) {
+    public Following(
+            Long friendId,
+            Long memberId,
+            String name,
+            String profileImageUrl,
+            String introduction) {
         this.friendId = friendId;
         this.memberId = memberId;
         this.name = name;
+        this.profileImageUrl = profileImageUrl;
+        this.introduction = introduction;
     }
 
     @Override
@@ -31,6 +34,8 @@ public class Following {
         Following following = (Following) o;
         return friendId.equals(following.friendId)
                 && memberId.equals(following.memberId)
-                && name.equals(following.name);
+                && name.equals(following.name)
+                && profileImageUrl.equals(following.profileImageUrl)
+                && introduction.equals(following.introduction);
     }
 }

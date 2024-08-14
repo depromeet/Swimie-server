@@ -23,11 +23,12 @@ public class FollowService implements FollowUseCase {
         Optional<Friend> existedFollowing =
                 friendPersistencePort.findByMemberIdAndFollowingId(
                         member.getId(), following.getId());
-        if (existedFollowing.isPresent()) {
+        if (existedFollowing.isPresent()) { // 이미 존재한다면 팔로잉 삭제
             friendPersistencePort.deleteByMemberIdAndFollowingId(member.getId(), following.getId());
             return false;
         }
 
+        // 팔로잉 추가
         Friend friend = Friend.builder().member(member).following(following).build();
         friendPersistencePort.addFollowing(friend);
         return true;

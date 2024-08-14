@@ -1,5 +1,6 @@
 package com.depromeet.friend.api;
 
+import com.depromeet.config.Logging;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.friend.dto.request.FollowingRequest;
 import com.depromeet.friend.dto.response.FollowSliceResponse;
@@ -19,18 +20,21 @@ public class FollowController implements FollowApi {
     private final FollowFacade followFacade;
 
     @PostMapping
+    @Logging(item = "Following/Follower", action = "POST")
     public ApiResponse<?> addOrDeleteFollowing(
             @LoginMember Long memberId, FollowingRequest followingRequest) {
         boolean hasFollowingAdded = followFacade.addFollowing(memberId, followingRequest);
 
-        if (hasFollowingAdded) {
+        if (hasFollowingAdded) { // 팔로잉 추가
             return ApiResponse.success(FollowSuccessType.ADD_FOLLOWING_SUCCESS);
         }
 
+        // 팔로잉 삭제
         return ApiResponse.success(FollowSuccessType.DELETE_FOLLOWING_SUCCESS);
     }
 
     @GetMapping("/following")
+    @Logging(item = "Following/Follower", action = "GET")
     public ApiResponse<FollowSliceResponse<FollowingResponse>> findFollowingList(
             @LoginMember Long memberId,
             @RequestParam(value = "cursorId", required = false) Long cursorId) {
@@ -41,6 +45,7 @@ public class FollowController implements FollowApi {
     }
 
     @GetMapping("/follower")
+    @Logging(item = "Following/Follower", action = "GET")
     public ApiResponse<FollowSliceResponse<FollowerResponse>> findFollowerList(
             @LoginMember Long memberId,
             @RequestParam(value = "cursorId", required = false) Long cursorId) {
@@ -51,6 +56,7 @@ public class FollowController implements FollowApi {
     }
 
     @GetMapping("/count")
+    @Logging(item = "Following/Follower", action = "GET")
     public ApiResponse<FollowerFollowingCountResponse> getFollowerFollowingCount(
             @LoginMember Long memberId) {
         FollowerFollowingCountResponse response = followFacade.countFollowerAndFollowing(memberId);

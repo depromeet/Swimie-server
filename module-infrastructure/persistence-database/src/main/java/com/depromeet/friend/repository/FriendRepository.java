@@ -9,7 +9,6 @@ import com.depromeet.friend.domain.vo.Following;
 import com.depromeet.friend.entity.FriendEntity;
 import com.depromeet.friend.entity.QFriendEntity;
 import com.depromeet.friend.port.out.persistence.FriendPersistencePort;
-import com.depromeet.member.entity.QMemberEntity;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -72,7 +71,9 @@ public class FriendRepository implements FriendPersistencePort {
                                         Following.class,
                                         friend.id.as("friendId"),
                                         friend.following.id.as("memberId"),
-                                        friend.following.nickname.as("nickname")))
+                                        friend.following.nickname.as("name"),
+                                        friend.following.profileImage.as("profileImageUrl"),
+                                        friend.following.introduction.as("introduction")))
                         .from(friend)
                         .where(friend.member.id.eq(memberId), ltCursorId(cursorId))
                         .limit(pageable.getPageSize() + 1)
@@ -90,7 +91,7 @@ public class FriendRepository implements FriendPersistencePort {
 
         return FollowSlice.<Following>builder()
                 .followContents(content)
-                .pageSize(10)
+                .pageSize(content.size())
                 .cursorId(nextCursorId)
                 .hasNext(hasNext)
                 .build();
@@ -99,9 +100,6 @@ public class FriendRepository implements FriendPersistencePort {
     @Override
     public FollowSlice<Follower> findFollowersByMemberIdAndCursorId(Long memberId, Long cursorId) {
         QFriendEntity subFriend = new QFriendEntity("sub");
-        QMemberEntity member1 = new QMemberEntity("member1");
-        QMemberEntity member2 = new QMemberEntity("member2");
-
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id");
 
         List<Follower> result =
@@ -112,6 +110,8 @@ public class FriendRepository implements FriendPersistencePort {
                                         friend.id.as("friendId"),
                                         friend.member.id.as("memberId"),
                                         friend.member.nickname.as("name"),
+                                        friend.member.profileImage.as("profileImageUrl"),
+                                        friend.member.introduction.as("introduction"),
                                         ExpressionUtils.as(
                                                 JPAExpressions.select(Expressions.constant(true))
                                                         .from(subFriend)
@@ -122,8 +122,6 @@ public class FriendRepository implements FriendPersistencePort {
                                                                         subFriend.member.id)),
                                                 "hasFollowedBack")))
                         .from(friend)
-                        .join(friend.member, member1)
-                        .join(friend.following, member2)
                         .where(friend.following.id.eq(memberId), ltCursorId(cursorId))
                         .limit(pageable.getPageSize() + 1)
                         .orderBy(friend.id.desc())
@@ -140,7 +138,7 @@ public class FriendRepository implements FriendPersistencePort {
 
         return FollowSlice.<Follower>builder()
                 .followContents(result)
-                .pageSize(10)
+                .pageSize(result.size())
                 .cursorId(nextCursorId)
                 .hasNext(hasNext)
                 .build();
