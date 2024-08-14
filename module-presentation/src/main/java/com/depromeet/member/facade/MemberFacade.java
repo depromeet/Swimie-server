@@ -36,6 +36,7 @@ public class MemberFacade {
         Member member = memberUseCase.findById(memberId);
         return MemberProfileResponse.of(
                 member,
+                profileImageDomain,
                 followUseCase.countFollowerByMemberId(memberId),
                 followUseCase.countFollowingByMemberId(memberId),
                 isMyProfile);
