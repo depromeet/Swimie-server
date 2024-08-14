@@ -117,6 +117,13 @@ public class MemberRepository implements MemberPersistencePort {
     }
 
     @Override
+    public Optional<Member> updateProfileImageUrl(Long memberId, String profileImageUrl) {
+        return memberJpaRepository
+                .findById(memberId)
+                .map(memberEntity -> memberEntity.updateProfileImageUrl(profileImageUrl).toModel());
+    }
+
+    @Override
     public Optional<Member> updateGender(Long memberId, MemberGender gender) {
         return memberJpaRepository
                 .findById(memberId)

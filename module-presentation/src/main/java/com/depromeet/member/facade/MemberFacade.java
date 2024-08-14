@@ -41,6 +41,12 @@ public class MemberFacade {
                 isMyProfile);
     }
 
+    public MemberUpdateResponse update(Long memberId, MemberUpdateRequest memberUpdateRequest) {
+        Member member =
+                memberUpdateUseCase.update(MemberMapper.toCommand(memberId, memberUpdateRequest));
+        return MemberUpdateResponse.of(member);
+    }
+
     public Member findOrCreateMemberBy(SocialMemberCommand command) {
         return memberUseCase.findOrCreateMemberBy(command);
     }
@@ -58,10 +64,5 @@ public class MemberFacade {
     public MemberSearchResponse searchByName(String nameQuery, Long cursorId) {
         MemberSearchPage memberSearchPage = memberUseCase.searchMemberByName(nameQuery, cursorId);
         return MemberMapper.toMemberSearchResponse(memberSearchPage, profileImageDomain);
-    }
-
-    public MemberUpdateResponse update(Long memberId, MemberUpdateRequest memberUpdateRequest) {
-        Member member = memberUseCase.update(MemberMapper.toCommand(memberId, memberUpdateRequest));
-        return MemberUpdateResponse.of(member);
     }
 }

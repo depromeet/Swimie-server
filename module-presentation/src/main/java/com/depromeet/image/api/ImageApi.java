@@ -3,7 +3,9 @@ package com.depromeet.image.api;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.image.dto.request.ImageIdsRequest;
 import com.depromeet.image.dto.request.ImageNameRequest;
+import com.depromeet.image.dto.request.ProfileImageNameRequest;
 import com.depromeet.image.dto.response.ImageResponse;
+import com.depromeet.member.annotation.LoginMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
@@ -15,6 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface ImageApi {
     @Operation(summary = "이미지 업로드 PresignedURL 생성")
     ApiResponse<?> getPresignedUrlForUploadImage(@RequestBody ImageNameRequest imageNameRequest);
+
+    @Operation(summary = "프로필 이미지 업로드 PresignedURL 생성")
+    ApiResponse<?> getPresignedUrlForUploadProfileImage(
+            @LoginMember Long memberId,
+            @RequestBody ProfileImageNameRequest profileImageNameRequest);
 
     @Operation(summary = "수영 기록 이미지 수정")
     ApiResponse<?> updateImages(

@@ -97,4 +97,14 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUp
                 .orElseThrow(
                         () -> new InternalServerException(MemberErrorType.UPDATE_GENDER_FAILED));
     }
+
+    @Override
+    public Member updateProfileImageUrl(Long memberId, String profileImageUrl) {
+        return memberPersistencePort
+                .updateProfileImageUrl(memberId, profileImageUrl)
+                .orElseThrow(
+                        () ->
+                                new InternalServerException(
+                                        MemberErrorType.UPDATE_PROFILE_IMAGE_FAILED));
+    }
 }

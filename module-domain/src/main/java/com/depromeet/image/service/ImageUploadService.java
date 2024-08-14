@@ -3,6 +3,7 @@ package com.depromeet.image.service;
 import com.depromeet.exception.BadRequestException;
 import com.depromeet.image.domain.Image;
 import com.depromeet.image.domain.ImageUploadStatus;
+import com.depromeet.image.domain.vo.ImagePresignedUrlNameVo;
 import com.depromeet.image.domain.vo.ImagePresignedUrlVo;
 import com.depromeet.image.port.in.ImageUploadUseCase;
 import com.depromeet.image.port.out.persistence.ImagePersistencePort;
@@ -71,6 +72,23 @@ public class ImageUploadService implements ImageUploadUseCase {
             Long imageId, String imageName, String imagePresignedUrl) {
         return ImagePresignedUrlVo.builder()
                 .imageId(imageId)
+                .imageName(imageName)
+                .presignedUrl(imagePresignedUrl)
+                .build();
+    }
+
+    @Override
+    public ImagePresignedUrlNameVo getPresignedUrlAndSaveProfileImage(String originImageName) {
+        String imageName = ImageNameUtil.createImageName(originImageName, LocalDateTime.now(clock));
+        String contentType = ImageNameUtil.getContentType(originImageName);
+        String imagePresignedUrl = s3ManagePort.getPresignedUrl(imageName, contentType);
+        return getImageUploadResponseDto(originImageName, imageName, imagePresignedUrl);
+    }
+
+    private ImagePresignedUrlNameVo getImageUploadResponseDto(
+            String originImageName, String imageName, String imagePresignedUrl) {
+        return ImagePresignedUrlNameVo.builder()
+                .originImageName(originImageName)
                 .imageName(imageName)
                 .presignedUrl(imagePresignedUrl)
                 .build();

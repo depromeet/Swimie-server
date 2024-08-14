@@ -6,9 +6,12 @@ import com.depromeet.config.Logging;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.image.dto.request.ImageIdsRequest;
 import com.depromeet.image.dto.request.ImageNameRequest;
+import com.depromeet.image.dto.request.ProfileImageNameRequest;
 import com.depromeet.image.dto.response.ImageResponse;
 import com.depromeet.image.dto.response.ImageUploadResponse;
+import com.depromeet.image.dto.response.ProfileImageUploadResponse;
 import com.depromeet.image.facade.ImageFacade;
+import com.depromeet.member.annotation.LoginMember;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +30,19 @@ public class ImageController implements ImageApi {
         List<ImageUploadResponse> imageUploadResponses =
                 imageFacade.getPresignedUrlAndSaveImages(imageNameRequest);
         return ApiResponse.success(GENERATE_PRESIGNED_URL_SUCCESS, imageUploadResponses);
+    }
+
+    @PostMapping("/profile/presigned-url")
+    @Logging(item = "Image", action = "POST")
+    public ApiResponse<?> getPresignedUrlForUploadProfileImage(
+            @LoginMember Long memberId,
+            @RequestBody ProfileImageNameRequest profileImageNameRequest) {
+        ProfileImageUploadResponse imageUploadResponse =
+                imageFacade.getPresignedUrlAndSaveImage(memberId, profileImageNameRequest);
+        if (imageUploadResponse == null) {
+            return ApiResponse.success(DELETE_PROFILE_IMAGE_SUCCESS);
+        }
+        return ApiResponse.success(GENERATE_PRESIGNED_URL_SUCCESS, imageUploadResponse);
     }
 
     @PatchMapping("/memory/{memoryId}")

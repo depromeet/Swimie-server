@@ -118,4 +118,9 @@ public class MemberEntity {
         this.introduction = command.introduction();
         return this;
     }
+
+    public MemberEntity updateProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+        return this;
+    }
 }
