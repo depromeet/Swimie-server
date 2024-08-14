@@ -47,6 +47,7 @@ public class ReactionRepository implements ReactionPersistencePort {
                 .fetchJoin()
                 .where(memoryEq(memoryId))
                 .orderBy(reactionEntity.createdAt.desc())
+                .limit(20)
                 .fetch()
                 .stream()
                 .map(ReactionEntity::toModelWithMemberOnly)
