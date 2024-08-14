@@ -1,5 +1,6 @@
 package com.depromeet.reaction.api;
 
+import com.depromeet.config.Logging;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.reaction.dto.request.ReactionCreateRequest;
@@ -24,12 +25,14 @@ public class ReactionController implements ReactionApi {
     private final ReactionFacade reactionFacade;
 
     @PostMapping("/memory/reaction")
+    @Logging(item = "Reaction", action = "POST")
     public ApiResponse<?> create(
             @LoginMember Long memberId, @Valid @RequestBody ReactionCreateRequest request) {
         reactionFacade.create(memberId, request);
         return ApiResponse.success(ReactionSuccessType.POST_REACTION_SUCCESS);
     }
 
+    @Logging(item = "Reaction", action = "GET")
     @GetMapping("/memory/{memoryId}/reactions")
     public ApiResponse<MemoryReactionResponse> read(
             @PathVariable(value = "memoryId") Long memoryId) {
@@ -38,6 +41,7 @@ public class ReactionController implements ReactionApi {
                 reactionFacade.getReactionsOfMemory(memoryId));
     }
 
+    @Logging(item = "Reaction", action = "GET")
     @GetMapping("/memory/{memoryId}/reactions/detail")
     public ApiResponse<PagingReactionResponse> read(
             @LoginMember Long memberId,
@@ -48,6 +52,7 @@ public class ReactionController implements ReactionApi {
                 reactionFacade.getDetailReactions(memberId, memoryId, cursorId));
     }
 
+    @Logging(item = "Reaction", action = "DELETE")
     @DeleteMapping("/memory/reaction/{reactionId}")
     public ResponseEntity<Void> delete(
             @LoginMember Long memberId, @PathVariable(value = "reactionId") Long reactionId) {
