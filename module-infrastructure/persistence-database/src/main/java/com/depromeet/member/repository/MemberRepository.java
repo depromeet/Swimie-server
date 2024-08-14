@@ -104,7 +104,9 @@ public class MemberRepository implements MemberPersistencePort {
     }
 
     private BooleanExpression ltCursorId(Long cursorId) {
-        if (cursorId == null) return null;
+        if (cursorId == null) {
+            return null;
+        }
 
         return member.id.lt(cursorId);
     }
