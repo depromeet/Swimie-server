@@ -3,6 +3,7 @@ package com.depromeet.mock;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.domain.vo.MemberSearchPage;
+import com.depromeet.member.port.in.command.UpdateMemberCommand;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,5 +88,27 @@ public class FakeMemberRepository implements MemberPersistencePort {
     @Override
     public MemberSearchPage searchByNameQuery(String nameQuery, Long cursorId) {
         return null;
+    }
+
+    @Override
+    public Optional<Member> update(UpdateMemberCommand command) {
+        return findById(command.memberId())
+                .map(
+                        item -> {
+                            Member member = item.update(command);
+                            save(member);
+                            return member;
+                        });
+    }
+
+    @Override
+    public Optional<Member> updateProfileImageUrl(Long memberId, String profileImageUrl) {
+        return findById(memberId)
+                .map(
+                        item -> {
+                            Member member = item.updateProfileImageUrl(profileImageUrl);
+                            save(member);
+                            return member;
+                        });
     }
 }
