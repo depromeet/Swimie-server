@@ -5,7 +5,6 @@ import com.depromeet.friend.domain.vo.Follower;
 import com.depromeet.friend.domain.vo.Following;
 import com.depromeet.friend.dto.request.FollowRequest;
 import com.depromeet.friend.dto.response.FollowSliceResponse;
-import com.depromeet.friend.dto.response.FollowerFollowingCountResponse;
 import com.depromeet.friend.dto.response.FollowerResponse;
 import com.depromeet.friend.dto.response.FollowingResponse;
 import com.depromeet.friend.mapper.FollowMapper;
@@ -46,12 +45,5 @@ public class FollowFacade {
                 followUseCase.getFollowerByMemberIdAndCursorId(memberId, cursorId);
 
         return FollowMapper.toFollowerSliceResponses(followerSlice, profileImageDomain);
-    }
-
-    public FollowerFollowingCountResponse countFollowerAndFollowing(Long memberId) {
-        int followingCount = followUseCase.countFollowingByMemberId(memberId);
-        int followerCount = followUseCase.countFollowerByMemberId(memberId);
-
-        return FollowMapper.toFollowerFollowingCountResponse(followingCount, followerCount);
     }
 }

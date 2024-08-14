@@ -4,7 +4,6 @@ import com.depromeet.friend.domain.vo.FollowSlice;
 import com.depromeet.friend.domain.vo.Follower;
 import com.depromeet.friend.domain.vo.Following;
 import com.depromeet.friend.dto.response.FollowSliceResponse;
-import com.depromeet.friend.dto.response.FollowerFollowingCountResponse;
 import com.depromeet.friend.dto.response.FollowerResponse;
 import com.depromeet.friend.dto.response.FollowingResponse;
 import java.util.List;
@@ -78,13 +77,5 @@ public class FollowMapper {
             return profileImageDomain + "/" + profileImageUrl;
         }
         return null;
-    }
-
-    public static FollowerFollowingCountResponse toFollowerFollowingCountResponse(
-            int followingCount, int followerCount) {
-        return FollowerFollowingCountResponse.builder()
-                .followingCount(followingCount)
-                .followerCount(followerCount)
-                .build();
     }
 }

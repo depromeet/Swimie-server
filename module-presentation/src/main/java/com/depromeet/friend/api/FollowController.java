@@ -4,7 +4,6 @@ import com.depromeet.config.Logging;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.friend.dto.request.FollowRequest;
 import com.depromeet.friend.dto.response.FollowSliceResponse;
-import com.depromeet.friend.dto.response.FollowerFollowingCountResponse;
 import com.depromeet.friend.dto.response.FollowerResponse;
 import com.depromeet.friend.dto.response.FollowingResponse;
 import com.depromeet.friend.facade.FollowFacade;
@@ -53,15 +52,5 @@ public class FollowController implements FollowApi {
                 followFacade.findFollowerList(memberId, cursorId);
 
         return ApiResponse.success(FollowSuccessType.GET_FOLLOWERS_SUCCESS, response);
-    }
-
-    @GetMapping("/count")
-    @Logging(item = "Follower/Following", action = "GET")
-    public ApiResponse<FollowerFollowingCountResponse> getFollowerFollowingCount(
-            @LoginMember Long memberId) {
-        FollowerFollowingCountResponse response = followFacade.countFollowerAndFollowing(memberId);
-
-        return ApiResponse.success(
-                FollowSuccessType.GET_FOLLOWER_FOLLOWING_COUNT_SUCCESS, response);
     }
 }

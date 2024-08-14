@@ -3,7 +3,6 @@ package com.depromeet.friend.api;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.friend.dto.request.FollowRequest;
 import com.depromeet.friend.dto.response.FollowSliceResponse;
-import com.depromeet.friend.dto.response.FollowerFollowingCountResponse;
 import com.depromeet.friend.dto.response.FollowerResponse;
 import com.depromeet.friend.dto.response.FollowingResponse;
 import com.depromeet.member.annotation.LoginMember;
@@ -27,8 +26,4 @@ public interface FollowApi {
     ApiResponse<FollowSliceResponse<FollowerResponse>> findFollowerList(
             @LoginMember Long memberId,
             @RequestParam(value = "cursorId", required = false) Long cursorId);
-
-    @Operation(summary = "팔로워/팔로잉 숫자 조회")
-    ApiResponse<FollowerFollowingCountResponse> getFollowerFollowingCount(
-            @LoginMember Long memberId);
 }
