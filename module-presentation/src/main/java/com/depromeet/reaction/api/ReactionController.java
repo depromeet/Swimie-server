@@ -7,7 +7,6 @@ import com.depromeet.reaction.dto.response.MemoryReactionResponse;
 import com.depromeet.reaction.dto.response.PagingReactionResponse;
 import com.depromeet.reaction.facade.ReactionFacade;
 import com.depromeet.type.reaction.ReactionSuccessType;
-import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class ReactionController {
+public class ReactionController implements ReactionApi {
     private final ReactionFacade reactionFacade;
 
     @PostMapping("/memory/reaction")
@@ -33,8 +32,7 @@ public class ReactionController {
 
     @GetMapping("/memory/{memoryId}/reactions")
     public ApiResponse<MemoryReactionResponse> read(
-            @Parameter(name = "memoryId", example = "1") @PathVariable(value = "memoryId")
-                    Long memoryId) {
+            @PathVariable(value = "memoryId") Long memoryId) {
         return ApiResponse.success(
                 ReactionSuccessType.GET_MEMORY_REACTIONS_SUCCESS,
                 reactionFacade.getReactionsOfMemory(memoryId));
