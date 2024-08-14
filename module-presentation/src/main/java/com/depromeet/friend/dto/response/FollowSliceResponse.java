@@ -43,7 +43,6 @@ public record FollowSliceResponse<T>(
                 .map(
                         following ->
                                 FollowingResponse.builder()
-                                        .friendId(following.getFriendId())
                                         .memberId(following.getMemberId())
                                         .name(following.getName())
                                         .profileImageUrl(
@@ -61,7 +60,6 @@ public record FollowSliceResponse<T>(
                 .map(
                         follower ->
                                 FollowerResponse.builder()
-                                        .friendId(follower.getFriendId())
                                         .memberId(follower.getMemberId())
                                         .name(follower.getName())
                                         .profileImageUrl(

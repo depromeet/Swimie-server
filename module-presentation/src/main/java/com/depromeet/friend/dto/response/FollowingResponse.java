@@ -5,7 +5,7 @@ import lombok.Builder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record FollowingResponse(
-        Long friendId, Long memberId, String name, String profileImageUrl, String introduction) {
+        Long memberId, String name, String profileImageUrl, String introduction) {
     @Builder
     public FollowingResponse {}
 }
