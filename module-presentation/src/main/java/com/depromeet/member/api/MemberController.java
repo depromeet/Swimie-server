@@ -8,6 +8,7 @@ import com.depromeet.member.dto.request.GenderUpdateRequest;
 import com.depromeet.member.dto.request.NicknameUpdateRequest;
 import com.depromeet.member.dto.response.MemberFindOneResponse;
 import com.depromeet.member.dto.response.MemberGenderResponse;
+import com.depromeet.member.dto.response.MemberSearchResponse;
 import com.depromeet.member.facade.MemberFacade;
 import com.depromeet.type.member.MemberSuccessType;
 import jakarta.validation.Valid;
@@ -45,5 +46,15 @@ public class MemberController implements MemberApi {
         Member member = memberFacade.updateGender(memberId, genderUpdateRequest.gender());
         return ApiResponse.success(
                 MemberSuccessType.UPDATE_GENDER_SUCCESS, MemberGenderResponse.of(member));
+    }
+
+    @GetMapping("/search")
+    @Logging(item = "Member", action = "GET")
+    public ApiResponse<MemberSearchResponse> searchMember(
+            @RequestParam(name = "nameQuery", required = false) String nameQuery,
+            @RequestParam(name = "cursorId", required = false) Long cursorId) {
+        MemberSearchResponse response = memberFacade.searchByName(nameQuery, cursorId);
+
+        return ApiResponse.success(MemberSuccessType.SEARCH_MEMBER_SUCCESS, response);
     }
 }

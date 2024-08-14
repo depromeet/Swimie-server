@@ -44,7 +44,9 @@ public class MemberControllerTest extends ControllerTestConfig {
                         MemberRole.USER,
                         "google 1234",
                         3000,
-                        MemberGender.M);
+                        MemberGender.M,
+                        null,
+                        null);
         when(memberFacade.updateNickname(anyLong(), anyString())).thenReturn(member);
 
         mockMvc.perform(

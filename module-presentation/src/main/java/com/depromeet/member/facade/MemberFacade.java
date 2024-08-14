@@ -2,6 +2,9 @@ package com.depromeet.member.facade;
 
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
+import com.depromeet.member.domain.vo.MemberSearchPage;
+import com.depromeet.member.dto.response.MemberSearchResponse;
+import com.depromeet.member.mapper.MemberMapper;
 import com.depromeet.member.port.in.command.SocialMemberCommand;
 import com.depromeet.member.port.in.usecase.MemberUpdateUseCase;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
@@ -33,5 +36,11 @@ public class MemberFacade {
         MemberGender newGender =
                 gender.equals(MemberGender.M.getValue()) ? MemberGender.M : MemberGender.W;
         return memberUpdateUseCase.updateGender(memberId, newGender);
+    }
+
+    public MemberSearchResponse searchByName(String nameQuery, Long cursorId) {
+        MemberSearchPage memberSearchPage = memberUseCase.searchMemberByName(nameQuery, cursorId);
+
+        return MemberMapper.toMemberSearchResponse(memberSearchPage);
     }
 }

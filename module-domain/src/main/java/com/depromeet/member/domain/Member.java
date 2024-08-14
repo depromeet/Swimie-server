@@ -12,6 +12,8 @@ public class Member {
     private String providerId;
     private Integer goal;
     private MemberGender gender;
+    private String profileImage;
+    private String introduction;
 
     @Builder
     public Member(
@@ -21,7 +23,9 @@ public class Member {
             MemberRole role,
             String providerId,
             Integer goal,
-            MemberGender gender) {
+            MemberGender gender,
+            String profileImage,
+            String introduction) {
         this.id = id;
         this.nickname = nickname;
         this.email = email;
@@ -29,6 +33,8 @@ public class Member {
         this.providerId = providerId;
         this.goal = goal;
         this.gender = gender;
+        this.profileImage = profileImage;
+        this.introduction = introduction;
     }
 
     public Member updateGoal(Integer goal) {
