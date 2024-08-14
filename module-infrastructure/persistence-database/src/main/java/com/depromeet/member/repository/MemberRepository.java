@@ -1,12 +1,18 @@
 package com.depromeet.member.repository;
 
+import com.depromeet.friend.entity.QFriendEntity;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
+import com.depromeet.member.domain.vo.MemberSearchInfo;
 import com.depromeet.member.domain.vo.MemberSearchPage;
 import com.depromeet.member.entity.MemberEntity;
 import com.depromeet.member.entity.QMemberEntity;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,30 +71,44 @@ public class MemberRepository implements MemberPersistencePort {
     }
 
     @Override
-    public MemberSearchPage searchByNameQuery(String nameQuery, Long cursorId) {
+    public MemberSearchPage searchByNameQuery(Long memberId, String nameQuery, Long cursorId) {
+        QFriendEntity friend = QFriendEntity.friendEntity;
+
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id");
 
-        List<MemberEntity> contents =
+        List<MemberSearchInfo> contents =
                 queryFactory
-                        .selectFrom(member)
+                        .select(
+                                Projections.constructor(
+                                        MemberSearchInfo.class,
+                                        member.id.as("memberId"),
+                                        member.nickname.as("nickname"),
+                                        member.profileImageUrl.as("profileImageUrl"),
+                                        member.introduction.as("introduction"),
+                                        ExpressionUtils.as(
+                                                JPAExpressions.select(Expressions.constant(true))
+                                                        .from(friend)
+                                                        .where(
+                                                                friend.following.id.eq(member.id),
+                                                                friend.member.id.eq(memberId)),
+                                                "hasFollowed")))
+                        .from(member)
                         .where(likeName(nameQuery), ltCursorId(cursorId))
                         .limit(pageable.getPageSize() + 1)
                         .orderBy(member.id.desc())
                         .fetch();
 
-        List<Member> result = contents.stream().map(MemberEntity::toModel).toList();
-
         boolean hasNext = false;
         Long nextCursorId = null;
-        if (result.size() > pageable.getPageSize()) {
-            result = new ArrayList<>(result);
-            result.removeLast();
+        if (contents.size() > pageable.getPageSize()) {
+            contents = new ArrayList<>(contents);
+            contents.removeLast();
             hasNext = true;
-            nextCursorId = result.getLast().getId();
+            nextCursorId = contents.getLast().getMemberId();
         }
         return MemberSearchPage.builder()
-                .members(result)
-                .pageSize(result.size())
+                .members(contents)
+                .pageSize(contents.size())
                 .cursorId(nextCursorId)
                 .hasNext(hasNext)
                 .build();

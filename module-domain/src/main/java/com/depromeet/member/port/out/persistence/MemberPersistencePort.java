@@ -22,5 +22,5 @@ public interface MemberPersistencePort {
 
     void deleteById(Long id);
 
-    MemberSearchPage searchByNameQuery(String nameQuery, Long cursorId);
+    MemberSearchPage searchByNameQuery(Long memberId, String nameQuery, Long cursorId);
 }

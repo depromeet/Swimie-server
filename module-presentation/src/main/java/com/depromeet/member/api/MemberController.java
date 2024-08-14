@@ -51,9 +51,10 @@ public class MemberController implements MemberApi {
     @GetMapping("/search")
     @Logging(item = "Member", action = "GET")
     public ApiResponse<MemberSearchResponse> searchMember(
+            @LoginMember Long memberId,
             @RequestParam(name = "nameQuery", required = false) String nameQuery,
             @RequestParam(name = "cursorId", required = false) Long cursorId) {
-        MemberSearchResponse response = memberFacade.searchByName(nameQuery, cursorId);
+        MemberSearchResponse response = memberFacade.searchByName(memberId, nameQuery, cursorId);
         return ApiResponse.success(MemberSuccessType.SEARCH_MEMBER_SUCCESS, response);
     }
 }

@@ -28,21 +28,20 @@ public record MemberSearchResponse(
 
     private static List<MemberInfoResponse> getMemberInfoResponses(
             MemberSearchPage memberSearchPage, String profileImageDomain) {
-        List<MemberInfoResponse> contents =
-                memberSearchPage.getMembers().stream()
-                        .map(
-                                member ->
-                                        MemberInfoResponse.builder()
-                                                .memberId(member.getId())
-                                                .nickname(member.getNickname())
-                                                .profileImageUrl(
-                                                        getProfileImageUrl(
-                                                                profileImageDomain,
-                                                                member.getProfileImageUrl()))
-                                                .introduction(member.getIntroduction())
-                                                .build())
-                        .toList();
-        return contents;
+        return memberSearchPage.getMembers().stream()
+                .map(
+                        member ->
+                                MemberInfoResponse.builder()
+                                        .memberId(member.getMemberId())
+                                        .nickname(member.getNickname())
+                                        .profileImageUrl(
+                                                getProfileImageUrl(
+                                                        profileImageDomain,
+                                                        member.getProfileImageUrl()))
+                                        .introduction(member.getIntroduction())
+                                        .hasFollowed(member.isHasFollowed())
+                                        .build())
+                .toList();
     }
 
     private static String getProfileImageUrl(String profileImageDomain, String profileImageUrl) {
