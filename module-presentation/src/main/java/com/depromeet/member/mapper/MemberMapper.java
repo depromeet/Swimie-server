@@ -18,7 +18,6 @@ public class MemberMapper {
             MemberSearchPage memberSearchPage, String profileImageDomain) {
         List<MemberInfoResponse> contents =
                 getMemberInfoResponses(memberSearchPage, profileImageDomain);
-
         return MemberSearchResponse.builder()
                 .memberInfoResponses(contents)
                 .pageSize(memberSearchPage.getPageSize())
