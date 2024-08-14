@@ -10,7 +10,7 @@ public class MemoryValidator {
         }
     }
 
-    public static Boolean validateMyMemory(Long memoryMemberId, Long requestMemberId) {
+    public static Boolean isMyMemory(Long memoryMemberId, Long requestMemberId) {
         return memoryMemberId.equals(requestMemberId);
     }
 }
