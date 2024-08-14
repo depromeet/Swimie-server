@@ -44,7 +44,6 @@ public class MemberFacade {
 
     public MemberSearchResponse searchByName(String nameQuery, Long cursorId) {
         MemberSearchPage memberSearchPage = memberUseCase.searchMemberByName(nameQuery, cursorId);
-
         return MemberMapper.toMemberSearchResponse(memberSearchPage, profileImageDomain);
     }
 }

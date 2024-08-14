@@ -61,7 +61,6 @@ public class FriendRepository implements FriendPersistencePort {
                                         friend.member.id.eq(memberId),
                                         friend.following.id.eq(followingId))
                                 .fetchFirst());
-
         return friendEntity.map(FriendEntity::toModel);
     }
 
@@ -102,7 +101,6 @@ public class FriendRepository implements FriendPersistencePort {
             hasNext = true;
             nextCursorId = content.getLast().getFriendId();
         }
-
         return FollowSlice.<Following>builder()
                 .followContents(content)
                 .pageSize(content.size())
@@ -149,7 +147,6 @@ public class FriendRepository implements FriendPersistencePort {
             hasNext = true;
             nextCursorId = result.getLast().getFriendId();
         }
-
         return FollowSlice.<Follower>builder()
                 .followContents(result)
                 .pageSize(result.size())
@@ -184,7 +181,6 @@ public class FriendRepository implements FriendPersistencePort {
         if (cursorId == null) {
             return null;
         }
-
         return friendEntity.id.lt(cursorId);
     }
 }

@@ -13,7 +13,6 @@ public class FollowMapper {
             FollowSlice<Following> followingSlice, String profileImageDomain) {
         List<FollowingResponse> followingResponses =
                 getFollowingResponses(followingSlice, profileImageDomain);
-
         return FollowSliceResponse.<FollowingResponse>builder()
                 .contents(followingResponses)
                 .pageSize(followingSlice.getPageSize())
@@ -26,7 +25,6 @@ public class FollowMapper {
             FollowSlice<Follower> followingSlice, String profileImageDomain) {
         List<FollowerResponse> followingResponses =
                 getFollowerResponses(followingSlice, profileImageDomain);
-
         return FollowSliceResponse.<FollowerResponse>builder()
                 .contents(followingResponses)
                 .pageSize(followingSlice.getPageSize())
@@ -76,7 +74,6 @@ public class FollowMapper {
         if (profileImageUrl != null) {
             return profileImageDomain + "/" + profileImageUrl;
         }
-
         return null;
     }
 }

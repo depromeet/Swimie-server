@@ -54,7 +54,6 @@ public class MemberController implements MemberApi {
             @RequestParam(name = "nameQuery", required = false) String nameQuery,
             @RequestParam(name = "cursorId", required = false) Long cursorId) {
         MemberSearchResponse response = memberFacade.searchByName(nameQuery, cursorId);
-
         return ApiResponse.success(MemberSuccessType.SEARCH_MEMBER_SUCCESS, response);
     }
 }

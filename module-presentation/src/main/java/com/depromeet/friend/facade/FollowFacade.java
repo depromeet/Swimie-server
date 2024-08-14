@@ -29,21 +29,18 @@ public class FollowFacade {
     public boolean addOrDeleteFollow(Long memberId, FollowRequest followRequest) {
         Member member = memberUseCase.findById(memberId);
         Member following = memberUseCase.findById(followRequest.followingId());
-
         return followUseCase.addOrDeleteFollow(member, following);
     }
 
     public FollowSliceResponse<FollowingResponse> findFollowingList(Long memberId, Long cursorId) {
         FollowSlice<Following> followingSlice =
                 followUseCase.getFollowingByMemberIdAndCursorId(memberId, cursorId);
-
         return FollowMapper.toFollowingSliceResponse(followingSlice, profileImageDomain);
     }
 
     public FollowSliceResponse<FollowerResponse> findFollowerList(Long memberId, Long cursorId) {
         FollowSlice<Follower> followerSlice =
                 followUseCase.getFollowerByMemberIdAndCursorId(memberId, cursorId);
-
         return FollowMapper.toFollowerSliceResponses(followerSlice, profileImageDomain);
     }
 }

@@ -18,7 +18,6 @@ public class MemberMapper {
             MemberSearchPage memberSearchPage, String profileImageDomain) {
         List<MemberInfoResponse> contents =
                 getMemberInfoResponses(memberSearchPage, profileImageDomain);
-
         return MemberSearchResponse.builder()
                 .memberInfoResponses(contents)
                 .pageSize(memberSearchPage.getPageSize())
@@ -43,7 +42,6 @@ public class MemberMapper {
                                                 .introduction(member.getIntroduction())
                                                 .build())
                         .toList();
-
         return contents;
     }
 
@@ -51,7 +49,6 @@ public class MemberMapper {
         if (profileImageUrl == null) {
             return null;
         }
-
         return profileImageDomain + "/" + profileImageUrl;
     }
 }

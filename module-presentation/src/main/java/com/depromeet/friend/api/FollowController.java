@@ -24,11 +24,9 @@ public class FollowController implements FollowApi {
             @LoginMember Long memberId, FollowRequest followRequest) {
         boolean hasFollowAdded = followFacade.addOrDeleteFollow(memberId, followRequest);
 
-        if (hasFollowAdded) { // 팔로잉 추가
+        if (hasFollowAdded) {
             return ApiResponse.success(FollowSuccessType.ADD_FOLLOWING_SUCCESS);
         }
-
-        // 팔로잉 삭제
         return ApiResponse.success(FollowSuccessType.DELETE_FOLLOWING_SUCCESS);
     }
 
@@ -39,7 +37,6 @@ public class FollowController implements FollowApi {
             @RequestParam(value = "cursorId", required = false) Long cursorId) {
         FollowSliceResponse<FollowingResponse> response =
                 followFacade.findFollowingList(memberId, cursorId);
-
         return ApiResponse.success(FollowSuccessType.GET_FOLLOWINGS_SUCCESS, response);
     }
 
@@ -50,7 +47,6 @@ public class FollowController implements FollowApi {
             @RequestParam(value = "cursorId", required = false) Long cursorId) {
         FollowSliceResponse<FollowerResponse> response =
                 followFacade.findFollowerList(memberId, cursorId);
-
         return ApiResponse.success(FollowSuccessType.GET_FOLLOWERS_SUCCESS, response);
     }
 }

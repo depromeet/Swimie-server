@@ -72,7 +72,6 @@ public class FriendRepositoryTest {
 
     private Long saveFriend() {
         Friend friend = Friend.builder().member(member).following(following).build();
-
         return friendRepository.addFollow(friend).getId();
     }
 
@@ -232,7 +231,6 @@ public class FriendRepositoryTest {
                 friendRepository.addFollow(followedBack);
             }
         }
-
         return friends;
     }
 

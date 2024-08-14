@@ -38,7 +38,6 @@ public class S3ImageManager implements S3ManagePort {
 
         PresignedPutObjectRequest presignedPutObjectRequest =
                 s3Presigner.presignPutObject(putObjectPresignRequest);
-
         return presignedPutObjectRequest.url().toString();
     }
 
@@ -46,7 +45,6 @@ public class S3ImageManager implements S3ManagePort {
     public void deleteImageFromS3(String imageName) {
         DeleteObjectRequest deleteObjectRequest =
                 DeleteObjectRequest.builder().bucket(bucketName).key(imageName).build();
-
         s3Client.deleteObject(deleteObjectRequest);
     }
 }

@@ -86,7 +86,6 @@ public class MemberRepository implements MemberPersistencePort {
             hasNext = true;
             nextCursorId = result.getLast().getId();
         }
-
         return MemberSearchPage.builder()
                 .members(result)
                 .pageSize(result.size())
@@ -99,7 +98,6 @@ public class MemberRepository implements MemberPersistencePort {
         if (nameQuery == null) {
             return null;
         }
-
         return member.nickname.contains(nameQuery);
     }
 
@@ -107,7 +105,6 @@ public class MemberRepository implements MemberPersistencePort {
         if (cursorId == null) {
             return null;
         }
-
         return member.id.lt(cursorId);
     }
 
