@@ -8,6 +8,15 @@ import java.util.List;
 public record MemoryReactionResponse(List<ReactionDetailResponse> reactions) {
     public static MemoryReactionResponse from(List<Reaction> reactionDomains) {
         return new MemoryReactionResponse(
-                reactionDomains.stream().map(ReactionDetailResponse::from).toList());
+                reactionDomains.stream()
+                        .map(
+                                it ->
+                                        new ReactionDetailResponse(
+                                                it.getId(),
+                                                it.getEmoji(),
+                                                it.getComment(),
+                                                it.getMember().getNickname(),
+                                                null))
+                        .toList());
     }
 }
