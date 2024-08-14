@@ -9,6 +9,7 @@ import com.depromeet.friend.domain.vo.Following;
 import com.depromeet.friend.entity.FriendEntity;
 import com.depromeet.friend.entity.QFriendEntity;
 import com.depromeet.friend.port.out.persistence.FriendPersistencePort;
+import com.depromeet.member.entity.QMemberEntity;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -45,8 +46,21 @@ public class FriendRepository implements FriendPersistencePort {
 
     @Override
     public Optional<Friend> findByMemberIdAndFollowingId(Long memberId, Long followingId) {
+        QMemberEntity member1 = new QMemberEntity("member1");
+        QMemberEntity member2 = new QMemberEntity("member2");
+
         Optional<FriendEntity> friendEntity =
-                friendJpaRepository.findByMemberAndFollowing(memberId, followingId);
+                Optional.ofNullable(
+                        queryFactory
+                                .selectFrom(friend)
+                                .join(friend.member, member1)
+                                .fetchJoin()
+                                .join(friend.following, member2)
+                                .fetchJoin()
+                                .where(
+                                        friend.member.id.eq(memberId),
+                                        friend.following.id.eq(followingId))
+                                .fetchFirst());
 
         return friendEntity.map(FriendEntity::toModel);
     }
