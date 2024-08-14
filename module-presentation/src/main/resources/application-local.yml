@@ -15,11 +15,6 @@ spring:
   sql:
     init:
       mode: never
-  data:
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-      password: ${REDIS_PW}
   servlet:
     multipart:
       enabled: true

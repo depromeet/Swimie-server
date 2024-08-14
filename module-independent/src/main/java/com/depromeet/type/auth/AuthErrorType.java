@@ -20,7 +20,11 @@ public enum AuthErrorType implements ErrorType {
     OAUTH_ACCESS_TOKEN_NOT_FOUND("AUTH_16", "OAUTH ACCESS 토큰을 찾을 수 없습니다"),
     INVALID_OAUTH_ACCESS_TOKEN("AUTH_17", "OAUTH ACCESS 토큰이 올바르지 않습니다"),
     OAUTH_REFRESH_TOKEN_NOT_FOUND("AUTH_18", "OAUTH REFRESH 토큰을 찾을 수 없습니다"),
-    REVOKE_GOOGLE_ACCOUNT_FAILED("AUTH_19", "GOOGLE 계정 연결 끊기에 실패하였습니다");
+    REVOKE_GOOGLE_ACCOUNT_FAILED("AUTH_19", "GOOGLE 계정 연결 끊기에 실패하였습니다"),
+    INVALID_APPLE_KEY_REQUEST("AUTH_20", "APPLE 공개키 요청에 실패하였습니다"),
+    GENERATE_APPLE_PUBLIC_KEY_FAILED("AUTH_21", "APPLE 공개키 생성에 실패하였습니다"),
+    CANNOT_FIND_MATCH_JWK("AUTH_22", "일치하는 APPLE JWK 를 찾을 수 없습니다"),
+    JWT_PARSE_FAILED("AUTH_23", "JWT PARSING 에 실패하였습니다");
 
     private final String code;
     private final String message;

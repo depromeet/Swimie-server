@@ -1,5 +1,6 @@
 package com.depromeet.auth.api;
 
+import com.depromeet.auth.dto.request.AppleLoginRequest;
 import com.depromeet.auth.dto.request.GoogleLoginRequest;
 import com.depromeet.auth.dto.request.KakaoLoginRequest;
 import com.depromeet.auth.dto.response.JwtAccessTokenResponse;
@@ -37,6 +38,13 @@ public class AuthController implements AuthApi {
         String origin = getOrigin(httpServletRequest);
         return ApiResponse.success(
                 AuthSuccessType.LOGIN_SUCCESS, authFacade.loginByKakao(request, origin));
+    }
+
+    @PostMapping("/login/apple")
+    @Logging(item = "Auth", action = "POST")
+    public ApiResponse<JwtTokenResponse> loginByApple(
+            @Valid @RequestBody final AppleLoginRequest request) {
+        return ApiResponse.success(AuthSuccessType.LOGIN_SUCCESS, authFacade.loginByApple(request));
     }
 
     @PostMapping("/login/refresh")

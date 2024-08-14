@@ -8,5 +8,7 @@ public interface SocialUseCase {
 
     KakaoAccountProfile getKakaoAccountProfile(String code, String origin);
 
+    AccountProfileResponse getAppleAccountToken(String code, String origin);
+
     void revokeAccount(String accountType);
 }

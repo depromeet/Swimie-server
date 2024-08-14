@@ -54,6 +54,7 @@ public class GoogleClient implements GooglePort {
     private final RestTemplate restTemplate;
     private final SocialRedisPersistencePort socialRedisPersistencePort;
 
+    @Override
     public AccountProfileResponse getGoogleAccountProfile(final String code, String origin) {
         final GoogleTokenResponse googleTokenResponse = requestAccessToken(code, origin);
         String accessToken = googleTokenResponse.getAccessToken();
