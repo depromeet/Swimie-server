@@ -73,7 +73,7 @@ public class FriendRepositoryTest {
     private Long saveFriend() {
         Friend friend = Friend.builder().member(member).following(following).build();
 
-        return friendRepository.addFollowing(friend).getId();
+        return friendRepository.addFollow(friend).getId();
     }
 
     @Test
@@ -212,7 +212,7 @@ public class FriendRepositoryTest {
 
         for (Member following : followings) {
             Friend friend = Friend.builder().member(member).following(following).build();
-            friend = friendRepository.addFollowing(friend);
+            friend = friendRepository.addFollow(friend);
             friends.add(friend);
         }
         return friends;
@@ -223,7 +223,7 @@ public class FriendRepositoryTest {
 
         for (Member follower : followers) {
             Friend friend = Friend.builder().member(follower).following(member).build();
-            friend = friendRepository.addFollowing(friend);
+            friend = friendRepository.addFollow(friend);
             friends.add(friend);
         }
 
@@ -231,7 +231,7 @@ public class FriendRepositoryTest {
         for (Member follower : followers) {
             if (follower.getId() % 2 == 0) {
                 Friend followedBack = Friend.builder().member(member).following(follower).build();
-                friendRepository.addFollowing(followedBack);
+                friendRepository.addFollow(followedBack);
             }
         }
         return friends;

@@ -1,7 +1,7 @@
 package com.depromeet.friend.api;
 
 import com.depromeet.dto.response.ApiResponse;
-import com.depromeet.friend.dto.request.FollowingRequest;
+import com.depromeet.friend.dto.request.FollowRequest;
 import com.depromeet.friend.dto.response.FollowSliceResponse;
 import com.depromeet.friend.dto.response.FollowerFollowingCountResponse;
 import com.depromeet.friend.dto.response.FollowerResponse;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Tag(name = "팔로워/팔로잉(follower/following)")
 public interface FollowApi {
     @Operation(summary = "팔로잉 추가")
-    ApiResponse<?> addOrDeleteFollowing(
-            @LoginMember Long memberId, @RequestBody FollowingRequest followingRequest);
+    ApiResponse<?> addOrDeleteFollow(
+            @LoginMember Long memberId, @RequestBody FollowRequest followRequest);
 
     @Operation(summary = "팔로잉 리스트 조회")
     ApiResponse<FollowSliceResponse<FollowingResponse>> findFollowingList(

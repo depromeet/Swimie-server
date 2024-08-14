@@ -2,7 +2,7 @@ package com.depromeet.friend.api;
 
 import com.depromeet.config.Logging;
 import com.depromeet.dto.response.ApiResponse;
-import com.depromeet.friend.dto.request.FollowingRequest;
+import com.depromeet.friend.dto.request.FollowRequest;
 import com.depromeet.friend.dto.response.FollowSliceResponse;
 import com.depromeet.friend.dto.response.FollowerFollowingCountResponse;
 import com.depromeet.friend.dto.response.FollowerResponse;
@@ -20,12 +20,12 @@ public class FollowController implements FollowApi {
     private final FollowFacade followFacade;
 
     @PostMapping
-    @Logging(item = "Following/Follower", action = "POST")
-    public ApiResponse<?> addOrDeleteFollowing(
-            @LoginMember Long memberId, FollowingRequest followingRequest) {
-        boolean hasFollowingAdded = followFacade.addFollowing(memberId, followingRequest);
+    @Logging(item = "Follower/Following", action = "POST")
+    public ApiResponse<?> addOrDeleteFollow(
+            @LoginMember Long memberId, FollowRequest followRequest) {
+        boolean hasFollowAdded = followFacade.addOrDeleteFollow(memberId, followRequest);
 
-        if (hasFollowingAdded) { // 팔로잉 추가
+        if (hasFollowAdded) { // 팔로잉 추가
             return ApiResponse.success(FollowSuccessType.ADD_FOLLOWING_SUCCESS);
         }
 
@@ -34,7 +34,7 @@ public class FollowController implements FollowApi {
     }
 
     @GetMapping("/following")
-    @Logging(item = "Following/Follower", action = "GET")
+    @Logging(item = "Follower/Following", action = "GET")
     public ApiResponse<FollowSliceResponse<FollowingResponse>> findFollowingList(
             @LoginMember Long memberId,
             @RequestParam(value = "cursorId", required = false) Long cursorId) {
@@ -45,7 +45,7 @@ public class FollowController implements FollowApi {
     }
 
     @GetMapping("/follower")
-    @Logging(item = "Following/Follower", action = "GET")
+    @Logging(item = "Follower/Following", action = "GET")
     public ApiResponse<FollowSliceResponse<FollowerResponse>> findFollowerList(
             @LoginMember Long memberId,
             @RequestParam(value = "cursorId", required = false) Long cursorId) {
@@ -56,7 +56,7 @@ public class FollowController implements FollowApi {
     }
 
     @GetMapping("/count")
-    @Logging(item = "Following/Follower", action = "GET")
+    @Logging(item = "Follower/Following", action = "GET")
     public ApiResponse<FollowerFollowingCountResponse> getFollowerFollowingCount(
             @LoginMember Long memberId) {
         FollowerFollowingCountResponse response = followFacade.countFollowerAndFollowing(memberId);

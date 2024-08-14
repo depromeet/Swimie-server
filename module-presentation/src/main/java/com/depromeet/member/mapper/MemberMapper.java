@@ -36,10 +36,10 @@ public class MemberMapper {
                                         MemberInfoResponse.builder()
                                                 .memberId(member.getId())
                                                 .nickname(member.getNickname())
-                                                .profile(
+                                                .profileImageUrl(
                                                         profileImageDomain
                                                                 + "/"
-                                                                + member.getProfileImage())
+                                                                + member.getProfileImageUrl())
                                                 .introduction(member.getIntroduction())
                                                 .build())
                         .toList();

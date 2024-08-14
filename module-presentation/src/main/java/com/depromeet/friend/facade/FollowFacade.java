@@ -3,7 +3,7 @@ package com.depromeet.friend.facade;
 import com.depromeet.friend.domain.vo.FollowSlice;
 import com.depromeet.friend.domain.vo.Follower;
 import com.depromeet.friend.domain.vo.Following;
-import com.depromeet.friend.dto.request.FollowingRequest;
+import com.depromeet.friend.dto.request.FollowRequest;
 import com.depromeet.friend.dto.response.FollowSliceResponse;
 import com.depromeet.friend.dto.response.FollowerFollowingCountResponse;
 import com.depromeet.friend.dto.response.FollowerResponse;
@@ -27,11 +27,11 @@ public class FollowFacade {
     @Value("${cloud-front.domain}")
     private String profileImageDomain;
 
-    public boolean addFollowing(Long memberId, FollowingRequest followingRequest) {
+    public boolean addOrDeleteFollow(Long memberId, FollowRequest followRequest) {
         Member member = memberUseCase.findById(memberId);
-        Member following = memberUseCase.findById(followingRequest.followingId());
+        Member following = memberUseCase.findById(followRequest.followingId());
 
-        return followUseCase.addOrDeleteFollowing(member, following);
+        return followUseCase.addOrDeleteFollow(member, following);
     }
 
     public FollowSliceResponse<FollowingResponse> findFollowingList(Long memberId, Long cursorId) {

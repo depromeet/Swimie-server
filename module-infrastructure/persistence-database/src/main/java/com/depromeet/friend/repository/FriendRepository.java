@@ -33,7 +33,7 @@ public class FriendRepository implements FriendPersistencePort {
     private QFriendEntity friend = QFriendEntity.friendEntity;
 
     @Override
-    public Friend addFollowing(Friend friend) {
+    public Friend addFollow(Friend friend) {
         FriendEntity friendEntity = friendJpaRepository.save(FriendEntity.from(friend));
         return friendEntity.toModel();
     }
@@ -72,7 +72,7 @@ public class FriendRepository implements FriendPersistencePort {
                                         friend.id.as("friendId"),
                                         friend.following.id.as("memberId"),
                                         friend.following.nickname.as("name"),
-                                        friend.following.profileImage.as("profileImageUrl"),
+                                        friend.following.profileImageUrl.as("profileImageUrl"),
                                         friend.following.introduction.as("introduction")))
                         .from(friend)
                         .where(friend.member.id.eq(memberId), ltCursorId(cursorId))
@@ -110,7 +110,7 @@ public class FriendRepository implements FriendPersistencePort {
                                         friend.id.as("friendId"),
                                         friend.member.id.as("memberId"),
                                         friend.member.nickname.as("name"),
-                                        friend.member.profileImage.as("profileImageUrl"),
+                                        friend.member.profileImageUrl.as("profileImageUrl"),
                                         friend.member.introduction.as("introduction"),
                                         ExpressionUtils.as(
                                                 JPAExpressions.select(Expressions.constant(true))

@@ -12,7 +12,7 @@ public class Member {
     private String providerId;
     private Integer goal;
     private MemberGender gender;
-    private String profileImage;
+    private String profileImageUrl;
     private String introduction;
 
     @Builder
@@ -24,7 +24,7 @@ public class Member {
             String providerId,
             Integer goal,
             MemberGender gender,
-            String profileImage,
+            String profileImageUrl,
             String introduction) {
         this.id = id;
         this.nickname = nickname;
@@ -33,7 +33,7 @@ public class Member {
         this.providerId = providerId;
         this.goal = goal;
         this.gender = gender;
-        this.profileImage = profileImage;
+        this.profileImageUrl = profileImageUrl;
         this.introduction = introduction;
     }
 

@@ -19,7 +19,7 @@ public class FollowService implements FollowUseCase {
     private final FriendPersistencePort friendPersistencePort;
 
     @Transactional
-    public boolean addOrDeleteFollowing(Member member, Member following) {
+    public boolean addOrDeleteFollow(Member member, Member following) {
         Optional<Friend> existedFollowing =
                 friendPersistencePort.findByMemberIdAndFollowingId(
                         member.getId(), following.getId());
@@ -30,7 +30,7 @@ public class FollowService implements FollowUseCase {
 
         // 팔로잉 추가
         Friend friend = Friend.builder().member(member).following(following).build();
-        friendPersistencePort.addFollowing(friend);
+        friendPersistencePort.addFollow(friend);
         return true;
     }
 

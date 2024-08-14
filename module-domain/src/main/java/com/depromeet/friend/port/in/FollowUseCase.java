@@ -6,7 +6,7 @@ import com.depromeet.friend.domain.vo.Following;
 import com.depromeet.member.domain.Member;
 
 public interface FollowUseCase {
-    boolean addOrDeleteFollowing(Member member, Member following);
+    boolean addOrDeleteFollow(Member member, Member following);
 
     FollowSlice<Following> getFollowingByMemberIdAndCursorId(Long memberId, Long cursorId);
 

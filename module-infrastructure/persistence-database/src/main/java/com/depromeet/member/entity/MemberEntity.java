@@ -37,7 +37,7 @@ public class MemberEntity {
     @Column(columnDefinition = "char", nullable = false)
     private MemberGender gender;
 
-    @Column private String profileImage;
+    @Column private String profileImageUrl;
 
     @Column private String introduction;
 
@@ -50,7 +50,7 @@ public class MemberEntity {
             String providerId,
             Integer goal,
             MemberGender gender,
-            String profileImage,
+            String profileImageUrl,
             String introduction) {
         this.id = id;
         this.nickname = nickname;
@@ -59,7 +59,7 @@ public class MemberEntity {
         this.providerId = providerId;
         this.goal = goal;
         this.gender = gender;
-        this.profileImage = profileImage;
+        this.profileImageUrl = profileImageUrl;
         this.introduction = introduction;
     }
 
@@ -78,7 +78,7 @@ public class MemberEntity {
                 .providerId(member.getProviderId())
                 .goal(member.getGoal())
                 .gender(member.getGender())
-                .profileImage(member.getProfileImage())
+                .profileImageUrl(member.getProfileImageUrl())
                 .introduction(member.getIntroduction())
                 .build();
     }
@@ -92,7 +92,7 @@ public class MemberEntity {
                 .providerId(providerId)
                 .goal(goal)
                 .gender(gender)
-                .profileImage(profileImage)
+                .profileImageUrl(profileImageUrl)
                 .introduction(introduction)
                 .build();
     }

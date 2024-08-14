@@ -7,7 +7,7 @@ import com.depromeet.friend.domain.vo.Following;
 import java.util.Optional;
 
 public interface FriendPersistencePort {
-    Friend addFollowing(Friend friend);
+    Friend addFollow(Friend friend);
 
     Optional<Friend> findById(Long id);
 
