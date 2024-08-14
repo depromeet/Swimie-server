@@ -7,6 +7,11 @@ spring:
     url: ${MYSQL_URL} # 환경변수에 값 추가하시면 됩니다.
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PW}
 
 logging:
   level:

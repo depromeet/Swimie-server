@@ -1,5 +1,6 @@
 package com.depromeet.auth.facade;
 
+import com.depromeet.auth.dto.request.AppleLoginRequest;
 import com.depromeet.auth.dto.request.GoogleLoginRequest;
 import com.depromeet.auth.dto.request.KakaoLoginRequest;
 import com.depromeet.auth.dto.response.JwtAccessTokenResponse;
@@ -57,6 +58,19 @@ public class AuthFacade {
                         MemberMapper.toCommand(account, "kakao " + profile.id()));
         JwtToken token = createTokenUseCase.generateToken(member.getId(), member.getRole());
 
+        return JwtTokenResponse.of(token, member.getNickname());
+    }
+
+    public JwtTokenResponse loginByApple(AppleLoginRequest request) {
+        final AccountProfileResponse profile =
+                socialUseCase.getAppleAccountToken(request.code(), "https://swimie.life");
+        if (profile == null) {
+            throw new NotFoundException(AuthErrorType.NOT_FOUND);
+        }
+        final Member member =
+                memberUseCase.findOrCreateMemberBy(
+                        MemberMapper.toCommand(profile, "apple " + profile.id()));
+        JwtToken token = createTokenUseCase.generateToken(member.getId(), member.getRole());
         return JwtTokenResponse.of(token, member.getNickname());
     }
 
