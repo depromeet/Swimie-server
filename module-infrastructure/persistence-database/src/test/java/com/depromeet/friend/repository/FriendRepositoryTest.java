@@ -225,15 +225,14 @@ public class FriendRepositoryTest {
             Friend friend = Friend.builder().member(follower).following(member).build();
             friend = friendRepository.addFollow(friend);
             friends.add(friend);
-        }
 
-        // member PK가 짝수인 경우 맞팔로우
-        for (Member follower : followers) {
+            // member PK가 짝수인 경우 맞팔로우
             if (follower.getId() % 2 == 0) {
                 Friend followedBack = Friend.builder().member(member).following(follower).build();
                 friendRepository.addFollow(followedBack);
             }
         }
+
         return friends;
     }
 
