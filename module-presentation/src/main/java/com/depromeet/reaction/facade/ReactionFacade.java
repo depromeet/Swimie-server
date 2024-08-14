@@ -3,8 +3,10 @@ package com.depromeet.reaction.facade;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.port.in.usecase.GetMemoryUseCase;
 import com.depromeet.reaction.domain.Reaction;
+import com.depromeet.reaction.domain.ReactionPage;
 import com.depromeet.reaction.dto.request.ReactionCreateRequest;
 import com.depromeet.reaction.dto.response.MemoryReactionResponse;
+import com.depromeet.reaction.dto.response.PagingReactionResponse;
 import com.depromeet.reaction.mapper.ReactionMapper;
 import com.depromeet.reaction.port.in.usecase.CreateReactionUseCase;
 import com.depromeet.reaction.port.in.usecase.GetReactionUseCase;
@@ -30,5 +32,11 @@ public class ReactionFacade {
     public MemoryReactionResponse getReactionsOfMemory(Long memoryId) {
         List<Reaction> reactionDomains = getReactionUseCase.getReactionsOfMemory(memoryId);
         return MemoryReactionResponse.from(reactionDomains);
+    }
+
+    public PagingReactionResponse getDetailReactions(Long memberId, Long memoryId, Long cursorId) {
+        ReactionPage page = getReactionUseCase.getDetailReactions(memberId, memoryId, cursorId);
+        Long totalCount = getReactionUseCase.getDetailReactionsCount(memoryId);
+        return PagingReactionResponse.of(page, totalCount);
     }
 }

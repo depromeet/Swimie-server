@@ -1,9 +1,11 @@
 package com.depromeet.reaction.service;
 
 import com.depromeet.exception.BadRequestException;
+import com.depromeet.exception.ForbiddenException;
 import com.depromeet.member.domain.Member;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.reaction.domain.Reaction;
+import com.depromeet.reaction.domain.ReactionPage;
 import com.depromeet.reaction.port.in.command.CreateReactionCommand;
 import com.depromeet.reaction.port.in.usecase.CreateReactionUseCase;
 import com.depromeet.reaction.port.in.usecase.GetReactionUseCase;
@@ -11,15 +13,18 @@ import com.depromeet.reaction.port.out.persistence.ReactionPersistencePort;
 import com.depromeet.type.reaction.ReactionErrorType;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ReactionService implements CreateReactionUseCase, GetReactionUseCase {
     private final ReactionPersistencePort reactionPersistencePort;
     private static final int MAXIMUM_REACTION_NUMBER = 3;
+    private static final int REACTION_PAGE_SIZE = 10;
 
     @Override
     @Transactional
@@ -49,7 +54,31 @@ public class ReactionService implements CreateReactionUseCase, GetReactionUseCas
         return reactionPersistencePort.getAllByMemoryId(memoryId);
     }
 
-    private static boolean isOverMaximumCreationLimit(List<Reaction> reactions) {
+    @Override
+    public ReactionPage getDetailReactions(Long memberId, Long memoryId, Long cursorId) {
+        List<Reaction> reactionDomains =
+                reactionPersistencePort.getPagingReactions(memoryId, cursorId);
+
+        if (isNotMyMemory(memberId, reactionDomains)) {
+            throw new ForbiddenException(ReactionErrorType.FORBIDDEN);
+        }
+
+        boolean hasNext = reactionDomains.size() > REACTION_PAGE_SIZE;
+        Long nextCursorId = null;
+        if (hasNext) {
+            Reaction lastReaction = reactionDomains.removeLast();
+            nextCursorId = lastReaction.getId();
+        }
+
+        return ReactionPage.of(reactionDomains, nextCursorId, hasNext);
+    }
+
+    @Override
+    public Long getDetailReactionsCount(Long memoryId) {
+        return reactionPersistencePort.getAllCountByMemoryId(memoryId);
+    }
+
+    private boolean isOverMaximumCreationLimit(List<Reaction> reactions) {
         return !reactions.isEmpty() && reactions.size() >= MAXIMUM_REACTION_NUMBER;
     }
 
@@ -59,5 +88,10 @@ public class ReactionService implements CreateReactionUseCase, GetReactionUseCas
 
     private boolean isOwnMemory(Long memberId, Memory memory) {
         return memberId.equals(memory.getMember().getId());
+    }
+
+    private boolean isNotMyMemory(Long memberId, List<Reaction> reactionDomains) {
+        return !reactionDomains.isEmpty()
+                && !reactionDomains.getFirst().getMemory().getMember().getId().equals(memberId);
     }
 }

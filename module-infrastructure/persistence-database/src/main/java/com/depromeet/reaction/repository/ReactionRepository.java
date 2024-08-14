@@ -10,6 +10,7 @@ import com.depromeet.reaction.port.out.persistence.ReactionPersistencePort;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -46,12 +47,38 @@ public class ReactionRepository implements ReactionPersistencePort {
                 .join(reactionEntity.member, memberEntity)
                 .fetchJoin()
                 .where(memoryEq(memoryId))
-                .orderBy(reactionEntity.createdAt.desc())
+                .orderBy(reactionEntity.id.desc())
                 .limit(20)
                 .fetch()
                 .stream()
                 .map(ReactionEntity::toModelWithMemberOnly)
                 .toList();
+    }
+
+    @Override
+    public List<Reaction> getPagingReactions(Long memoryId, Long cursorId) {
+        return queryFactory
+                .selectFrom(reactionEntity)
+                .join(reactionEntity.member, memberEntity)
+                .fetchJoin()
+                .join(reactionEntity.memory, memoryEntity)
+                .fetchJoin()
+                .where(memoryEq(memoryId), reactionIdLoe(cursorId))
+                .orderBy(reactionEntity.id.desc())
+                .limit(11)
+                .fetch()
+                .stream()
+                .map(ReactionEntity::toModel)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Long getAllCountByMemoryId(Long memoryId) {
+        return queryFactory
+                .select(reactionEntity.id.count())
+                .from(reactionEntity)
+                .where(memoryEq(memoryId))
+                .fetchOne();
     }
 
     private BooleanExpression memberEq(Long memberId) {
@@ -66,5 +93,12 @@ public class ReactionRepository implements ReactionPersistencePort {
             return null;
         }
         return reactionEntity.memory.id.eq(memoryId);
+    }
+
+    private BooleanExpression reactionIdLoe(Long reactionId) {
+        if (reactionId == null) {
+            return null;
+        }
+        return reactionEntity.id.loe(reactionId);
     }
 }

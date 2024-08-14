@@ -9,4 +9,8 @@ public interface ReactionPersistencePort {
     List<Reaction> getAllByMemberAndMemory(Long memberId, Long memoryId);
 
     List<Reaction> getAllByMemoryId(Long memoryId);
+
+    List<Reaction> getPagingReactions(Long memoryId, Long cursorId);
+
+    Long getAllCountByMemoryId(Long memoryId);
 }

@@ -5,12 +5,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record ReactionDetailResponse(
-        Long reactionId, String emoji, String comment, String nickname) {
+        Long reactionId, String emoji, String comment, String nickname, String profileImageUrl) {
     public static ReactionDetailResponse from(Reaction reaction) {
         return new ReactionDetailResponse(
                 reaction.getId(),
                 reaction.getEmoji(),
                 reaction.getComment(),
-                reaction.getMember().getNickname());
+                reaction.getMember().getNickname(),
+                reaction.getMember().getProfileImageUrl());
     }
 }
