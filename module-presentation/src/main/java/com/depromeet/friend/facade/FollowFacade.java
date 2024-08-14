@@ -7,7 +7,6 @@ import com.depromeet.friend.dto.request.FollowRequest;
 import com.depromeet.friend.dto.response.FollowSliceResponse;
 import com.depromeet.friend.dto.response.FollowerResponse;
 import com.depromeet.friend.dto.response.FollowingResponse;
-import com.depromeet.friend.mapper.FollowMapper;
 import com.depromeet.friend.port.in.FollowUseCase;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
@@ -35,12 +34,12 @@ public class FollowFacade {
     public FollowSliceResponse<FollowingResponse> findFollowingList(Long memberId, Long cursorId) {
         FollowSlice<Following> followingSlice =
                 followUseCase.getFollowingByMemberIdAndCursorId(memberId, cursorId);
-        return FollowMapper.toFollowingSliceResponse(followingSlice, profileImageDomain);
+        return FollowSliceResponse.toFollowingSliceResponse(followingSlice, profileImageDomain);
     }
 
     public FollowSliceResponse<FollowerResponse> findFollowerList(Long memberId, Long cursorId) {
         FollowSlice<Follower> followerSlice =
                 followUseCase.getFollowerByMemberIdAndCursorId(memberId, cursorId);
-        return FollowMapper.toFollowerSliceResponses(followerSlice, profileImageDomain);
+        return FollowSliceResponse.toFollowerSliceResponses(followerSlice, profileImageDomain);
     }
 }

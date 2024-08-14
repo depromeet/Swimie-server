@@ -1,5 +1,6 @@
 package com.depromeet.member.dto.response;
 
+import com.depromeet.member.domain.vo.MemberSearchPage;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 import lombok.Builder;
@@ -12,4 +13,42 @@ public record MemberSearchResponse(
         boolean hasNext) {
     @Builder
     public MemberSearchResponse {}
+
+    public static MemberSearchResponse toMemberSearchResponse(
+            MemberSearchPage memberSearchPage, String profileImageDomain) {
+        List<MemberInfoResponse> contents =
+                getMemberInfoResponses(memberSearchPage, profileImageDomain);
+        return MemberSearchResponse.builder()
+                .memberInfoResponses(contents)
+                .pageSize(memberSearchPage.getPageSize())
+                .cursorId(memberSearchPage.getCursorId())
+                .hasNext(memberSearchPage.isHasNext())
+                .build();
+    }
+
+    private static List<MemberInfoResponse> getMemberInfoResponses(
+            MemberSearchPage memberSearchPage, String profileImageDomain) {
+        List<MemberInfoResponse> contents =
+                memberSearchPage.getMembers().stream()
+                        .map(
+                                member ->
+                                        MemberInfoResponse.builder()
+                                                .memberId(member.getId())
+                                                .nickname(member.getNickname())
+                                                .profileImageUrl(
+                                                        getProfileImageUrl(
+                                                                profileImageDomain,
+                                                                member.getProfileImageUrl()))
+                                                .introduction(member.getIntroduction())
+                                                .build())
+                        .toList();
+        return contents;
+    }
+
+    private static String getProfileImageUrl(String profileImageDomain, String profileImageUrl) {
+        if (profileImageUrl == null) {
+            return null;
+        }
+        return profileImageDomain + "/" + profileImageUrl;
+    }
 }
