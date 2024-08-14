@@ -76,6 +76,7 @@ public class FollowMapper {
         if (profileImageUrl != null) {
             return profileImageDomain + "/" + profileImageUrl;
         }
+
         return null;
     }
 }

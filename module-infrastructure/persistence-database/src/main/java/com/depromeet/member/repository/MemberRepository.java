@@ -96,7 +96,9 @@ public class MemberRepository implements MemberPersistencePort {
     }
 
     private BooleanExpression likeName(String nameQuery) {
-        if (nameQuery == null) return null;
+        if (nameQuery == null) {
+            return null;
+        }
 
         return member.nickname.contains(nameQuery);
     }
