@@ -6,8 +6,10 @@ import com.depromeet.friend.port.in.FollowUseCase;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.domain.vo.MemberSearchPage;
+import com.depromeet.member.dto.request.MemberUpdateRequest;
 import com.depromeet.member.dto.response.MemberProfileResponse;
 import com.depromeet.member.dto.response.MemberSearchResponse;
+import com.depromeet.member.dto.response.MemberUpdateResponse;
 import com.depromeet.member.mapper.MemberMapper;
 import com.depromeet.member.port.in.command.SocialMemberCommand;
 import com.depromeet.member.port.in.usecase.MemberUpdateUseCase;
@@ -56,5 +58,10 @@ public class MemberFacade {
     public MemberSearchResponse searchByName(String nameQuery, Long cursorId) {
         MemberSearchPage memberSearchPage = memberUseCase.searchMemberByName(nameQuery, cursorId);
         return MemberMapper.toMemberSearchResponse(memberSearchPage, profileImageDomain);
+    }
+
+    public MemberUpdateResponse update(Long memberId, MemberUpdateRequest memberUpdateRequest) {
+        Member member = memberUseCase.update(MemberMapper.toCommand(memberId, memberUpdateRequest));
+        return MemberUpdateResponse.of(member);
     }
 }

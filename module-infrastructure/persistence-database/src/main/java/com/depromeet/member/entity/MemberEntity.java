@@ -3,6 +3,7 @@ package com.depromeet.member.entity;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.domain.MemberRole;
+import com.depromeet.member.port.in.command.UpdateMemberCommand;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -109,6 +110,12 @@ public class MemberEntity {
 
     public MemberEntity updateGender(MemberGender gender) {
         this.gender = gender;
+        return this;
+    }
+
+    public MemberEntity update(UpdateMemberCommand command) {
+        this.nickname = command.nickname();
+        this.introduction = command.introduction();
         return this;
     }
 }

@@ -5,6 +5,7 @@ import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.domain.vo.MemberSearchPage;
 import com.depromeet.member.entity.MemberEntity;
 import com.depromeet.member.entity.QMemberEntity;
+import com.depromeet.member.port.in.command.UpdateMemberCommand;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -106,6 +107,13 @@ public class MemberRepository implements MemberPersistencePort {
             return null;
         }
         return member.id.lt(cursorId);
+    }
+
+    @Override
+    public Optional<Member> update(UpdateMemberCommand command) {
+        return memberJpaRepository
+                .findById(command.memberId())
+                .map(memberEntity -> memberEntity.update(command).toModel());
     }
 
     @Override

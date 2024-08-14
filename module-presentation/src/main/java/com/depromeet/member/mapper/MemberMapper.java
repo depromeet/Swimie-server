@@ -2,9 +2,11 @@ package com.depromeet.member.mapper;
 
 import com.depromeet.dto.auth.AccountProfileResponse;
 import com.depromeet.member.domain.vo.MemberSearchPage;
+import com.depromeet.member.dto.request.MemberUpdateRequest;
 import com.depromeet.member.dto.response.MemberInfoResponse;
 import com.depromeet.member.dto.response.MemberSearchResponse;
 import com.depromeet.member.port.in.command.SocialMemberCommand;
+import com.depromeet.member.port.in.command.UpdateMemberCommand;
 import java.util.List;
 
 public class MemberMapper {
@@ -12,6 +14,12 @@ public class MemberMapper {
             AccountProfileResponse response, String providerId) {
         return new SocialMemberCommand(
                 response.id(), response.name(), response.email(), providerId);
+    }
+
+    public static UpdateMemberCommand toCommand(
+            Long memberId, MemberUpdateRequest memberUpdateRequest) {
+        return new UpdateMemberCommand(
+                memberId, memberUpdateRequest.nickname(), memberUpdateRequest.introduction());
     }
 
     public static MemberSearchResponse toMemberSearchResponse(

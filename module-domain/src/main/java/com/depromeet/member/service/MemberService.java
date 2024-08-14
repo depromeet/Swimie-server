@@ -9,6 +9,7 @@ import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.domain.MemberRole;
 import com.depromeet.member.domain.vo.MemberSearchPage;
 import com.depromeet.member.port.in.command.SocialMemberCommand;
+import com.depromeet.member.port.in.command.UpdateMemberCommand;
 import com.depromeet.member.port.in.usecase.GoalUpdateUseCase;
 import com.depromeet.member.port.in.usecase.MemberUpdateUseCase;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
@@ -60,6 +61,13 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUp
     @Override
     public MemberSearchPage searchMemberByName(String nameQuery, Long cursorId) {
         return memberPersistencePort.searchByNameQuery(nameQuery, cursorId);
+    }
+
+    @Override
+    public Member update(UpdateMemberCommand command) {
+        return memberPersistencePort
+                .update(command)
+                .orElseThrow(() -> new InternalServerException(MemberErrorType.UPDATE_FAILED));
     }
 
     @Override
