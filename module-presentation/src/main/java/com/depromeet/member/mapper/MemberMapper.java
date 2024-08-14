@@ -14,8 +14,10 @@ public class MemberMapper {
                 response.id(), response.name(), response.email(), providerId);
     }
 
-    public static MemberSearchResponse toMemberSearchResponse(MemberSearchPage memberSearchPage) {
-        List<MemberInfoResponse> contents = getMemberInfoResponses(memberSearchPage);
+    public static MemberSearchResponse toMemberSearchResponse(
+            MemberSearchPage memberSearchPage, String profileImageDomain) {
+        List<MemberInfoResponse> contents =
+                getMemberInfoResponses(memberSearchPage, profileImageDomain);
 
         return MemberSearchResponse.builder()
                 .memberInfoResponses(contents)
@@ -26,7 +28,7 @@ public class MemberMapper {
     }
 
     private static List<MemberInfoResponse> getMemberInfoResponses(
-            MemberSearchPage memberSearchPage) {
+            MemberSearchPage memberSearchPage, String profileImageDomain) {
         List<MemberInfoResponse> contents =
                 memberSearchPage.getMembers().stream()
                         .map(
@@ -34,6 +36,11 @@ public class MemberMapper {
                                         MemberInfoResponse.builder()
                                                 .memberId(member.getId())
                                                 .nickname(member.getNickname())
+                                                .profile(
+                                                        profileImageDomain
+                                                                + "/"
+                                                                + member.getProfileImage())
+                                                .introduction(member.getIntroduction())
                                                 .build())
                         .toList();
         return contents;

@@ -41,7 +41,7 @@ public class FriendRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        memberRepository = new MemberRepository(memberJpaRepository);
+        memberRepository = new MemberRepository(queryFactory, memberJpaRepository);
         friendRepository = new FriendRepository(queryFactory, friendJpaRepository);
 
         member = MemberFixture.make("user", "user@gmail.com", "google 1234");

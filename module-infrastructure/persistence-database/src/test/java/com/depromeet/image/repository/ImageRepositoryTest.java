@@ -49,7 +49,7 @@ public class ImageRepositoryTest {
     @BeforeEach
     void setUp() {
         imageRepository = new ImageRepository(queryFactory, imageJpaRepository);
-        memberPersistencePort = new MemberRepository(memberJpaRepository);
+        memberPersistencePort = new MemberRepository(queryFactory, memberJpaRepository);
         memoryPersistencePort = new MemoryRepository(queryFactory, memoryJpaRepository);
         memoryDetailPersistencePort = new MemoryDetailRepository(memoryDetailJpaRepository);
         member = memberPersistencePort.save(MemberFixture.make());
