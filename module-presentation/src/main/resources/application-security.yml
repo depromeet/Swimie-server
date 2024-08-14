@@ -44,6 +44,7 @@ apple:
   team-id: ${APPLE_TEAM_ID}
   bundle-id: ${APPLE_BUNDLE_ID}
   sign-key-file-path: ${APPLE_SIGN_KEY_FILE_PATH}
+  sign-key: ${APPLE_SIGN_KEY}
 
 jwt:
   access-token-secret: ${ACCESS_TOKEN_SECRET}

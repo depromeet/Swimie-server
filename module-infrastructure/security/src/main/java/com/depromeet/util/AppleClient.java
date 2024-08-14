@@ -67,8 +67,8 @@ public class AppleClient implements ApplePort {
     @Value("${apple.bundle-id}")
     private String appleBundleId;
 
-    @Value("${apple.sign-key-file-path}")
-    private String appleSignKeyFilePath;
+    @Value("${apple.sign-key}")
+    private String appleSignKey;
 
     @Value("${jwt.access-token-expiration-time}")
     private Long ATExpireTime;
@@ -157,10 +157,7 @@ public class AppleClient implements ApplePort {
     }
 
     private PrivateKey getPrivateKey() throws IOException {
-        ClassPathResource resource = new ClassPathResource(appleSignKeyFilePath);
-        String privateKey = new String(Files.readAllBytes(Paths.get(resource.getURI())));
-
-        Reader pemReader = new StringReader(privateKey);
+        Reader pemReader = new StringReader(appleSignKey);
         PEMParser pemParser = new PEMParser(pemReader);
         JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
         PrivateKeyInfo object = (PrivateKeyInfo) pemParser.readObject();
