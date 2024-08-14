@@ -10,6 +10,8 @@ import com.depromeet.type.reaction.ReactionSuccessType;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,5 +48,12 @@ public class ReactionController {
         return ApiResponse.success(
                 ReactionSuccessType.GET_DETAIL_REACTIONS_SUCCESS,
                 reactionFacade.getDetailReactions(memberId, memoryId, cursorId));
+    }
+
+    @DeleteMapping("/memory/reaction/{reactionId}")
+    public ResponseEntity<Void> delete(
+            @LoginMember Long memberId, @PathVariable(value = "reactionId") Long reactionId) {
+        reactionFacade.deleteById(memberId, reactionId);
+        return ResponseEntity.noContent().build();
     }
 }

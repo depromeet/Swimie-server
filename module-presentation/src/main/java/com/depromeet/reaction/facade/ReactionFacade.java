@@ -9,6 +9,7 @@ import com.depromeet.reaction.dto.response.MemoryReactionResponse;
 import com.depromeet.reaction.dto.response.PagingReactionResponse;
 import com.depromeet.reaction.mapper.ReactionMapper;
 import com.depromeet.reaction.port.in.usecase.CreateReactionUseCase;
+import com.depromeet.reaction.port.in.usecase.DeleteReactionUseCase;
 import com.depromeet.reaction.port.in.usecase.GetReactionUseCase;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class ReactionFacade {
     private final GetMemoryUseCase getMemoryUseCase;
     private final GetReactionUseCase getReactionUseCase;
     private final CreateReactionUseCase createReactionUseCase;
+    private final DeleteReactionUseCase deleteReactionUseCase;
 
     @Transactional
     public void create(Long memberId, ReactionCreateRequest request) {
@@ -38,5 +40,10 @@ public class ReactionFacade {
         ReactionPage page = getReactionUseCase.getDetailReactions(memberId, memoryId, cursorId);
         Long totalCount = getReactionUseCase.getDetailReactionsCount(memoryId);
         return PagingReactionResponse.of(page, totalCount);
+    }
+
+    @Transactional
+    public void deleteById(Long memberId, Long reactionId) {
+        deleteReactionUseCase.deleteById(memberId, reactionId);
     }
 }

@@ -2,12 +2,14 @@ package com.depromeet.reaction.service;
 
 import com.depromeet.exception.BadRequestException;
 import com.depromeet.exception.ForbiddenException;
+import com.depromeet.exception.NotFoundException;
 import com.depromeet.member.domain.Member;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.reaction.domain.Reaction;
 import com.depromeet.reaction.domain.ReactionPage;
 import com.depromeet.reaction.port.in.command.CreateReactionCommand;
 import com.depromeet.reaction.port.in.usecase.CreateReactionUseCase;
+import com.depromeet.reaction.port.in.usecase.DeleteReactionUseCase;
 import com.depromeet.reaction.port.in.usecase.GetReactionUseCase;
 import com.depromeet.reaction.port.out.persistence.ReactionPersistencePort;
 import com.depromeet.type.reaction.ReactionErrorType;
@@ -21,7 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ReactionService implements CreateReactionUseCase, GetReactionUseCase {
+public class ReactionService
+        implements CreateReactionUseCase, GetReactionUseCase, DeleteReactionUseCase {
     private final ReactionPersistencePort reactionPersistencePort;
     private static final int MAXIMUM_REACTION_NUMBER = 3;
     private static final int REACTION_PAGE_SIZE = 10;
@@ -50,6 +53,18 @@ public class ReactionService implements CreateReactionUseCase, GetReactionUseCas
     }
 
     @Override
+    @Transactional
+    public void deleteById(Long memberId, Long reactionId) {
+        Reaction reaction = getReactionById(reactionId);
+
+        if (!isOwnMemory(memberId, reaction.getMemory())) {
+            throw new ForbiddenException(ReactionErrorType.FORBIDDEN_DELETE);
+        }
+
+        reactionPersistencePort.deleteById(reactionId);
+    }
+
+    @Override
     public List<Reaction> getReactionsOfMemory(Long memoryId) {
         return reactionPersistencePort.getAllByMemoryId(memoryId);
     }
@@ -60,7 +75,7 @@ public class ReactionService implements CreateReactionUseCase, GetReactionUseCas
                 reactionPersistencePort.getPagingReactions(memoryId, cursorId);
 
         if (isNotMyMemory(memberId, reactionDomains)) {
-            throw new ForbiddenException(ReactionErrorType.FORBIDDEN);
+            throw new ForbiddenException(ReactionErrorType.FORBIDDEN_READ);
         }
 
         boolean hasNext = reactionDomains.size() > REACTION_PAGE_SIZE;
@@ -93,5 +108,11 @@ public class ReactionService implements CreateReactionUseCase, GetReactionUseCas
     private boolean isNotMyMemory(Long memberId, List<Reaction> reactionDomains) {
         return !reactionDomains.isEmpty()
                 && !reactionDomains.getFirst().getMemory().getMember().getId().equals(memberId);
+    }
+
+    private Reaction getReactionById(Long reactionId) {
+        return reactionPersistencePort
+                .getReactionById(reactionId)
+                .orElseThrow(() -> new NotFoundException(ReactionErrorType.NOT_FOUND));
     }
 }

@@ -4,12 +4,14 @@ import static com.depromeet.member.entity.QMemberEntity.*;
 import static com.depromeet.memory.entity.QMemoryEntity.*;
 import static com.depromeet.reaction.entity.QReactionEntity.*;
 
+import com.depromeet.member.entity.QMemberEntity;
 import com.depromeet.reaction.domain.Reaction;
 import com.depromeet.reaction.entity.ReactionEntity;
 import com.depromeet.reaction.port.out.persistence.ReactionPersistencePort;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -79,6 +81,29 @@ public class ReactionRepository implements ReactionPersistencePort {
                 .from(reactionEntity)
                 .where(memoryEq(memoryId))
                 .fetchOne();
+    }
+
+    @Override
+    public Optional<Reaction> getReactionById(Long reactionId) {
+        QMemberEntity memoryMemberEntity = new QMemberEntity("memoryMemberEntity");
+
+        return Optional.ofNullable(
+                        queryFactory
+                                .selectFrom(reactionEntity)
+                                .join(reactionEntity.member, memberEntity)
+                                .fetchJoin()
+                                .join(reactionEntity.memory, memoryEntity)
+                                .fetchJoin()
+                                .join(memoryEntity.member, memoryMemberEntity)
+                                .fetchJoin()
+                                .where(reactionEntity.id.eq(reactionId))
+                                .fetchOne())
+                .map(ReactionEntity::toModel);
+    }
+
+    @Override
+    public void deleteById(Long reactionId) {
+        reactionJpaRepository.deleteById(reactionId);
     }
 
     private BooleanExpression memberEq(Long memberId) {
