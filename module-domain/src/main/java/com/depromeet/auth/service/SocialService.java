@@ -1,6 +1,7 @@
 package com.depromeet.auth.service;
 
 import com.depromeet.auth.port.in.usecase.SocialUseCase;
+import com.depromeet.auth.port.out.ApplePort;
 import com.depromeet.auth.port.out.GooglePort;
 import com.depromeet.auth.port.out.KakaoPort;
 import com.depromeet.auth.vo.kakao.KakaoAccountProfile;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class SocialService implements SocialUseCase {
     private final KakaoPort kakaoPort;
     private final GooglePort googlePort;
+    private final ApplePort applePort;
 
     @Override
     public AccountProfileResponse getGoogleAccountProfile(String code, String origin) {
@@ -26,6 +28,11 @@ public class SocialService implements SocialUseCase {
     @Override
     public KakaoAccountProfile getKakaoAccountProfile(String code, String origin) {
         return kakaoPort.getKakaoAccountProfile(code, origin);
+    }
+
+    @Override
+    public AccountProfileResponse getAppleAccountToken(String code, String origin) {
+        return applePort.getAppleAccountToken(code, origin);
     }
 
     @Override
