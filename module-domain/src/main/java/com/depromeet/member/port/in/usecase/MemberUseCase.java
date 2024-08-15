@@ -11,5 +11,5 @@ public interface MemberUseCase {
 
     void deleteById(Long id);
 
-    MemberSearchPage searchMemberByName(String nameQuery, Long cursorId);
+    MemberSearchPage searchMemberByName(Long memberId, String nameQuery, Long cursorId);
 }

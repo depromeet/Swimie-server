@@ -85,7 +85,7 @@ public class FakeMemberRepository implements MemberPersistencePort {
     }
 
     @Override
-    public MemberSearchPage searchByNameQuery(String nameQuery, Long cursorId) {
+    public MemberSearchPage searchByNameQuery(Long memberId, String nameQuery, Long cursorId) {
         return null;
     }
 }

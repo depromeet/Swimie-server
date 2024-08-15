@@ -31,6 +31,7 @@ public interface MemberApi {
 
     @Operation(summary = "사용자 검색")
     ApiResponse<MemberSearchResponse> searchMember(
+            @LoginMember Long memberId,
             @RequestParam(name = "nameQuery", required = false) String nameQuery,
             @RequestParam(name = "cursorId", required = false) Long cursorId);
 }
