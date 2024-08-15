@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class FollowController implements FollowApi {
     private final FollowFacade followFacade;
 
-    @PostMapping
+    @PutMapping
     @Logging(item = "Follower/Following", action = "POST")
     public ApiResponse<?> addOrDeleteFollow(
             @LoginMember Long memberId, FollowRequest followRequest) {
