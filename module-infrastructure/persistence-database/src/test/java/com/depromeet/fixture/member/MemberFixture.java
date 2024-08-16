@@ -1,6 +1,7 @@
 package com.depromeet.fixture.member;
 
 import com.depromeet.member.domain.Member;
+import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.domain.MemberRole;
 
 public class MemberFixture {
@@ -10,6 +11,9 @@ public class MemberFixture {
                 .email("user@gmail.com")
                 .providerId("google 1234")
                 .role(MemberRole.USER)
+                .gender(MemberGender.M)
+                .profileImageUrl("image.png")
+                .introduction("test introduction")
                 .build();
     }
 
@@ -19,6 +23,9 @@ public class MemberFixture {
                 .email(email)
                 .providerId(providerId)
                 .role(MemberRole.USER)
+                .gender(MemberGender.M)
+                .profileImageUrl("image.png")
+                .introduction("test introduction")
                 .build();
     }
 }

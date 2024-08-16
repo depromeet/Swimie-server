@@ -29,28 +29,27 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 public class MemoryRepositoryTest {
     @Autowired private JPAQueryFactory queryFactory;
     @Autowired private MemoryJpaRepository memoryJpaRepository;
-    private MemoryRepository memoryRepositoryImpl;
+    private MemoryRepository memoryRepository;
     @Autowired private MemberJpaRepository memberJpaRepository;
-    private MemberRepository memberRepositoryImpl;
+    private MemberRepository memberRepository;
     @Autowired private MemoryDetailJpaRepository memoryDetailJpaRepository;
-    private MemoryDetailRepository memoryDetailRepositoryImpl;
+    private MemoryDetailRepository memoryDetailRepository;
 
     private Member member;
     private LocalDate startRecordAt;
 
     @BeforeEach
     void setUp() {
-        memberRepositoryImpl = new MemberRepository(queryFactory, memberJpaRepository);
-        memoryRepositoryImpl = new MemoryRepository(queryFactory, memoryJpaRepository);
-        memoryDetailRepositoryImpl = new MemoryDetailRepository(memoryDetailJpaRepository);
-        member = memberRepositoryImpl.save(MemberFixture.make());
-        List<MemoryDetail> memoryDetailList = MemoryDetailFixture.memoryDetailList();
+        memberRepository = new MemberRepository(queryFactory, memberJpaRepository);
+        memoryRepository = new MemoryRepository(queryFactory, memoryJpaRepository);
+        memoryDetailRepository = new MemoryDetailRepository(memoryDetailJpaRepository);
+        member = memberRepository.save(MemberFixture.make());
+        List<MemoryDetail> memoryDetailList = MemoryDetailFixture.makeMemoryDetails(100);
 
         startRecordAt = LocalDate.of(2024, 7, 1);
         for (int i = 0; i < 100; i++) {
-            MemoryDetail memoryDetail = memoryDetailRepositoryImpl.save(memoryDetailList.get(i));
-            memoryRepositoryImpl.save(
-                    MemoryFixture.mockMemory(member, memoryDetail, null, startRecordAt));
+            MemoryDetail memoryDetail = memoryDetailRepository.save(memoryDetailList.get(i));
+            memoryRepository.save(MemoryFixture.make(member, memoryDetail, null, startRecordAt));
             startRecordAt = startRecordAt.plusDays(1);
         }
     }
@@ -58,8 +57,7 @@ public class MemoryRepositoryTest {
     @Test
     void findPrevMemoryByMemberId로_최근_날짜_이전_30일_recordAt_Desc로_가져오는지_테스트() {
         // when
-        Timeline timelines =
-                memoryRepositoryImpl.findPrevMemoryByMemberId(member.getId(), null, null);
+        Timeline timelines = memoryRepository.findPrevMemoryByMemberId(member.getId(), null, null);
         List<Memory> result = timelines.getTimelineContents();
         Memory lastMemory = result.getLast();
 
@@ -75,7 +73,7 @@ public class MemoryRepositoryTest {
 
         // when
         Timeline timelines =
-                memoryRepositoryImpl.findPrevMemoryByMemberId(member.getId(), null, recordAt);
+                memoryRepository.findPrevMemoryByMemberId(member.getId(), null, recordAt);
         List<Memory> result = timelines.getTimelineContents();
         Memory lastMemory = result.getLast();
 
@@ -90,14 +88,14 @@ public class MemoryRepositoryTest {
         LocalDate recordAt = LocalDate.of(2024, 8, 31);
 
         Timeline initTimelines =
-                memoryRepositoryImpl.findPrevMemoryByMemberId(member.getId(), null, recordAt);
+                memoryRepository.findPrevMemoryByMemberId(member.getId(), null, recordAt);
 
         List<Memory> timelineContents = initTimelines.getTimelineContents();
         Memory lastDate = timelineContents.getLast();
 
         // when
         Timeline timelines =
-                memoryRepositoryImpl.findPrevMemoryByMemberId(
+                memoryRepository.findPrevMemoryByMemberId(
                         member.getId(), lastDate.getRecordAt(), null);
         List<Memory> result = timelines.getTimelineContents();
 
@@ -112,14 +110,14 @@ public class MemoryRepositoryTest {
         LocalDate recordAt = LocalDate.of(2024, 8, 31);
 
         Timeline initTimeline =
-                memoryRepositoryImpl.findPrevMemoryByMemberId(member.getId(), null, recordAt);
+                memoryRepository.findPrevMemoryByMemberId(member.getId(), null, recordAt);
 
         List<Memory> initTimelineContents = initTimeline.getTimelineContents();
         Memory firstDate = initTimelineContents.getFirst();
 
         // when
         Timeline resultSlice =
-                memoryRepositoryImpl.findNextMemoryByMemberId(
+                memoryRepository.findNextMemoryByMemberId(
                         member.getId(), firstDate.getRecordAt(), null);
         List<Memory> result = resultSlice.getTimelineContents();
 
