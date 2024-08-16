@@ -1,5 +1,6 @@
 package com.depromeet.friend.dto.response;
 
+import com.depromeet.friend.domain.vo.Following;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -28,4 +29,22 @@ public record FollowingResponse(
                 String introduction) {
     @Builder
     public FollowingResponse {}
+
+    public static FollowingResponse toFollowingResponse(
+            Following following, String profileImageOrigin) {
+        return FollowingResponse.builder()
+                .memberId(following.getMemberId())
+                .name(following.getName())
+                .profileImageUrl(
+                        getProfileImageUrl(profileImageOrigin, following.getProfileImageUrl()))
+                .introduction(following.getIntroduction())
+                .build();
+    }
+
+    private static String getProfileImageUrl(String profileImageOrigin, String profileImageUrl) {
+        if (profileImageUrl != null) {
+            return profileImageOrigin + "/" + profileImageUrl;
+        }
+        return null;
+    }
 }

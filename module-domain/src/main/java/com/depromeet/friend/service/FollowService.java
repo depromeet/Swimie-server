@@ -9,6 +9,7 @@ import com.depromeet.friend.port.in.FollowUseCase;
 import com.depromeet.friend.port.out.persistence.FriendPersistencePort;
 import com.depromeet.member.domain.Member;
 import com.depromeet.type.friend.FollowErrorType;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -56,5 +57,10 @@ public class FollowService implements FollowUseCase {
     @Override
     public int countFollowerByMemberId(Long memberId) {
         return friendPersistencePort.countFollowerByMemberId(memberId);
+    }
+
+    @Override
+    public List<Following> getFollowingByMemberIdLimitThree(Long memberId) {
+        return friendPersistencePort.findFollowingByMemberIdLimitThree(memberId);
     }
 }

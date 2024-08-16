@@ -40,9 +40,9 @@ public record FollowSliceResponse<T>(
     }
 
     public static FollowSliceResponse<FollowerResponse> toFollowerSliceResponses(
-            FollowSlice<Follower> followingSlice, String profileImageDomain) {
+            FollowSlice<Follower> followingSlice, String profileImageOrigin) {
         List<FollowerResponse> followingResponses =
-                getFollowerResponses(followingSlice, profileImageDomain);
+                getFollowerResponses(followingSlice, profileImageOrigin);
         return FollowSliceResponse.<FollowerResponse>builder()
                 .contents(followingResponses)
                 .pageSize(followingSlice.getPageSize())
@@ -69,7 +69,7 @@ public record FollowSliceResponse<T>(
     }
 
     private static List<FollowerResponse> getFollowerResponses(
-            FollowSlice<Follower> followingSlice, String profileImageDomain) {
+            FollowSlice<Follower> followingSlice, String profileImageOrigin) {
         return followingSlice.getFollowContents().stream()
                 .map(
                         follower ->
@@ -78,7 +78,7 @@ public record FollowSliceResponse<T>(
                                         .name(follower.getName())
                                         .profileImageUrl(
                                                 getProfileImageUrl(
-                                                        profileImageDomain,
+                                                        profileImageOrigin,
                                                         follower.getProfileImageUrl()))
                                         .introduction(follower.getIntroduction())
                                         .hasFollowedBack(follower.isHasFollowedBack())
@@ -86,9 +86,9 @@ public record FollowSliceResponse<T>(
                 .toList();
     }
 
-    private static String getProfileImageUrl(String profileImageDomain, String profileImageUrl) {
+    private static String getProfileImageUrl(String profileImageOrigin, String profileImageUrl) {
         if (profileImageUrl != null) {
-            return profileImageDomain + "/" + profileImageUrl;
+            return profileImageOrigin + "/" + profileImageUrl;
         }
         return null;
     }
