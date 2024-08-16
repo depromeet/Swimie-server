@@ -86,11 +86,14 @@ public class Memory {
 
         int totalDistance = 0;
         for (Stroke stroke : this.strokes) {
-            if (stroke.getMeter() != null && stroke.getMeter() != 0) {
-                totalDistance += stroke.getMeter();
+            int meter = stroke.getMeter() != null ? stroke.getMeter() : 0;
+            float laps = stroke.getLaps() != null ? stroke.getLaps() : 0;
+
+            if (meter != 0) {
+                totalDistance += meter;
             } else {
                 if (this.lane != null) {
-                    totalDistance += (int) (stroke.getLaps() * 2) * this.lane;
+                    totalDistance += (int) (laps * 2) * this.lane;
                 }
             }
         }

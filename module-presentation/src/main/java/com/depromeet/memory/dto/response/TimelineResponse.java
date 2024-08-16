@@ -72,44 +72,57 @@ public record TimelineResponse(
 
     public static TimelineResponse mapToTimelineResponseDto(Memory memory) {
         Integer totalDistance = memory.calculateTotalDistance();
-
+        Short lane = memory.getLane() != null ? memory.getLane() : 0;
         return TimelineResponse.builder()
                 .memoryId(memory.getId())
                 .recordAt(memory.getRecordAt().toString())
                 .startTime(localTimeToString(memory.getStartTime()))
                 .endTime(localTimeToString(memory.getEndTime()))
-                .lane(memory.getLane())
+                .lane(lane)
                 .diary(memory.getDiary())
                 .totalDistance(totalDistance)
                 .isAchieved(memory.isAchieved(totalDistance))
                 .kcal(getKcalFromMemoryDetail(memory))
                 .type(memory.classifyType())
-                .strokes(strokeToDto(memory.getStrokes()))
+                .strokes(strokeToDto(memory.getStrokes(), lane))
                 .imageUrl(imagesToDto(memory.getImages()))
                 .build();
     }
 
-    private static List<StrokeResponse> strokeToDto(List<Stroke> strokes) {
+    private static List<StrokeResponse> strokeToDto(List<Stroke> strokes, Short lane) {
         if (strokes == null || strokes.isEmpty()) return new ArrayList<>();
-
         return strokes.stream()
                 .map(
                         stroke ->
                                 StrokeResponse.builder()
                                         .strokeId(stroke.getId())
                                         .name(stroke.getName())
-                                        .laps(getLapsFromStroke(stroke))
-                                        .meter(getMeterFromStroke(stroke))
+                                        .laps(getLapsFromStroke(stroke, lane))
+                                        .meter(getMeterFromStroke(stroke, lane))
                                         .build())
                 .toList();
     }
 
-    private static Float getLapsFromStroke(Stroke stroke) {
-        return stroke.getLaps() != null ? stroke.getLaps() : null;
+    private static Float getLapsFromStroke(Stroke stroke, Short lane) {
+        if (stroke.getLaps() == null) {
+            return null;
+        }
+        int meter = stroke.getMeter() != null ? stroke.getMeter() : 0;
+        if (stroke.getLaps() == 0 && meter != 0) {
+            return meter / (float) (lane * 2);
+        }
+        return stroke.getLaps();
     }
 
-    private static Integer getMeterFromStroke(Stroke stroke) {
-        return stroke.getMeter() != null ? stroke.getMeter() : null;
+    private static Integer getMeterFromStroke(Stroke stroke, Short lane) {
+        if (stroke.getMeter() == null) {
+            return null;
+        }
+        float laps = stroke.getLaps() != null ? stroke.getLaps() : 0F;
+        if (stroke.getMeter() == 0 && laps != 0) {
+            return (int) (laps * lane * 2);
+        }
+        return stroke.getMeter();
     }
 
     private static String imagesToDto(List<Image> images) {
