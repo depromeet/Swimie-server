@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FollowingLogService implements FollowingMemoryLogUseCase {
     private final FollowingMemoryLogPersistencePort followingMemoryLogPersistencePort;
 
-    @Override
+    @Transactional
     public void save(Member member, Memory memory) {
         FollowingMemoryLog followingMemoryLog =
                 FollowingMemoryLog.builder().member(member).memory(memory).build();
