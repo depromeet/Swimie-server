@@ -1,5 +1,6 @@
 package com.depromeet.memory.dto.response;
 
+import com.depromeet.memory.domain.Stroke;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -12,4 +13,13 @@ public record StrokeResponse(
         @Schema(description = "수영 거리", example = "175") Integer meter) {
     @Builder
     public StrokeResponse {}
+
+    public static StrokeResponse toStrokeResponse(Stroke stroke, Short lane) {
+        return StrokeResponse.builder()
+                .strokeId(stroke.getId())
+                .name(stroke.getName())
+                .laps(stroke.getLapsFromStroke(lane))
+                .meter(stroke.getMeterFromStroke(lane))
+                .build();
+    }
 }
