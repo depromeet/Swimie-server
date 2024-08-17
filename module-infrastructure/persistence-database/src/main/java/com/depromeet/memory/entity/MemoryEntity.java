@@ -7,6 +7,8 @@ import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.MemoryDetail;
 import com.depromeet.memory.domain.Stroke;
 import com.depromeet.pool.entity.PoolEntity;
+import com.depromeet.reaction.domain.Reaction;
+import com.depromeet.reaction.entity.ReactionEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -46,6 +48,9 @@ public class MemoryEntity {
     @OneToMany(mappedBy = "memory")
     private List<ImageEntity> images = new ArrayList<>();
 
+    @OneToMany(mappedBy = "memory")
+    private List<ReactionEntity> reactions = new ArrayList<>();
+
     @NotNull private LocalDate recordAt;
 
     @NotNull private LocalTime startTime;
@@ -65,6 +70,7 @@ public class MemoryEntity {
             MemoryDetailEntity memoryDetail,
             List<StrokeEntity> strokes,
             List<ImageEntity> images,
+            List<ReactionEntity> reactions,
             LocalDate recordAt,
             LocalTime startTime,
             LocalTime endTime,
@@ -76,6 +82,7 @@ public class MemoryEntity {
         this.memoryDetail = memoryDetail;
         this.strokes = strokes;
         this.images = images;
+        this.reactions = reactions;
         this.recordAt = recordAt;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -91,6 +98,7 @@ public class MemoryEntity {
                 .memoryDetail(getMemoryDetailEntityOrNull(memory))
                 .strokes(getStrokeEntitiesOrNull(memory))
                 .images(getImageEntitiesOrNull(memory))
+                .reactions(getReactionEntitiesOrNull(memory))
                 .recordAt(memory.getRecordAt())
                 .startTime(memory.getStartTime())
                 .endTime(memory.getEndTime())
@@ -121,6 +129,12 @@ public class MemoryEntity {
                 : null;
     }
 
+    private static List<ReactionEntity> getReactionEntitiesOrNull(Memory memory) {
+        return memory.getImages() != null
+                ? memory.getReactions().stream().map(ReactionEntity::pureFrom).toList()
+                : null;
+    }
+
     public Memory toModel() {
         return Memory.builder()
                 .id(this.id)
@@ -129,6 +143,7 @@ public class MemoryEntity {
                 .memoryDetail(getMemoryDetailOrNull())
                 .strokes(getStrokeListOrNull())
                 .images(getImageListOrNull())
+                .reactions(getReactionOrNull())
                 .recordAt(this.recordAt)
                 .startTime(this.startTime)
                 .endTime(this.endTime)
@@ -158,6 +173,12 @@ public class MemoryEntity {
     private List<Stroke> getStrokeListOrNull() {
         return this.strokes != null
                 ? this.strokes.stream().map(StrokeEntity::pureToModel).toList()
+                : null;
+    }
+
+    private List<Reaction> getReactionOrNull() {
+        return this.reactions != null
+                ? this.reactions.stream().map(ReactionEntity::pureToModel).toList()
                 : null;
     }
 

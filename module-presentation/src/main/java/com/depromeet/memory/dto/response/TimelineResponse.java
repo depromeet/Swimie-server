@@ -1,12 +1,9 @@
 package com.depromeet.memory.dto.response;
 
-import com.depromeet.image.domain.Image;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.Stroke;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
@@ -66,7 +63,12 @@ public record TimelineResponse(
         @Schema(description = "영법별 거리 리스트", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
                 List<StrokeResponse> strokes,
         @Schema(description = "이미지", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-                String imageUrl) {
+                String imageUrl,
+        @Schema(
+                        description = "리액션 개수",
+                        example = "3",
+                        requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+                int reactionCount) {
     @Builder
     public TimelineResponse {}
 
@@ -76,8 +78,8 @@ public record TimelineResponse(
         return TimelineResponse.builder()
                 .memoryId(memory.getId())
                 .recordAt(memory.getRecordAt().toString())
-                .startTime(localTimeToString(memory.getStartTime()))
-                .endTime(localTimeToString(memory.getEndTime()))
+                .startTime(memory.parseStartTime())
+                .endTime(memory.parseEndTime())
                 .lane(lane)
                 .diary(memory.getDiary())
                 .totalDistance(totalDistance)
@@ -85,51 +87,16 @@ public record TimelineResponse(
                 .kcal(getKcalFromMemoryDetail(memory))
                 .type(memory.classifyType())
                 .strokes(strokeToDto(memory.getStrokes(), lane))
-                .imageUrl(imagesToDto(memory.getImages()))
+                .imageUrl(memory.getThumbnailUrl())
+                .reactionCount(getReactionCount(memory))
                 .build();
     }
 
     private static List<StrokeResponse> strokeToDto(List<Stroke> strokes, Short lane) {
         if (strokes == null || strokes.isEmpty()) return new ArrayList<>();
         return strokes.stream()
-                .map(
-                        stroke ->
-                                StrokeResponse.builder()
-                                        .strokeId(stroke.getId())
-                                        .name(stroke.getName())
-                                        .laps(getLapsFromStroke(stroke, lane))
-                                        .meter(getMeterFromStroke(stroke, lane))
-                                        .build())
+                .map(stroke -> StrokeResponse.toStrokeResponse(stroke, lane))
                 .toList();
-    }
-
-    private static Float getLapsFromStroke(Stroke stroke, Short lane) {
-        if (stroke.getLaps() == null) {
-            return null;
-        }
-        int meter = stroke.getMeter() != null ? stroke.getMeter() : 0;
-        if (stroke.getLaps() == 0 && meter != 0) {
-            return meter / (float) (lane * 2);
-        }
-        return stroke.getLaps();
-    }
-
-    private static Integer getMeterFromStroke(Stroke stroke, Short lane) {
-        if (stroke.getMeter() == null) {
-            return null;
-        }
-        float laps = stroke.getLaps() != null ? stroke.getLaps() : 0F;
-        if (stroke.getMeter() == 0 && laps != 0) {
-            return (int) (laps * lane * 2);
-        }
-        return stroke.getMeter();
-    }
-
-    private static String imagesToDto(List<Image> images) {
-        if (images == null || images.isEmpty()) return null;
-
-        Image image = images.getFirst();
-        return image.getImageUrl();
     }
 
     private static Integer getKcalFromMemoryDetail(Memory memory) {
@@ -138,10 +105,10 @@ public record TimelineResponse(
                 : null;
     }
 
-    private static String localTimeToString(LocalTime time) {
-        if (time == null) {
-            return null;
+    private static int getReactionCount(Memory memory) {
+        if (memory.getReactions() == null || memory.getReactions().isEmpty()) {
+            return 0;
         }
-        return time.format(DateTimeFormatter.ofPattern("HH:mm"));
+        return memory.getReactions().size();
     }
 }

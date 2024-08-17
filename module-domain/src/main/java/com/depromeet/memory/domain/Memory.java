@@ -3,8 +3,10 @@ package com.depromeet.memory.domain;
 import com.depromeet.image.domain.Image;
 import com.depromeet.member.domain.Member;
 import com.depromeet.pool.domain.Pool;
+import com.depromeet.reaction.domain.Reaction;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +19,7 @@ public class Memory {
     private MemoryDetail memoryDetail;
     private List<Stroke> strokes;
     private List<Image> images;
+    private List<Reaction> reactions;
     private LocalDate recordAt;
     private LocalTime startTime;
     private LocalTime endTime;
@@ -31,6 +34,7 @@ public class Memory {
             MemoryDetail memoryDetail,
             List<Stroke> strokes,
             List<Image> images,
+            List<Reaction> reactions,
             LocalDate recordAt,
             LocalTime startTime,
             LocalTime endTime,
@@ -42,6 +46,7 @@ public class Memory {
         this.memoryDetail = memoryDetail;
         this.strokes = strokes;
         this.images = images;
+        this.reactions = reactions;
         this.recordAt = recordAt;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -71,6 +76,20 @@ public class Memory {
                 .build();
     }
 
+    public String parseStartTime() {
+        if (this.startTime == null) {
+            return null;
+        }
+        return this.startTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+    }
+
+    public String parseEndTime() {
+        if (this.endTime == null) {
+            return null;
+        }
+        return this.endTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+    }
+
     public String classifyType() {
         if (this.strokes == null || this.strokes.isEmpty()) {
             return "NORMAL";
@@ -98,6 +117,13 @@ public class Memory {
             }
         }
         return totalDistance;
+    }
+
+    public String getThumbnailUrl() {
+        if (this.images == null || this.images.isEmpty()) return null;
+
+        Image image = this.images.getFirst();
+        return image.getImageUrl();
     }
 
     public boolean isAchieved(Integer totalDistance) {

@@ -60,11 +60,27 @@ public class ReactionEntity extends BaseTimeEntity {
                 .build();
     }
 
+    public static ReactionEntity pureFrom(Reaction reaction) {
+        return ReactionEntity.builder()
+                .emoji(reaction.getEmoji())
+                .comment(reaction.getComment())
+                .build();
+    }
+
     public Reaction toModel() {
         return Reaction.builder()
                 .id(this.id)
                 .member(this.member.toModel())
                 .memory(this.memory.toModelWithMemberOnly())
+                .emoji(this.emoji)
+                .comment(this.comment)
+                .createdAt(this.getCreatedAt())
+                .build();
+    }
+
+    public Reaction pureToModel() {
+        return Reaction.builder()
+                .id(this.id)
                 .emoji(this.emoji)
                 .comment(this.comment)
                 .createdAt(this.getCreatedAt())
