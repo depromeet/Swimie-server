@@ -11,7 +11,7 @@ public record ApiResponse<T>(
         int status,
         String code,
         String message,
-        @JsonInclude(JsonInclude.Include.NON_NULL) T data) {
+        T data) {
     public static ApiResponse<?> success(SuccessType successType) {
         return new ApiResponse<>(200, successType.getCode(), successType.getMessage(), null);
     }

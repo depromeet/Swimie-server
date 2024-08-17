@@ -3,5 +3,7 @@ package com.depromeet.member.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 
-@Schema(name = "이름 수정 정보 입력")
-public record NicknameUpdateRequest(@NotBlank String nickname) {}
+public record NicknameUpdateRequest(
+        @NotBlank
+        @Schema(description = "닉네임", requiredMode = Schema.RequiredMode.REQUIRED)
+        String nickname) {}
