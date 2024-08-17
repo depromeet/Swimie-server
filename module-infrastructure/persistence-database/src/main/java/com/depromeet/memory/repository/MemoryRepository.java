@@ -7,7 +7,7 @@ import static com.depromeet.memory.entity.QStrokeEntity.strokeEntity;
 import static com.depromeet.pool.entity.QPoolEntity.poolEntity;
 
 import com.depromeet.memory.domain.Memory;
-import com.depromeet.memory.domain.vo.Timeline;
+import com.depromeet.memory.domain.vo.TimelineSlice;
 import com.depromeet.memory.entity.MemoryEntity;
 import com.depromeet.memory.entity.QMemoryEntity;
 import com.depromeet.memory.port.out.persistence.MemoryPersistencePort;
@@ -110,7 +110,7 @@ public class MemoryRepository implements MemoryPersistencePort {
     }
 
     @Override
-    public Timeline findPrevMemoryByMemberId(
+    public TimelineSlice findPrevMemoryByMemberId(
             Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "recordAt");
 
@@ -136,7 +136,7 @@ public class MemoryRepository implements MemoryPersistencePort {
             nextMemoryRecordAt = lastMemory.getRecordAt();
         }
 
-        return Timeline.builder()
+        return TimelineSlice.builder()
                 .timelineContents(content)
                 .pageSize(10)
                 .cursorRecordAt(nextMemoryRecordAt)
@@ -145,7 +145,7 @@ public class MemoryRepository implements MemoryPersistencePort {
     }
 
     @Override
-    public Timeline findNextMemoryByMemberId(
+    public TimelineSlice findNextMemoryByMemberId(
             Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
         Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "recordAt");
 
@@ -172,7 +172,7 @@ public class MemoryRepository implements MemoryPersistencePort {
         }
         content = content.reversed();
 
-        return Timeline.builder()
+        return TimelineSlice.builder()
                 .timelineContents(content)
                 .pageSize(10)
                 .cursorRecordAt(nextMemoryRecordAt)

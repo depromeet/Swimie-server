@@ -1,7 +1,7 @@
 package com.depromeet.mock;
 
 import com.depromeet.memory.domain.Memory;
-import com.depromeet.memory.domain.vo.Timeline;
+import com.depromeet.memory.domain.vo.TimelineSlice;
 import com.depromeet.memory.port.out.persistence.MemoryPersistencePort;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -108,7 +108,7 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
     }
 
     @Override
-    public Timeline findPrevMemoryByMemberId(
+    public TimelineSlice findPrevMemoryByMemberId(
             Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
         List<Memory> memories;
         if (cursorRecordAt == null) {
@@ -138,7 +138,7 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
             hasNext = true;
         }
 
-        return Timeline.builder()
+        return TimelineSlice.builder()
                 .timelineContents(memories)
                 .pageSize(10)
                 .cursorRecordAt(cursorRecordAt)
@@ -147,7 +147,7 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
     }
 
     @Override
-    public Timeline findNextMemoryByMemberId(
+    public TimelineSlice findNextMemoryByMemberId(
             Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
         List<Memory> memories;
         if (cursorRecordAt == null) {
@@ -182,7 +182,7 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
             hasNext = true;
         }
 
-        return Timeline.builder()
+        return TimelineSlice.builder()
                 .timelineContents(memories)
                 .pageSize(10)
                 .cursorRecordAt(cursorRecordAt)

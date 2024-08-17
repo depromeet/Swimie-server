@@ -9,7 +9,7 @@ import com.depromeet.member.domain.Member;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.Stroke;
-import com.depromeet.memory.domain.vo.Timeline;
+import com.depromeet.memory.domain.vo.TimelineSlice;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
 import com.depromeet.memory.dto.response.*;
@@ -97,10 +97,10 @@ public class MemoryFacade {
     public TimelineSliceResponse getTimelineByMemberIdAndCursorAndDate(
             Long memberId, LocalDate cursorRecordAt, YearMonth date, boolean showNewer) {
         Member member = memberUseCase.findById(memberId);
-        Timeline timeline =
+        TimelineSlice timelineSlice =
                 timelineUseCase.getTimelineByMemberIdAndCursorAndDate(
                         memberId, cursorRecordAt, date, showNewer);
-        return MemoryMapper.toSliceResponse(member, timeline);
+        return MemoryMapper.toSliceResponse(member, timelineSlice);
     }
 
     public CalendarResponse getCalendar(Long memberId, Integer year, Short month) {

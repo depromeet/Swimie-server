@@ -1,6 +1,6 @@
 package com.depromeet.memory.service;
 
-import com.depromeet.memory.domain.vo.Timeline;
+import com.depromeet.memory.domain.vo.TimelineSlice;
 import com.depromeet.memory.port.in.usecase.TimelineUseCase;
 import com.depromeet.memory.port.out.persistence.MemoryPersistencePort;
 import java.time.LocalDate;
@@ -16,12 +16,12 @@ public class TimelineService implements TimelineUseCase {
     private final MemoryPersistencePort memoryPersistencePort;
 
     @Override
-    public Timeline getTimelineByMemberIdAndCursorAndDate(
+    public TimelineSlice getTimelineByMemberIdAndCursorAndDate(
             Long memberId, LocalDate cursorRecordAt, YearMonth date, boolean showNewer) {
         return getTimelines(memberId, cursorRecordAt, date, showNewer);
     }
 
-    private Timeline getTimelines(
+    private TimelineSlice getTimelines(
             Long memberId, LocalDate cursorRecordAt, YearMonth date, boolean showNewer) {
         LocalDate parsedDate = getLocalDateOrNull(date); // date 파라미터 임시 제거로 인해 임시 null 처리
 

@@ -11,7 +11,7 @@ import com.depromeet.member.repository.MemberJpaRepository;
 import com.depromeet.member.repository.MemberRepository;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.MemoryDetail;
-import com.depromeet.memory.domain.vo.Timeline;
+import com.depromeet.memory.domain.vo.TimelineSlice;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
@@ -57,7 +57,8 @@ public class MemoryRepositoryTest {
     @Test
     void findPrevMemoryByMemberId로_최근_날짜_이전_30일_recordAt_Desc로_가져오는지_테스트() {
         // when
-        Timeline timelines = memoryRepository.findPrevMemoryByMemberId(member.getId(), null, null);
+        TimelineSlice timelines =
+                memoryRepository.findPrevMemoryByMemberId(member.getId(), null, null);
         List<Memory> result = timelines.getTimelineContents();
         Memory lastMemory = result.getLast();
 
@@ -72,7 +73,7 @@ public class MemoryRepositoryTest {
         LocalDate recordAt = LocalDate.of(2024, 8, 31);
 
         // when
-        Timeline timelines =
+        TimelineSlice timelines =
                 memoryRepository.findPrevMemoryByMemberId(member.getId(), null, recordAt);
         List<Memory> result = timelines.getTimelineContents();
         Memory lastMemory = result.getLast();
@@ -87,14 +88,14 @@ public class MemoryRepositoryTest {
         // given
         LocalDate recordAt = LocalDate.of(2024, 8, 31);
 
-        Timeline initTimelines =
+        TimelineSlice initTimelines =
                 memoryRepository.findPrevMemoryByMemberId(member.getId(), null, recordAt);
 
         List<Memory> timelineContents = initTimelines.getTimelineContents();
         Memory lastDate = timelineContents.getLast();
 
         // when
-        Timeline timelines =
+        TimelineSlice timelines =
                 memoryRepository.findPrevMemoryByMemberId(
                         member.getId(), lastDate.getRecordAt(), null);
         List<Memory> result = timelines.getTimelineContents();
@@ -109,14 +110,14 @@ public class MemoryRepositoryTest {
         // given
         LocalDate recordAt = LocalDate.of(2024, 8, 31);
 
-        Timeline initTimeline =
+        TimelineSlice initTimelineSlice =
                 memoryRepository.findPrevMemoryByMemberId(member.getId(), null, recordAt);
 
-        List<Memory> initTimelineContents = initTimeline.getTimelineContents();
+        List<Memory> initTimelineContents = initTimelineSlice.getTimelineContents();
         Memory firstDate = initTimelineContents.getFirst();
 
         // when
-        Timeline resultSlice =
+        TimelineSlice resultSlice =
                 memoryRepository.findNextMemoryByMemberId(
                         member.getId(), firstDate.getRecordAt(), null);
         List<Memory> result = resultSlice.getTimelineContents();
