@@ -65,7 +65,7 @@ public record TimelineResponse(
         @Schema(description = "이미지", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
                 String imageUrl,
         @Schema(
-                        description = "리액션 개수",
+                        description = "응원 개수",
                         example = "3",
                         requiredMode = Schema.RequiredMode.NOT_REQUIRED)
                 int reactionCount) {
