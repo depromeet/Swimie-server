@@ -65,6 +65,22 @@ public class MemoryRepository implements MemoryPersistencePort {
     }
 
     @Override
+    public Optional<Memory> findByIdWithMember(Long memoryId) {
+        MemoryEntity memoryEntity =
+                queryFactory
+                        .selectFrom(memory)
+                        .join(memory.member, memberEntity)
+                        .fetchJoin()
+                        .where(memory.id.eq(memoryId))
+                        .fetchOne();
+
+        if (memoryEntity == null) {
+            return Optional.empty();
+        }
+        return Optional.of(memoryEntity.toModelWithMemberOnly());
+    }
+
+    @Override
     public Optional<Memory> findByRecordAtAndMemberId(LocalDate recordAt, Long memberId) {
         Optional<MemoryEntity> nullableMemoryEntity =
                 memoryJpaRepository.findByRecordAtAndMemberId(recordAt, memberId);

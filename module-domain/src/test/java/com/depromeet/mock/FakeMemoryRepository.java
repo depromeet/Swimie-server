@@ -42,6 +42,11 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
     }
 
     @Override
+    public Optional<Memory> findByIdWithMember(Long memoryId) {
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<Memory> findByRecordAtAndMemberId(LocalDate recordAt, Long memberId) {
         return Optional.empty();
     }
