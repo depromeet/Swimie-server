@@ -46,6 +46,7 @@ public class MemberControllerTest extends ControllerTestConfig {
                         3000,
                         MemberGender.M,
                         null,
+                        null,
                         null);
         when(memberFacade.updateNickname(anyLong(), anyString())).thenReturn(member);
 
