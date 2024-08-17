@@ -7,6 +7,7 @@ import com.depromeet.exception.NotFoundException;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.domain.MemberRole;
+import com.depromeet.member.domain.vo.MemberSearchPage;
 import com.depromeet.member.port.in.command.SocialMemberCommand;
 import com.depromeet.member.port.in.usecase.GoalUpdateUseCase;
 import com.depromeet.member.port.in.usecase.MemberUpdateUseCase;
@@ -54,6 +55,11 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUp
         findById(id);
         memberPersistencePort.deleteById(id);
         refreshRedisPersistencePort.deleteData(id);
+    }
+
+    @Override
+    public MemberSearchPage searchMemberByName(Long memberId, String nameQuery, Long cursorId) {
+        return memberPersistencePort.searchByNameQuery(memberId, nameQuery, cursorId);
     }
 
     @Override

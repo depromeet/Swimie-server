@@ -2,6 +2,7 @@ package com.depromeet.mock;
 
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
+import com.depromeet.member.domain.vo.MemberSearchPage;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,5 +82,10 @@ public class FakeMemberRepository implements MemberPersistencePort {
     @Override
     public void deleteById(Long id) {
         data.removeIf(member -> member.getId().equals(id));
+    }
+
+    @Override
+    public MemberSearchPage searchByNameQuery(Long memberId, String nameQuery, Long cursorId) {
+        return null;
     }
 }

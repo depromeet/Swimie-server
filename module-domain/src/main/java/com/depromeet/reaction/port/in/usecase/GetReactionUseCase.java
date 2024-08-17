@@ -1,0 +1,13 @@
+package com.depromeet.reaction.port.in.usecase;
+
+import com.depromeet.reaction.domain.Reaction;
+import com.depromeet.reaction.domain.ReactionPage;
+import java.util.List;
+
+public interface GetReactionUseCase {
+    List<Reaction> getReactionsOfMemory(Long memoryId);
+
+    ReactionPage getDetailReactions(Long memberId, Long memoryId, Long cursorId);
+
+    Long getDetailReactionsCount(Long memoryId);
+}

@@ -62,7 +62,6 @@ public class MemoryFacade {
         if (request.getPoolId() != null) {
             poolSearchLogUseCase.createSearchLog(writer, request.getPoolId());
         }
-
         return MemoryCreateResponse.of(month, rank, memoryId);
     }
 
@@ -75,7 +74,6 @@ public class MemoryFacade {
                 request.getStrokes().stream().map(MemoryMapper::toCommand).toList();
         List<Stroke> strokes = strokeUseCase.updateAll(memory, commands);
         UpdateMemoryCommand command = MemoryMapper.toCommand(request);
-
         return MemoryResponse.from(updateMemoryUseCase.update(memoryId, command, strokes));
     }
 
@@ -97,7 +95,6 @@ public class MemoryFacade {
         Timeline timeline =
                 timelineUseCase.getTimelineByMemberIdAndCursorAndDate(
                         memberId, cursorRecordAt, date, showNewer);
-
         return MemoryMapper.toSliceResponse(member, timeline);
     }
 

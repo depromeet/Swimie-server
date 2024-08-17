@@ -61,7 +61,18 @@ public class PoolFacade {
     public PoolInitialResponse getFavoriteAndSearchedPools(Long memberId) {
         List<PoolSearch> searchedPools = initialSearchUseCase.getSearchedPools(memberId);
         List<FavoritePool> favoritePools = initialSearchUseCase.getFavoritePools(memberId);
-        return PoolInitialResponse.of(favoritePools, searchedPools);
+
+        Set<Long> favoritePoolIds =
+                favoritePools.stream().map(it -> it.getPool().getId()).collect(Collectors.toSet());
+
+        List<PoolSearch> filteredSearchedPools =
+                searchedPools.stream()
+                        .filter(
+                                poolSearch ->
+                                        !favoritePoolIds.contains(poolSearch.getPool().getId()))
+                        .toList();
+
+        return PoolInitialResponse.of(favoritePools, filteredSearchedPools);
     }
 
     private Set<Long> getFavoritePoolIds(List<FavoritePool> favoritePools) {

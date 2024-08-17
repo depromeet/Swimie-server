@@ -2,6 +2,7 @@ package com.depromeet.member.port.out.persistence;
 
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
+import com.depromeet.member.domain.vo.MemberSearchPage;
 import java.util.Optional;
 
 public interface MemberPersistencePort {
@@ -20,4 +21,6 @@ public interface MemberPersistencePort {
     Optional<Member> updateGender(Long memberId, MemberGender gender);
 
     void deleteById(Long id);
+
+    MemberSearchPage searchByNameQuery(Long memberId, String nameQuery, Long cursorId);
 }
