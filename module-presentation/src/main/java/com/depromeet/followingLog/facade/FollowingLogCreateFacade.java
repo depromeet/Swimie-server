@@ -1,6 +1,6 @@
 package com.depromeet.followingLog.facade;
 
-import com.depromeet.followingLog.dto.request.CreateFollowingMemoryRequest;
+import com.depromeet.followingLog.dto.request.CreateFollowingMemoryEvent;
 import com.depromeet.followingLog.port.in.FollowingMemoryLogUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ public class FollowingLogCreateFacade {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void saveFollowingMemoryLog(CreateFollowingMemoryRequest followingMemoryRequest) {
+    public void saveFollowingMemoryLog(CreateFollowingMemoryEvent followingMemoryRequest) {
         followingMemoryLogUseCase.save(
                 followingMemoryRequest.member(), followingMemoryRequest.memory());
     }
