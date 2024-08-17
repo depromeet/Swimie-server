@@ -5,7 +5,6 @@ import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.port.in.command.UpdateMemberCommand;
 
 public interface MemberUpdateUseCase {
-
     Member update(UpdateMemberCommand command);
 
     Member updateNickname(Long memberId, String nickname);
