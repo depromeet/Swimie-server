@@ -3,6 +3,7 @@ package com.depromeet.friend.port.in;
 import com.depromeet.friend.domain.vo.FollowSlice;
 import com.depromeet.friend.domain.vo.Follower;
 import com.depromeet.friend.domain.vo.Following;
+import com.depromeet.friend.domain.vo.FriendCount;
 import com.depromeet.member.domain.Member;
 
 public interface FollowUseCase {
@@ -15,4 +16,6 @@ public interface FollowUseCase {
     int countFollowingByMemberId(Long memberId);
 
     int countFollowerByMemberId(Long memberId);
+
+    FriendCount countFriendByMemberId(Long memberId);
 }

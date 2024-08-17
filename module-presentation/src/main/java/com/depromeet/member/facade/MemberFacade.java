@@ -2,6 +2,7 @@ package com.depromeet.member.facade;
 
 import static com.depromeet.member.service.MemberValidator.isMyProfile;
 
+import com.depromeet.friend.domain.vo.FriendCount;
 import com.depromeet.friend.port.in.FollowUseCase;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
@@ -34,11 +35,12 @@ public class MemberFacade {
     public MemberProfileResponse findById(Long loginMemberId, Long memberId) {
         Boolean isMyProfile = isMyProfile(memberId, loginMemberId);
         Member member = memberUseCase.findById(memberId);
+        FriendCount friendCount = followUseCase.countFriendByMemberId(memberId);
         return MemberProfileResponse.of(
                 member,
                 profileImageOrigin,
-                followUseCase.countFollowerByMemberId(memberId),
-                followUseCase.countFollowingByMemberId(memberId),
+                friendCount.followerCount(),
+                friendCount.followingCount(),
                 isMyProfile);
     }
 

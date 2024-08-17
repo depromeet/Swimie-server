@@ -4,6 +4,7 @@ import com.depromeet.friend.domain.Friend;
 import com.depromeet.friend.domain.vo.FollowSlice;
 import com.depromeet.friend.domain.vo.Follower;
 import com.depromeet.friend.domain.vo.Following;
+import com.depromeet.friend.domain.vo.FriendCount;
 import com.depromeet.friend.port.in.FollowUseCase;
 import com.depromeet.friend.port.out.persistence.FriendPersistencePort;
 import com.depromeet.member.domain.Member;
@@ -50,5 +51,10 @@ public class FollowService implements FollowUseCase {
     @Override
     public int countFollowerByMemberId(Long memberId) {
         return friendPersistencePort.countFollowerByMemberId(memberId);
+    }
+
+    @Override
+    public FriendCount countFriendByMemberId(Long memberId) {
+        return friendPersistencePort.countFriendByMemberId(memberId);
     }
 }
