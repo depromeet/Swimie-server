@@ -24,7 +24,7 @@ public class FollowFacade {
     private final MemberUseCase memberUseCase;
 
     @Value("${cloud-front.domain}")
-    private String profileImageDomain;
+    private String profileImageOrigin;
 
     public boolean addOrDeleteFollow(Long memberId, FollowRequest followRequest) {
         Member member = memberUseCase.findById(memberId);
@@ -35,12 +35,12 @@ public class FollowFacade {
     public FollowSliceResponse<FollowingResponse> findFollowingList(Long memberId, Long cursorId) {
         FollowSlice<Following> followingSlice =
                 followUseCase.getFollowingByMemberIdAndCursorId(memberId, cursorId);
-        return FollowMapper.toFollowingSliceResponse(followingSlice, profileImageDomain);
+        return FollowMapper.toFollowingSliceResponse(followingSlice, profileImageOrigin);
     }
 
     public FollowSliceResponse<FollowerResponse> findFollowerList(Long memberId, Long cursorId) {
         FollowSlice<Follower> followerSlice =
                 followUseCase.getFollowerByMemberIdAndCursorId(memberId, cursorId);
-        return FollowMapper.toFollowerSliceResponses(followerSlice, profileImageDomain);
+        return FollowMapper.toFollowerSliceResponses(followerSlice, profileImageOrigin);
     }
 }

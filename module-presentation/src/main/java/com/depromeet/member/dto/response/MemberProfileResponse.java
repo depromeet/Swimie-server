@@ -22,7 +22,7 @@ public record MemberProfileResponse(
         Boolean isMyProfile) {
     public static MemberProfileResponse of(
             Member member,
-            String profileImageDomain,
+            String profileImageOrigin,
             Integer followerCount,
             Integer followingCount,
             Boolean isMyProfile) {
@@ -30,16 +30,16 @@ public record MemberProfileResponse(
                 member.getId(),
                 member.getNickname(),
                 member.getIntroduction(),
-                getProfileImageUrl(profileImageDomain, member.getProfileImageUrl()),
+                getProfileImageUrl(profileImageOrigin, member.getProfileImageUrl()),
                 followerCount,
                 followingCount,
                 isMyProfile);
     }
 
-    private static String getProfileImageUrl(String profileImageDomain, String profileImageUrl) {
+    private static String getProfileImageUrl(String profileImageOrigin, String profileImageUrl) {
         if (profileImageUrl == null) {
             return null;
         }
-        return profileImageDomain + "/" + profileImageUrl;
+        return profileImageOrigin + "/" + profileImageUrl;
     }
 }

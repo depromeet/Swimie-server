@@ -28,7 +28,7 @@ public class MemberFacade {
     private final FollowUseCase followUseCase;
 
     @Value("${cloud-front.domain}")
-    private String profileImageDomain;
+    private String profileImageOrigin;
 
     @Transactional(readOnly = true)
     public MemberProfileResponse findById(Long loginMemberId, Long memberId) {
@@ -36,7 +36,7 @@ public class MemberFacade {
         Member member = memberUseCase.findById(memberId);
         return MemberProfileResponse.of(
                 member,
-                profileImageDomain,
+                profileImageOrigin,
                 followUseCase.countFollowerByMemberId(memberId),
                 followUseCase.countFollowingByMemberId(memberId),
                 isMyProfile);
@@ -64,6 +64,6 @@ public class MemberFacade {
 
     public MemberSearchResponse searchByName(String nameQuery, Long cursorId) {
         MemberSearchPage memberSearchPage = memberUseCase.searchMemberByName(nameQuery, cursorId);
-        return MemberMapper.toMemberSearchResponse(memberSearchPage, profileImageDomain);
+        return MemberMapper.toMemberSearchResponse(memberSearchPage, profileImageOrigin);
     }
 }

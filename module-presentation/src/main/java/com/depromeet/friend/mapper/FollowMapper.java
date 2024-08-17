@@ -10,9 +10,9 @@ import java.util.List;
 
 public class FollowMapper {
     public static FollowSliceResponse<FollowingResponse> toFollowingSliceResponse(
-            FollowSlice<Following> followingSlice, String profileImageDomain) {
+            FollowSlice<Following> followingSlice, String profileImageOrigin) {
         List<FollowingResponse> followingResponses =
-                getFollowingResponses(followingSlice, profileImageDomain);
+                getFollowingResponses(followingSlice, profileImageOrigin);
         return FollowSliceResponse.<FollowingResponse>builder()
                 .contents(followingResponses)
                 .pageSize(followingSlice.getPageSize())
@@ -22,9 +22,9 @@ public class FollowMapper {
     }
 
     public static FollowSliceResponse<FollowerResponse> toFollowerSliceResponses(
-            FollowSlice<Follower> followingSlice, String profileImageDomain) {
+            FollowSlice<Follower> followingSlice, String profileImageOrigin) {
         List<FollowerResponse> followingResponses =
-                getFollowerResponses(followingSlice, profileImageDomain);
+                getFollowerResponses(followingSlice, profileImageOrigin);
         return FollowSliceResponse.<FollowerResponse>builder()
                 .contents(followingResponses)
                 .pageSize(followingSlice.getPageSize())
@@ -34,7 +34,7 @@ public class FollowMapper {
     }
 
     private static List<FollowingResponse> getFollowingResponses(
-            FollowSlice<Following> followingSlice, String profileImageDomain) {
+            FollowSlice<Following> followingSlice, String profileImageOrigin) {
         return followingSlice.getFollowContents().stream()
                 .map(
                         following ->
@@ -44,7 +44,7 @@ public class FollowMapper {
                                         .name(following.getName())
                                         .profileImageUrl(
                                                 getProfileImageUrl(
-                                                        profileImageDomain,
+                                                        profileImageOrigin,
                                                         following.getProfileImageUrl()))
                                         .introduction(following.getIntroduction())
                                         .build())
@@ -52,7 +52,7 @@ public class FollowMapper {
     }
 
     private static List<FollowerResponse> getFollowerResponses(
-            FollowSlice<Follower> followingSlice, String profileImageDomain) {
+            FollowSlice<Follower> followingSlice, String profileImageOrigin) {
         return followingSlice.getFollowContents().stream()
                 .map(
                         follower ->
@@ -62,7 +62,7 @@ public class FollowMapper {
                                         .name(follower.getName())
                                         .profileImageUrl(
                                                 getProfileImageUrl(
-                                                        profileImageDomain,
+                                                        profileImageOrigin,
                                                         follower.getProfileImageUrl()))
                                         .introduction(follower.getIntroduction())
                                         .hasFollowedBack(follower.isHasFollowedBack())
@@ -70,9 +70,9 @@ public class FollowMapper {
                 .toList();
     }
 
-    private static String getProfileImageUrl(String profileImageDomain, String profileImageUrl) {
+    private static String getProfileImageUrl(String profileImageOrigin, String profileImageUrl) {
         if (profileImageUrl != null) {
-            return profileImageDomain + "/" + profileImageUrl;
+            return profileImageOrigin + "/" + profileImageUrl;
         }
         return null;
     }

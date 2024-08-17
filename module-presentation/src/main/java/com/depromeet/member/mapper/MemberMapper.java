@@ -23,9 +23,9 @@ public class MemberMapper {
     }
 
     public static MemberSearchResponse toMemberSearchResponse(
-            MemberSearchPage memberSearchPage, String profileImageDomain) {
+            MemberSearchPage memberSearchPage, String profileImageOrigin) {
         List<MemberInfoResponse> contents =
-                getMemberInfoResponses(memberSearchPage, profileImageDomain);
+                getMemberInfoResponses(memberSearchPage, profileImageOrigin);
         return MemberSearchResponse.builder()
                 .memberInfoResponses(contents)
                 .pageSize(memberSearchPage.getPageSize())
@@ -35,7 +35,7 @@ public class MemberMapper {
     }
 
     private static List<MemberInfoResponse> getMemberInfoResponses(
-            MemberSearchPage memberSearchPage, String profileImageDomain) {
+            MemberSearchPage memberSearchPage, String profileImageOrigin) {
         List<MemberInfoResponse> contents =
                 memberSearchPage.getMembers().stream()
                         .map(
@@ -45,7 +45,7 @@ public class MemberMapper {
                                                 .nickname(member.getNickname())
                                                 .profileImageUrl(
                                                         getProfileImageUrl(
-                                                                profileImageDomain,
+                                                                profileImageOrigin,
                                                                 member.getProfileImageUrl()))
                                                 .introduction(member.getIntroduction())
                                                 .build())
@@ -53,10 +53,10 @@ public class MemberMapper {
         return contents;
     }
 
-    private static String getProfileImageUrl(String profileImageDomain, String profileImageUrl) {
+    private static String getProfileImageUrl(String profileImageOrigin, String profileImageUrl) {
         if (profileImageUrl == null) {
             return null;
         }
-        return profileImageDomain + "/" + profileImageUrl;
+        return profileImageOrigin + "/" + profileImageUrl;
     }
 }
