@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/following-log")
+@RequestMapping("/news")
 public class FollowingLogController implements FollowingLogApi {
     private final FollowingLogFacade followingLogFacade;
 
