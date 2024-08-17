@@ -3,7 +3,7 @@ package com.depromeet.memory.facade;
 import static com.depromeet.memory.service.MemoryValidator.isMyMemory;
 import static com.depromeet.memory.service.MemoryValidator.validatePermission;
 
-import com.depromeet.followingLog.dto.request.CreateFollowingMemoryRequest;
+import com.depromeet.followingLog.dto.request.CreateFollowingMemoryEvent;
 import com.depromeet.image.port.in.ImageUploadUseCase;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
@@ -66,7 +66,7 @@ public class MemoryFacade {
             poolSearchLogUseCase.createSearchLog(writer, request.getPoolId());
         }
         // 팔로잉 소식 저장
-        eventPublisher.publishEvent(new CreateFollowingMemoryRequest(writer, newMemory));
+        eventPublisher.publishEvent(new CreateFollowingMemoryEvent(writer, newMemory));
         return MemoryCreateResponse.of(month, rank, memoryId);
     }
 

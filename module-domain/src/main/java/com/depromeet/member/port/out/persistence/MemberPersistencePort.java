@@ -23,4 +23,6 @@ public interface MemberPersistencePort {
     void deleteById(Long id);
 
     MemberSearchPage searchByNameQuery(Long memberId, String nameQuery, Long cursorId);
+
+    Optional<Member> updateLatestViewedFollowingLogAt(Long memberId);
 }

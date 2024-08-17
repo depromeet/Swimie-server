@@ -4,7 +4,7 @@ import com.depromeet.followingLog.domain.FollowingMemoryLog;
 import com.depromeet.memory.dto.response.TimelineResponse;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,12 +26,6 @@ public class FollowingLogMemoryResponse {
             requiredMode = Schema.RequiredMode.REQUIRED)
     private String memberNickname;
 
-    @Schema(
-            description = "팔로잉 소식 설명",
-            example = "김민석님이 08월 07일의 수영을 기록했어요.",
-            requiredMode = Schema.RequiredMode.REQUIRED)
-    private String logDescription;
-
     @Schema(description = "수영 기록", requiredMode = Schema.RequiredMode.REQUIRED)
     private TimelineResponse memory;
 
@@ -41,40 +35,48 @@ public class FollowingLogMemoryResponse {
             requiredMode = Schema.RequiredMode.REQUIRED)
     private String createdAt;
 
+    @Schema(
+            description = "팔로잉 소식 최신 유무",
+            example = "false",
+            requiredMode = Schema.RequiredMode.REQUIRED)
+    private boolean isRecentNews;
+
     @Builder
     public FollowingLogMemoryResponse(
             Long memberId,
             String memberNickname,
-            String logDescription,
             TimelineResponse memory,
-            String createdAt) {
+            String createdAt,
+            boolean isRecentNews) {
         this.memberId = memberId;
         this.memberNickname = memberNickname;
-        this.logDescription = logDescription;
         this.memory = memory;
         this.createdAt = createdAt;
+        this.isRecentNews = isRecentNews;
     }
 
     public static FollowingLogMemoryResponse toFollowingLogMemoryResponse(
-            FollowingMemoryLog followingMemoryLog) {
-        String nickname = followingMemoryLog.getMember().getNickname();
-        LocalDate recordAt = followingMemoryLog.getMemory().getRecordAt();
+            FollowingMemoryLog followingMemoryLog, LocalDateTime lastViewedFollowingLogAt) {
         String createdAt =
                 followingMemoryLog
                         .getCreatedAt()
                         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        boolean isRecentNews = checkIsRecentLog(followingMemoryLog, lastViewedFollowingLogAt);
 
         return FollowingLogMemoryResponse.builder()
                 .memberId(followingMemoryLog.getMember().getId())
                 .memberNickname(followingMemoryLog.getMember().getNickname())
-                .logDescription(getLogDescription(nickname, recordAt))
                 .memory(TimelineResponse.mapToTimelineResponseDto(followingMemoryLog.getMemory()))
                 .createdAt(createdAt)
+                .isRecentNews(isRecentNews)
                 .build();
     }
 
-    public static String getLogDescription(String nickname, LocalDate recordAt) {
-        String dateTime = recordAt.format(DateTimeFormatter.ofPattern("MM월 dd일"));
-        return nickname + "님이 " + dateTime + "일의 수영을 기록했어요.";
+    private static boolean checkIsRecentLog(
+            FollowingMemoryLog followingMemoryLog, LocalDateTime lastViewedFollowingLogAt) {
+        if (lastViewedFollowingLogAt == null) {
+            return followingMemoryLog.getCreatedAt().isAfter(LocalDateTime.now());
+        }
+        return followingMemoryLog.getCreatedAt().isAfter(lastViewedFollowingLogAt);
     }
 }

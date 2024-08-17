@@ -1,8 +1,9 @@
 package com.depromeet.followingLog.dto.response;
 
-import com.depromeet.followingLog.domain.FollowingLogSlice;
+import com.depromeet.followingLog.domain.vo.FollowingLogSlice;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,10 +44,13 @@ public class FollowingLogSliceResponse {
     }
 
     public static FollowingLogSliceResponse toFollowingLogSliceResponse(
-            FollowingLogSlice followingLogSlice) {
+            FollowingLogSlice followingLogSlice, LocalDateTime lastViewedFollowingLogAt) {
         List<FollowingLogMemoryResponse> contents =
                 followingLogSlice.getContents().stream()
-                        .map(FollowingLogMemoryResponse::toFollowingLogMemoryResponse)
+                        .map(
+                                followingMemoryLog ->
+                                        FollowingLogMemoryResponse.toFollowingLogMemoryResponse(
+                                                followingMemoryLog, lastViewedFollowingLogAt))
                         .toList();
         return FollowingLogSliceResponse.builder()
                 .content(contents)

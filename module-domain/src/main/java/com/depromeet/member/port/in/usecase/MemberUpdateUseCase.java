@@ -7,4 +7,6 @@ public interface MemberUpdateUseCase {
     Member updateNickname(Long memberId, String nickname);
 
     Member updateGender(Long memberId, MemberGender gender);
+
+    Member updateLatestViewedFollowingLogAt(Long memberId);
 }

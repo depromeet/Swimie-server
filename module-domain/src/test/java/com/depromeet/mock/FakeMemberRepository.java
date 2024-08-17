@@ -88,4 +88,15 @@ public class FakeMemberRepository implements MemberPersistencePort {
     public MemberSearchPage searchByNameQuery(Long memberId, String nameQuery, Long cursorId) {
         return null;
     }
+
+    @Override
+    public Optional<Member> updateLatestViewedFollowingLogAt(Long memberId) {
+        return findById(memberId)
+                .map(
+                        item -> {
+                            Member member = item.updateLastViewedFollowingLogAt();
+                            save(member);
+                            return member;
+                        });
+    }
 }

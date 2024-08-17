@@ -89,4 +89,14 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUp
                 .orElseThrow(
                         () -> new InternalServerException(MemberErrorType.UPDATE_GENDER_FAILED));
     }
+
+    @Override
+    public Member updateLatestViewedFollowingLogAt(Long memberId) {
+        return memberPersistencePort
+                .updateLatestViewedFollowingLogAt(memberId)
+                .orElseThrow(
+                        () ->
+                                new InternalServerException(
+                                        MemberErrorType.UPDATE_LAST_VIEWED_FOLLOWING_LOG_AT));
+    }
 }

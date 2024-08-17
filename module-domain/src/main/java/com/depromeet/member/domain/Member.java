@@ -1,5 +1,6 @@
 package com.depromeet.member.domain;
 
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,6 +15,7 @@ public class Member {
     private MemberGender gender;
     private String profileImageUrl;
     private String introduction;
+    private LocalDateTime lastViewedFollowingLogAt;
 
     @Builder
     public Member(
@@ -25,7 +27,8 @@ public class Member {
             Integer goal,
             MemberGender gender,
             String profileImageUrl,
-            String introduction) {
+            String introduction,
+            LocalDateTime lastViewedFollowingLogAt) {
         this.id = id;
         this.nickname = nickname;
         this.email = email;
@@ -35,6 +38,7 @@ public class Member {
         this.gender = gender;
         this.profileImageUrl = profileImageUrl;
         this.introduction = introduction;
+        this.lastViewedFollowingLogAt = lastViewedFollowingLogAt;
     }
 
     public Member updateGoal(Integer goal) {
@@ -49,6 +53,11 @@ public class Member {
 
     public Member updateGender(MemberGender gender) {
         this.gender = gender;
+        return this;
+    }
+
+    public Member updateLastViewedFollowingLogAt() {
+        this.lastViewedFollowingLogAt = LocalDateTime.now();
         return this;
     }
 }

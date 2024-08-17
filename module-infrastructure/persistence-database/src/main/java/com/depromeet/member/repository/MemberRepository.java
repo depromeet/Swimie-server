@@ -114,6 +114,13 @@ public class MemberRepository implements MemberPersistencePort {
                 .build();
     }
 
+    @Override
+    public Optional<Member> updateLatestViewedFollowingLogAt(Long memberId) {
+        return memberJpaRepository
+                .findById(memberId)
+                .map(memberEntity -> memberEntity.updateLastViewedFollowingLogAt().toModel());
+    }
+
     private BooleanExpression likeName(String nameQuery) {
         if (nameQuery == null) {
             return null;
