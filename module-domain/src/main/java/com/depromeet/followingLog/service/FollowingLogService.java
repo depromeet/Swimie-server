@@ -1,7 +1,7 @@
 package com.depromeet.followingLog.service;
 
-import com.depromeet.followingLog.domain.FollowingLogSlice;
 import com.depromeet.followingLog.domain.FollowingMemoryLog;
+import com.depromeet.followingLog.domain.vo.FollowingLogSlice;
 import com.depromeet.followingLog.port.in.FollowingMemoryLogUseCase;
 import com.depromeet.followingLog.port.out.persistence.FollowingMemoryLogPersistencePort;
 import com.depromeet.member.domain.Member;

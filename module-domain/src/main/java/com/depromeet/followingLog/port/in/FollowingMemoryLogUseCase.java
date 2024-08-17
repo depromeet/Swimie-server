@@ -1,6 +1,6 @@
 package com.depromeet.followingLog.port.in;
 
-import com.depromeet.followingLog.domain.FollowingLogSlice;
+import com.depromeet.followingLog.domain.vo.FollowingLogSlice;
 import com.depromeet.member.domain.Member;
 import com.depromeet.memory.domain.Memory;
 
