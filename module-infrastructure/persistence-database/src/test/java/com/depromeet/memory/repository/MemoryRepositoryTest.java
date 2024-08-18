@@ -36,6 +36,7 @@ public class MemoryRepositoryTest {
 
     private Member member;
     private LocalDate startRecordAt;
+    private LocalDate lastRecordAt;
 
     @BeforeEach
     void setUp() {
@@ -51,6 +52,7 @@ public class MemoryRepositoryTest {
             memoryRepository.save(MemoryFixture.make(member, memoryDetail, null, startRecordAt));
             startRecordAt = startRecordAt.plusDays(1);
         }
+        lastRecordAt = startRecordAt.minusDays(1);
     }
 
     @Test
@@ -61,7 +63,7 @@ public class MemoryRepositoryTest {
 
         // then
         assertThat(result.size()).isEqualTo(11);
-        assertThat(lastMemory.getRecordAt()).isEqualTo(startRecordAt.minusDays(9));
+        assertThat(lastMemory.getRecordAt()).isEqualTo(lastRecordAt.minusDays(10));
     }
 
     @Test
