@@ -14,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class FollowingLogFacade {
-    private final FollowingMemoryLogUseCase followingMemoryLogUseCase;
     private final MemberUseCase memberUseCase;
     private final MemberUpdateUseCase memberUpdateUseCase;
+    private final FollowingMemoryLogUseCase followingMemoryLogUseCase;
 
     public FollowingLogSliceResponse getLogsByMemberIdAndCursorId(Long memberId, Long cursorId) {
         FollowingLogSlice followingLogSlice =
