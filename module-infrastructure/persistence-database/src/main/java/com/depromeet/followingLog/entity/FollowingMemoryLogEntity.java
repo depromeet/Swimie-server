@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FollowingMemoryLogEntity extends BaseTimeEntity {
     @Id
-    @Column(name = "following_memory_news_id")
+    @Column(name = "following_memory_log_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
