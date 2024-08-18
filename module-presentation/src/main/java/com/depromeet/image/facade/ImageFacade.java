@@ -93,16 +93,7 @@ public class ImageFacade {
 
     public List<ImageResponse> findImagesByMemoryId(Long memoryId) {
         List<Image> images = imageGetUseCase.findImagesByMemoryId(memoryId);
-        return images.stream()
-                .map(
-                        image ->
-                                ImageResponse.builder()
-                                        .imageId(image.getId())
-                                        .originImageName(image.getOriginImageName())
-                                        .imageName(image.getImageName())
-                                        .url(image.getImageUrl())
-                                        .build())
-                .toList();
+        return images.stream().map(ImageResponse::of).toList();
     }
 
     public void deleteAllImagesByMemoryId(Long memoryId) {

@@ -64,8 +64,9 @@ public class MemberFacade {
         return memberUpdateUseCase.updateGender(memberId, newGender);
     }
 
-    public MemberSearchResponse searchByName(String nameQuery, Long cursorId) {
-        MemberSearchPage memberSearchPage = memberUseCase.searchMemberByName(nameQuery, cursorId);
-        return MemberMapper.toMemberSearchResponse(memberSearchPage, profileImageOrigin);
+    public MemberSearchResponse searchByName(Long memberId, String nameQuery, Long cursorId) {
+        MemberSearchPage memberSearchPage =
+                memberUseCase.searchMemberByName(memberId, nameQuery, cursorId);
+        return MemberSearchResponse.toMemberSearchResponse(memberSearchPage, profileImageOrigin);
     }
 }

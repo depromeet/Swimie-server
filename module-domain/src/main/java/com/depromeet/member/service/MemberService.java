@@ -59,8 +59,8 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUp
     }
 
     @Override
-    public MemberSearchPage searchMemberByName(String nameQuery, Long cursorId) {
-        return memberPersistencePort.searchByNameQuery(nameQuery, cursorId);
+    public MemberSearchPage searchMemberByName(Long memberId, String nameQuery, Long cursorId) {
+        return memberPersistencePort.searchByNameQuery(memberId, nameQuery, cursorId);
     }
 
     @Override
