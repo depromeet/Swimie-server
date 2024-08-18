@@ -44,10 +44,10 @@ public class MemoryRepositoryTest {
         memoryRepository = new MemoryRepository(queryFactory, memoryJpaRepository);
         memoryDetailRepository = new MemoryDetailRepository(memoryDetailJpaRepository);
         member = memberRepository.save(MemberFixture.make());
-        List<MemoryDetail> memoryDetailList = MemoryDetailFixture.makeMemoryDetails(100);
+        List<MemoryDetail> memoryDetailList = MemoryDetailFixture.makeMemoryDetails(30);
 
         startRecordAt = LocalDate.of(2024, 7, 1);
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 30; i++) {
             MemoryDetail memoryDetail = memoryDetailRepository.save(memoryDetailList.get(i));
             memoryRepository.save(MemoryFixture.make(member, memoryDetail, null, startRecordAt));
             startRecordAt = startRecordAt.plusDays(1);

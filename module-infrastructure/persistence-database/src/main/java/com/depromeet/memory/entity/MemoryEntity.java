@@ -152,6 +152,20 @@ public class MemoryEntity {
                 .build();
     }
 
+    public Memory toModelForFollowingLog() {
+        return Memory.builder()
+                .id(this.id)
+                .memoryDetail(getMemoryDetailOrNull())
+                .strokes(getStrokeListOrNull())
+                .images(getImageListOrNull())
+                .recordAt(this.recordAt)
+                .startTime(this.startTime)
+                .endTime(this.endTime)
+                .lane(this.lane)
+                .diary(this.diary)
+                .build();
+    }
+
     public Memory toModelWithMemberOnly() {
         return Memory.builder()
                 .id(this.id)

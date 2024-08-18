@@ -46,7 +46,7 @@ public class FollowingMemoryLogEntity extends BaseTimeEntity {
         return FollowingMemoryLog.builder()
                 .id(this.id)
                 .member(this.member.toModel())
-                .memory(this.memory.toModel())
+                .memory(this.memory.toModelForFollowingLog())
                 .createdAt(getCreatedAt())
                 .build();
     }

@@ -157,7 +157,7 @@ public class FollowingLogMemoryResponse {
                 .endTime(memory.parseEndTime())
                 .diary(memory.getDiary())
                 .totalDistance(memory.calculateTotalDistance())
-                .isAchieved(memory.isAchieved(totalDistance))
+                .isAchieved(isAchieved(totalDistance, followingMemoryLog.getMember().getGoal()))
                 .kcal(getKcalFromMemoryDetail(memory))
                 .type(memory.classifyType())
                 .strokes(strokeToDto(memory.getStrokes(), memory.getLane()))
@@ -165,6 +165,10 @@ public class FollowingLogMemoryResponse {
                 .createdAt(createdAt)
                 .isRecentNews(isRecentNews)
                 .build();
+    }
+
+    private static boolean isAchieved(Integer totalDistance, int goal) {
+        return totalDistance >= goal;
     }
 
     private static Integer getKcalFromMemoryDetail(Memory memory) {

@@ -92,21 +92,19 @@ public class FollowingMemoryLogRepositoryTest {
                 FollowingMemoryLog.builder().member(member1).memory(memory).build();
 
         // when
-        followingMemoryLog = followingMemoryLogRepository.save(followingMemoryLog);
+        Long followingMemoryLogId = followingMemoryLogRepository.save(followingMemoryLog);
 
         // then
-        assertThat(followingMemoryLog.getId()).isNotNull();
+        assertThat(followingMemoryLogId).isNotNull();
     }
 
     @Test
     void 팔로잉_소식_조회() {
         // given
         List<Memory> memories = saveMemories();
-        List<FollowingMemoryLog> followingMemoryLogs = getFollowingMemoryLogs(memories);
-        List<Long> expectedMemberIds =
-                followingMemoryLogs.stream().map(f -> f.getMember().getId()).toList();
-        List<Long> expectedMemoryIds =
-                followingMemoryLogs.stream().map(f -> f.getMemory().getId()).toList();
+        getFollowingMemoryLogIds(memories);
+        List<Long> expectedMemberIds = memories.stream().map(m -> m.getMember().getId()).toList();
+        List<Long> expectedMemoryIds = memories.stream().map(Memory::getId).toList();
 
         // when
         List<FollowingMemoryLog> result =
@@ -170,17 +168,17 @@ public class FollowingMemoryLogRepositoryTest {
         return memories;
     }
 
-    private List<FollowingMemoryLog> getFollowingMemoryLogs(List<Memory> memories) {
-        List<FollowingMemoryLog> followingMemoryLogs = new ArrayList<>();
+    private List<Long> getFollowingMemoryLogIds(List<Memory> memories) {
+        List<Long> followingMemoryLogIds = new ArrayList<>();
         for (int i = 0; i < memories.size(); i++) {
             FollowingMemoryLog followingMemoryLog =
                     FollowingMemoryLog.builder()
                             .member(members.get(i))
                             .memory(memories.get(i))
                             .build();
-            followingMemoryLog = followingMemoryLogRepository.save(followingMemoryLog);
-            followingMemoryLogs.add(followingMemoryLog);
+            Long followingMemoryLogId = followingMemoryLogRepository.save(followingMemoryLog);
+            followingMemoryLogIds.add(followingMemoryLogId);
         }
-        return followingMemoryLogs;
+        return followingMemoryLogIds;
     }
 }
