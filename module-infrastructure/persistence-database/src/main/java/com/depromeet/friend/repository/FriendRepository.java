@@ -17,7 +17,6 @@ import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
 import java.util.List;
@@ -189,13 +188,13 @@ public class FriendRepository implements FriendPersistencePort {
 
     @Override
     public FriendCount countFriendByMemberId(Long memberId) {
-        Tuple result = queryFactory
-                .select(
-                        friend.following.id.when(memberId).then(1).otherwise(0).sum(),
-                        friend.member.id.when(memberId).then(1).otherwise(0).sum()
-                )
-                .from(friend)
-                .fetchOne();
+        Tuple result =
+                queryFactory
+                        .select(
+                                friend.following.id.when(memberId).then(1).otherwise(0).sum(),
+                                friend.member.id.when(memberId).then(1).otherwise(0).sum())
+                        .from(friend)
+                        .fetchOne();
         return new FriendCount(result.get(0, Integer.class), result.get(1, Integer.class));
     }
 }

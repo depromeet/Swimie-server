@@ -32,13 +32,14 @@ public class ImageController implements ImageApi {
         return ApiResponse.success(GENERATE_PRESIGNED_URL_SUCCESS, imageUploadResponses);
     }
 
-    @PostMapping("/profile/presigned-url")
-    @Logging(item = "Image", action = "POST")
+    @PutMapping("/profile/presigned-url")
+    @Logging(item = "Image", action = "PUT")
     public ApiResponse<?> getPresignedUrlForUploadProfileImage(
             @LoginMember Long memberId,
             @RequestBody ProfileImageNameRequest profileImageNameRequest) {
         ProfileImageUploadResponse imageUploadResponse =
-                imageFacade.getPresignedUrlAndSaveImage(memberId, profileImageNameRequest);
+                imageFacade.getProflieImagePresignedUrlOrDeleteProfileImage(
+                        memberId, profileImageNameRequest);
         if (imageUploadResponse == null) {
             return ApiResponse.success(DELETE_PROFILE_IMAGE_SUCCESS);
         }
@@ -59,6 +60,15 @@ public class ImageController implements ImageApi {
             @RequestBody ImageIdsRequest imageIdsRequest) {
         imageFacade.changeImageStatus(imageIdsRequest.imageIds());
         return ApiResponse.success(CHANGE_IMAGE_STATUS_SUCCESS);
+    }
+
+    @PatchMapping("/profile/url")
+    @Logging(item = "Image", action = "PATCH")
+    public ApiResponse<?> changeProfileImageUrl(
+            @LoginMember Long memberId,
+            @RequestBody ProfileImageNameRequest profileImageNameRequest) {
+        imageFacade.changeProfileImageUrl(memberId, profileImageNameRequest.imageName());
+        return ApiResponse.success(CHANGE_PROFILE_IMAGE_URL_SUCCESS);
     }
 
     @GetMapping("/memory/{memoryId}")

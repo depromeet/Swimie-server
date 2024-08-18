@@ -78,17 +78,16 @@ public class ImageUploadService implements ImageUploadUseCase {
     }
 
     @Override
-    public ImagePresignedUrlNameVo getPresignedUrlAndSaveProfileImage(String originImageName) {
+    public ImagePresignedUrlNameVo getProfileImagePresignedUrl(String originImageName) {
         String imageName = ImageNameUtil.createImageName(originImageName, LocalDateTime.now(clock));
         String contentType = ImageNameUtil.getContentType(originImageName);
         String imagePresignedUrl = s3ManagePort.getPresignedUrl(imageName, contentType);
-        return getImageUploadResponseDto(originImageName, imageName, imagePresignedUrl);
+        return getImageUploadResponseDto(imageName, imagePresignedUrl);
     }
 
     private ImagePresignedUrlNameVo getImageUploadResponseDto(
-            String originImageName, String imageName, String imagePresignedUrl) {
+            String imageName, String imagePresignedUrl) {
         return ImagePresignedUrlNameVo.builder()
-                .originImageName(originImageName)
                 .imageName(imageName)
                 .presignedUrl(imagePresignedUrl)
                 .build();

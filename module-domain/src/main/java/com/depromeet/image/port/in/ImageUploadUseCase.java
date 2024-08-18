@@ -8,7 +8,7 @@ import java.util.List;
 public interface ImageUploadUseCase {
     List<ImagePresignedUrlVo> getPresignedUrlAndSaveImages(List<String> originImageNames);
 
-    ImagePresignedUrlNameVo getPresignedUrlAndSaveProfileImage(String originImageName);
+    ImagePresignedUrlNameVo getProfileImagePresignedUrl(String originImageName);
 
     void changeImageStatusAndAddMemoryIdToImages(Memory memory, List<Long> imageIds);
 }

@@ -30,6 +30,11 @@ public interface ImageApi {
     @Operation(summary = "수영 기록 이미지 수정시 추가된 이미지가 잘 올라갔는지 확정")
     ApiResponse<?> changeImageStatusForAddedImages(@RequestBody ImageIdsRequest imageIdsRequest);
 
+    @Operation(summary = "프로필 이미지 수정시 이미지가 잘 올라갔는지 확정")
+    ApiResponse<?> changeProfileImageUrl(
+            @LoginMember Long memberId,
+            @RequestBody ProfileImageNameRequest profileImageNameRequest);
+
     @Operation(summary = "수영 기록의 이미지 조회")
     ApiResponse<List<ImageResponse>> findImages(@PathVariable("memoryId") Long memoryId);
 

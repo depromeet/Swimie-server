@@ -45,23 +45,24 @@ public class ImageFacade {
         return imagePresignedUrlVos.stream().map(ImageUploadResponse::of).toList();
     }
 
-    public ProfileImageUploadResponse getPresignedUrlAndSaveImage(
+    public ProfileImageUploadResponse getProflieImagePresignedUrlOrDeleteProfileImage(
             Long memberId, ProfileImageNameRequest profileImageNameRequest) {
-        // 존재하는 이미지를 지운다
+        String imageName = profileImageNameRequest.imageName();
+        if (imageName != null && !imageName.isBlank()) {
+            // 새로운 이미지를 업로드할 수 있는 PresignedUrl 발급
+            ImagePresignedUrlNameVo imagePresignedUrlVo =
+                    imageUploadUseCase.getProfileImagePresignedUrl(
+                            profileImageNameRequest.imageName());
+            return ProfileImageUploadResponse.of(imagePresignedUrlVo);
+        }
+        // 전달 받은 이미지가 없는 경우 기존 이미지 삭제
         Member member = memberService.findById(memberId);
-        if (member.getProfileImageUrl() != null && !member.getProfileImageUrl().isEmpty()) {
+        if (member.getProfileImageUrl() != null && !member.getProfileImageUrl().isBlank()) {
             imageDeleteUseCase.deleteProfileImage(member.getProfileImageUrl());
         }
-        if (profileImageNameRequest.imageName() == null) {
-            memberService.updateProfileImageUrl(memberId, null);
-            return null;
-        }
-        // 새로운 이미지를 업로드한다
-        ImagePresignedUrlNameVo imagePresignedUrlVo =
-                imageUploadUseCase.getPresignedUrlAndSaveProfileImage(
-                        profileImageNameRequest.imageName());
-        memberService.updateProfileImageUrl(memberId, imagePresignedUrlVo.imageName());
-        return ProfileImageUploadResponse.of(imagePresignedUrlVo);
+        // 멤버의 프로필 이미지 URL 정보를 수정한다
+        memberService.updateProfileImageUrl(memberId, null);
+        return null;
     }
 
     public List<ImageUploadResponse> updateImages(
@@ -78,6 +79,16 @@ public class ImageFacade {
 
     public void changeImageStatus(List<Long> imageIds) {
         imageUpdateUseCase.changeImageStatus(imageIds);
+    }
+
+    public void changeProfileImageUrl(Long memberId, String imageName) {
+        // 존재하는 이미지를 지운다
+        Member member = memberService.findById(memberId);
+        if (member.getProfileImageUrl() != null && !member.getProfileImageUrl().isEmpty()) {
+            imageDeleteUseCase.deleteProfileImage(member.getProfileImageUrl());
+        }
+        // 멤버의 프로필 이미지 URL 정보를 수정한다
+        memberService.updateProfileImageUrl(memberId, imageName);
     }
 
     public List<ImageResponse> findImagesByMemoryId(Long memoryId) {

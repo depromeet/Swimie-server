@@ -8,7 +8,8 @@ public enum ImageSuccessType implements SuccessType {
     ADD_MEMORY_TO_IMAGES_SUCCESS("IMAGE_3", "이미지에 memory를 추가하는데 성공하였습니다"),
     UPDATE_AND_GET_PRESIGNED_URL_SUCCESS("IMAGE_4", "이미지 수정 및 추가된 이미지 presignedUrl 생성에 성공하였습니다"),
     GET_IMAGES_SUCCESS("IMAGE_5", "이미지 조회에 성공하였습니다"),
-    DELETE_PROFILE_IMAGE_SUCCESS("IMAGE_6", "프로필 이미지 삭제에 성공하였습니다");
+    DELETE_PROFILE_IMAGE_SUCCESS("IMAGE_6", "프로필 이미지 삭제에 성공하였습니다"),
+    CHANGE_PROFILE_IMAGE_URL_SUCCESS("IMAGE_7", "프로필 이미지 URL 수정에 성공하였습니다");
 
     private final String code;
 

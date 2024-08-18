@@ -8,11 +8,14 @@ import lombok.Builder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record MemberFindOneResponse(
         @Schema(description = "멤버 id", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
-        Long id,
+                Long id,
         @Schema(description = "닉네임", example = "김스위미", requiredMode = Schema.RequiredMode.REQUIRED)
-        String nickname,
-        @Schema(description = "이메일", example = "swimie@gmail.com", requiredMode = Schema.RequiredMode.REQUIRED)
-        String email) {
+                String nickname,
+        @Schema(
+                        description = "이메일",
+                        example = "swimie@gmail.com",
+                        requiredMode = Schema.RequiredMode.REQUIRED)
+                String email) {
     @Builder
     public MemberFindOneResponse {}
 
