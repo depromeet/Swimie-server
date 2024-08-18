@@ -14,6 +14,7 @@ import com.depromeet.memory.domain.MemoryDetail;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,6 +56,13 @@ public class MemoryRepositoryTest {
         lastRecordAt = startRecordAt.minusDays(1);
     }
 
+    @AfterEach
+    void clear() {
+        memoryJpaRepository.deleteAll();
+        memoryDetailJpaRepository.deleteAll();
+        memberJpaRepository.deleteAll();
+    }
+
     @Test
     void findPrevMemoryByMemberId로_최근_날짜_이전_11일_recordAt_Desc로_가져오는지_테스트() {
         // when
@@ -69,7 +77,7 @@ public class MemoryRepositoryTest {
     @Test
     void findPrevMemoryByMemberId로_지정한_날짜_이전_11일_recordAt_Desc로_가져오는지_테스트() {
         // given
-        LocalDate recordAt = LocalDate.of(2024, 8, 31);
+        LocalDate recordAt = LocalDate.of(2024, 7, 25);
 
         // when
         List<Memory> result =
@@ -104,7 +112,7 @@ public class MemoryRepositoryTest {
     @Test
     void 최초_조회_이후_findNextMemoryByMemberId로_다음_데이터를_가져오는지_확인() {
         // given
-        LocalDate recordAt = LocalDate.of(2024, 8, 31);
+        LocalDate recordAt = LocalDate.of(2024, 7, 15);
 
         List<Memory> memories =
                 memoryRepository.findPrevMemoryByMemberId(member.getId(), null, recordAt);
