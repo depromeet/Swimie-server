@@ -3,6 +3,7 @@ package com.depromeet.followingLog.service;
 import com.depromeet.followingLog.domain.FollowingMemoryLog;
 import com.depromeet.followingLog.domain.vo.FollowingLogSlice;
 import com.depromeet.followingLog.port.in.FollowingMemoryLogUseCase;
+import com.depromeet.followingLog.port.in.command.CreateFollowingMemoryCommand;
 import com.depromeet.followingLog.port.out.persistence.FollowingMemoryLogPersistencePort;
 import com.depromeet.member.domain.Member;
 import com.depromeet.memory.domain.Memory;
@@ -10,7 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Service
 @RequiredArgsConstructor
@@ -18,8 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class FollowingLogService implements FollowingMemoryLogUseCase {
     private final FollowingMemoryLogPersistencePort followingMemoryLogPersistencePort;
 
-    @Transactional
-    public void save(Member member, Memory memory) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void save(CreateFollowingMemoryCommand followingMemoryCommand) {
+        Member member = followingMemoryCommand.member();
+        Memory memory = followingMemoryCommand.memory();
         FollowingMemoryLog followingMemoryLog = FollowingMemoryLog.from(member, memory);
         followingMemoryLogPersistencePort.save(followingMemoryLog);
     }

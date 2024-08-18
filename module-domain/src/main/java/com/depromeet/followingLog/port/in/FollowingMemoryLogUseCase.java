@@ -1,11 +1,10 @@
 package com.depromeet.followingLog.port.in;
 
 import com.depromeet.followingLog.domain.vo.FollowingLogSlice;
-import com.depromeet.member.domain.Member;
-import com.depromeet.memory.domain.Memory;
+import com.depromeet.followingLog.port.in.command.CreateFollowingMemoryCommand;
 
 public interface FollowingMemoryLogUseCase {
-    void save(Member member, Memory memory);
+    void save(CreateFollowingMemoryCommand followingMemoryCommand);
 
     FollowingLogSlice findLogsByMemberIdAndCursorId(Long memberId, Long cursorId);
 }
