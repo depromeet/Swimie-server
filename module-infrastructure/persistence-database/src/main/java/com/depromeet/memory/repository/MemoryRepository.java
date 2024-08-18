@@ -7,7 +7,6 @@ import static com.depromeet.memory.entity.QStrokeEntity.strokeEntity;
 import static com.depromeet.pool.entity.QPoolEntity.poolEntity;
 
 import com.depromeet.memory.domain.Memory;
-import com.depromeet.memory.domain.vo.TimelineSlice;
 import com.depromeet.memory.entity.MemoryEntity;
 import com.depromeet.memory.entity.QMemoryEntity;
 import com.depromeet.memory.port.out.persistence.MemoryPersistencePort;
@@ -15,14 +14,10 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 @Slf4j
@@ -110,74 +105,35 @@ public class MemoryRepository implements MemoryPersistencePort {
     }
 
     @Override
-    public TimelineSlice findPrevMemoryByMemberId(
+    public List<Memory> findPrevMemoryByMemberId(
             Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
-        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "recordAt");
-
-        List<MemoryEntity> result =
+        List<MemoryEntity> memories =
                 queryFactory
                         .selectFrom(memory)
                         .where(
                                 memory.member.id.eq(memberId),
                                 ltCursorRecordAt(cursorRecordAt),
                                 loeRecordAt(recordAt))
-                        .limit(pageable.getPageSize() + 1)
+                        .limit(11)
                         .orderBy(memory.recordAt.desc())
                         .fetch();
-        List<Memory> content = toModel(result);
-
-        boolean hasNext = false;
-        LocalDate nextMemoryRecordAt = null;
-        if (content.size() > pageable.getPageSize()) {
-            content = new ArrayList<>(content);
-            content.removeLast();
-            hasNext = true;
-            Memory lastMemory = content.getLast();
-            nextMemoryRecordAt = lastMemory.getRecordAt();
-        }
-
-        return TimelineSlice.builder()
-                .timelineContents(content)
-                .pageSize(10)
-                .cursorRecordAt(nextMemoryRecordAt)
-                .hasNext(hasNext)
-                .build();
+        return toModel(memories);
     }
 
     @Override
-    public TimelineSlice findNextMemoryByMemberId(
+    public List<Memory> findNextMemoryByMemberId(
             Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
-        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "recordAt");
-
-        List<MemoryEntity> result =
+        List<MemoryEntity> memories =
                 queryFactory
                         .selectFrom(memory)
                         .where(
                                 memory.member.id.eq(memberId),
                                 gtCursorRecordAt(cursorRecordAt),
                                 goeRecordAt(recordAt))
-                        .limit(pageable.getPageSize() + 1)
+                        .limit(11)
                         .orderBy(memory.recordAt.asc())
                         .fetch();
-        List<Memory> content = toModel(result);
-
-        boolean hasNext = false;
-        LocalDate nextMemoryRecordAt = null;
-        if (content.size() > pageable.getPageSize()) {
-            content = new ArrayList<>(content);
-            content.removeLast();
-            hasNext = true;
-            Memory lastMemory = content.getLast();
-            nextMemoryRecordAt = lastMemory.getRecordAt();
-        }
-        content = content.reversed();
-
-        return TimelineSlice.builder()
-                .timelineContents(content)
-                .pageSize(10)
-                .cursorRecordAt(nextMemoryRecordAt)
-                .hasNext(hasNext)
-                .build();
+        return toModel(memories);
     }
 
     @Override
@@ -197,7 +153,6 @@ public class MemoryRepository implements MemoryPersistencePort {
                         .where(memberEq(memberId), yearAndMonthEq(year, month))
                         .orderBy(memory.recordAt.asc())
                         .fetch();
-
         return toModel(memories);
     }
 

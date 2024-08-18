@@ -27,4 +27,14 @@ public class TimelineSlice {
         this.cursorRecordAt = cursorRecordAt;
         this.hasNext = hasNext;
     }
+
+    public static TimelineSlice from(
+            List<Memory> timelineContents, LocalDate cursorRecordAt, boolean hasNext) {
+        return TimelineSlice.builder()
+                .timelineContents(timelineContents)
+                .pageSize(timelineContents.size())
+                .cursorRecordAt(cursorRecordAt)
+                .hasNext(hasNext)
+                .build();
+    }
 }

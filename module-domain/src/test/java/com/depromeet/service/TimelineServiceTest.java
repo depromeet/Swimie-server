@@ -49,13 +49,13 @@ public class TimelineServiceTest {
 
         List<Memory> memories = saveMemory();
         expectedInitTimelineContents = memories.subList(memories.size() - 10, memories.size());
-        expectedAfterInitTimelineContents = memories.subList(0, 2);
+        expectedAfterInitTimelineContents = memories.subList(0, 5);
     }
 
     List<Memory> saveMemory() {
         LocalDate initDate = LocalDate.of(2024, 7, 1);
         List<Memory> memories = new ArrayList<>();
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 15; i++) {
             Pool pool = PoolFixture.make("test name", "test address", 25);
             pool = poolRepository.save(pool);
             MemoryDetail memoryDetail = MemoryDetailFixture.make();
@@ -110,7 +110,7 @@ public class TimelineServiceTest {
 
         assertThat(timelineContents)
                 .containsExactlyInAnyOrderElementsOf(expectedAfterInitTimelineContents);
-        assertThat(pageSize).isEqualTo(10);
+        assertThat(pageSize).isEqualTo(5);
         assertThat(cursorRecordAt).isNull();
         assertThat(hasNext).isFalse();
     }

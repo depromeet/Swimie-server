@@ -11,7 +11,6 @@ import com.depromeet.member.repository.MemberJpaRepository;
 import com.depromeet.member.repository.MemberRepository;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.MemoryDetail;
-import com.depromeet.memory.domain.vo.TimelineSlice;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
@@ -55,32 +54,29 @@ public class MemoryRepositoryTest {
     }
 
     @Test
-    void findPrevMemoryByMemberId로_최근_날짜_이전_30일_recordAt_Desc로_가져오는지_테스트() {
+    void findPrevMemoryByMemberId로_최근_날짜_이전_11일_recordAt_Desc로_가져오는지_테스트() {
         // when
-        TimelineSlice timelines =
-                memoryRepository.findPrevMemoryByMemberId(member.getId(), null, null);
-        List<Memory> result = timelines.getTimelineContents();
+        List<Memory> result = memoryRepository.findPrevMemoryByMemberId(member.getId(), null, null);
         Memory lastMemory = result.getLast();
 
         // then
-        assertThat(result.size()).isEqualTo(10);
-        assertThat(lastMemory.getRecordAt()).isEqualTo(startRecordAt.minusDays(10));
+        assertThat(result.size()).isEqualTo(11);
+        assertThat(lastMemory.getRecordAt()).isEqualTo(startRecordAt.minusDays(9));
     }
 
     @Test
-    void findPrevMemoryByMemberId로_지정한_날짜_이전_30일_recordAt_Desc로_가져오는지_테스트() {
+    void findPrevMemoryByMemberId로_지정한_날짜_이전_11일_recordAt_Desc로_가져오는지_테스트() {
         // given
         LocalDate recordAt = LocalDate.of(2024, 8, 31);
 
         // when
-        TimelineSlice timelines =
+        List<Memory> result =
                 memoryRepository.findPrevMemoryByMemberId(member.getId(), null, recordAt);
-        List<Memory> result = timelines.getTimelineContents();
         Memory lastMemory = result.getLast();
 
         // then
-        assertThat(result.size()).isEqualTo(10);
-        assertThat(lastMemory.getRecordAt()).isEqualTo(recordAt.minusDays(9));
+        assertThat(result.size()).isEqualTo(11);
+        assertThat(lastMemory.getRecordAt()).isEqualTo(recordAt.minusDays(10));
     }
 
     @Test
@@ -88,42 +84,38 @@ public class MemoryRepositoryTest {
         // given
         LocalDate recordAt = LocalDate.of(2024, 8, 31);
 
-        TimelineSlice initTimelines =
+        List<Memory> memories =
                 memoryRepository.findPrevMemoryByMemberId(member.getId(), null, recordAt);
-
-        List<Memory> timelineContents = initTimelines.getTimelineContents();
-        Memory lastDate = timelineContents.getLast();
+        Memory lastDate = memories.getLast();
 
         // when
-        TimelineSlice timelines =
+        List<Memory> resultMemories =
                 memoryRepository.findPrevMemoryByMemberId(
                         member.getId(), lastDate.getRecordAt(), null);
-        List<Memory> result = timelines.getTimelineContents();
 
         // then
-        assertThat(result.size()).isEqualTo(10);
-        assertThat(result.getLast().getRecordAt()).isEqualTo(lastDate.getRecordAt().minusDays(10));
+        assertThat(resultMemories.size()).isEqualTo(11);
+        assertThat(resultMemories.getLast().getRecordAt())
+                .isEqualTo(lastDate.getRecordAt().minusDays(11));
     }
 
     @Test
-    void 최초_조회_이후_findPrevMemoryByMemberId로_다음_데이터를_가져오는지_확인() {
+    void 최초_조회_이후_findNextMemoryByMemberId로_다음_데이터를_가져오는지_확인() {
         // given
         LocalDate recordAt = LocalDate.of(2024, 8, 31);
 
-        TimelineSlice initTimelineSlice =
+        List<Memory> memories =
                 memoryRepository.findPrevMemoryByMemberId(member.getId(), null, recordAt);
-
-        List<Memory> initTimelineContents = initTimelineSlice.getTimelineContents();
-        Memory firstDate = initTimelineContents.getFirst();
+        Memory cursorMemory = memories.getFirst();
 
         // when
-        TimelineSlice resultSlice =
+        List<Memory> resultMemories =
                 memoryRepository.findNextMemoryByMemberId(
-                        member.getId(), firstDate.getRecordAt(), null);
-        List<Memory> result = resultSlice.getTimelineContents();
+                        member.getId(), cursorMemory.getRecordAt(), null);
 
         // then
-        assertThat(result.size()).isEqualTo(10);
-        assertThat(result.getFirst().getRecordAt()).isEqualTo(firstDate.getRecordAt().plusDays(10));
+        assertThat(resultMemories.size()).isEqualTo(11);
+        assertThat(resultMemories.getLast().getRecordAt())
+                .isEqualTo(cursorMemory.getRecordAt().plusDays(11));
     }
 }

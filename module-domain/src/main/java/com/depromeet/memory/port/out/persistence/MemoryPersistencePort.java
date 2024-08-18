@@ -1,7 +1,6 @@
 package com.depromeet.memory.port.out.persistence;
 
 import com.depromeet.memory.domain.Memory;
-import com.depromeet.memory.domain.vo.TimelineSlice;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -19,10 +18,10 @@ public interface MemoryPersistencePort {
 
     int findOrderInMonth(Long memberId, Long memoryId, int month);
 
-    TimelineSlice findPrevMemoryByMemberId(
+    List<Memory> findPrevMemoryByMemberId(
             Long memberId, LocalDate cursorRecordAt, LocalDate recordAt);
 
-    TimelineSlice findNextMemoryByMemberId(
+    List<Memory> findNextMemoryByMemberId(
             Long memberId, LocalDate cursorRecordAt, LocalDate recordAt);
 
     List<Memory> getCalendarByYearAndMonth(Long memberId, Integer year, Short month);

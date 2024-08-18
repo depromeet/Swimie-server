@@ -22,4 +22,14 @@ public class FollowingLogSlice {
         this.cursorId = cursorId;
         this.hasNext = hasNext;
     }
+
+    public static FollowingLogSlice from(
+            List<FollowingMemoryLog> contents, Long cursorId, boolean hasNext) {
+        return FollowingLogSlice.builder()
+                .contents(contents)
+                .pageSize(contents.size())
+                .cursorId(cursorId)
+                .hasNext(hasNext)
+                .build();
+    }
 }

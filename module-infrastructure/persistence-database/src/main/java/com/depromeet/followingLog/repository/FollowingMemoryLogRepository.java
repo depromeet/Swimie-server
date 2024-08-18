@@ -1,7 +1,6 @@
 package com.depromeet.followingLog.repository;
 
 import com.depromeet.followingLog.domain.FollowingMemoryLog;
-import com.depromeet.followingLog.domain.vo.FollowingLogSlice;
 import com.depromeet.followingLog.entity.FollowingMemoryLogEntity;
 import com.depromeet.followingLog.entity.QFollowingMemoryLogEntity;
 import com.depromeet.followingLog.port.out.persistence.FollowingMemoryLogPersistencePort;
@@ -9,7 +8,6 @@ import com.depromeet.friend.entity.QFriendEntity;
 import com.depromeet.member.entity.QMemberEntity;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -31,44 +29,27 @@ public class FollowingMemoryLogRepository implements FollowingMemoryLogPersisten
     }
 
     @Override
-    public FollowingLogSlice findLogsByMemberIdAndCursorId(Long memberId, Long cursorId) {
+    public List<FollowingMemoryLog> findLogsByMemberIdAndCursorId(Long memberId, Long cursorId) {
         QFriendEntity friend = QFriendEntity.friendEntity;
         QMemberEntity member = QMemberEntity.memberEntity;
 
         List<FollowingMemoryLogEntity> contents =
                 queryFactory
                         .selectFrom(followingMemoryLog)
-                        .join(member)
-                        .on(followingMemoryLog.member.id.eq(member.id))
+                        .join(followingMemoryLog.member, member)
                         .fetchJoin()
                         .join(friend)
                         .on(friend.following.id.eq(member.id))
                         .fetchJoin()
-                        .where(friend.member.id.eq(memberId), ltCursorId(cursorId))
+                        .where(friend.member.id.eq(memberId), cursorIdLt(cursorId))
                         .limit(11)
                         .orderBy(followingMemoryLog.id.desc())
                         .fetch();
 
-        List<FollowingMemoryLog> result =
-                contents.stream().map(FollowingMemoryLogEntity::toModel).toList();
-
-        boolean hasNext = false;
-        Long nextCursorId = null;
-        if (result.size() > 10) {
-            result = new ArrayList<>(result);
-            result.removeLast();
-            hasNext = true;
-            nextCursorId = result.getLast().getId();
-        }
-        return FollowingLogSlice.builder()
-                .contents(result)
-                .pageSize(result.size())
-                .cursorId(nextCursorId)
-                .hasNext(hasNext)
-                .build();
+        return contents.stream().map(FollowingMemoryLogEntity::toModel).toList();
     }
 
-    private BooleanExpression ltCursorId(Long cursorId) {
+    private BooleanExpression cursorIdLt(Long cursorId) {
         if (cursorId == null) {
             return null;
         }

@@ -7,7 +7,6 @@ import com.depromeet.fixture.member.MemberFixture;
 import com.depromeet.fixture.memory.MemoryDetailFixture;
 import com.depromeet.fixture.memory.MemoryFixture;
 import com.depromeet.followingLog.domain.FollowingMemoryLog;
-import com.depromeet.followingLog.domain.vo.FollowingLogSlice;
 import com.depromeet.followingLog.port.out.persistence.FollowingMemoryLogPersistencePort;
 import com.depromeet.friend.domain.Friend;
 import com.depromeet.friend.port.out.persistence.FriendPersistencePort;
@@ -110,24 +109,21 @@ public class FollowingMemoryLogRepositoryTest {
                 followingMemoryLogs.stream().map(f -> f.getMemory().getId()).toList();
 
         // when
-        FollowingLogSlice followingLogSlice =
+        List<FollowingMemoryLog> result =
                 followingMemoryLogRepository.findLogsByMemberIdAndCursorId(member.getId(), null);
 
         // then
-        List<FollowingMemoryLog> resultContents = followingLogSlice.getContents();
-        List<Long> resultMemberIds =
-                resultContents.stream().map(f -> f.getMember().getId()).toList();
-        List<Long> resultMemoryIds =
-                resultContents.stream().map(f -> f.getMemory().getId()).toList();
+        List<Long> resultMemberIds = result.stream().map(f -> f.getMember().getId()).toList();
+        List<Long> resultMemoryIds = result.stream().map(f -> f.getMemory().getId()).toList();
 
-        assertThat(followingLogSlice.getPageSize()).isEqualTo(10);
+        assertThat(result.size()).isEqualTo(11);
         assertThat(resultMemberIds).containsExactlyInAnyOrderElementsOf(expectedMemberIds);
         assertThat(resultMemoryIds).containsExactlyInAnyOrderElementsOf(expectedMemoryIds);
     }
 
     private List<Member> saveMembers() {
         List<MemberEntity> memberEntities = new ArrayList<>();
-        for (int i = 2; i <= 11; i++) {
+        for (int i = 2; i <= 12; i++) {
             Member following =
                     MemberFixture.make("user" + i, "user" + i + "@gmail.com", "google 1234" + i);
             memberEntities.add(MemberEntity.from(following));
@@ -159,7 +155,7 @@ public class FollowingMemoryLogRepositoryTest {
     }
 
     private List<Memory> saveMemories() {
-        List<MemoryDetail> memoryDetails = MemoryDetailFixture.makeMemoryDetails(10);
+        List<MemoryDetail> memoryDetails = MemoryDetailFixture.makeMemoryDetails(11);
         List<Memory> memories = new ArrayList<>();
 
         for (int i = 0; i < memoryDetails.size(); i++) {
