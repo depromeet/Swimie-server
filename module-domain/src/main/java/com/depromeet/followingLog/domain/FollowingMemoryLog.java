@@ -24,4 +24,8 @@ public class FollowingMemoryLog {
         this.memory = memory;
         this.createdAt = createdAt;
     }
+
+    public static FollowingMemoryLog from(Member member, Memory memory) {
+        return FollowingMemoryLog.builder().member(member).memory(memory).build();
+    }
 }

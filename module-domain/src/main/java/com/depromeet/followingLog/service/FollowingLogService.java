@@ -18,8 +18,7 @@ public class FollowingLogService implements FollowingMemoryLogUseCase {
 
     @Transactional
     public void save(Member member, Memory memory) {
-        FollowingMemoryLog followingMemoryLog =
-                FollowingMemoryLog.builder().member(member).memory(memory).build();
+        FollowingMemoryLog followingMemoryLog = FollowingMemoryLog.from(member, memory);
         followingMemoryLogPersistencePort.save(followingMemoryLog);
     }
 
