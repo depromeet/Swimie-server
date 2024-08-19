@@ -53,7 +53,15 @@ public class FollowingMemoryLogRepository implements FollowingMemoryLogPersisten
                         .limit(11)
                         .orderBy(followingMemoryLog.id.desc())
                         .fetch();
-
+        queryFactory
+                .selectFrom(followingMemoryLog)
+                .join(followingMemoryLog.memory, memoryEntity)
+                .fetchJoin()
+                .join(followingMemoryLog.member, memberEntity)
+                .fetchJoin()
+                .leftJoin(followingMemoryLog.memory.images)
+                .fetchJoin()
+                .fetch();
         return contents.stream().map(FollowingMemoryLogEntity::toModel).toList();
     }
 
