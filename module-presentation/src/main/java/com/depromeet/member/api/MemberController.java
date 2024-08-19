@@ -69,6 +69,7 @@ public class MemberController implements MemberApi {
 
     @GetMapping
     public ApiResponse<MemberDetailResponse> getDetail(@LoginMember Long memberId) {
-        return ApiResponse.success(MemberSuccessType.GET_DETAIL_SUCCESS, memberFacade.findDetailById(memberId));
+        return ApiResponse.success(
+                MemberSuccessType.GET_DETAIL_SUCCESS, memberFacade.findDetailById(memberId));
     }
 }

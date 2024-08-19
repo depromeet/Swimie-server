@@ -7,14 +7,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record MemberDetailResponse(
         @Schema(description = "멤버 id", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
-        Long id,
+                Long id,
         @Schema(description = "닉네임", example = "김스위미", requiredMode = Schema.RequiredMode.REQUIRED)
-        String nickname,
+                String nickname,
         @Schema(description = "목표", example = "1000", requiredMode = Schema.RequiredMode.REQUIRED)
-        Integer goal,
+                Integer goal,
         @Schema(description = "프로필 이미지 URL", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-        String profileImageUrl) {
+                String profileImageUrl) {
     public static MemberDetailResponse of(Member member) {
-        return new MemberDetailResponse(member.getId(), member.getNickname(), member.getGoal(), member.getProfileImageUrl());
+        return new MemberDetailResponse(
+                member.getId(),
+                member.getNickname(),
+                member.getGoal(),
+                member.getProfileImageUrl());
     }
 }
