@@ -64,6 +64,23 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUp
     }
 
     @Override
+    public Member findByProviderId(String providerId) {
+        return memberPersistencePort.findByProviderId(providerId).orElse(null);
+    }
+
+    @Override
+    public Member createMemberBy(SocialMemberCommand command) {
+        Member member =
+                Member.builder()
+                        .nickname(command.name())
+                        .email(command.email())
+                        .role(MemberRole.USER)
+                        .providerId(command.providerId())
+                        .build();
+        return memberPersistencePort.save(member);
+    }
+
+    @Override
     public Member update(UpdateMemberCommand command) {
         return memberPersistencePort
                 .update(command)
