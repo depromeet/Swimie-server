@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MemoryDetailFixture {
-    public static MemoryDetail mockMemoryDetail() {
+    public static MemoryDetail make() {
         return MemoryDetail.builder()
                 .item("킥판, 오리발")
                 .heartRate((short) 100)
@@ -15,10 +15,10 @@ public class MemoryDetailFixture {
                 .build();
     }
 
-    public static List<MemoryDetail> memoryDetailList() {
+    public static List<MemoryDetail> makeMemoryDetails(int count) {
         List<MemoryDetail> memoryDetailList = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            memoryDetailList.add(mockMemoryDetail());
+        for (int i = 0; i < count; i++) {
+            memoryDetailList.add(make());
         }
         return memoryDetailList;
     }

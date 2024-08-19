@@ -25,6 +25,8 @@ public interface MemberPersistencePort {
 
     MemberSearchPage searchByNameQuery(Long memberId, String nameQuery, Long cursorId);
 
+    Optional<Member> updateLatestViewedFollowingLogAt(Long memberId);
+
     Optional<Member> update(UpdateMemberCommand command);
 
     Optional<Member> updateProfileImageUrl(Long memberId, String profileImageUrl);

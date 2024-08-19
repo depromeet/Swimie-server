@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class Timeline {
+public class TimelineSlice {
     private List<Memory> timelineContents;
     private int pageSize;
     private LocalDate cursorRecordAt;
     private boolean hasNext;
 
     @Builder
-    public Timeline(
+    public TimelineSlice(
             List<Memory> timelineContents,
             int pageSize,
             LocalDate cursorRecordAt,
@@ -26,5 +26,15 @@ public class Timeline {
         this.pageSize = pageSize != 0 ? pageSize : 10;
         this.cursorRecordAt = cursorRecordAt;
         this.hasNext = hasNext;
+    }
+
+    public static TimelineSlice from(
+            List<Memory> timelineContents, LocalDate cursorRecordAt, boolean hasNext) {
+        return TimelineSlice.builder()
+                .timelineContents(timelineContents)
+                .pageSize(timelineContents.size())
+                .cursorRecordAt(cursorRecordAt)
+                .hasNext(hasNext)
+                .build();
     }
 }

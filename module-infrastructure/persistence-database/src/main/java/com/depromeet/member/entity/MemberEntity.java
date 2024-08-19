@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,6 +43,8 @@ public class MemberEntity {
 
     @Column private String introduction;
 
+    @Column private LocalDateTime lastViewedFollowingLogAt;
+
     @Builder
     public MemberEntity(
             Long id,
@@ -52,7 +55,8 @@ public class MemberEntity {
             Integer goal,
             MemberGender gender,
             String profileImageUrl,
-            String introduction) {
+            String introduction,
+            LocalDateTime lastViewedFollowingLogAt) {
         this.id = id;
         this.nickname = nickname;
         this.email = email;
@@ -62,6 +66,7 @@ public class MemberEntity {
         this.gender = gender;
         this.profileImageUrl = profileImageUrl;
         this.introduction = introduction;
+        this.lastViewedFollowingLogAt = lastViewedFollowingLogAt;
     }
 
     @PrePersist
@@ -81,6 +86,7 @@ public class MemberEntity {
                 .gender(member.getGender())
                 .profileImageUrl(member.getProfileImageUrl())
                 .introduction(member.getIntroduction())
+                .lastViewedFollowingLogAt(member.getLastViewedFollowingLogAt())
                 .build();
     }
 
@@ -95,6 +101,7 @@ public class MemberEntity {
                 .gender(gender)
                 .profileImageUrl(profileImageUrl)
                 .introduction(introduction)
+                .lastViewedFollowingLogAt(lastViewedFollowingLogAt)
                 .build();
     }
 
@@ -110,6 +117,11 @@ public class MemberEntity {
 
     public MemberEntity updateGender(MemberGender gender) {
         this.gender = gender;
+        return this;
+    }
+
+    public MemberEntity updateLastViewedFollowingLogAt() {
+        this.lastViewedFollowingLogAt = LocalDateTime.now();
         return this;
     }
 

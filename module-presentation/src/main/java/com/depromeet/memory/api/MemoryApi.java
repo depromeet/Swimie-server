@@ -4,10 +4,7 @@ import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
-import com.depromeet.memory.dto.response.CalendarResponse;
-import com.depromeet.memory.dto.response.MemoryCreateResponse;
-import com.depromeet.memory.dto.response.MemoryReadUpdateResponse;
-import com.depromeet.memory.dto.response.MemoryResponse;
+import com.depromeet.memory.dto.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,7 +37,7 @@ public interface MemoryApi {
             @Valid @RequestBody MemoryUpdateRequest memoryUpdateRequest);
 
     @Operation(summary = "타임라인 최신순 조회")
-    ApiResponse<?> timeline(
+    ApiResponse<TimelineSliceResponse> timeline(
             @LoginMember Long memberId,
             @Parameter(description = "커서 기준 (recordAt)", example = "2024-07-31")
                     @RequestParam(name = "cursorRecordAt", required = false)

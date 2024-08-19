@@ -91,6 +91,17 @@ public class FakeMemberRepository implements MemberPersistencePort {
     }
 
     @Override
+    public Optional<Member> updateLatestViewedFollowingLogAt(Long memberId) {
+        return findById(memberId)
+                .map(
+                        item -> {
+                            Member member = item.updateLastViewedFollowingLogAt();
+                            save(member);
+                            return member;
+                        });
+    }
+
+    @Override
     public Optional<Member> update(UpdateMemberCommand command) {
         return findById(command.memberId())
                 .map(
