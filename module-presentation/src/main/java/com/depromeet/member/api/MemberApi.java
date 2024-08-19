@@ -39,4 +39,7 @@ public interface MemberApi {
             @LoginMember Long memberId,
             @RequestParam(name = "nameQuery", required = false) String nameQuery,
             @RequestParam(name = "cursorId", required = false) Long cursorId);
+
+    @Operation(summary = "access token을 통한 로그인 member 정보 조회")
+    ApiResponse<MemberDetailResponse> getDetail(@LoginMember Long memberId);
 }
