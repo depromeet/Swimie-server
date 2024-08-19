@@ -9,7 +9,9 @@ public enum MemberErrorType implements ErrorType {
     NAME_CANNOT_BE_BLANK("MEMBER_4", "멤버의 이름은 공백이 허용되지 않습니다"),
     UPDATE_GENDER_FAILED("MEMBER_5", "멤버의 성별 수정에 실패하였습니다"),
     GENDER_CANNOT_BE_BLANK("MEMBER_6", "멤버의 성별은 공백이 허용되지 않습니다"),
-    UPDATE_LAST_VIEWED_FOLLOWING_LOG_AT("MEMBER_7", "멤버의 최근 팔로잉 소식 조회 시간 변경에 실패하였습니다");
+    UPDATE_FAILED("MEMBER_7", "멤버의 정보 수정에 실패하였습니다"),
+    UPDATE_PROFILE_IMAGE_FAILED("MEMBER_8", "멤버의 프로필 이미지 수정에 실패하였습니다"),
+    UPDATE_LAST_VIEWED_FOLLOWING_LOG_AT("MEMBER_9", "멤버의 최근 팔로잉 소식 조회 시간 변경에 실패하였습니다");
 
     private final String code;
     private final String message;

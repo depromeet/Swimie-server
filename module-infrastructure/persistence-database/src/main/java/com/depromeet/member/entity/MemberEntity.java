@@ -3,6 +3,7 @@ package com.depromeet.member.entity;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.domain.MemberRole;
+import com.depromeet.member.port.in.command.UpdateMemberCommand;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -121,6 +122,16 @@ public class MemberEntity {
 
     public MemberEntity updateLastViewedFollowingLogAt() {
         this.lastViewedFollowingLogAt = LocalDateTime.now();
+    }
+  
+    public MemberEntity update(UpdateMemberCommand command) {
+        this.nickname = command.nickname();
+        this.introduction = command.introduction();
+        return this;
+    }
+
+    public MemberEntity updateProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
         return this;
     }
 }

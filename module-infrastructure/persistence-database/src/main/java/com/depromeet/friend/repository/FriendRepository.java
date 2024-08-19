@@ -1,20 +1,22 @@
 package com.depromeet.friend.repository;
 
 import static com.depromeet.friend.entity.QFriendEntity.friendEntity;
+import static com.querydsl.jpa.JPAExpressions.select;
 
 import com.depromeet.friend.domain.Friend;
 import com.depromeet.friend.domain.vo.FollowSlice;
 import com.depromeet.friend.domain.vo.Follower;
 import com.depromeet.friend.domain.vo.Following;
+import com.depromeet.friend.domain.vo.FriendCount;
 import com.depromeet.friend.entity.FriendEntity;
 import com.depromeet.friend.entity.QFriendEntity;
 import com.depromeet.friend.port.out.persistence.FriendPersistencePort;
 import com.depromeet.member.entity.QMemberEntity;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
 import java.util.List;
@@ -125,7 +127,7 @@ public class FriendRepository implements FriendPersistencePort {
                                         friend.member.profileImageUrl.as("profileImageUrl"),
                                         friend.member.introduction.as("introduction"),
                                         ExpressionUtils.as(
-                                                JPAExpressions.select(Expressions.constant(true))
+                                                select(Expressions.constant(true))
                                                         .from(subFriend)
                                                         .where(
                                                                 friend.member.id.eq(
@@ -200,5 +202,17 @@ public class FriendRepository implements FriendPersistencePort {
             return null;
         }
         return friendEntity.id.lt(cursorId);
+    }
+
+    @Override
+    public FriendCount countFriendByMemberId(Long memberId) {
+        Tuple result =
+                queryFactory
+                        .select(
+                                friend.following.id.when(memberId).then(1).otherwise(0).sum(),
+                                friend.member.id.when(memberId).then(1).otherwise(0).sum())
+                        .from(friend)
+                        .fetchOne();
+        return new FriendCount(result.get(0, Integer.class), result.get(1, Integer.class));
     }
 }

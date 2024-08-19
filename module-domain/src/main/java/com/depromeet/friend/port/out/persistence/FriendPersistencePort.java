@@ -5,6 +5,7 @@ import com.depromeet.friend.domain.vo.FollowSlice;
 import com.depromeet.friend.domain.vo.Follower;
 import com.depromeet.friend.domain.vo.Following;
 import java.util.List;
+import com.depromeet.friend.domain.vo.FriendCount;
 import java.util.Optional;
 
 public interface FriendPersistencePort {
@@ -25,4 +26,6 @@ public interface FriendPersistencePort {
     int countFollowerByMemberId(Long memberId);
 
     List<Following> findFollowingByMemberIdLimitThree(Long memberId);
+
+    FriendCount countFriendByMemberId(Long memberId);
 }

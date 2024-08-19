@@ -12,4 +12,8 @@ public interface MemberUseCase {
     void deleteById(Long id);
 
     MemberSearchPage searchMemberByName(Long memberId, String nameQuery, Long cursorId);
+
+    Member findByProviderId(String providerId);
+
+    Member createMemberBy(SocialMemberCommand command);
 }
