@@ -5,6 +5,7 @@ import com.depromeet.memory.domain.vo.Timeline;
 import com.depromeet.memory.port.out.persistence.MemoryPersistencePort;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -193,5 +194,25 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
     @Override
     public List<Memory> getCalendarByYearAndMonth(Long memberId, Integer year, Short month) {
         return null;
+    }
+
+    @Override
+    public Optional<Memory> findPrevMemoryByRecordAtAndMemberId(LocalDate recordAt, Long memberId) {
+        return data.stream()
+                .filter(
+                        item ->
+                                item.getRecordAt().isBefore(recordAt)
+                                        && item.getMember().getId().equals(memberId))
+                .max(Comparator.comparing(Memory::getRecordAt));
+    }
+
+    @Override
+    public Optional<Memory> findNextMemoryByRecordAtAndMemberId(LocalDate recordAt, Long memberId) {
+        return data.stream()
+                .filter(
+                        item ->
+                                item.getRecordAt().isBefore(recordAt)
+                                        && item.getMember().getId().equals(memberId))
+                .min(Comparator.comparing(Memory::getRecordAt));
     }
 }

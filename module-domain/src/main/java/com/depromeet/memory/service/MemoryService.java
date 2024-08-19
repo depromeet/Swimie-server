@@ -82,6 +82,24 @@ public class MemoryService implements CreateMemoryUseCase, UpdateMemoryUseCase, 
     }
 
     @Override
+    public Memory findPrevMemoryById(Long memoryId) {
+        Memory memory = findById(memoryId);
+        return memoryPersistencePort
+                .findPrevMemoryByRecordAtAndMemberId(
+                        memory.getRecordAt(), memory.getMember().getId())
+                .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND_PREV));
+    }
+
+    @Override
+    public Memory findNextMemoryById(Long memoryId) {
+        Memory memory = findById(memoryId);
+        return memoryPersistencePort
+                .findNextMemoryByRecordAtAndMemberId(
+                        memory.getRecordAt(), memory.getMember().getId())
+                .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND_NEXT));
+    }
+
+    @Override
     @Transactional
     public Memory update(Long memoryId, UpdateMemoryCommand command, List<Stroke> strokes) {
         Memory memory = findById(memoryId);
