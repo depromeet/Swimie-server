@@ -179,6 +179,24 @@ public class FriendRepository implements FriendPersistencePort {
         return count != null ? Math.toIntExact(count) : 0;
     }
 
+    @Override
+    public List<Following> findFollowingByMemberIdLimitThree(Long memberId) {
+        return queryFactory
+                .select(
+                        Projections.constructor(
+                                Following.class,
+                                friend.id.as("friendId"),
+                                friend.following.id.as("memberId"),
+                                friend.following.nickname.as("name"),
+                                friend.following.profileImageUrl.as("profileImageUrl"),
+                                friend.following.introduction.as("introduction")))
+                .from(friend)
+                .where(friend.member.id.eq(memberId))
+                .limit(3)
+                .orderBy(friend.id.desc())
+                .fetch();
+    }
+
     private BooleanExpression ltCursorId(Long cursorId) {
         if (cursorId == null) {
             return null;

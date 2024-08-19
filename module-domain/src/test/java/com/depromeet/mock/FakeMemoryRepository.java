@@ -1,7 +1,6 @@
 package com.depromeet.mock;
 
 import com.depromeet.memory.domain.Memory;
-import com.depromeet.memory.domain.vo.Timeline;
 import com.depromeet.memory.port.out.persistence.MemoryPersistencePort;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -109,7 +108,7 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
     }
 
     @Override
-    public Timeline findPrevMemoryByMemberId(
+    public List<Memory> findPrevMemoryByMemberId(
             Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
         List<Memory> memories;
         if (cursorRecordAt == null) {
@@ -127,28 +126,14 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
         }
         memories = new ArrayList<>(memories);
         memories.sort((memory1, memory2) -> memory2.getRecordAt().compareTo(memory1.getRecordAt()));
-        if (memories.size() > 10) {
-            memories = memories.subList(0, 10);
+        if (memories.size() > 11) {
+            memories = memories.subList(0, 11);
         }
-
-        boolean hasNext = false;
-        cursorRecordAt = null;
-        if (!memories.isEmpty() && memories.size() >= 10) {
-            Memory lastMemory = memories.get(memories.size() - 1);
-            cursorRecordAt = lastMemory.getRecordAt();
-            hasNext = true;
-        }
-
-        return Timeline.builder()
-                .timelineContents(memories)
-                .pageSize(10)
-                .cursorRecordAt(cursorRecordAt)
-                .hasNext(hasNext)
-                .build();
+        return memories;
     }
 
     @Override
-    public Timeline findNextMemoryByMemberId(
+    public List<Memory> findNextMemoryByMemberId(
             Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
         List<Memory> memories;
         if (cursorRecordAt == null) {
@@ -156,17 +141,17 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
                     data.stream()
                             .filter(memory -> memory.getMember().getId().equals(memberId))
                             .toList();
+            memories = new ArrayList<>(memories);
             memories.sort(
                     (memory1, memory2) -> memory2.getRecordAt().compareTo(memory1.getRecordAt()));
-            if (memories.size() > 10) {
-                memories = memories.subList(0, 10);
+            if (memories.size() > 11) {
+                memories = memories.subList(0, 11);
             }
         } else {
-            LocalDate finalCursorRecordAt = cursorRecordAt;
             memories =
                     data.stream()
                             .filter(memory -> memory.getMember().getId().equals(memberId))
-                            .filter(memory -> memory.getRecordAt().isAfter(finalCursorRecordAt))
+                            .filter(memory -> memory.getRecordAt().isAfter(cursorRecordAt))
                             .toList();
             if (memories.size() > 10) {
                 memories = memories.subList(0, 10);
@@ -174,21 +159,7 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
             memories.sort(
                     (memory1, memory2) -> memory2.getRecordAt().compareTo(memory1.getRecordAt()));
         }
-
-        boolean hasNext = false;
-        cursorRecordAt = null;
-        if (!memories.isEmpty()) {
-            Memory lastMemory = memories.get(0);
-            cursorRecordAt = lastMemory.getRecordAt();
-            hasNext = true;
-        }
-
-        return Timeline.builder()
-                .timelineContents(memories)
-                .pageSize(10)
-                .cursorRecordAt(cursorRecordAt)
-                .hasNext(hasNext)
-                .build();
+        return memories;
     }
 
     @Override

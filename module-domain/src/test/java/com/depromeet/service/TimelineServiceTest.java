@@ -9,7 +9,7 @@ import com.depromeet.fixture.PoolFixture;
 import com.depromeet.member.domain.Member;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.MemoryDetail;
-import com.depromeet.memory.domain.vo.Timeline;
+import com.depromeet.memory.domain.vo.TimelineSlice;
 import com.depromeet.memory.service.TimelineService;
 import com.depromeet.mock.*;
 import com.depromeet.pool.domain.Pool;
@@ -49,13 +49,13 @@ public class TimelineServiceTest {
 
         List<Memory> memories = saveMemory();
         expectedInitTimelineContents = memories.subList(memories.size() - 10, memories.size());
-        expectedAfterInitTimelineContents = memories.subList(0, 2);
+        expectedAfterInitTimelineContents = memories.subList(0, 5);
     }
 
     List<Memory> saveMemory() {
         LocalDate initDate = LocalDate.of(2024, 7, 1);
         List<Memory> memories = new ArrayList<>();
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 15; i++) {
             Pool pool = PoolFixture.make("test name", "test address", 25);
             pool = poolRepository.save(pool);
             MemoryDetail memoryDetail = MemoryDetailFixture.make();
@@ -76,13 +76,13 @@ public class TimelineServiceTest {
         // given
         LocalDate expectedCursorDate = lastDate.minusDays(10);
         // when
-        Timeline timeline =
+        TimelineSlice timelineSlice =
                 timelineService.getTimelineByMemberIdAndCursorAndDate(memberId, null, null, false);
         // then
-        List<Memory> timelineContents = timeline.getTimelineContents();
-        int pageSize = timeline.getPageSize();
-        LocalDate cursorRecordAt = timeline.getCursorRecordAt();
-        boolean hasNext = timeline.isHasNext();
+        List<Memory> timelineContents = timelineSlice.getTimelineContents();
+        int pageSize = timelineSlice.getPageSize();
+        LocalDate cursorRecordAt = timelineSlice.getCursorRecordAt();
+        boolean hasNext = timelineSlice.isHasNext();
 
         assertThat(timelineContents)
                 .containsExactlyInAnyOrderElementsOf(expectedInitTimelineContents);
@@ -94,23 +94,23 @@ public class TimelineServiceTest {
     @Test
     void 타임라인_최초조회이후_cursorRecordAt로_다음_페이지_조회() {
         // given
-        Timeline initTimeline =
+        TimelineSlice initTimelineSlice =
                 timelineService.getTimelineByMemberIdAndCursorAndDate(memberId, null, null, false);
-        LocalDate initCursorRecordAt = initTimeline.getCursorRecordAt();
+        LocalDate initCursorRecordAt = initTimelineSlice.getCursorRecordAt();
 
         // when
-        Timeline timeline =
+        TimelineSlice timelineSlice =
                 timelineService.getTimelineByMemberIdAndCursorAndDate(
                         memberId, initCursorRecordAt, null, false);
         // then
-        List<Memory> timelineContents = timeline.getTimelineContents();
-        int pageSize = timeline.getPageSize();
-        LocalDate cursorRecordAt = timeline.getCursorRecordAt();
-        boolean hasNext = timeline.isHasNext();
+        List<Memory> timelineContents = timelineSlice.getTimelineContents();
+        int pageSize = timelineSlice.getPageSize();
+        LocalDate cursorRecordAt = timelineSlice.getCursorRecordAt();
+        boolean hasNext = timelineSlice.isHasNext();
 
         assertThat(timelineContents)
                 .containsExactlyInAnyOrderElementsOf(expectedAfterInitTimelineContents);
-        assertThat(pageSize).isEqualTo(10);
+        assertThat(pageSize).isEqualTo(5);
         assertThat(cursorRecordAt).isNull();
         assertThat(hasNext).isFalse();
     }

@@ -116,6 +116,16 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUp
     }
 
     @Override
+    public Member updateLatestViewedFollowingLogAt(Long memberId) {
+        return memberPersistencePort
+                .updateLatestViewedFollowingLogAt(memberId)
+                .orElseThrow(
+                        () ->
+                                new InternalServerException(
+                                        MemberErrorType.UPDATE_LAST_VIEWED_FOLLOWING_LOG_AT));
+    }
+  
+    @Override
     public Member updateProfileImageUrl(Long memberId, String profileImageUrl) {
         return memberPersistencePort
                 .updateProfileImageUrl(memberId, profileImageUrl)

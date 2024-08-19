@@ -4,12 +4,26 @@ import com.depromeet.friend.domain.vo.FollowSlice;
 import com.depromeet.friend.domain.vo.Follower;
 import com.depromeet.friend.domain.vo.Following;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import lombok.Builder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record FollowSliceResponse<T>(
-        List<T> contents, int pageSize, Long cursorId, boolean hasNext) {
+        @Schema(description = "팔로워/팔로잉 리스트", requiredMode = Schema.RequiredMode.REQUIRED)
+                List<T> contents,
+        @Schema(description = "페이지 크기", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
+                int pageSize,
+        @Schema(
+                        description = "다음 페이지 시작 ID",
+                        example = "1",
+                        requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+                Long cursorId,
+        @Schema(
+                        description = "다음 페이지 유무",
+                        example = "false",
+                        requiredMode = Schema.RequiredMode.REQUIRED)
+                boolean hasNext) {
     @Builder
     public FollowSliceResponse {}
 
@@ -26,9 +40,9 @@ public record FollowSliceResponse<T>(
     }
 
     public static FollowSliceResponse<FollowerResponse> toFollowerSliceResponses(
-            FollowSlice<Follower> followingSlice, String profileImageDomain) {
+            FollowSlice<Follower> followingSlice, String profileImageOrigin) {
         List<FollowerResponse> followingResponses =
-                getFollowerResponses(followingSlice, profileImageDomain);
+                getFollowerResponses(followingSlice, profileImageOrigin);
         return FollowSliceResponse.<FollowerResponse>builder()
                 .contents(followingResponses)
                 .pageSize(followingSlice.getPageSize())
@@ -55,7 +69,7 @@ public record FollowSliceResponse<T>(
     }
 
     private static List<FollowerResponse> getFollowerResponses(
-            FollowSlice<Follower> followingSlice, String profileImageDomain) {
+            FollowSlice<Follower> followingSlice, String profileImageOrigin) {
         return followingSlice.getFollowContents().stream()
                 .map(
                         follower ->
@@ -64,7 +78,7 @@ public record FollowSliceResponse<T>(
                                         .name(follower.getName())
                                         .profileImageUrl(
                                                 getProfileImageUrl(
-                                                        profileImageDomain,
+                                                        profileImageOrigin,
                                                         follower.getProfileImageUrl()))
                                         .introduction(follower.getIntroduction())
                                         .hasFollowedBack(follower.isHasFollowedBack())
@@ -72,9 +86,9 @@ public record FollowSliceResponse<T>(
                 .toList();
     }
 
-    private static String getProfileImageUrl(String profileImageDomain, String profileImageUrl) {
+    private static String getProfileImageUrl(String profileImageOrigin, String profileImageUrl) {
         if (profileImageUrl != null) {
-            return profileImageDomain + "/" + profileImageUrl;
+            return profileImageOrigin + "/" + profileImageUrl;
         }
         return null;
     }

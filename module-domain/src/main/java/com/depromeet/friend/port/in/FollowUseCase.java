@@ -5,6 +5,7 @@ import com.depromeet.friend.domain.vo.Follower;
 import com.depromeet.friend.domain.vo.Following;
 import com.depromeet.friend.domain.vo.FriendCount;
 import com.depromeet.member.domain.Member;
+import java.util.List;
 
 public interface FollowUseCase {
     boolean addOrDeleteFollow(Member member, Member following);
@@ -17,5 +18,7 @@ public interface FollowUseCase {
 
     int countFollowerByMemberId(Long memberId);
 
+    List<Following> getFollowingByMemberIdLimitThree(Long memberId);
+  
     FriendCount countFriendByMemberId(Long memberId);
 }

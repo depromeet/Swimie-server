@@ -5,6 +5,7 @@ import com.depromeet.friend.dto.request.FollowRequest;
 import com.depromeet.friend.dto.response.FollowSliceResponse;
 import com.depromeet.friend.dto.response.FollowerResponse;
 import com.depromeet.friend.dto.response.FollowingResponse;
+import com.depromeet.friend.dto.response.FollowingSummaryResponse;
 import com.depromeet.member.annotation.LoginMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,4 +27,7 @@ public interface FollowApi {
     ApiResponse<FollowSliceResponse<FollowerResponse>> findFollowerList(
             @LoginMember Long memberId,
             @RequestParam(value = "cursorId", required = false) Long cursorId);
+
+    @Operation(summary = "팔로잉 소식 페이지에 사용할 팔로잉 유저 목록 조회")
+    ApiResponse<FollowingSummaryResponse> findFollowingSummary(@LoginMember Long memberId);
 }

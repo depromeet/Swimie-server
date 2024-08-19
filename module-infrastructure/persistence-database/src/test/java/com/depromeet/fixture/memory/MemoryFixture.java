@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class MemoryFixture {
-    public static Memory mockMemory(
+    public static Memory make(
             Member member, MemoryDetail memoryDetail, Pool pool, LocalDate recordAt) {
         return Memory.builder()
                 .member(member)

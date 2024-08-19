@@ -7,9 +7,11 @@ import com.depromeet.friend.dto.request.FollowRequest;
 import com.depromeet.friend.dto.response.FollowSliceResponse;
 import com.depromeet.friend.dto.response.FollowerResponse;
 import com.depromeet.friend.dto.response.FollowingResponse;
+import com.depromeet.friend.dto.response.FollowingSummaryResponse;
 import com.depromeet.friend.port.in.FollowUseCase;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -41,5 +43,13 @@ public class FollowFacade {
         FollowSlice<Follower> followerSlice =
                 followUseCase.getFollowerByMemberIdAndCursorId(memberId, cursorId);
         return FollowSliceResponse.toFollowerSliceResponses(followerSlice, profileImageOrigin);
+    }
+
+    public FollowingSummaryResponse findFollowingSummary(Long memberId) {
+        int followingCount = followUseCase.countFollowingByMemberId(memberId);
+        List<Following> followings = followUseCase.getFollowingByMemberIdLimitThree(memberId);
+
+        return FollowingSummaryResponse.toFollowingSummaryResponse(
+                followingCount, followings, profileImageOrigin);
     }
 }

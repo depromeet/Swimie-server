@@ -117,12 +117,11 @@ public class ImageRepositoryTest {
     }
 
     void saveMemory() {
-        MemoryDetail memoryDetail = MemoryDetailFixture.mockMemoryDetail();
+        MemoryDetail memoryDetail = MemoryDetailFixture.make();
         memoryDetail = memoryDetailPersistencePort.save(memoryDetail);
         memory =
                 memoryPersistencePort.save(
-                        MemoryFixture.mockMemory(
-                                member, memoryDetail, null, LocalDate.of(2024, 7, 1)));
+                        MemoryFixture.make(member, memoryDetail, null, LocalDate.of(2024, 7, 1)));
     }
 
     List<Image> saveImages(Memory memory) {

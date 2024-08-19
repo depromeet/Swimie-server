@@ -1,7 +1,7 @@
 package com.depromeet.memory.mapper;
 
 import com.depromeet.member.domain.Member;
-import com.depromeet.memory.domain.vo.Timeline;
+import com.depromeet.memory.domain.vo.TimelineSlice;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
 import com.depromeet.memory.dto.request.StrokeCreateRequest;
@@ -70,23 +70,24 @@ public class MemoryMapper {
                 .build();
     }
 
-    public static TimelineSliceResponse toSliceResponse(Member member, Timeline timeline) {
+    public static TimelineSliceResponse toSliceResponse(
+            Member member, TimelineSlice timelineSlice) {
         List<TimelineResponse> result =
-                timeline.getTimelineContents().stream()
+                timelineSlice.getTimelineContents().stream()
                         .map(TimelineResponse::mapToTimelineResponseDto)
                         .toList();
         return TimelineSliceResponse.builder()
                 .content(result)
                 .goal(member.getGoal())
-                .pageSize(timeline.getPageSize())
-                .cursorRecordAt(getCursorRecordAtResponse(timeline))
-                .hasNext(timeline.isHasNext())
+                .pageSize(timelineSlice.getPageSize())
+                .cursorRecordAt(getCursorRecordAtResponse(timelineSlice))
+                .hasNext(timelineSlice.isHasNext())
                 .build();
     }
 
-    private static String getCursorRecordAtResponse(Timeline timeline) {
-        return timeline.getCursorRecordAt() != null
-                ? timeline.getCursorRecordAt().toString()
+    private static String getCursorRecordAtResponse(TimelineSlice timelineSlice) {
+        return timelineSlice.getCursorRecordAt() != null
+                ? timelineSlice.getCursorRecordAt().toString()
                 : null;
     }
 }

@@ -11,10 +11,10 @@ import com.depromeet.member.repository.MemberJpaRepository;
 import com.depromeet.member.repository.MemberRepository;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.MemoryDetail;
-import com.depromeet.memory.domain.vo.Timeline;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,59 +29,64 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 public class MemoryRepositoryTest {
     @Autowired private JPAQueryFactory queryFactory;
     @Autowired private MemoryJpaRepository memoryJpaRepository;
-    private MemoryRepository memoryRepositoryImpl;
+    private MemoryRepository memoryRepository;
     @Autowired private MemberJpaRepository memberJpaRepository;
-    private MemberRepository memberRepositoryImpl;
+    private MemberRepository memberRepository;
     @Autowired private MemoryDetailJpaRepository memoryDetailJpaRepository;
-    private MemoryDetailRepository memoryDetailRepositoryImpl;
+    private MemoryDetailRepository memoryDetailRepository;
 
     private Member member;
     private LocalDate startRecordAt;
+    private LocalDate lastRecordAt;
 
     @BeforeEach
     void setUp() {
-        memberRepositoryImpl = new MemberRepository(queryFactory, memberJpaRepository);
-        memoryRepositoryImpl = new MemoryRepository(queryFactory, memoryJpaRepository);
-        memoryDetailRepositoryImpl = new MemoryDetailRepository(memoryDetailJpaRepository);
-        member = memberRepositoryImpl.save(MemberFixture.make());
-        List<MemoryDetail> memoryDetailList = MemoryDetailFixture.memoryDetailList();
+        memberRepository = new MemberRepository(queryFactory, memberJpaRepository);
+        memoryRepository = new MemoryRepository(queryFactory, memoryJpaRepository);
+        memoryDetailRepository = new MemoryDetailRepository(memoryDetailJpaRepository);
+        member = memberRepository.save(MemberFixture.make());
+        List<MemoryDetail> memoryDetailList = MemoryDetailFixture.makeMemoryDetails(30);
 
         startRecordAt = LocalDate.of(2024, 7, 1);
-        for (int i = 0; i < 100; i++) {
-            MemoryDetail memoryDetail = memoryDetailRepositoryImpl.save(memoryDetailList.get(i));
-            memoryRepositoryImpl.save(
-                    MemoryFixture.mockMemory(member, memoryDetail, null, startRecordAt));
+        for (int i = 0; i < 30; i++) {
+            MemoryDetail memoryDetail = memoryDetailRepository.save(memoryDetailList.get(i));
+            memoryRepository.save(MemoryFixture.make(member, memoryDetail, null, startRecordAt));
             startRecordAt = startRecordAt.plusDays(1);
         }
+        lastRecordAt = startRecordAt.minusDays(1);
+    }
+
+    @AfterEach
+    void clear() {
+        memoryJpaRepository.deleteAll();
+        memoryDetailJpaRepository.deleteAll();
+        memberJpaRepository.deleteAll();
     }
 
     @Test
-    void findPrevMemoryByMemberId로_최근_날짜_이전_30일_recordAt_Desc로_가져오는지_테스트() {
+    void findPrevMemoryByMemberId로_최근_날짜_이전_11일_recordAt_Desc로_가져오는지_테스트() {
         // when
-        Timeline timelines =
-                memoryRepositoryImpl.findPrevMemoryByMemberId(member.getId(), null, null);
-        List<Memory> result = timelines.getTimelineContents();
+        List<Memory> result = memoryRepository.findPrevMemoryByMemberId(member.getId(), null, null);
         Memory lastMemory = result.getLast();
 
         // then
-        assertThat(result.size()).isEqualTo(10);
-        assertThat(lastMemory.getRecordAt()).isEqualTo(startRecordAt.minusDays(10));
+        assertThat(result.size()).isEqualTo(11);
+        assertThat(lastMemory.getRecordAt()).isEqualTo(lastRecordAt.minusDays(10));
     }
 
     @Test
-    void findPrevMemoryByMemberId로_지정한_날짜_이전_30일_recordAt_Desc로_가져오는지_테스트() {
+    void findPrevMemoryByMemberId로_지정한_날짜_이전_11일_recordAt_Desc로_가져오는지_테스트() {
         // given
-        LocalDate recordAt = LocalDate.of(2024, 8, 31);
+        LocalDate recordAt = LocalDate.of(2024, 7, 25);
 
         // when
-        Timeline timelines =
-                memoryRepositoryImpl.findPrevMemoryByMemberId(member.getId(), null, recordAt);
-        List<Memory> result = timelines.getTimelineContents();
+        List<Memory> result =
+                memoryRepository.findPrevMemoryByMemberId(member.getId(), null, recordAt);
         Memory lastMemory = result.getLast();
 
         // then
-        assertThat(result.size()).isEqualTo(10);
-        assertThat(lastMemory.getRecordAt()).isEqualTo(recordAt.minusDays(9));
+        assertThat(result.size()).isEqualTo(11);
+        assertThat(lastMemory.getRecordAt()).isEqualTo(recordAt.minusDays(10));
     }
 
     @Test
@@ -89,42 +94,38 @@ public class MemoryRepositoryTest {
         // given
         LocalDate recordAt = LocalDate.of(2024, 8, 31);
 
-        Timeline initTimelines =
-                memoryRepositoryImpl.findPrevMemoryByMemberId(member.getId(), null, recordAt);
-
-        List<Memory> timelineContents = initTimelines.getTimelineContents();
-        Memory lastDate = timelineContents.getLast();
+        List<Memory> memories =
+                memoryRepository.findPrevMemoryByMemberId(member.getId(), null, recordAt);
+        Memory lastDate = memories.getLast();
 
         // when
-        Timeline timelines =
-                memoryRepositoryImpl.findPrevMemoryByMemberId(
+        List<Memory> resultMemories =
+                memoryRepository.findPrevMemoryByMemberId(
                         member.getId(), lastDate.getRecordAt(), null);
-        List<Memory> result = timelines.getTimelineContents();
 
         // then
-        assertThat(result.size()).isEqualTo(10);
-        assertThat(result.getLast().getRecordAt()).isEqualTo(lastDate.getRecordAt().minusDays(10));
+        assertThat(resultMemories.size()).isEqualTo(11);
+        assertThat(resultMemories.getLast().getRecordAt())
+                .isEqualTo(lastDate.getRecordAt().minusDays(11));
     }
 
     @Test
-    void 최초_조회_이후_findPrevMemoryByMemberId로_다음_데이터를_가져오는지_확인() {
+    void 최초_조회_이후_findNextMemoryByMemberId로_다음_데이터를_가져오는지_확인() {
         // given
-        LocalDate recordAt = LocalDate.of(2024, 8, 31);
+        LocalDate recordAt = LocalDate.of(2024, 7, 15);
 
-        Timeline initTimeline =
-                memoryRepositoryImpl.findPrevMemoryByMemberId(member.getId(), null, recordAt);
-
-        List<Memory> initTimelineContents = initTimeline.getTimelineContents();
-        Memory firstDate = initTimelineContents.getFirst();
+        List<Memory> memories =
+                memoryRepository.findPrevMemoryByMemberId(member.getId(), null, recordAt);
+        Memory cursorMemory = memories.getFirst();
 
         // when
-        Timeline resultSlice =
-                memoryRepositoryImpl.findNextMemoryByMemberId(
-                        member.getId(), firstDate.getRecordAt(), null);
-        List<Memory> result = resultSlice.getTimelineContents();
+        List<Memory> resultMemories =
+                memoryRepository.findNextMemoryByMemberId(
+                        member.getId(), cursorMemory.getRecordAt(), null);
 
         // then
-        assertThat(result.size()).isEqualTo(10);
-        assertThat(result.getFirst().getRecordAt()).isEqualTo(firstDate.getRecordAt().plusDays(10));
+        assertThat(resultMemories.size()).isEqualTo(11);
+        assertThat(resultMemories.getLast().getRecordAt())
+                .isEqualTo(cursorMemory.getRecordAt().plusDays(11));
     }
 }

@@ -3,12 +3,13 @@ package com.depromeet.memory.facade;
 import static com.depromeet.memory.service.MemoryValidator.isMyMemory;
 import static com.depromeet.memory.service.MemoryValidator.validatePermission;
 
+import com.depromeet.followingLog.port.in.command.CreateFollowingMemoryCommand;
 import com.depromeet.image.port.in.ImageUploadUseCase;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.Stroke;
-import com.depromeet.memory.domain.vo.Timeline;
+import com.depromeet.memory.domain.vo.TimelineSlice;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
 import com.depromeet.memory.dto.response.*;
@@ -27,6 +28,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +45,7 @@ public class MemoryFacade {
     private final SearchLogUseCase poolSearchLogUseCase;
     private final CreateMemoryUseCase createMemoryUseCase;
     private final UpdateMemoryUseCase updateMemoryUseCase;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public MemoryCreateResponse create(Long memberId, MemoryCreateRequest request) {
@@ -62,6 +65,8 @@ public class MemoryFacade {
         if (request.getPoolId() != null) {
             poolSearchLogUseCase.createSearchLog(writer, request.getPoolId());
         }
+        // 팔로잉 소식 저장
+        eventPublisher.publishEvent(new CreateFollowingMemoryCommand(writer, newMemory));
         return MemoryCreateResponse.of(month, rank, memoryId);
     }
 
@@ -92,10 +97,10 @@ public class MemoryFacade {
     public TimelineSliceResponse getTimelineByMemberIdAndCursorAndDate(
             Long memberId, LocalDate cursorRecordAt, YearMonth date, boolean showNewer) {
         Member member = memberUseCase.findById(memberId);
-        Timeline timeline =
+        TimelineSlice timelineSlice =
                 timelineUseCase.getTimelineByMemberIdAndCursorAndDate(
                         memberId, cursorRecordAt, date, showNewer);
-        return MemoryMapper.toSliceResponse(member, timeline);
+        return MemoryMapper.toSliceResponse(member, timelineSlice);
     }
 
     public CalendarResponse getCalendar(Long memberId, Integer year, Short month) {
