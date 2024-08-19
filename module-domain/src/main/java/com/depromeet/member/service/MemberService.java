@@ -9,6 +9,7 @@ import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.domain.MemberRole;
 import com.depromeet.member.domain.vo.MemberSearchPage;
 import com.depromeet.member.port.in.command.SocialMemberCommand;
+import com.depromeet.member.port.in.command.UpdateMemberCommand;
 import com.depromeet.member.port.in.usecase.GoalUpdateUseCase;
 import com.depromeet.member.port.in.usecase.MemberUpdateUseCase;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
@@ -63,6 +64,13 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUp
     }
 
     @Override
+    public Member update(UpdateMemberCommand command) {
+        return memberPersistencePort
+                .update(command)
+                .orElseThrow(() -> new InternalServerException(MemberErrorType.UPDATE_FAILED));
+    }
+
+    @Override
     public Member updateGoal(Long memberId, Integer goal) {
         return memberPersistencePort
                 .updateGoal(memberId, goal)
@@ -88,5 +96,15 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUp
                 .updateGender(memberId, gender)
                 .orElseThrow(
                         () -> new InternalServerException(MemberErrorType.UPDATE_GENDER_FAILED));
+    }
+
+    @Override
+    public Member updateProfileImageUrl(Long memberId, String profileImageUrl) {
+        return memberPersistencePort
+                .updateProfileImageUrl(memberId, profileImageUrl)
+                .orElseThrow(
+                        () ->
+                                new InternalServerException(
+                                        MemberErrorType.UPDATE_PROFILE_IMAGE_FAILED));
     }
 }

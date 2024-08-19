@@ -5,10 +5,9 @@ import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.dto.request.GenderUpdateRequest;
+import com.depromeet.member.dto.request.MemberUpdateRequest;
 import com.depromeet.member.dto.request.NicknameUpdateRequest;
-import com.depromeet.member.dto.response.MemberFindOneResponse;
-import com.depromeet.member.dto.response.MemberGenderResponse;
-import com.depromeet.member.dto.response.MemberSearchResponse;
+import com.depromeet.member.dto.response.*;
 import com.depromeet.member.facade.MemberFacade;
 import com.depromeet.type.member.MemberSuccessType;
 import jakarta.validation.Valid;
@@ -23,9 +22,19 @@ public class MemberController implements MemberApi {
 
     @GetMapping("/{id}")
     @Logging(item = "Member", action = "GET")
-    public ApiResponse<MemberFindOneResponse> getMember(@PathVariable("id") Long id) {
-        Member member = memberFacade.findById(id);
-        return ApiResponse.success(MemberSuccessType.GET_SUCCESS, MemberFindOneResponse.of(member));
+    public ApiResponse<MemberProfileResponse> getMember(
+            @LoginMember Long memberId, @PathVariable("id") Long id) {
+        return ApiResponse.success(
+                MemberSuccessType.GET_SUCCESS, memberFacade.findById(memberId, id));
+    }
+
+    @PatchMapping
+    public ApiResponse<MemberUpdateResponse> updateMember(
+            @LoginMember Long memberId,
+            @Valid @RequestBody MemberUpdateRequest memberUpdateRequest) {
+        return ApiResponse.success(
+                MemberSuccessType.UPDATE_SUCCESS,
+                memberFacade.update(memberId, memberUpdateRequest));
     }
 
     @PatchMapping("/nickname")
