@@ -1,7 +1,7 @@
 package com.depromeet.member.domain;
 
-import java.time.LocalDateTime;
 import com.depromeet.member.port.in.command.UpdateMemberCommand;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -59,8 +59,9 @@ public class Member {
 
     public Member updateLastViewedFollowingLogAt() {
         this.lastViewedFollowingLogAt = LocalDateTime.now();
+        return this;
     }
-  
+
     public Member update(UpdateMemberCommand command) {
         this.nickname = command.nickname();
         this.introduction = command.introduction();

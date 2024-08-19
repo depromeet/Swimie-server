@@ -122,8 +122,9 @@ public class MemberEntity {
 
     public MemberEntity updateLastViewedFollowingLogAt() {
         this.lastViewedFollowingLogAt = LocalDateTime.now();
+        return this;
     }
-  
+
     public MemberEntity update(UpdateMemberCommand command) {
         this.nickname = command.nickname();
         this.introduction = command.introduction();
