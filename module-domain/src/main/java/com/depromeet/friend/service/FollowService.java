@@ -64,7 +64,7 @@ public class FollowService implements FollowUseCase {
     public List<Following> getFollowingByMemberIdLimitThree(Long memberId) {
         return friendPersistencePort.findFollowingByMemberIdLimitThree(memberId);
     }
-  
+
     @Override
     public FriendCount countFriendByMemberId(Long memberId) {
         return friendPersistencePort.countFriendByMemberId(memberId);

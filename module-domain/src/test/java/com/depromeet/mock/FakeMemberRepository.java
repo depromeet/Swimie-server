@@ -100,7 +100,7 @@ public class FakeMemberRepository implements MemberPersistencePort {
                             return member;
                         });
     }
-  
+
     @Override
     public Optional<Member> update(UpdateMemberCommand command) {
         return findById(command.memberId())

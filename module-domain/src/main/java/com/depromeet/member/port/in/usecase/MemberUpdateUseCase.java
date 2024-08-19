@@ -12,6 +12,6 @@ public interface MemberUpdateUseCase {
     Member updateGender(Long memberId, MemberGender gender);
 
     Member updateLatestViewedFollowingLogAt(Long memberId);
-    
+
     Member updateProfileImageUrl(Long memberId, String profileImageUrl);
 }
