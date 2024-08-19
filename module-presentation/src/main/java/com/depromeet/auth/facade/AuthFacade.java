@@ -20,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -34,12 +36,7 @@ public class AuthFacade {
         if (profile == null) {
             throw new NotFoundException(AuthErrorType.NOT_FOUND);
         }
-        final Member member =
-                memberUseCase.findOrCreateMemberBy(
-                        MemberMapper.toCommand(profile, "google " + profile.id()));
-        JwtToken token = createTokenUseCase.generateToken(member.getId(), member.getRole());
-
-        return JwtTokenResponse.of(token, member.getNickname());
+        return getJwtTokenResponse(profile, "google");
     }
 
     public JwtTokenResponse loginByKakao(KakaoLoginRequest request, String origin) {
@@ -53,12 +50,7 @@ public class AuthFacade {
                         profile.id(),
                         profile.accountInfo().profileInfo().nickname(),
                         profile.accountInfo().email());
-        final Member member =
-                memberUseCase.findOrCreateMemberBy(
-                        MemberMapper.toCommand(account, "kakao " + profile.id()));
-        JwtToken token = createTokenUseCase.generateToken(member.getId(), member.getRole());
-
-        return JwtTokenResponse.of(token, member.getNickname());
+        return getJwtTokenResponse(account, "kakao");
     }
 
     public JwtTokenResponse loginByApple(AppleLoginRequest request) {
@@ -67,11 +59,20 @@ public class AuthFacade {
         if (profile == null) {
             throw new NotFoundException(AuthErrorType.NOT_FOUND);
         }
-        final Member member =
-                memberUseCase.findOrCreateMemberBy(
-                        MemberMapper.toCommand(profile, "apple " + profile.id()));
+        return getJwtTokenResponse(profile, "apple");
+    }
+
+    private JwtTokenResponse getJwtTokenResponse(AccountProfileResponse profile, String provider) {
+        Boolean isSignUpComplete = true;
+        String providerId = provider + " " + profile.id();
+        Member member = memberUseCase.findByProviderId(providerId);
+        if (member == null) {
+            isSignUpComplete = false;
+            member = memberUseCase.createMemberBy(MemberMapper.toCommand(profile, providerId));
+        }
         JwtToken token = createTokenUseCase.generateToken(member.getId(), member.getRole());
-        return JwtTokenResponse.of(token, member.getNickname());
+
+        return JwtTokenResponse.of(token, member.getNickname(), isSignUpComplete);
     }
 
     @Transactional(readOnly = true)

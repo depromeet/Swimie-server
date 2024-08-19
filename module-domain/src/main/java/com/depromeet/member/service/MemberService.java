@@ -19,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -61,6 +63,23 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUp
     @Override
     public MemberSearchPage searchMemberByName(Long memberId, String nameQuery, Long cursorId) {
         return memberPersistencePort.searchByNameQuery(memberId, nameQuery, cursorId);
+    }
+
+    @Override
+    public Member findByProviderId(String providerId) {
+        return memberPersistencePort.findByProviderId(providerId).orElse(null);
+    }
+
+    @Override
+    public Member createMemberBy(SocialMemberCommand command) {
+        Member member =
+                Member.builder()
+                        .nickname(command.name())
+                        .email(command.email())
+                        .role(MemberRole.USER)
+                        .providerId(command.providerId())
+                        .build();
+        return memberPersistencePort.save(member);
     }
 
     @Override
