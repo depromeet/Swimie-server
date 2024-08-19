@@ -201,6 +201,52 @@ public class MemoryRepository implements MemoryPersistencePort {
         return toModel(memories);
     }
 
+    @Override
+    public Optional<Memory> findPrevMemoryByRecordAtAndMemberId(LocalDate recordAt, Long memberId) {
+        MemoryEntity prevMemory =
+                queryFactory
+                        .selectFrom(memory)
+                        .join(memory.member, memberEntity)
+                        .fetchJoin()
+                        .leftJoin(memory.pool, poolEntity)
+                        .fetchJoin()
+                        .leftJoin(memory.memoryDetail, memoryDetailEntity)
+                        .fetchJoin()
+                        .leftJoin(memory.strokes, strokeEntity)
+                        .fetchJoin()
+                        .leftJoin(memory.images, imageEntity)
+                        .where(ltCursorRecordAt(recordAt), memberEq(memberId))
+                        .orderBy(memory.recordAt.desc())
+                        .fetchFirst();
+        if (prevMemory == null) {
+            return Optional.empty();
+        }
+        return Optional.of(prevMemory.toModel());
+    }
+
+    @Override
+    public Optional<Memory> findNextMemoryByRecordAtAndMemberId(LocalDate recordAt, Long memberId) {
+        MemoryEntity prevMemory =
+                queryFactory
+                        .selectFrom(memory)
+                        .join(memory.member, memberEntity)
+                        .fetchJoin()
+                        .leftJoin(memory.pool, poolEntity)
+                        .fetchJoin()
+                        .leftJoin(memory.memoryDetail, memoryDetailEntity)
+                        .fetchJoin()
+                        .leftJoin(memory.strokes, strokeEntity)
+                        .fetchJoin()
+                        .leftJoin(memory.images, imageEntity)
+                        .where(gtCursorRecordAt(recordAt), memberEq(memberId))
+                        .orderBy(memory.recordAt.asc())
+                        .fetchFirst();
+        if (prevMemory == null) {
+            return Optional.empty();
+        }
+        return Optional.of(prevMemory.toModel());
+    }
+
     private BooleanExpression loeRecordAt(LocalDate recordAt) {
         if (recordAt == null) {
             return null;

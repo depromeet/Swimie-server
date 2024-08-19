@@ -8,4 +8,8 @@ public interface GetMemoryUseCase {
     Memory findByIdWithMember(Long memoryId);
 
     int findOrderInMonth(Long memberId, Long memoryId, int month);
+
+    Memory findPrevMemoryById(Long memoryId);
+
+    Memory findNextMemoryById(Long memoryId);
 }

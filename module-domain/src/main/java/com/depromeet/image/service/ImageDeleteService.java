@@ -38,4 +38,9 @@ public class ImageDeleteService implements ImageDeleteUseCase {
         }
         imagePersistencePort.deleteAllByMemoryId(memoryId);
     }
+
+    @Override
+    public void deleteProfileImage(String profileImageUrl) {
+        s3ManagePort.deleteImageFromS3(profileImageUrl);
+    }
 }
