@@ -19,6 +19,6 @@ public interface FollowUseCase {
     int countFollowerByMemberId(Long memberId);
 
     List<Following> getFollowingByMemberIdLimitThree(Long memberId);
-  
+
     FriendCount countFriendByMemberId(Long memberId);
 }

@@ -4,8 +4,8 @@ import com.depromeet.friend.domain.Friend;
 import com.depromeet.friend.domain.vo.FollowSlice;
 import com.depromeet.friend.domain.vo.Follower;
 import com.depromeet.friend.domain.vo.Following;
-import java.util.List;
 import com.depromeet.friend.domain.vo.FriendCount;
+import java.util.List;
 import java.util.Optional;
 
 public interface FriendPersistencePort {
