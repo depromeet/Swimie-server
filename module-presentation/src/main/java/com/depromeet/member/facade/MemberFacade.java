@@ -73,6 +73,6 @@ public class MemberFacade {
 
     public MemberDetailResponse findDetailById(Long memberId) {
         Member member = memberUseCase.findById(memberId);
-        return MemberDetailResponse.of(member);
+        return MemberDetailResponse.of(member, profileImageOrigin);
     }
 }

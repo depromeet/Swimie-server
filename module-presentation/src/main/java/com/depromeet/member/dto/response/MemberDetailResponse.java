@@ -14,11 +14,18 @@ public record MemberDetailResponse(
                 Integer goal,
         @Schema(description = "프로필 이미지 URL", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
                 String profileImageUrl) {
-    public static MemberDetailResponse of(Member member) {
+    public static MemberDetailResponse of(Member member, String profileImageOrigin) {
         return new MemberDetailResponse(
                 member.getId(),
                 member.getNickname(),
                 member.getGoal(),
-                member.getProfileImageUrl());
+                getProfileImageUrl(profileImageOrigin, member.getProfileImageUrl()));
+    }
+
+    private static String getProfileImageUrl(String profileImageOrigin, String profileImageUrl) {
+        if (profileImageUrl == null) {
+            return null;
+        }
+        return profileImageOrigin + "/" + profileImageUrl;
     }
 }
