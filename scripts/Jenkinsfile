@@ -20,7 +20,7 @@ pipeline {
     stages {
         stage('저장소 복제') {
             steps {
-                git branch: 'main', credentialsId: 'GITHUB_ACCESS_TOKEN', url: 'https://github.com/depromeet/15th-team2-BE'
+                git branch: 'main', credentialsId: 'GITHUB_ACCESS_TOKEN', url: 'https://github.com/depromeet/Swimie-server'
             }
         }
 

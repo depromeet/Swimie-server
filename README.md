@@ -1,1 +1,1 @@
-# 15th-team2-BE
+# Swimie-server
