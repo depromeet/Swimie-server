@@ -8,6 +8,7 @@ import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.domain.vo.MemberSearchPage;
 import com.depromeet.member.dto.request.MemberUpdateRequest;
+import com.depromeet.member.dto.response.MemberDetailResponse;
 import com.depromeet.member.dto.response.MemberProfileResponse;
 import com.depromeet.member.dto.response.MemberSearchResponse;
 import com.depromeet.member.dto.response.MemberUpdateResponse;
@@ -68,5 +69,10 @@ public class MemberFacade {
         MemberSearchPage memberSearchPage =
                 memberUseCase.searchMemberByName(memberId, nameQuery, cursorId);
         return MemberSearchResponse.toMemberSearchResponse(memberSearchPage, profileImageOrigin);
+    }
+
+    public MemberDetailResponse findDetailById(Long memberId) {
+        Member member = memberUseCase.findById(memberId);
+        return MemberDetailResponse.of(member);
     }
 }
