@@ -24,4 +24,8 @@ public interface MemoryPersistencePort {
     Timeline findNextMemoryByMemberId(Long memberId, LocalDate cursorRecordAt, LocalDate recordAt);
 
     List<Memory> getCalendarByYearAndMonth(Long memberId, Integer year, Short month);
+
+    Optional<Memory> findPrevMemoryByRecordAtAndMemberId(LocalDate recordAt, Long memberId);
+
+    Optional<Memory> findNextMemoryByRecordAtAndMemberId(LocalDate recordAt, Long memberId);
 }

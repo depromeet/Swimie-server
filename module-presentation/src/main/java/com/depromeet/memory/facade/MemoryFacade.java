@@ -105,4 +105,14 @@ public class MemoryFacade {
                 calendarUseCase.getCalendarByYearAndMonth(memberId, yearMonth);
         return CalendarResponse.of(member, calendarMemories);
     }
+
+    public MemoryResponse getPrevMemory(Long memoryId) {
+        Memory prevMemory = getMemoryUseCase.findPrevMemoryById(memoryId);
+        return MemoryResponse.from(prevMemory);
+    }
+
+    public MemoryResponse getNextMemory(Long memoryId) {
+        Memory nextMemory = getMemoryUseCase.findNextMemoryById(memoryId);
+        return MemoryResponse.from(nextMemory);
+    }
 }
