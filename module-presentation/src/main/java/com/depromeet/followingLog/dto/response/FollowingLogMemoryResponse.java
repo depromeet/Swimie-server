@@ -4,10 +4,10 @@ import com.depromeet.followingLog.domain.FollowingMemoryLog;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.Stroke;
 import com.depromeet.memory.dto.response.StrokeResponse;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
@@ -94,7 +94,8 @@ public class FollowingLogMemoryResponse {
             description = "팔로잉 소식 생성 시간",
             example = "2024-08-16 00:00:00",
             requiredMode = Schema.RequiredMode.REQUIRED)
-    private String createdAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt;
 
     @Schema(
             description = "팔로잉 소식 최신 유무",
@@ -118,7 +119,7 @@ public class FollowingLogMemoryResponse {
             String type,
             List<StrokeResponse> strokes,
             String imageUrl,
-            String createdAt,
+            LocalDateTime createdAt,
             boolean isRecentNews) {
         this.memberId = memberId;
         this.memberNickname = memberNickname;
@@ -140,10 +141,6 @@ public class FollowingLogMemoryResponse {
 
     public static FollowingLogMemoryResponse toFollowingLogMemoryResponse(
             FollowingMemoryLog followingMemoryLog, LocalDateTime lastViewedFollowingLogAt) {
-        String createdAt =
-                followingMemoryLog
-                        .getCreatedAt()
-                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         boolean isRecentNews = checkIsRecentLog(followingMemoryLog, lastViewedFollowingLogAt);
         Memory memory = followingMemoryLog.getMemory();
         Integer totalDistance = memory.calculateTotalDistance();
@@ -162,7 +159,7 @@ public class FollowingLogMemoryResponse {
                 .type(memory.classifyType())
                 .strokes(strokeToDto(memory.getStrokes(), memory.getLane()))
                 .imageUrl(memory.getThumbnailUrl())
-                .createdAt(createdAt)
+                .createdAt(followingMemoryLog.getCreatedAt())
                 .isRecentNews(isRecentNews)
                 .build();
     }
