@@ -24,11 +24,10 @@ import com.depromeet.memory.port.in.usecase.StrokeUseCase;
 import com.depromeet.memory.port.in.usecase.UpdateMemoryUseCase;
 import com.depromeet.reaction.port.in.usecase.DeleteReactionUseCase;
 import com.depromeet.type.auth.AuthErrorType;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -104,7 +103,8 @@ public class AuthFacade {
         // Memory 조회
         List<Memory> memories = getMemoryUseCase.findByMemberId(memberId);
         List<Long> memoryIds = memories.stream().map(Memory::getId).toList();
-        List<Long> memoryDetailIds = memories.stream().map(memory -> memory.getMemoryDetail().getId()).toList();
+        List<Long> memoryDetailIds =
+                memories.stream().map(memory -> memory.getMemoryDetail().getId()).toList();
         updateMemoryUseCase.setNullByIds(memoryIds);
         // MemoryDetail 삭제
         deleteMemoryUseCase.deleteAllMemoryDetailById(memoryDetailIds);

@@ -1,7 +1,6 @@
 package com.depromeet.memory.port.in.usecase;
 
 import com.depromeet.memory.domain.Memory;
-
 import java.util.List;
 
 public interface GetMemoryUseCase {

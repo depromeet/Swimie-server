@@ -12,12 +12,11 @@ import com.depromeet.memory.entity.QMemoryEntity;
 import com.depromeet.memory.port.out.persistence.MemoryPersistencePort;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
-
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -219,7 +218,8 @@ public class MemoryRepository implements MemoryPersistencePort {
 
     @Override
     public void setNullByIds(List<Long> memoryIds) {
-        queryFactory.update(memory)
+        queryFactory
+                .update(memory)
                 .setNull(memory.memoryDetail.id)
                 .where(memory.id.in(memoryIds))
                 .execute();

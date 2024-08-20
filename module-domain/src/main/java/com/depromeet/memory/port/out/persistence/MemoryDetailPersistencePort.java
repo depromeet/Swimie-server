@@ -1,7 +1,6 @@
 package com.depromeet.memory.port.out.persistence;
 
 import com.depromeet.memory.domain.MemoryDetail;
-
 import java.util.List;
 import java.util.Optional;
 

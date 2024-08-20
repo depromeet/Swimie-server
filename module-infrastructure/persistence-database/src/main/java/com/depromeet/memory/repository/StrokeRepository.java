@@ -4,9 +4,8 @@ import com.depromeet.memory.domain.Stroke;
 import com.depromeet.memory.entity.QStrokeEntity;
 import com.depromeet.memory.entity.StrokeEntity;
 import com.depromeet.memory.port.out.persistence.StrokePersistencePort;
-import java.util.List;
-
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -37,8 +36,6 @@ public class StrokeRepository implements StrokePersistencePort {
 
     @Override
     public void deleteAllByMemoryId(List<Long> memoryIds) {
-        queryFactory.delete(stroke)
-                .where(stroke.memory.id.in(memoryIds))
-                .execute();
+        queryFactory.delete(stroke).where(stroke.memory.id.in(memoryIds)).execute();
     }
 }

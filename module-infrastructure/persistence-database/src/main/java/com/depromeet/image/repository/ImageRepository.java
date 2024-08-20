@@ -6,13 +6,11 @@ import static com.depromeet.memory.entity.QMemoryEntity.memoryEntity;
 import com.depromeet.image.domain.Image;
 import com.depromeet.image.domain.ImageUploadStatus;
 import com.depromeet.image.entity.ImageEntity;
-import com.depromeet.image.entity.QImageEntity;
 import com.depromeet.image.port.out.persistence.ImagePersistencePort;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
-
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -99,7 +97,8 @@ public class ImageRepository implements ImagePersistencePort {
 
     @Override
     public void setNullByMemoryIds(List<Long> memoryIds) {
-        queryFactory.update(imageEntity)
+        queryFactory
+                .update(imageEntity)
                 .setNull(imageEntity.memory.id)
                 .where(imageEntity.memory.id.in(memoryIds))
                 .execute();

@@ -28,7 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class MemoryService implements CreateMemoryUseCase, UpdateMemoryUseCase, GetMemoryUseCase, DeleteMemoryUseCase {
+public class MemoryService
+        implements CreateMemoryUseCase, UpdateMemoryUseCase, GetMemoryUseCase, DeleteMemoryUseCase {
     private final PoolPersistencePort poolPersistencePort;
     private final MemoryPersistencePort memoryPersistencePort;
     private final MemoryDetailPersistencePort memoryDetailPersistencePort;

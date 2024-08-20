@@ -4,8 +4,6 @@ import com.depromeet.auth.port.out.persistence.RefreshRedisPersistencePort;
 import com.depromeet.exception.BadRequestException;
 import com.depromeet.exception.InternalServerException;
 import com.depromeet.exception.NotFoundException;
-import com.depromeet.friend.port.out.persistence.FriendPersistencePort;
-import com.depromeet.image.port.out.persistence.ImagePersistencePort;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.domain.MemberRole;
@@ -16,17 +14,10 @@ import com.depromeet.member.port.in.usecase.GoalUpdateUseCase;
 import com.depromeet.member.port.in.usecase.MemberUpdateUseCase;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
-import com.depromeet.memory.domain.Memory;
-import com.depromeet.memory.port.out.persistence.MemoryDetailPersistencePort;
-import com.depromeet.memory.port.out.persistence.MemoryPersistencePort;
-import com.depromeet.memory.port.out.persistence.StrokePersistencePort;
-import com.depromeet.reaction.port.out.persistence.ReactionPersistencePort;
 import com.depromeet.type.member.MemberErrorType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional

@@ -218,7 +218,8 @@ public class FriendRepository implements FriendPersistencePort {
 
     @Override
     public void deleteByMemberId(Long memberId) {
-        queryFactory.delete(friend)
+        queryFactory
+                .delete(friend)
                 .where(friend.member.id.eq(memberId).or(friend.following.id.eq(memberId)))
                 .execute();
     }
