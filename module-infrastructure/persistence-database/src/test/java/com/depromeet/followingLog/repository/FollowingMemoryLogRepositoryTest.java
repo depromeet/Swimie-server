@@ -26,6 +26,7 @@ import com.depromeet.memory.repository.MemoryDetailRepository;
 import com.depromeet.memory.repository.MemoryJpaRepository;
 import com.depromeet.memory.repository.MemoryRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @Import(TestQueryDslConfig.class)
 @ExtendWith(SpringExtension.class)
 public class FollowingMemoryLogRepositoryTest {
+    @Autowired private EntityManager em;
     @Autowired private JPAQueryFactory queryFactory;
     @Autowired private FriendJpaRepository friendJpaRepository;
     @Autowired private MemberJpaRepository memberJpaRepository;
@@ -62,7 +64,7 @@ public class FollowingMemoryLogRepositoryTest {
     void setUp() {
         memberRepository = new MemberRepository(queryFactory, memberJpaRepository);
         friendRepository = new FriendRepository(queryFactory, friendJpaRepository);
-        memoryRepository = new MemoryRepository(queryFactory, memoryJpaRepository);
+        memoryRepository = new MemoryRepository(em, queryFactory, memoryJpaRepository);
         memoryDetailRepository = new MemoryDetailRepository(memoryDetailJpaRepository);
         followingMemoryLogRepository =
                 new FollowingMemoryLogRepository(queryFactory, followingMemoryLogJpaRepository);

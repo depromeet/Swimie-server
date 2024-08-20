@@ -53,4 +53,9 @@ public class Image {
                 .imageUploadStatus(this.imageUploadStatus)
                 .build();
     }
+
+    public Image setMemoryNull() {
+        this.memory = null;
+        return this;
+    }
 }
