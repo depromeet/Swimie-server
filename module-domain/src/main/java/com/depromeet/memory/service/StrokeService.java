@@ -114,4 +114,9 @@ public class StrokeService implements StrokeUseCase {
                 });
         return getAllByMemoryId(memory.getId());
     }
+
+    @Override
+    public void deleteAllByMemoryId(List<Long> memoryIds) {
+        strokePersistencePort.deleteAllByMemoryId(memoryIds);
+    }
 }

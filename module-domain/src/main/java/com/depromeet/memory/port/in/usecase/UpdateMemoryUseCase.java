@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface UpdateMemoryUseCase {
     Memory update(Long memoryId, UpdateMemoryCommand command, List<Stroke> strokes);
+
+    void setNullByIds(List<Long> memoryIds);
 }

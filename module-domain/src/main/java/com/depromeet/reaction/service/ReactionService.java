@@ -65,6 +65,11 @@ public class ReactionService
     }
 
     @Override
+    public void deleteByMemberId(Long memberId) {
+        reactionPersistencePort.deleteByMemberId(memberId);
+    }
+
+    @Override
     public List<Reaction> getReactionsOfMemory(Long memoryId) {
         return reactionPersistencePort.getAllByMemoryId(memoryId);
     }

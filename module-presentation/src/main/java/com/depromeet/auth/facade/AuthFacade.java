@@ -12,21 +12,38 @@ import com.depromeet.auth.vo.JwtToken;
 import com.depromeet.auth.vo.kakao.KakaoAccountProfile;
 import com.depromeet.dto.auth.AccountProfileResponse;
 import com.depromeet.exception.NotFoundException;
+import com.depromeet.friend.port.in.FollowUseCase;
+import com.depromeet.image.port.in.ImageUpdateUseCase;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.mapper.MemberMapper;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
+import com.depromeet.memory.domain.Memory;
+import com.depromeet.memory.port.in.usecase.DeleteMemoryUseCase;
+import com.depromeet.memory.port.in.usecase.GetMemoryUseCase;
+import com.depromeet.memory.port.in.usecase.StrokeUseCase;
+import com.depromeet.memory.port.in.usecase.UpdateMemoryUseCase;
+import com.depromeet.reaction.port.in.usecase.DeleteReactionUseCase;
 import com.depromeet.type.auth.AuthErrorType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class AuthFacade {
     private final MemberUseCase memberUseCase;
+    private final StrokeUseCase strokeUseCase;
+    private final FollowUseCase followUseCase;
     private final SocialUseCase socialUseCase;
+    private final GetMemoryUseCase getMemoryUseCase;
     private final CreateTokenUseCase createTokenUseCase;
+    private final ImageUpdateUseCase imageUpdateUseCase;
+    private final DeleteMemoryUseCase deleteMemoryUseCase;
+    private final UpdateMemoryUseCase updateMemoryUseCase;
+    private final DeleteReactionUseCase deleteReactionUseCase;
 
     public JwtTokenResponse loginByGoogle(GoogleLoginRequest request, String origin) {
         final AccountProfileResponse profile =
@@ -80,10 +97,27 @@ public class AuthFacade {
         return JwtAccessTokenResponse.of(accessTokenInfo);
     }
 
+    @Transactional
     public void deleteAccount(Long memberId) {
         Member member = memberUseCase.findById(memberId);
         String accountType = member.getProviderId();
-        socialUseCase.revokeAccount(accountType);
+        // Memory 조회
+        List<Memory> memories = getMemoryUseCase.findByMemberId(memberId);
+        List<Long> memoryIds = memories.stream().map(Memory::getId).toList();
+        List<Long> memoryDetailIds = memories.stream().map(memory -> memory.getMemoryDetail().getId()).toList();
+        updateMemoryUseCase.setNullByIds(memoryIds);
+        // MemoryDetail 삭제
+        deleteMemoryUseCase.deleteAllMemoryDetailById(memoryDetailIds);
+        // Stroke 삭제
+        strokeUseCase.deleteAllByMemoryId(memoryIds);
+        // Image FK Null
+        imageUpdateUseCase.setNullByMemoryIds(memoryIds);
+        // Reaction 삭제
+        deleteReactionUseCase.deleteByMemberId(memberId);
+        // Friend 조회 및 삭제
+        followUseCase.deleteByMemberId(memberId);
+
         memberUseCase.deleteById(memberId);
+        socialUseCase.revokeAccount(accountType);
     }
 }

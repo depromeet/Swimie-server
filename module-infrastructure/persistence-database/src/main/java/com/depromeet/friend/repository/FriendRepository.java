@@ -215,4 +215,11 @@ public class FriendRepository implements FriendPersistencePort {
                         .fetchOne();
         return new FriendCount(result.get(0, Integer.class), result.get(1, Integer.class));
     }
+
+    @Override
+    public void deleteByMemberId(Long memberId) {
+        queryFactory.delete(friend)
+                .where(friend.member.id.eq(memberId).or(friend.following.id.eq(memberId)))
+                .execute();
+    }
 }

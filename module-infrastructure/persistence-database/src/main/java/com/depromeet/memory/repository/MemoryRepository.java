@@ -16,6 +16,8 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
+
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -24,10 +26,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class MemoryRepository implements MemoryPersistencePort {
+    private final EntityManager em;
     private final JPAQueryFactory queryFactory;
     private final MemoryJpaRepository memoryJpaRepository;
 
-    QMemoryEntity memory = QMemoryEntity.memoryEntity;
+    private QMemoryEntity memory = QMemoryEntity.memoryEntity;
 
     @Override
     public Memory save(Memory memory) {
@@ -200,6 +203,28 @@ public class MemoryRepository implements MemoryPersistencePort {
             return Optional.empty();
         }
         return Optional.of(prevMemory.toModel());
+    }
+
+    @Override
+    public List<Memory> findByMemberId(Long memberId) {
+        List<MemoryEntity> memoryEntities =
+                queryFactory
+                        .selectFrom(memory)
+                        .leftJoin(memory.memoryDetail, memoryDetailEntity)
+                        .fetchJoin()
+                        .where(memberEq(memberId))
+                        .fetch();
+        return memoryEntities.stream().map(MemoryEntity::toModelWithMemoryDetailOnly).toList();
+    }
+
+    @Override
+    public void setNullByIds(List<Long> memoryIds) {
+        queryFactory.update(memory)
+                .setNull(memory.memoryDetail.id)
+                .where(memory.id.in(memoryIds))
+                .execute();
+        em.flush();
+        em.clear();
     }
 
     private BooleanExpression loeRecordAt(LocalDate recordAt) {
