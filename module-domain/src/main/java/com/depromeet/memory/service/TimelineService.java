@@ -39,6 +39,7 @@ public class TimelineService implements TimelineUseCase {
             hasNext = checkHasNext(memories);
             nextMemoryRecordAt = getCursorRecordAt(memories);
             memories = getMemories(memories);
+            memories = memories.reversed();
         } else {
             memories =
                     memoryPersistencePort.findPrevMemoryByMemberId(
@@ -46,7 +47,6 @@ public class TimelineService implements TimelineUseCase {
             hasNext = checkHasNext(memories);
             nextMemoryRecordAt = getCursorRecordAt(memories);
             memories = getMemories(memories);
-            memories = memories.reversed();
         }
         return TimelineSlice.from(memories, nextMemoryRecordAt, hasNext);
     }

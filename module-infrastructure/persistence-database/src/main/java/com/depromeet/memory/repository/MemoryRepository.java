@@ -112,6 +112,14 @@ public class MemoryRepository implements MemoryPersistencePort {
         List<MemoryEntity> memories =
                 queryFactory
                         .selectFrom(memory)
+                        .join(memory.member)
+                        .fetchJoin()
+                        .leftJoin(memory.pool)
+                        .fetchJoin()
+                        .leftJoin(memory.memoryDetail)
+                        .fetchJoin()
+                        .leftJoin(memory.strokes)
+                        .fetchJoin()
                         .where(
                                 memory.member.id.eq(memberId),
                                 ltCursorRecordAt(cursorRecordAt),
@@ -128,6 +136,14 @@ public class MemoryRepository implements MemoryPersistencePort {
         List<MemoryEntity> memories =
                 queryFactory
                         .selectFrom(memory)
+                        .join(memory.member)
+                        .fetchJoin()
+                        .leftJoin(memory.pool)
+                        .fetchJoin()
+                        .leftJoin(memory.memoryDetail)
+                        .fetchJoin()
+                        .leftJoin(memory.strokes)
+                        .fetchJoin()
                         .where(
                                 memory.member.id.eq(memberId),
                                 gtCursorRecordAt(cursorRecordAt),
