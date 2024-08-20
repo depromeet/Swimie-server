@@ -186,4 +186,19 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
                                         && item.getMember().getId().equals(memberId))
                 .min(Comparator.comparing(Memory::getRecordAt));
     }
+
+    @Override
+    public List<Memory> findByMemberId(Long memberId) {
+        return data.stream().filter(item -> item.getMember().getId().equals(memberId)).toList();
+    }
+
+    @Override
+    public void setNullByIds(List<Long> memoryIds) {
+        data.forEach(
+                item -> {
+                    if (memoryIds.contains(item.getId()) && item.getMemoryDetail() != null) {
+                        item.setMemoryDetailNull();
+                    }
+                });
+    }
 }

@@ -10,6 +10,7 @@ import com.depromeet.memory.domain.Stroke;
 import com.depromeet.memory.port.in.command.CreateMemoryCommand;
 import com.depromeet.memory.port.in.command.UpdateMemoryCommand;
 import com.depromeet.memory.port.in.usecase.CreateMemoryUseCase;
+import com.depromeet.memory.port.in.usecase.DeleteMemoryUseCase;
 import com.depromeet.memory.port.in.usecase.GetMemoryUseCase;
 import com.depromeet.memory.port.in.usecase.UpdateMemoryUseCase;
 import com.depromeet.memory.port.out.persistence.MemoryDetailPersistencePort;
@@ -27,7 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class MemoryService implements CreateMemoryUseCase, UpdateMemoryUseCase, GetMemoryUseCase {
+public class MemoryService
+        implements CreateMemoryUseCase, UpdateMemoryUseCase, GetMemoryUseCase, DeleteMemoryUseCase {
     private final PoolPersistencePort poolPersistencePort;
     private final MemoryPersistencePort memoryPersistencePort;
     private final MemoryDetailPersistencePort memoryDetailPersistencePort;
@@ -100,6 +102,11 @@ public class MemoryService implements CreateMemoryUseCase, UpdateMemoryUseCase, 
     }
 
     @Override
+    public List<Memory> findByMemberId(Long memberId) {
+        return memoryPersistencePort.findByMemberId(memberId);
+    }
+
+    @Override
     @Transactional
     public Memory update(Long memoryId, UpdateMemoryCommand command, List<Stroke> strokes) {
         Memory memory = findById(memoryId);
@@ -123,6 +130,11 @@ public class MemoryService implements CreateMemoryUseCase, UpdateMemoryUseCase, 
         return memoryPersistencePort
                 .update(memoryId, updateMemory)
                 .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND));
+    }
+
+    @Override
+    public void setNullByIds(List<Long> memoryIds) {
+        memoryPersistencePort.setNullByIds(memoryIds);
     }
 
     private void checkMemoryAlreadyExist(CreateMemoryCommand command, Long memberId) {
@@ -178,5 +190,10 @@ public class MemoryService implements CreateMemoryUseCase, UpdateMemoryUseCase, 
                             .orElseThrow(() -> new NotFoundException(PoolErrorType.NOT_FOUND));
         }
         return pool;
+    }
+
+    @Override
+    public void deleteAllMemoryDetailById(List<Long> memoryDetailIds) {
+        memoryDetailPersistencePort.deleteAllById(memoryDetailIds);
     }
 }

@@ -3,6 +3,7 @@ package com.depromeet.memory.repository;
 import com.depromeet.memory.domain.MemoryDetail;
 import com.depromeet.memory.entity.MemoryDetailEntity;
 import com.depromeet.memory.port.out.persistence.MemoryDetailPersistencePort;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -25,5 +26,10 @@ public class MemoryDetailRepository implements MemoryDetailPersistencePort {
                         entity ->
                                 entity.update(MemoryDetailEntity.from(updateMemoryDetail))
                                         .toModel());
+    }
+
+    @Override
+    public void deleteAllById(List<Long> memoryDetailIds) {
+        memoryDetailJpaRepository.deleteAllById(memoryDetailIds);
     }
 }

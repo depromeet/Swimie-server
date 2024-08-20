@@ -24,4 +24,6 @@ public interface ImagePersistencePort {
     void deleteAllByIds(List<Long> ids);
 
     void deleteAllByMemoryId(Long memoryId);
+
+    void setNullByMemoryIds(List<Long> memoryIds);
 }

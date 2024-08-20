@@ -130,4 +130,9 @@ public class Memory {
         if (totalDistance == null) return false;
         return totalDistance >= this.member.getGoal();
     }
+
+    public Memory setMemoryDetailNull() {
+        this.memoryDetail = null;
+        return this;
+    }
 }

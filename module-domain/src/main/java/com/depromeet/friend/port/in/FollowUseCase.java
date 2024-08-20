@@ -21,4 +21,6 @@ public interface FollowUseCase {
     List<Following> getFollowingByMemberIdLimitThree(Long memberId);
 
     FriendCount countFriendByMemberId(Long memberId);
+
+    void deleteByMemberId(Long memberId);
 }

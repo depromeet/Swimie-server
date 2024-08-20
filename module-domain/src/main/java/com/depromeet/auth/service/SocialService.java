@@ -46,6 +46,8 @@ public class SocialService implements SocialUseCase {
             kakaoPort.revokeAccount(providerId);
         } else if (accountType.startsWith("google")) {
             googlePort.revokeAccount(providerId);
+        } else if (accountType.startsWith("apple")) {
+            applePort.revokeAccount(providerId);
         }
     }
 }

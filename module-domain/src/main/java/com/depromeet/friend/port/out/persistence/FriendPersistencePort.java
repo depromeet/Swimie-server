@@ -28,4 +28,6 @@ public interface FriendPersistencePort {
     List<Following> findFollowingByMemberIdLimitThree(Long memberId);
 
     FriendCount countFriendByMemberId(Long memberId);
+
+    void deleteByMemberId(Long memberId);
 }

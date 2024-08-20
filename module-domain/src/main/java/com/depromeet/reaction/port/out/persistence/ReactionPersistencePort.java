@@ -18,4 +18,6 @@ public interface ReactionPersistencePort {
     Optional<Reaction> getReactionById(Long reactionId);
 
     void deleteById(Long reactionId);
+
+    void deleteByMemberId(Long memberId);
 }

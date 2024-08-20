@@ -106,6 +106,11 @@ public class ReactionRepository implements ReactionPersistencePort {
         reactionJpaRepository.deleteById(reactionId);
     }
 
+    @Override
+    public void deleteByMemberId(Long memberId) {
+        reactionJpaRepository.deleteByMemberId(memberId);
+    }
+
     private BooleanExpression memberEq(Long memberId) {
         if (memberId == null) {
             return null;
