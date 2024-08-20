@@ -12,6 +12,7 @@ import com.depromeet.member.repository.MemberRepository;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.MemoryDetail;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -27,6 +28,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @Import(TestQueryDslConfig.class)
 @ExtendWith(SpringExtension.class)
 public class MemoryRepositoryTest {
+    @Autowired private EntityManager em;
     @Autowired private JPAQueryFactory queryFactory;
     @Autowired private MemoryJpaRepository memoryJpaRepository;
     private MemoryRepository memoryRepository;
@@ -42,7 +44,7 @@ public class MemoryRepositoryTest {
     @BeforeEach
     void setUp() {
         memberRepository = new MemberRepository(queryFactory, memberJpaRepository);
-        memoryRepository = new MemoryRepository(queryFactory, memoryJpaRepository);
+        memoryRepository = new MemoryRepository(em, queryFactory, memoryJpaRepository);
         memoryDetailRepository = new MemoryDetailRepository(memoryDetailJpaRepository);
         member = memberRepository.save(MemberFixture.make());
         List<MemoryDetail> memoryDetailList = MemoryDetailFixture.makeMemoryDetails(30);

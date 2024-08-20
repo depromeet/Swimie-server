@@ -29,4 +29,8 @@ public interface MemoryPersistencePort {
     Optional<Memory> findPrevMemoryByRecordAtAndMemberId(LocalDate recordAt, Long memberId);
 
     Optional<Memory> findNextMemoryByRecordAtAndMemberId(LocalDate recordAt, Long memberId);
+
+    List<Memory> findByMemberId(Long memberId);
+
+    void setNullByIds(List<Long> memoryIds);
 }

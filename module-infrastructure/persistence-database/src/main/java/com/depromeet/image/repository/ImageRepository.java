@@ -8,6 +8,7 @@ import com.depromeet.image.domain.ImageUploadStatus;
 import com.depromeet.image.entity.ImageEntity;
 import com.depromeet.image.port.out.persistence.ImagePersistencePort;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class ImageRepository implements ImagePersistencePort {
+    private final EntityManager em;
     private final JPAQueryFactory queryFactory;
     private final ImageJpaRepository imageJpaRepository;
 
@@ -91,5 +93,16 @@ public class ImageRepository implements ImagePersistencePort {
     @Override
     public void deleteAllByMemoryId(Long memoryId) {
         imageJpaRepository.deleteAllByMemoryId(memoryId);
+    }
+
+    @Override
+    public void setNullByMemoryIds(List<Long> memoryIds) {
+        queryFactory
+                .update(imageEntity)
+                .setNull(imageEntity.memory.id)
+                .where(imageEntity.memory.id.in(memoryIds))
+                .execute();
+        em.flush();
+        em.clear();
     }
 }

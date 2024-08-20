@@ -12,6 +12,7 @@ import com.depromeet.memory.entity.QMemoryEntity;
 import com.depromeet.memory.port.out.persistence.MemoryPersistencePort;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -24,10 +25,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class MemoryRepository implements MemoryPersistencePort {
+    private final EntityManager em;
     private final JPAQueryFactory queryFactory;
     private final MemoryJpaRepository memoryJpaRepository;
 
-    QMemoryEntity memory = QMemoryEntity.memoryEntity;
+    private QMemoryEntity memory = QMemoryEntity.memoryEntity;
 
     @Override
     public Memory save(Memory memory) {
@@ -110,6 +112,14 @@ public class MemoryRepository implements MemoryPersistencePort {
         List<MemoryEntity> memories =
                 queryFactory
                         .selectFrom(memory)
+                        .join(memory.member)
+                        .fetchJoin()
+                        .leftJoin(memory.pool)
+                        .fetchJoin()
+                        .leftJoin(memory.memoryDetail)
+                        .fetchJoin()
+                        .leftJoin(memory.strokes)
+                        .fetchJoin()
                         .where(
                                 memory.member.id.eq(memberId),
                                 ltCursorRecordAt(cursorRecordAt),
@@ -126,6 +136,14 @@ public class MemoryRepository implements MemoryPersistencePort {
         List<MemoryEntity> memories =
                 queryFactory
                         .selectFrom(memory)
+                        .join(memory.member)
+                        .fetchJoin()
+                        .leftJoin(memory.pool)
+                        .fetchJoin()
+                        .leftJoin(memory.memoryDetail)
+                        .fetchJoin()
+                        .leftJoin(memory.strokes)
+                        .fetchJoin()
                         .where(
                                 memory.member.id.eq(memberId),
                                 gtCursorRecordAt(cursorRecordAt),
@@ -200,6 +218,29 @@ public class MemoryRepository implements MemoryPersistencePort {
             return Optional.empty();
         }
         return Optional.of(prevMemory.toModel());
+    }
+
+    @Override
+    public List<Memory> findByMemberId(Long memberId) {
+        List<MemoryEntity> memoryEntities =
+                queryFactory
+                        .selectFrom(memory)
+                        .leftJoin(memory.memoryDetail, memoryDetailEntity)
+                        .fetchJoin()
+                        .where(memberEq(memberId))
+                        .fetch();
+        return memoryEntities.stream().map(MemoryEntity::toModelWithMemoryDetailOnly).toList();
+    }
+
+    @Override
+    public void setNullByIds(List<Long> memoryIds) {
+        queryFactory
+                .update(memory)
+                .setNull(memory.memoryDetail.id)
+                .where(memory.id.in(memoryIds))
+                .execute();
+        em.flush();
+        em.clear();
     }
 
     private BooleanExpression loeRecordAt(LocalDate recordAt) {

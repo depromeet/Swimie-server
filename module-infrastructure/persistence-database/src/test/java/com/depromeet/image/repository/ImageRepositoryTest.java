@@ -18,6 +18,7 @@ import com.depromeet.memory.port.out.persistence.MemoryDetailPersistencePort;
 import com.depromeet.memory.port.out.persistence.MemoryPersistencePort;
 import com.depromeet.memory.repository.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -33,6 +34,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @Import(TestQueryDslConfig.class)
 @ExtendWith(SpringExtension.class)
 public class ImageRepositoryTest {
+    @Autowired private EntityManager em;
     @Autowired private JPAQueryFactory queryFactory;
     @Autowired private ImageJpaRepository imageJpaRepository;
     @Autowired private MemoryJpaRepository memoryJpaRepository;
@@ -48,9 +50,9 @@ public class ImageRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        imageRepository = new ImageRepository(queryFactory, imageJpaRepository);
+        imageRepository = new ImageRepository(em, queryFactory, imageJpaRepository);
         memberPersistencePort = new MemberRepository(queryFactory, memberJpaRepository);
-        memoryPersistencePort = new MemoryRepository(queryFactory, memoryJpaRepository);
+        memoryPersistencePort = new MemoryRepository(em, queryFactory, memoryJpaRepository);
         memoryDetailPersistencePort = new MemoryDetailRepository(memoryDetailJpaRepository);
         member = memberPersistencePort.save(MemberFixture.make());
     }

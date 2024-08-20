@@ -53,7 +53,6 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUp
 
     @Override
     public void deleteById(Long id) {
-        findById(id);
         memberPersistencePort.deleteById(id);
         refreshRedisPersistencePort.deleteData(id);
     }

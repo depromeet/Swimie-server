@@ -8,4 +8,6 @@ public interface ImageUpdateUseCase {
     List<ImagePresignedUrlVo> updateImages(Memory memory, List<String> imageNames);
 
     void changeImageStatus(List<Long> imageIds);
+
+    void setNullByMemoryIds(List<Long> memoryIds);
 }

@@ -103,6 +103,34 @@ public class AppleClient implements ApplePort {
                 payload.getSubject(), "김스위미", payload.get("email", String.class));
     }
 
+    @Override
+    public void revokeAccount(String providerId) {
+        // refresh token 가져오기
+        String refreshToken = socialRedisPersistencePort.getRTData(providerId);
+        if (refreshToken == null || refreshToken.isEmpty() || refreshToken.isBlank()) {
+            // refresh token 없으면 오류 (재로그인 필요)
+            throw new NotFoundException(AuthErrorType.OAUTH_ACCESS_TOKEN_NOT_FOUND);
+        }
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("client_id", clientId);
+        body.add("client_secret", createClientSecret());
+        body.add("token", refreshToken);
+        body.add("token_type_hint", "refresh_token");
+        final HttpEntity<MultiValueMap<String, String>> httpEntity =
+                new HttpEntity<>(body, headers);
+        ResponseEntity<?> response =
+                restTemplate.postForEntity(
+                        "https://appleid.apple.com/auth/revoke", httpEntity, Object.class);
+        if (response.getStatusCode().equals(HttpStatus.BAD_REQUEST)) {
+            throw new BadRequestException(AuthErrorType.REVOKE_APPLE_ACCOUNT_FAILED);
+        }
+        // redis oauth access token, refresh token 삭제
+        socialRedisPersistencePort.deleteATData(providerId);
+        socialRedisPersistencePort.deleteRTData(providerId);
+    }
+
     private AppleTokenResponse requestTokens(String code, String origin) {
         final String decodedCode = URLDecoder.decode(code, StandardCharsets.UTF_8);
         final HttpHeaders headers = new HttpHeaders();
