@@ -6,6 +6,7 @@ import com.depromeet.member.dto.response.MemberSimpleResponse;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.MemoryDetail;
 import com.depromeet.memory.domain.Stroke;
+import com.depromeet.memory.domain.vo.MemoryInfo;
 import com.depromeet.pool.domain.Pool;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -22,11 +23,25 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MemoryResponse {
     @Schema(
-            description = "memory PK",
-            example = "1",
+            description = "Memory PK",
+            example = "2",
             type = "long",
             requiredMode = Schema.RequiredMode.REQUIRED)
     private Long id;
+
+    @Schema(
+            description = "이전 Memory PK",
+            example = "1",
+            type = "long",
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private Long prevId;
+
+    @Schema(
+            description = "다음 Memory PK",
+            example = "3",
+            type = "long",
+            requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private Long nextId;
 
     private MemberSimpleResponse member;
     private Pool pool;
@@ -109,6 +124,8 @@ public class MemoryResponse {
     @Builder
     public MemoryResponse(
             Long id,
+            Long prevId,
+            Long nextId,
             MemberSimpleResponse member,
             Pool pool,
             MemoryDetail memoryDetail,
@@ -137,6 +154,8 @@ public class MemoryResponse {
         }
 
         this.id = id;
+        this.prevId = prevId;
+        this.nextId = nextId;
         this.member = member;
         this.pool = pool;
         this.memoryDetail = getMemoryDetail(memoryDetail);
@@ -213,12 +232,15 @@ public class MemoryResponse {
                 .build();
     }
 
-    public static MemoryResponse from(Memory memory, Boolean isMyMemory) {
+    public static MemoryResponse from(MemoryInfo memoryInfo) {
+        Memory memory = memoryInfo.memory();
         MemberSimpleResponse memberSimple =
                 new MemberSimpleResponse(
                         memory.getMember().getGoal(), memory.getMember().getNickname());
         return MemoryResponse.builder()
                 .id(memory.getId())
+                .prevId(memoryInfo.prevId())
+                .nextId(memoryInfo.nextId())
                 .member(memberSimple)
                 .pool(memory.getPool())
                 .memoryDetail(memory.getMemoryDetail())
@@ -230,7 +252,7 @@ public class MemoryResponse {
                 .endTime(memory.getEndTime())
                 .lane(memory.getLane())
                 .diary(memory.getDiary())
-                .isMyMemory(isMyMemory)
+                .isMyMemory(memoryInfo.isMyMemory())
                 .build();
     }
 }

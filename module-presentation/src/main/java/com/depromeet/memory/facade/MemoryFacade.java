@@ -1,6 +1,5 @@
 package com.depromeet.memory.facade;
 
-import static com.depromeet.memory.service.MemoryValidator.isMyMemory;
 import static com.depromeet.memory.service.MemoryValidator.validatePermission;
 
 import com.depromeet.followingLog.port.in.command.CreateFollowingMemoryCommand;
@@ -9,6 +8,7 @@ import com.depromeet.member.domain.Member;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.Stroke;
+import com.depromeet.memory.domain.vo.MemoryInfo;
 import com.depromeet.memory.domain.vo.TimelineSlice;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
@@ -88,10 +88,9 @@ public class MemoryFacade {
         return MemoryReadUpdateResponse.from(memory);
     }
 
-    public MemoryResponse findById(Long memberId, Long memoryId) {
-        Memory memory = getMemoryUseCase.findById(memoryId);
-        Boolean isMyMemory = isMyMemory(memory.getMember().getId(), memberId);
-        return MemoryResponse.from(memory, isMyMemory);
+    public MemoryResponse findById(Long requestMemberId, Long memoryId) {
+        MemoryInfo memoryInfo = getMemoryUseCase.findByIdWithPrevNext(requestMemberId, memoryId);
+        return MemoryResponse.from(memoryInfo);
     }
 
     public TimelineSliceResponse getTimelineByMemberIdAndCursorAndDate(
@@ -109,15 +108,5 @@ public class MemoryFacade {
         List<Memory> calendarMemories =
                 calendarUseCase.getCalendarByYearAndMonth(memberId, yearMonth);
         return CalendarResponse.of(member, calendarMemories);
-    }
-
-    public MemoryResponse getPrevMemory(Long memoryId) {
-        Memory prevMemory = getMemoryUseCase.findPrevMemoryById(memoryId);
-        return MemoryResponse.from(prevMemory);
-    }
-
-    public MemoryResponse getNextMemory(Long memoryId) {
-        Memory nextMemory = getMemoryUseCase.findNextMemoryById(memoryId);
-        return MemoryResponse.from(nextMemory);
     }
 }

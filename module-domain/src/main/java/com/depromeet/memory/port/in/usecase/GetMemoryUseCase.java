@@ -1,6 +1,7 @@
 package com.depromeet.memory.port.in.usecase;
 
 import com.depromeet.memory.domain.Memory;
+import com.depromeet.memory.domain.vo.MemoryInfo;
 import java.util.List;
 
 public interface GetMemoryUseCase {
@@ -10,9 +11,7 @@ public interface GetMemoryUseCase {
 
     int findOrderInMonth(Long memberId, Long memoryId, int month);
 
-    Memory findPrevMemoryById(Long memoryId);
-
-    Memory findNextMemoryById(Long memoryId);
-
     List<Memory> findByMemberId(Long memberId);
+
+    MemoryInfo findByIdWithPrevNext(Long requestMemberId, Long memoryId);
 }
