@@ -44,13 +44,17 @@ public class FollowingLogSliceResponse {
     }
 
     public static FollowingLogSliceResponse toFollowingLogSliceResponse(
-            FollowingLogSlice followingLogSlice, LocalDateTime lastViewedFollowingLogAt) {
+            FollowingLogSlice followingLogSlice,
+            LocalDateTime lastViewedFollowingLogAt,
+            String profileImageOrigin) {
         List<FollowingLogMemoryResponse> contents =
                 followingLogSlice.getContents().stream()
                         .map(
                                 followingMemoryLog ->
                                         FollowingLogMemoryResponse.toFollowingLogMemoryResponse(
-                                                followingMemoryLog, lastViewedFollowingLogAt))
+                                                followingMemoryLog,
+                                                lastViewedFollowingLogAt,
+                                                profileImageOrigin))
                         .toList();
         return FollowingLogSliceResponse.builder()
                 .content(contents)
