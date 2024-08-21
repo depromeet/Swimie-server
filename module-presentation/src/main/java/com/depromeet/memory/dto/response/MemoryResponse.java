@@ -255,25 +255,4 @@ public class MemoryResponse {
                 .isMyMemory(memoryInfo.isMyMemory())
                 .build();
     }
-
-    public static MemoryResponse from(Memory memory, Boolean isMyMemory) {
-        MemberSimpleResponse memberSimple =
-                new MemberSimpleResponse(
-                        memory.getMember().getGoal(), memory.getMember().getNickname());
-        return MemoryResponse.builder()
-                .id(memory.getId())
-                .member(memberSimple)
-                .pool(memory.getPool())
-                .memoryDetail(memory.getMemoryDetail())
-                .type(memory.classifyType())
-                .strokes(memory.getStrokes())
-                .images(memory.getImages())
-                .recordAt(memory.getRecordAt())
-                .startTime(memory.getStartTime())
-                .endTime(memory.getEndTime())
-                .lane(memory.getLane())
-                .diary(memory.getDiary())
-                .isMyMemory(isMyMemory)
-                .build();
-    }
 }
