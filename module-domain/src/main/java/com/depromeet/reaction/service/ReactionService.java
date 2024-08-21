@@ -98,6 +98,11 @@ public class ReactionService
         return reactionPersistencePort.getAllCountByMemoryId(memoryId);
     }
 
+    @Override
+    public List<Reaction> getReactionsByMemberAndMemory(Long memberId, Long memoryId) {
+        return getAllByMemberAndMemory(memberId, memoryId);
+    }
+
     private boolean isOverMaximumCreationLimit(List<Reaction> reactions) {
         return !reactions.isEmpty() && reactions.size() >= MAXIMUM_REACTION_NUMBER;
     }

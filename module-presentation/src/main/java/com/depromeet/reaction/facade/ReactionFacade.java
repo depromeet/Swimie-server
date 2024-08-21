@@ -7,6 +7,7 @@ import com.depromeet.reaction.domain.ReactionPage;
 import com.depromeet.reaction.dto.request.ReactionCreateRequest;
 import com.depromeet.reaction.dto.response.MemoryReactionResponse;
 import com.depromeet.reaction.dto.response.PagingReactionResponse;
+import com.depromeet.reaction.dto.response.ValidateReactionResponse;
 import com.depromeet.reaction.mapper.ReactionMapper;
 import com.depromeet.reaction.port.in.usecase.CreateReactionUseCase;
 import com.depromeet.reaction.port.in.usecase.DeleteReactionUseCase;
@@ -24,6 +25,8 @@ public class ReactionFacade {
     private final GetReactionUseCase getReactionUseCase;
     private final CreateReactionUseCase createReactionUseCase;
     private final DeleteReactionUseCase deleteReactionUseCase;
+
+    private static final int MAXIMUM_REACTION_NUMBER = 3;
 
     @Transactional
     public void create(Long memberId, ReactionCreateRequest request) {
@@ -45,5 +48,21 @@ public class ReactionFacade {
     @Transactional
     public void deleteById(Long memberId, Long reactionId) {
         deleteReactionUseCase.deleteById(memberId, reactionId);
+    }
+
+    public ValidateReactionResponse validate(Long memberId, Long memoryId) {
+        List<Reaction> reactionDomains =
+                getReactionUseCase.getReactionsByMemberAndMemory(memberId, memoryId);
+
+        boolean isRegistrable = false;
+        if (reactionDomains != null && reactionDomains.isEmpty()) {
+            Memory memory = getMemoryUseCase.findByIdWithMember(memoryId);
+            if (!memory.getMember().getId().equals(memberId)) {
+                isRegistrable = true;
+            }
+        } else if (reactionDomains != null && reactionDomains.size() < MAXIMUM_REACTION_NUMBER) {
+            isRegistrable = true;
+        }
+        return ValidateReactionResponse.from(isRegistrable);
     }
 }
