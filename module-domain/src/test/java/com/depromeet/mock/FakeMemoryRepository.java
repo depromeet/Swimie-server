@@ -168,23 +168,27 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
     }
 
     @Override
-    public Optional<Memory> findPrevMemoryByRecordAtAndMemberId(LocalDate recordAt, Long memberId) {
+    public Long findPrevIdByRecordAtAndMemberId(LocalDate recordAt, Long memberId) {
         return data.stream()
                 .filter(
                         item ->
                                 item.getRecordAt().isBefore(recordAt)
                                         && item.getMember().getId().equals(memberId))
-                .max(Comparator.comparing(Memory::getRecordAt));
+                .max(Comparator.comparing(Memory::getRecordAt))
+                .map(Memory::getId)
+                .orElse(null);
     }
 
     @Override
-    public Optional<Memory> findNextMemoryByRecordAtAndMemberId(LocalDate recordAt, Long memberId) {
+    public Long findNextIdByRecordAtAndMemberId(LocalDate recordAt, Long memberId) {
         return data.stream()
                 .filter(
                         item ->
                                 item.getRecordAt().isBefore(recordAt)
                                         && item.getMember().getId().equals(memberId))
-                .min(Comparator.comparing(Memory::getRecordAt));
+                .min(Comparator.comparing(Memory::getRecordAt))
+                .map(Memory::getId)
+                .orElse(null);
     }
 
     @Override

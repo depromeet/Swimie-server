@@ -49,10 +49,4 @@ public interface MemoryApi {
             @LoginMember Long memberId,
             @RequestParam("year") Integer year,
             @RequestParam("month") Short month);
-
-    @Operation(summary = "수영 기록 record at 기준 이전 수영 기록 단일 조회")
-    ApiResponse<MemoryResponse> readPrev(@RequestParam("id") Long memoryId);
-
-    @Operation(summary = "수영 기록 record at 기준 다음 수영 기록 단일 조회")
-    ApiResponse<MemoryResponse> readNext(@RequestParam("id") Long memoryId);
 }

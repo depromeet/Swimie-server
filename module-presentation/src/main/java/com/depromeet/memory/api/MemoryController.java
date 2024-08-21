@@ -77,16 +77,4 @@ public class MemoryController implements MemoryApi {
         CalendarResponse response = memoryFacade.getCalendar(memberId, year, month);
         return ApiResponse.success(MemorySuccessType.GET_CALENDAR_SUCCESS, response);
     }
-
-    @GetMapping("/prev")
-    public ApiResponse<MemoryResponse> readPrev(@RequestParam("id") Long memoryId) {
-        MemoryResponse response = memoryFacade.getPrevMemory(memoryId);
-        return ApiResponse.success(MemorySuccessType.GET_PREV_SUCCESS, response);
-    }
-
-    @GetMapping("/next")
-    public ApiResponse<MemoryResponse> readNext(@RequestParam("id") Long memoryId) {
-        MemoryResponse response = memoryFacade.getNextMemory(memoryId);
-        return ApiResponse.success(MemorySuccessType.GET_NEXT_SUCCESS, response);
-    }
 }
