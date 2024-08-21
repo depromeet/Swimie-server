@@ -1,5 +1,7 @@
 package com.depromeet.memory.service;
 
+import static com.depromeet.memory.service.MemoryValidator.isMyMemory;
+
 import com.depromeet.exception.BadRequestException;
 import com.depromeet.exception.InternalServerException;
 import com.depromeet.exception.NotFoundException;
@@ -7,6 +9,7 @@ import com.depromeet.member.domain.Member;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.MemoryDetail;
 import com.depromeet.memory.domain.Stroke;
+import com.depromeet.memory.domain.vo.MemoryInfo;
 import com.depromeet.memory.port.in.command.CreateMemoryCommand;
 import com.depromeet.memory.port.in.command.UpdateMemoryCommand;
 import com.depromeet.memory.port.in.usecase.CreateMemoryUseCase;
@@ -84,26 +87,21 @@ public class MemoryService
     }
 
     @Override
-    public Memory findPrevMemoryById(Long memoryId) {
-        Memory memory = findById(memoryId);
-        return memoryPersistencePort
-                .findPrevMemoryByRecordAtAndMemberId(
-                        memory.getRecordAt(), memory.getMember().getId())
-                .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND_PREV));
-    }
-
-    @Override
-    public Memory findNextMemoryById(Long memoryId) {
-        Memory memory = findById(memoryId);
-        return memoryPersistencePort
-                .findNextMemoryByRecordAtAndMemberId(
-                        memory.getRecordAt(), memory.getMember().getId())
-                .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND_NEXT));
-    }
-
-    @Override
     public List<Memory> findByMemberId(Long memberId) {
         return memoryPersistencePort.findByMemberId(memberId);
+    }
+
+    @Override
+    public MemoryInfo findByIdWithPrevNext(Long requestMemberId, Long memoryId) {
+        Memory memory = findById(memoryId);
+        Long prevId =
+                memoryPersistencePort.findPrevIdByRecordAtAndMemberId(
+                        memory.getRecordAt(), memory.getMember().getId());
+        Long nextId =
+                memoryPersistencePort.findNextIdByRecordAtAndMemberId(
+                        memory.getRecordAt(), memory.getMember().getId());
+        Boolean isMyMemory = isMyMemory(memory.getMember().getId(), requestMemberId);
+        return new MemoryInfo(memory, prevId, nextId, isMyMemory);
     }
 
     @Override

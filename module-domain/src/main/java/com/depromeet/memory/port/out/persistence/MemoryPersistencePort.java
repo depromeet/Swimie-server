@@ -26,9 +26,9 @@ public interface MemoryPersistencePort {
 
     List<Memory> getCalendarByYearAndMonth(Long memberId, Integer year, Short month);
 
-    Optional<Memory> findPrevMemoryByRecordAtAndMemberId(LocalDate recordAt, Long memberId);
+    Long findPrevIdByRecordAtAndMemberId(LocalDate recordAt, Long memberId);
 
-    Optional<Memory> findNextMemoryByRecordAtAndMemberId(LocalDate recordAt, Long memberId);
+    Long findNextIdByRecordAtAndMemberId(LocalDate recordAt, Long memberId);
 
     List<Memory> findByMemberId(Long memberId);
 
