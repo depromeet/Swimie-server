@@ -1,7 +1,7 @@
 #!/bin/bash
 
 user_id=appuappu
-server_name=spring-batch
+server_name=swimie-batch
 image_batch_container=image-batch
 following_batch_container=following-batch
 request_date=$(date +"%Y%m%d")
