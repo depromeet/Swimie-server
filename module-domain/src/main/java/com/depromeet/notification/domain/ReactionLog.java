@@ -3,7 +3,9 @@ package com.depromeet.notification.domain;
 import com.depromeet.reaction.domain.Reaction;
 import java.time.LocalDateTime;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class ReactionLog {
     private Long id;
     private Reaction reaction;

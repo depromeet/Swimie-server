@@ -3,7 +3,9 @@ package com.depromeet.notification.domain;
 import com.depromeet.member.domain.Member;
 import java.time.LocalDateTime;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class FollowLog {
     private Long id;
     private Member member;
