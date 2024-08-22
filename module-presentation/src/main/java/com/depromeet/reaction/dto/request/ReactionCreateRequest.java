@@ -1,9 +1,9 @@
 package com.depromeet.reaction.dto.request;
 
+import com.depromeet.reaction.annotation.SingleEmojiCheck;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 public record ReactionCreateRequest(
         @Schema(description = "기록 ID", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -11,7 +11,7 @@ public record ReactionCreateRequest(
                 Long memoryId,
         @Schema(description = "이모지", example = "🦭", requiredMode = Schema.RequiredMode.REQUIRED)
                 @NotBlank
-                @Size(max = 2)
+                @SingleEmojiCheck
                 String emoji,
         @Schema(
                         description = "코멘트",

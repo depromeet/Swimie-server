@@ -10,4 +10,6 @@ public interface GetReactionUseCase {
     ReactionPage getDetailReactions(Long memberId, Long memoryId, Long cursorId);
 
     Long getDetailReactionsCount(Long memoryId);
+
+    List<Reaction> getReactionsByMemberAndMemory(Long memberId, Long memoryId);
 }
