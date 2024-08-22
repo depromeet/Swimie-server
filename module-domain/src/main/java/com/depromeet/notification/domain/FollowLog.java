@@ -8,14 +8,17 @@ import lombok.Getter;
 @Getter
 public class FollowLog {
     private Long id;
-    private Member member;
+    private Member receiver;
+    private Member follower;
     private FollowType type;
     private LocalDateTime createdAt;
 
     @Builder
-    public FollowLog(Long id, Member member, FollowType type, LocalDateTime createdAt) {
+    public FollowLog(
+            Long id, Member receiver, Member follower, FollowType type, LocalDateTime createdAt) {
         this.id = id;
-        this.member = member;
+        this.receiver = receiver;
+        this.follower = follower;
         this.type = type;
         this.createdAt = createdAt;
     }

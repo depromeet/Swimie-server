@@ -27,21 +27,28 @@ public class FollowLogEntity extends BaseTimeEntity {
 
     @JoinColumn(name = "member_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private MemberEntity member;
+    private MemberEntity receiver;
+
+    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private MemberEntity follower;
 
     private PersistenceFollowType type;
 
     @Builder
-    public FollowLogEntity(Long id, MemberEntity member, PersistenceFollowType type) {
+    public FollowLogEntity(
+            Long id, MemberEntity receiver, MemberEntity follower, PersistenceFollowType type) {
         this.id = id;
-        this.member = member;
+        this.receiver = receiver;
+        this.follower = follower;
         this.type = type;
     }
 
     public FollowLog toModel() {
         return FollowLog.builder()
                 .id(this.id)
-                .member(this.member.toModel())
+                .receiver(this.receiver.toModel())
+                .follower(this.follower.toModel())
                 .type(this.type.toModel())
                 .createdAt(this.getCreatedAt())
                 .build();
@@ -50,7 +57,8 @@ public class FollowLogEntity extends BaseTimeEntity {
     public static FollowLogEntity from(FollowLog followLog) {
         return FollowLogEntity.builder()
                 .id(followLog.getId())
-                .member(MemberEntity.from(followLog.getMember()))
+                .receiver(MemberEntity.from(followLog.getReceiver()))
+                .follower(MemberEntity.from(followLog.getFollower()))
                 .type(PersistenceFollowType.from(followLog.getType()))
                 .build();
     }
