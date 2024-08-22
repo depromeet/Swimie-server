@@ -10,12 +10,12 @@ pipeline {
         TARGET_HOST = credentials('REMOTE_SERVER_ADDR')
     }
     stages {
-        stage('원격 서버에 접속하여 PENDING Image 일괄 삭제 배치 작업 실행') {
+        stage('원격 서버에 접속하여 배치 작업 실행') {
             steps {
                 script {
                     def remoteCommands = """
                         cd ~ &&
-                        ./batch-image.sh
+                        ./prod-batch.sh
                     """
 
                     sshagent (credentials: ['jenkins-ssh']) {

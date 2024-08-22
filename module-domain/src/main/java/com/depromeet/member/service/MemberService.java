@@ -16,11 +16,13 @@ import com.depromeet.member.port.in.usecase.MemberUseCase;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import com.depromeet.type.member.MemberErrorType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
+@Profile("!batch")
 @RequiredArgsConstructor
 public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUpdateUseCase {
     private final MemberPersistencePort memberPersistencePort;
