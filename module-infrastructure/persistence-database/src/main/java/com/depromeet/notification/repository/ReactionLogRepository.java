@@ -13,6 +13,6 @@ public class ReactionLogRepository implements ReactionLogPersistencePort {
 
     @Override
     public ReactionLog save(ReactionLog reactionLog) {
-        return reactionLogJpaRepository.save(ReactionLogEntity.from(reactionLog)).toModel();
+        return reactionLogJpaRepository.save(ReactionLogEntity.from(reactionLog)).toPureModel();
     }
 }

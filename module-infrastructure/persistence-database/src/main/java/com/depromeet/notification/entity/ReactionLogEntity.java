@@ -35,17 +35,16 @@ public class ReactionLogEntity extends BaseTimeEntity {
         this.reaction = reaction;
     }
 
-    public ReactionLog toModel() {
+    public ReactionLog toPureModel() {
         return ReactionLog.builder()
                 .id(this.id)
-                .reaction(this.reaction.toModelWithMemberOnly())
+                .reaction(this.reaction.pureToModel())
                 .createdAt(this.getCreatedAt())
                 .build();
     }
 
     public static ReactionLogEntity from(ReactionLog reactionLog) {
         return ReactionLogEntity.builder()
-                .id(reactionLog.getId())
                 .reaction(ReactionEntity.from(reactionLog.getReaction()))
                 .build();
     }
