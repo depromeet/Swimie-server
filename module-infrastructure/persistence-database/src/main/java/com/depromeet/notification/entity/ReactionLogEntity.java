@@ -1,6 +1,7 @@
 package com.depromeet.notification.entity;
 
 import com.depromeet.basetime.BaseTimeEntity;
+import com.depromeet.member.entity.MemberEntity;
 import com.depromeet.notification.domain.ReactionLog;
 import com.depromeet.reaction.entity.ReactionEntity;
 import jakarta.persistence.Column;
@@ -25,19 +26,25 @@ public class ReactionLogEntity extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private MemberEntity receiver;
+
     @JoinColumn(name = "reaction_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private ReactionEntity reaction;
 
     @Builder
-    public ReactionLogEntity(Long id, ReactionEntity reaction) {
+    public ReactionLogEntity(Long id, MemberEntity receiver, ReactionEntity reaction) {
         this.id = id;
+        this.receiver = receiver;
         this.reaction = reaction;
     }
 
     public ReactionLog toModel() {
         return ReactionLog.builder()
                 .id(this.id)
+                .receiver(this.receiver.toModel())
                 .reaction(this.reaction.toModelWithMemberOnly())
                 .createdAt(this.getCreatedAt())
                 .build();
@@ -46,6 +53,7 @@ public class ReactionLogEntity extends BaseTimeEntity {
     public static ReactionLogEntity from(ReactionLog reactionLog) {
         return ReactionLogEntity.builder()
                 .id(reactionLog.getId())
+                .receiver(MemberEntity.from(reactionLog.getReceiver()))
                 .reaction(ReactionEntity.from(reactionLog.getReaction()))
                 .build();
     }
