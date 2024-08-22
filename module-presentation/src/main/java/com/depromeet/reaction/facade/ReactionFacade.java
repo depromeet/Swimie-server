@@ -54,14 +54,9 @@ public class ReactionFacade {
         List<Reaction> reactionDomains =
                 getReactionUseCase.getReactionsByMemberAndMemory(memberId, memoryId);
 
-        boolean isRegistrable = false;
-        if (reactionDomains != null && reactionDomains.isEmpty()) {
-            Memory memory = getMemoryUseCase.findByIdWithMember(memoryId);
-            if (!memory.getMember().getId().equals(memberId)) {
-                isRegistrable = true;
-            }
-        } else if (reactionDomains != null && reactionDomains.size() < MAXIMUM_REACTION_NUMBER) {
-            isRegistrable = true;
+        boolean isRegistrable = true;
+        if (reactionDomains != null && reactionDomains.size() >= MAXIMUM_REACTION_NUMBER) {
+            isRegistrable = false;
         }
         return ValidateReactionResponse.from(isRegistrable);
     }
