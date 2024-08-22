@@ -7,8 +7,8 @@ import lombok.Getter;
 
 @Getter
 public enum PersistenceFollowType implements CodedEnum<String> {
-    PENDING("PENDING"),
-    UPLOADED("UPLOADED");
+    FOLLOW("FOLLOW"),
+    FRIEND("FRIEND");
 
     private final String value;
 

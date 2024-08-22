@@ -25,11 +25,11 @@ public class FollowLogEntity extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "receiver_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private MemberEntity receiver;
 
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "follower_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private MemberEntity follower;
 
