@@ -100,7 +100,7 @@ public class ReactionService
 
     @Override
     public List<Reaction> getReactionsByMemberAndMemory(Long memberId, Long memoryId) {
-        return getAllByMemberAndMemory(memberId, memoryId);
+        return reactionPersistencePort.getPureReactionsByMemberAndMemory(memberId, memoryId);
     }
 
     private boolean isOverMaximumCreationLimit(List<Reaction> reactions) {
