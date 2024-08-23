@@ -65,6 +65,6 @@ public class ReactionController implements ReactionApi {
     public ApiResponse<?> delete(
             @LoginMember Long memberId, @PathVariable("reactionId") Long reactionId) {
         reactionFacade.deleteById(memberId, reactionId);
-        return ApiResponse.success(ReactionSuccessType.DELETE_REACTIONS_SUCCESS);
+        return ApiResponse.success(ReactionSuccessType.DELETE_REACTION_SUCCESS);
     }
 }
