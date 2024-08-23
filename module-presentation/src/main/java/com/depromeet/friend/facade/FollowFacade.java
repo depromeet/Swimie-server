@@ -4,10 +4,7 @@ import com.depromeet.friend.domain.vo.FollowSlice;
 import com.depromeet.friend.domain.vo.Follower;
 import com.depromeet.friend.domain.vo.Following;
 import com.depromeet.friend.dto.request.FollowRequest;
-import com.depromeet.friend.dto.response.FollowSliceResponse;
-import com.depromeet.friend.dto.response.FollowerResponse;
-import com.depromeet.friend.dto.response.FollowingResponse;
-import com.depromeet.friend.dto.response.FollowingSummaryResponse;
+import com.depromeet.friend.dto.response.*;
 import com.depromeet.friend.port.in.FollowUseCase;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
@@ -51,5 +48,10 @@ public class FollowFacade {
 
         return FollowingSummaryResponse.toFollowingSummaryResponse(
                 followingCount, followings, profileImageOrigin);
+    }
+
+    public IsFollowingResponse isFollowing(Long memberId, Long targetMemberId) {
+        Boolean isFollowing = followUseCase.isFollowing(memberId, targetMemberId);
+        return IsFollowingResponse.toIsFollowingResponse(isFollowing);
     }
 }
