@@ -2,6 +2,6 @@ FROM amazoncorretto:21
 
 WORKDIR /app
 
-COPY module-batch/build/libs/module-batch.jar /app/swimie-batch.jar
+COPY module-batch/build/libs/module-batch.jar /app/batch-image.jar
 
-CMD ["java", "-Duser.timezone=Asia/Seoul", "-jar", "-Dspring.profiles.active=batch", "swimie-batch.jar"]
+CMD ["java", "-Duser.timezone=Asia/Seoul", "-jar", "-Dspring.profiles.active=batch", "batch-image.jar"]

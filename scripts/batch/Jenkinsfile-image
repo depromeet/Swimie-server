@@ -15,7 +15,7 @@ pipeline {
                 script {
                     def remoteCommands = """
                         cd ~ &&
-                        ./prod-batch.sh
+                        ./batch-image.sh
                     """
 
                     sshagent (credentials: ['jenkins-ssh']) {
