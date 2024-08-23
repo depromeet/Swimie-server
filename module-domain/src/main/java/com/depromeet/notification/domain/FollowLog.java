@@ -12,14 +12,21 @@ public class FollowLog {
     private Member follower;
     private FollowType type;
     private LocalDateTime createdAt;
+    private boolean isRead;
 
     @Builder
     public FollowLog(
-            Long id, Member receiver, Member follower, FollowType type, LocalDateTime createdAt) {
+            Long id,
+            Member receiver,
+            Member follower,
+            FollowType type,
+            LocalDateTime createdAt,
+            boolean isRead) {
         this.id = id;
         this.receiver = receiver;
         this.follower = follower;
         this.type = type;
         this.createdAt = createdAt;
+        this.isRead = isRead;
     }
 }
