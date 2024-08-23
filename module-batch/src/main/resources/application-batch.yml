@@ -18,6 +18,7 @@ spring:
   batch:
     job:
       enabled: true
+      name: ${JOB_NAME:NONE}
     jdbc:
       initialize-schema: never
   cloud:
