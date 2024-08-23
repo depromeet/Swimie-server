@@ -1,0 +1,28 @@
+pipeline {
+    agent any
+    triggers {
+        cron('H 18 * * *')
+    }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '3'))
+    }
+    environment {
+        TARGET_HOST = credentials('REMOTE_SERVER_ADDR')
+    }
+    stages {
+        stage('원격 서버에 접속하여 배치 작업 실행') {
+            steps {
+                script {
+                    def remoteCommands = """
+                        cd ~ &&
+                        ./batch-following.sh
+                    """
+
+                    sshagent (credentials: ['jenkins-ssh']) {
+                        sh "ssh ${TARGET_HOST} '${remoteCommands}'"
+                    }
+                }
+            }
+        }
+    }
+}
