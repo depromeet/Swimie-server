@@ -11,6 +11,7 @@ import com.depromeet.notification.dto.response.FollowNotificationResponse;
 import com.depromeet.notification.dto.response.FriendNotificationResponse;
 import com.depromeet.notification.dto.response.NotificationResponse;
 import com.depromeet.notification.dto.response.ReactionNotificationResponse;
+import com.depromeet.notification.dto.response.UnreadNotificationCountResponse;
 import com.depromeet.notification.mapper.NotificationMapper;
 import com.depromeet.notification.port.in.usecase.GetFollowLogUseCase;
 import com.depromeet.notification.port.in.usecase.GetReactionLogUseCase;
@@ -88,5 +89,11 @@ public class NotificationFacade {
         } else {
             throw new BadRequestException(NotificationErrorType.INVALID_NOTIFICATION_TYPE);
         }
+    }
+
+    public UnreadNotificationCountResponse getUnreadNotificationCount(Long memberId) {
+        int followCount = getFollowLogUseCase.getUnreadFollowLogCount(memberId);
+        int reactionCount = getReactionLogUseCase.getUnreadReactionLogCount(memberId);
+        return new UnreadNotificationCountResponse(followCount + reactionCount);
     }
 }

@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface GetFollowLogUseCase {
     List<FollowLog> getFollowLogs(Long memberId, LocalDateTime cursorCreatedAt);
+
+    int getUnreadFollowLogCount(Long memberId);
 }

@@ -11,4 +11,6 @@ public interface FollowLogPersistencePort {
     List<FollowLog> findByMemberIdAndCursorCreatedAt(Long memberId, LocalDateTime cursorCreatedAt);
 
     void updateRead(Long memberId, Long followLogId, FollowType type);
+
+    int countUnread(Long memberId);
 }

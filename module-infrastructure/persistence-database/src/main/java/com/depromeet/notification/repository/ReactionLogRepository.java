@@ -3,6 +3,7 @@ package com.depromeet.notification.repository;
 import static com.depromeet.memory.entity.QMemoryEntity.*;
 import static com.depromeet.notification.entity.QReactionLogEntity.*;
 import static com.depromeet.reaction.entity.QReactionEntity.*;
+import static com.querydsl.core.types.ExpressionUtils.*;
 
 import com.depromeet.member.entity.QMemberEntity;
 import com.depromeet.notification.domain.ReactionLog;
@@ -56,6 +57,25 @@ public class ReactionLogRepository implements ReactionLogPersistencePort {
     public void updateRead(Long memberId, Long reactionLogId) {
         ReactionLogEntity reactionLogEntity = findByMemberIdAndLogId(memberId, reactionLogId);
         reactionLogEntity.updateHasRead(true);
+    }
+
+    @Override
+    public int countUnread(Long memberId) {
+        List<ReactionLogEntity> reactionLogEntities =
+                queryFactory
+                        .selectFrom(reactionLogEntity)
+                        .join(reactionLogEntity.reaction, reactionEntity)
+                        .fetchJoin()
+                        .join(reactionEntity.member, member)
+                        .fetchJoin()
+                        .join(reactionEntity.memory, memoryEntity)
+                        .fetchJoin()
+                        .join(memoryEntity.member, memoryMember)
+                        .fetchJoin()
+                        .where(memberEq(memberId), reactionLogEntity.hasRead.isFalse())
+                        .fetch();
+
+        return reactionLogEntities.size();
     }
 
     private ReactionLogEntity findByMemberIdAndLogId(Long memberId, Long reactionLogId) {

@@ -54,6 +54,12 @@ public class FollowLogService implements GetFollowLogUseCase, UpdateFollowLogUse
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public int getUnreadFollowLogCount(Long memberId) {
+        return followLogPersistencePort.countUnread(memberId);
+    }
+
+    @Override
     public void markAsReadFollowLog(Long memberId, UpdateReadFollowLogCommand command) {
         followLogPersistencePort.updateRead(memberId, command.followLogId(), command.type());
     }

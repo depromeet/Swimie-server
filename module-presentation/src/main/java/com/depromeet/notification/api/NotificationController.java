@@ -5,6 +5,7 @@ import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.notification.dto.request.UpdateReadNotificationRequest;
 import com.depromeet.notification.dto.response.NotificationResponse;
+import com.depromeet.notification.dto.response.UnreadNotificationCountResponse;
 import com.depromeet.notification.facade.NotificationFacade;
 import com.depromeet.type.notification.NotificationSuccessType;
 import java.time.LocalDateTime;
@@ -33,6 +34,15 @@ public class NotificationController {
         return ApiResponse.success(
                 NotificationSuccessType.GET_NOTIFICATION_SUCCESS,
                 notificationFacade.getNotifications(memberId, cursorCreatedAt));
+    }
+
+    @GetMapping("/count")
+    @Logging(item = "Notification", action = "GET")
+    public ApiResponse<UnreadNotificationCountResponse> getUnreadNotificationCount(
+            @LoginMember Long memberId) {
+        return ApiResponse.success(
+                NotificationSuccessType.GET_UNREAD_NOTIFICATION_COUNT_SUCCESS,
+                notificationFacade.getUnreadNotificationCount(memberId));
     }
 
     @PatchMapping("/read")

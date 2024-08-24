@@ -16,6 +16,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ReactionLogService implements GetReactionLogUseCase, UpdateReactionLogUseCase {
     private final ReactionLogPersistencePort reactionLogPersistencePort;
 
@@ -28,13 +29,18 @@ public class ReactionLogService implements GetReactionLogUseCase, UpdateReaction
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ReactionLog> getReactionsLogs(Long memberId, LocalDateTime cursorCreatedAt) {
         return reactionLogPersistencePort.findByMemberIdAndCursorCreatedAt(
                 memberId, cursorCreatedAt);
     }
 
     @Override
+    public int getUnreadReactionLogCount(Long memberId) {
+        return reactionLogPersistencePort.countUnread(memberId);
+    }
+
+    @Override
+    @Transactional
     public void markAsReadReactionLog(Long memberId, Long reactionLogId) {
         reactionLogPersistencePort.updateRead(memberId, reactionLogId);
     }

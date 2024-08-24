@@ -2,6 +2,7 @@ package com.depromeet.notification.repository;
 
 import static com.depromeet.member.entity.QMemberEntity.*;
 import static com.depromeet.notification.entity.QFollowLogEntity.*;
+import static com.querydsl.core.types.ExpressionUtils.*;
 
 import com.depromeet.member.entity.QMemberEntity;
 import com.depromeet.notification.domain.FollowLog;
@@ -54,6 +55,19 @@ public class FollowLogRepository implements FollowLogPersistencePort {
                 .where(memberEq(memberId), followLogEq(followLogId), followTypeEq(type))
                 .set(followLogEntity.hasRead, true)
                 .execute();
+    }
+
+    @Override
+    public int countUnread(Long memberId) {
+        List<FollowLogEntity> list =
+                queryFactory
+                        .selectFrom(followLogEntity)
+                        .join(followLogEntity.receiver, memberEntity)
+                        .fetchJoin()
+                        .where(memberEq(memberId), followLogEntity.hasRead.eq(false))
+                        .fetch();
+
+        return list.size();
     }
 
     private BooleanExpression memberEq(Long memberId) {

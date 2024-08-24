@@ -11,4 +11,6 @@ public interface ReactionLogPersistencePort {
             Long memberId, LocalDateTime cursorCreatedAt);
 
     void updateRead(Long memberId, Long reactionLogId);
+
+    int countUnread(Long memberId);
 }
