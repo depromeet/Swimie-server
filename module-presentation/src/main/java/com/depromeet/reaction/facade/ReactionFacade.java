@@ -45,8 +45,8 @@ public class ReactionFacade {
         return MemoryReactionResponse.from(reactionDomains);
     }
 
-    public PagingReactionResponse getDetailReactions(Long memberId, Long memoryId, Long cursorId) {
-        ReactionPage page = getReactionUseCase.getDetailReactions(memberId, memoryId, cursorId);
+    public PagingReactionResponse getDetailReactions(Long memoryId, Long cursorId) {
+        ReactionPage page = getReactionUseCase.getDetailReactions(memoryId, cursorId);
         Long totalCount = getReactionUseCase.getDetailReactionsCount(memoryId);
         return PagingReactionResponse.of(page, totalCount);
     }

@@ -75,13 +75,9 @@ public class ReactionService
     }
 
     @Override
-    public ReactionPage getDetailReactions(Long memberId, Long memoryId, Long cursorId) {
+    public ReactionPage getDetailReactions(Long memoryId, Long cursorId) {
         List<Reaction> reactionDomains =
                 reactionPersistencePort.getPagingReactions(memoryId, cursorId);
-
-        if (isNotMyMemory(memberId, reactionDomains)) {
-            throw new ForbiddenException(ReactionErrorType.FORBIDDEN_READ);
-        }
 
         boolean hasNext = reactionDomains.size() > REACTION_PAGE_SIZE;
         Long nextCursorId = null;
