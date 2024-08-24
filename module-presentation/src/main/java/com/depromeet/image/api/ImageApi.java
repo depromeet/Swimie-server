@@ -12,7 +12,7 @@ import java.util.List;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Tag(name = "이미지(images)")
+@Tag(name = "이미지(Image)")
 public interface ImageApi {
     @Operation(summary = "이미지 업로드 PresignedURL 생성")
     ApiResponse<?> getPresignedUrlForUploadImage(@RequestBody ImageNameRequest imageNameRequest);

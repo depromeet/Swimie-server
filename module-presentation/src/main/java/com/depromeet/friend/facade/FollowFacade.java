@@ -8,9 +8,11 @@ import com.depromeet.friend.dto.response.*;
 import com.depromeet.friend.port.in.FollowUseCase;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
+import com.depromeet.notification.event.FollowLogEvent;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FollowFacade {
     private final FollowUseCase followUseCase;
     private final MemberUseCase memberUseCase;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Value("${cloud-front.domain}")
     private String profileImageOrigin;
@@ -27,7 +30,10 @@ public class FollowFacade {
     public boolean addOrDeleteFollow(Long memberId, FollowRequest followRequest) {
         Member member = memberUseCase.findById(memberId);
         Member following = memberUseCase.findById(followRequest.followingId());
-        return followUseCase.addOrDeleteFollow(member, following);
+        boolean isAdd = followUseCase.addOrDeleteFollow(member, following);
+        eventPublisher.publishEvent(FollowLogEvent.of(following, member));
+
+        return isAdd;
     }
 
     public FollowSliceResponse<FollowingResponse> findFollowingList(Long memberId, Long cursorId) {

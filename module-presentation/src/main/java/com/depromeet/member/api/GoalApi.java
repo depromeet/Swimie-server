@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Tag(name = "목표(goal)")
+@Tag(name = "목표(Goal)")
 public interface GoalApi {
     @Operation(summary = "목표 수정")
     ApiResponse<MemberSimpleResponse> update(

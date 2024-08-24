@@ -29,7 +29,6 @@ public interface ReactionApi {
 
     @Operation(summary = "응원 전체 상세 조회")
     ApiResponse<PagingReactionResponse> read(
-            @LoginMember Long memberId,
             @PathVariable("memoryId") Long memoryId,
             @Parameter(description = "다음 조회를 위한 커서 ID", example = "21")
                     @RequestParam(value = "cursorId", required = false)

@@ -52,12 +52,11 @@ public class ReactionController implements ReactionApi {
     @Logging(item = "Reaction", action = "GET")
     @GetMapping("/memory/{memoryId}/reactions/detail")
     public ApiResponse<PagingReactionResponse> read(
-            @LoginMember Long memberId,
             @PathVariable("memoryId") Long memoryId,
             @RequestParam(value = "cursorId", required = false) Long cursorId) {
         return ApiResponse.success(
                 ReactionSuccessType.GET_DETAIL_REACTIONS_SUCCESS,
-                reactionFacade.getDetailReactions(memberId, memoryId, cursorId));
+                reactionFacade.getDetailReactions(memoryId, cursorId));
     }
 
     @Logging(item = "Reaction", action = "DELETE")

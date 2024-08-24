@@ -2,6 +2,7 @@ package com.depromeet.reaction.facade;
 
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.port.in.usecase.GetMemoryUseCase;
+import com.depromeet.notification.event.ReactionLogEvent;
 import com.depromeet.reaction.domain.Reaction;
 import com.depromeet.reaction.domain.ReactionPage;
 import com.depromeet.reaction.dto.request.ReactionCreateRequest;
@@ -14,6 +15,7 @@ import com.depromeet.reaction.port.in.usecase.DeleteReactionUseCase;
 import com.depromeet.reaction.port.in.usecase.GetReactionUseCase;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,12 +28,16 @@ public class ReactionFacade {
     private final CreateReactionUseCase createReactionUseCase;
     private final DeleteReactionUseCase deleteReactionUseCase;
 
+    private final ApplicationEventPublisher eventPublisher;
+
     private static final int MAXIMUM_REACTION_NUMBER = 3;
 
     @Transactional
     public void create(Long memberId, ReactionCreateRequest request) {
         Memory memory = getMemoryUseCase.findByIdWithMember(request.memoryId());
-        createReactionUseCase.save(memberId, memory, ReactionMapper.toCommand(request));
+        Reaction reaction =
+                createReactionUseCase.save(memberId, memory, ReactionMapper.toCommand(request));
+        eventPublisher.publishEvent(ReactionLogEvent.from(reaction));
     }
 
     public MemoryReactionResponse getReactionsOfMemory(Long memoryId) {
@@ -39,8 +45,8 @@ public class ReactionFacade {
         return MemoryReactionResponse.from(reactionDomains);
     }
 
-    public PagingReactionResponse getDetailReactions(Long memberId, Long memoryId, Long cursorId) {
-        ReactionPage page = getReactionUseCase.getDetailReactions(memberId, memoryId, cursorId);
+    public PagingReactionResponse getDetailReactions(Long memoryId, Long cursorId) {
+        ReactionPage page = getReactionUseCase.getDetailReactions(memoryId, cursorId);
         Long totalCount = getReactionUseCase.getDetailReactionsCount(memoryId);
         return PagingReactionResponse.of(page, totalCount);
     }

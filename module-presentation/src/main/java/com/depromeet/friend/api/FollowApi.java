@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Tag(name = "팔로워/팔로잉(follower/following)")
+@Tag(name = "팔로워/팔로잉(Follower/Following)")
 public interface FollowApi {
     @Operation(summary = "팔로잉 추가")
     ApiResponse<?> addOrDeleteFollow(
