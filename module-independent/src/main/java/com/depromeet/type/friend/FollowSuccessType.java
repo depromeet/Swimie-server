@@ -8,7 +8,8 @@ public enum FollowSuccessType implements SuccessType {
     GET_FOLLOWINGS_SUCCESS("FOLLOW_3", "팔로잉 리스트 조회에 성공하였습니다"),
     GET_FOLLOWERS_SUCCESS("FOLLOW_4", "팔로워 리스트 조회에 성공하였습니다"),
     GET_FOLLOWER_FOLLOWING_COUNT_SUCCESS("FOLLOW_5", "팔로워/팔로잉 숫자 조회에 성공하였습니다"),
-    GET_FOLLOWING_SUMMARY_SUCCESS("FOLLOW_6", "팔로잉 요약 정보 조회에 성공하였습니다");
+    GET_FOLLOWING_SUMMARY_SUCCESS("FOLLOW_6", "팔로잉 요약 정보 조회에 성공하였습니다"),
+    CHECK_FOLLOWING_SUCCESS("FOLLOW_7", "팔로잉 여부 조회에 성공하였습니다");
 
     private final String code;
     private final String message;

@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,6 +35,5 @@ public interface ReactionApi {
                     Long cursorId);
 
     @Operation(summary = "응원 삭제")
-    ResponseEntity<Void> delete(
-            @LoginMember Long memberId, @PathVariable("reactionId") Long reactionId);
+    ApiResponse<?> delete(@LoginMember Long memberId, @PathVariable("reactionId") Long reactionId);
 }

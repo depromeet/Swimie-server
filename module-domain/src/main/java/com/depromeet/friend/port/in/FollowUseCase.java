@@ -23,4 +23,6 @@ public interface FollowUseCase {
     FriendCount countFriendByMemberId(Long memberId);
 
     void deleteByMemberId(Long memberId);
+
+    Boolean isFollowing(Long memberId, Long targetMemberId);
 }
