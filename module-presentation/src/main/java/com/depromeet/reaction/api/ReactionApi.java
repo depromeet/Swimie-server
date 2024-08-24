@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,13 +29,11 @@ public interface ReactionApi {
 
     @Operation(summary = "응원 전체 상세 조회")
     ApiResponse<PagingReactionResponse> read(
-            @LoginMember Long memberId,
             @PathVariable("memoryId") Long memoryId,
             @Parameter(description = "다음 조회를 위한 커서 ID", example = "21")
                     @RequestParam(value = "cursorId", required = false)
                     Long cursorId);
 
     @Operation(summary = "응원 삭제")
-    ResponseEntity<Void> delete(
-            @LoginMember Long memberId, @PathVariable("reactionId") Long reactionId);
+    ApiResponse<?> delete(@LoginMember Long memberId, @PathVariable("reactionId") Long reactionId);
 }

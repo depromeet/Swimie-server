@@ -11,7 +11,6 @@ import com.depromeet.reaction.facade.ReactionFacade;
 import com.depromeet.type.reaction.ReactionSuccessType;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,19 +52,18 @@ public class ReactionController implements ReactionApi {
     @Logging(item = "Reaction", action = "GET")
     @GetMapping("/memory/{memoryId}/reactions/detail")
     public ApiResponse<PagingReactionResponse> read(
-            @LoginMember Long memberId,
             @PathVariable("memoryId") Long memoryId,
             @RequestParam(value = "cursorId", required = false) Long cursorId) {
         return ApiResponse.success(
                 ReactionSuccessType.GET_DETAIL_REACTIONS_SUCCESS,
-                reactionFacade.getDetailReactions(memberId, memoryId, cursorId));
+                reactionFacade.getDetailReactions(memoryId, cursorId));
     }
 
     @Logging(item = "Reaction", action = "DELETE")
     @DeleteMapping("/memory/reaction/{reactionId}")
-    public ResponseEntity<Void> delete(
+    public ApiResponse<?> delete(
             @LoginMember Long memberId, @PathVariable("reactionId") Long reactionId) {
         reactionFacade.deleteById(memberId, reactionId);
-        return ResponseEntity.noContent().build();
+        return ApiResponse.success(ReactionSuccessType.DELETE_REACTION_SUCCESS);
     }
 }

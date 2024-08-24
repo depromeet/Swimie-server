@@ -142,7 +142,7 @@ public class ImageControllerTest extends ControllerTestConfig {
     @WithCustomMockMember
     void memoryId로_이미지를_삭제한다() throws Exception {
         mockMvc.perform(delete("/image/memory/{memoryId}", 1))
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andReturn();
     }
 }

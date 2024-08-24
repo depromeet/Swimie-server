@@ -18,7 +18,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class FollowingLogService implements FollowingMemoryLogUseCase {
+public class FollowingMemoryLogService implements FollowingMemoryLogUseCase {
     private final FollowingMemoryLogPersistencePort followingMemoryLogPersistencePort;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

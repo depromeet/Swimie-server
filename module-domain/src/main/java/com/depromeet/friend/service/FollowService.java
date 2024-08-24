@@ -74,4 +74,14 @@ public class FollowService implements FollowUseCase {
     public void deleteByMemberId(Long memberId) {
         friendPersistencePort.deleteByMemberId(memberId);
     }
+
+    @Override
+    public Boolean isFollowing(Long memberId, Long targetMemberId) {
+        if (memberId.equals(targetMemberId)) {
+            throw new BadRequestException(FollowErrorType.SELF_FOLLOWING_NOT_ALLOWED);
+        }
+        return friendPersistencePort
+                .findByMemberIdAndFollowingId(memberId, targetMemberId)
+                .isPresent();
+    }
 }
