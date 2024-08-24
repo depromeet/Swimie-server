@@ -33,6 +33,10 @@ public class FriendNotificationResponse extends BaseNotificationResponse {
     }
 
     private static String getImageUrl(String profileImageOrigin, Member follower) {
+        if (follower.getProfileImageUrl() == null) {
+            return null;
+        }
+
         StringBuffer buffer = new StringBuffer();
         buffer.append(profileImageOrigin).append("/").append(follower.getProfileImageUrl());
         return buffer.toString();
