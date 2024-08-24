@@ -92,8 +92,8 @@ public class NotificationFacade {
     }
 
     public UnreadNotificationCountResponse getUnreadNotificationCount(Long memberId) {
-        int followCount = getFollowLogUseCase.getUnreadFollowLogCount(memberId);
-        int reactionCount = getReactionLogUseCase.getUnreadReactionLogCount(memberId);
+        Long followCount = getFollowLogUseCase.getUnreadFollowLogCount(memberId);
+        Long reactionCount = getReactionLogUseCase.getUnreadReactionLogCount(memberId);
         return new UnreadNotificationCountResponse(followCount + reactionCount);
     }
 }

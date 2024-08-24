@@ -58,16 +58,13 @@ public class FollowLogRepository implements FollowLogPersistencePort {
     }
 
     @Override
-    public int countUnread(Long memberId) {
-        List<FollowLogEntity> list =
-                queryFactory
-                        .selectFrom(followLogEntity)
-                        .join(followLogEntity.receiver, memberEntity)
-                        .fetchJoin()
-                        .where(memberEq(memberId), followLogEntity.hasRead.eq(false))
-                        .fetch();
-
-        return list.size();
+    public Long countUnread(Long memberId) {
+        return queryFactory
+                .select(count(followLogEntity))
+                .from(followLogEntity)
+                .join(followLogEntity.receiver, memberEntity)
+                .where(memberEq(memberId), followLogEntity.hasRead.eq(false))
+                .fetchOne();
     }
 
     private BooleanExpression memberEq(Long memberId) {

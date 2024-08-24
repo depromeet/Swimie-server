@@ -35,7 +35,7 @@ public class ReactionLogService implements GetReactionLogUseCase, UpdateReaction
     }
 
     @Override
-    public int getUnreadReactionLogCount(Long memberId) {
+    public Long getUnreadReactionLogCount(Long memberId) {
         return reactionLogPersistencePort.countUnread(memberId);
     }
 

@@ -60,22 +60,16 @@ public class ReactionLogRepository implements ReactionLogPersistencePort {
     }
 
     @Override
-    public int countUnread(Long memberId) {
-        List<ReactionLogEntity> reactionLogEntities =
-                queryFactory
-                        .selectFrom(reactionLogEntity)
-                        .join(reactionLogEntity.reaction, reactionEntity)
-                        .fetchJoin()
-                        .join(reactionEntity.member, member)
-                        .fetchJoin()
-                        .join(reactionEntity.memory, memoryEntity)
-                        .fetchJoin()
-                        .join(memoryEntity.member, memoryMember)
-                        .fetchJoin()
-                        .where(memberEq(memberId), reactionLogEntity.hasRead.isFalse())
-                        .fetch();
-
-        return reactionLogEntities.size();
+    public Long countUnread(Long memberId) {
+        return queryFactory
+                .select(count(reactionLogEntity))
+                .from(reactionLogEntity)
+                .join(reactionLogEntity.reaction, reactionEntity)
+                .join(reactionEntity.member, member)
+                .join(reactionEntity.memory, memoryEntity)
+                .join(memoryEntity.member, memoryMember)
+                .where(memberEq(memberId), reactionLogEntity.hasRead.isFalse())
+                .fetchOne();
     }
 
     private ReactionLogEntity findByMemberIdAndLogId(Long memberId, Long reactionLogId) {

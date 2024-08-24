@@ -7,4 +7,4 @@ public record UnreadNotificationCountResponse(
                         description = "안 읽은 알림 개수",
                         example = "23",
                         requiredMode = Schema.RequiredMode.REQUIRED)
-                int totalCount) {}
+                Long totalCount) {}
