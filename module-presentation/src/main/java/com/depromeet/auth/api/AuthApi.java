@@ -14,7 +14,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@Tag(name = "소셜로그인(auth)")
+@Tag(name = "소셜로그인(Auth)")
 public interface AuthApi {
     @Operation(summary = "구글 소셜로그인")
     ApiResponse<JwtTokenResponse> loginByGoogle(
