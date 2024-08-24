@@ -107,17 +107,16 @@ public record FollowingLogMemoryResponse(
         Integer totalDistance = memory.calculateTotalDistance();
 
         return FollowingLogMemoryResponse.builder()
-                .memberId(followingMemoryLog.getMember().getId())
-                .memberNickname(followingMemoryLog.getMember().getNickname())
-                .memberProfileUrl(
-                        getMemberProfileUrl(followingMemoryLog.getMember(), profileImageOrigin))
+                .memberId(memory.getMember().getId())
+                .memberNickname(memory.getMember().getNickname())
+                .memberProfileUrl(getMemberProfileUrl(memory.getMember(), profileImageOrigin))
                 .memoryId(memory.getId())
                 .recordAt(memory.getRecordAt().toString())
                 .startTime(memory.parseStartTime())
                 .endTime(memory.parseEndTime())
                 .diary(memory.getDiary())
                 .totalDistance(memory.calculateTotalDistance())
-                .isAchieved(isAchieved(totalDistance, followingMemoryLog.getMember().getGoal()))
+                .isAchieved(isAchieved(totalDistance, memory.getMember().getGoal()))
                 .kcal(getKcalFromMemoryDetail(memory))
                 .type(memory.classifyType())
                 .strokes(strokeToDto(memory.getStrokes(), memory.getLane()))

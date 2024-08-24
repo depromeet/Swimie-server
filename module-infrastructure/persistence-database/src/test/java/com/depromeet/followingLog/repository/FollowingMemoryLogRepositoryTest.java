@@ -90,8 +90,7 @@ public class FollowingMemoryLogRepositoryTest {
         Member member1 = members.getFirst();
         Memory memory = saveMemory();
 
-        FollowingMemoryLog followingMemoryLog =
-                FollowingMemoryLog.builder().member(member1).memory(memory).build();
+        FollowingMemoryLog followingMemoryLog = FollowingMemoryLog.builder().memory(memory).build();
 
         // when
         Long followingMemoryLogId = followingMemoryLogRepository.save(followingMemoryLog);
@@ -113,7 +112,8 @@ public class FollowingMemoryLogRepositoryTest {
                 followingMemoryLogRepository.findLogsByMemberIdAndCursorId(member.getId(), null);
 
         // then
-        List<Long> resultMemberIds = result.stream().map(f -> f.getMember().getId()).toList();
+        List<Long> resultMemberIds =
+                result.stream().map(f -> f.getMemory().getMember().getId()).toList();
         List<Long> resultMemoryIds = result.stream().map(f -> f.getMemory().getId()).toList();
 
         assertThat(result.size()).isEqualTo(11);
@@ -172,12 +172,9 @@ public class FollowingMemoryLogRepositoryTest {
 
     private List<Long> getFollowingMemoryLogIds(List<Memory> memories) {
         List<Long> followingMemoryLogIds = new ArrayList<>();
-        for (int i = 0; i < memories.size(); i++) {
+        for (Memory memory : memories) {
             FollowingMemoryLog followingMemoryLog =
-                    FollowingMemoryLog.builder()
-                            .member(members.get(i))
-                            .memory(memories.get(i))
-                            .build();
+                    FollowingMemoryLog.builder().memory(memory).build();
             Long followingMemoryLogId = followingMemoryLogRepository.save(followingMemoryLog);
             followingMemoryLogIds.add(followingMemoryLogId);
         }
