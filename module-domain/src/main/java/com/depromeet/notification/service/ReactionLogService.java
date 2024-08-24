@@ -2,7 +2,10 @@ package com.depromeet.notification.service;
 
 import com.depromeet.notification.domain.ReactionLog;
 import com.depromeet.notification.event.ReactionLogEvent;
+import com.depromeet.notification.port.in.usecaase.GetReactionLogUseCase;
 import com.depromeet.notification.port.out.ReactionLogPersistencePort;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -12,13 +15,21 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 @Service
 @RequiredArgsConstructor
-public class ReactionLogService {
+public class ReactionLogService implements GetReactionLogUseCase {
     private final ReactionLogPersistencePort reactionLogPersistencePort;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void save(ReactionLogEvent event) {
-        ReactionLog reactionLog = ReactionLog.builder().reaction(event.reaction()).build();
+        ReactionLog reactionLog =
+                ReactionLog.builder().reaction(event.reaction()).hasRead(false).build();
         reactionLogPersistencePort.save(reactionLog);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReactionLog> getReactionsLogs(Long memberId, LocalDateTime cursorCreatedAt) {
+        return reactionLogPersistencePort.findByMemberIdAndCursorCreatedAt(
+                memberId, cursorCreatedAt);
     }
 }

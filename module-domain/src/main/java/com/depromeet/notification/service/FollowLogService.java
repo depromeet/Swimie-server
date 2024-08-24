@@ -4,7 +4,10 @@ import com.depromeet.friend.port.out.persistence.FriendPersistencePort;
 import com.depromeet.notification.domain.FollowLog;
 import com.depromeet.notification.domain.FollowType;
 import com.depromeet.notification.event.FollowLogEvent;
+import com.depromeet.notification.port.in.usecaase.GetFollowLogUseCase;
 import com.depromeet.notification.port.out.FollowLogPersistencePort;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -15,7 +18,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class FollowLogService {
+public class FollowLogService implements GetFollowLogUseCase {
     private final FollowLogPersistencePort followLogPersistencePort;
     private final FriendPersistencePort friendPersistencePort;
 
@@ -36,8 +39,15 @@ public class FollowLogService {
                         .receiver(event.receiver())
                         .follower(event.follower())
                         .type(followType)
+                        .hasRead(false)
                         .build();
 
         followLogPersistencePort.save(followLog);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<FollowLog> getFollowLogs(Long memberId, LocalDateTime cursorCreatedAt) {
+        return followLogPersistencePort.findByMemberIdAndCursorCreatedAt(memberId, cursorCreatedAt);
     }
 }
