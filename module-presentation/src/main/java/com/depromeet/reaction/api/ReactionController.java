@@ -6,11 +6,11 @@ import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.reaction.dto.request.ReactionCreateRequest;
 import com.depromeet.reaction.dto.response.MemoryReactionResponse;
 import com.depromeet.reaction.dto.response.PagingReactionResponse;
+import com.depromeet.reaction.dto.response.ValidateReactionResponse;
 import com.depromeet.reaction.facade.ReactionFacade;
 import com.depromeet.type.reaction.ReactionSuccessType;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,9 +33,17 @@ public class ReactionController implements ReactionApi {
     }
 
     @Logging(item = "Reaction", action = "GET")
+    @GetMapping("/memory/{memoryId}/reaction/eligibility")
+    public ApiResponse<ValidateReactionResponse> validate(
+            @LoginMember Long memberId, @PathVariable("memoryId") Long memoryId) {
+        return ApiResponse.success(
+                ReactionSuccessType.VALIDATE_REACTION_SUCCESS,
+                reactionFacade.validate(memberId, memoryId));
+    }
+
+    @Logging(item = "Reaction", action = "GET")
     @GetMapping("/memory/{memoryId}/reactions")
-    public ApiResponse<MemoryReactionResponse> read(
-            @PathVariable(value = "memoryId") Long memoryId) {
+    public ApiResponse<MemoryReactionResponse> read(@PathVariable("memoryId") Long memoryId) {
         return ApiResponse.success(
                 ReactionSuccessType.GET_MEMORY_REACTIONS_SUCCESS,
                 reactionFacade.getReactionsOfMemory(memoryId));
@@ -45,7 +53,7 @@ public class ReactionController implements ReactionApi {
     @GetMapping("/memory/{memoryId}/reactions/detail")
     public ApiResponse<PagingReactionResponse> read(
             @LoginMember Long memberId,
-            @PathVariable(value = "memoryId") Long memoryId,
+            @PathVariable("memoryId") Long memoryId,
             @RequestParam(value = "cursorId", required = false) Long cursorId) {
         return ApiResponse.success(
                 ReactionSuccessType.GET_DETAIL_REACTIONS_SUCCESS,
@@ -54,9 +62,9 @@ public class ReactionController implements ReactionApi {
 
     @Logging(item = "Reaction", action = "DELETE")
     @DeleteMapping("/memory/reaction/{reactionId}")
-    public ResponseEntity<Void> delete(
-            @LoginMember Long memberId, @PathVariable(value = "reactionId") Long reactionId) {
+    public ApiResponse<?> delete(
+            @LoginMember Long memberId, @PathVariable("reactionId") Long reactionId) {
         reactionFacade.deleteById(memberId, reactionId);
-        return ResponseEntity.noContent().build();
+        return ApiResponse.success(ReactionSuccessType.DELETE_REACTION_SUCCESS);
     }
 }

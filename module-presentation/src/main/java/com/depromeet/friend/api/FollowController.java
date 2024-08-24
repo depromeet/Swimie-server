@@ -3,10 +3,7 @@ package com.depromeet.friend.api;
 import com.depromeet.config.Logging;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.friend.dto.request.FollowRequest;
-import com.depromeet.friend.dto.response.FollowSliceResponse;
-import com.depromeet.friend.dto.response.FollowerResponse;
-import com.depromeet.friend.dto.response.FollowingResponse;
-import com.depromeet.friend.dto.response.FollowingSummaryResponse;
+import com.depromeet.friend.dto.response.*;
 import com.depromeet.friend.facade.FollowFacade;
 import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.type.friend.FollowSuccessType;
@@ -56,5 +53,13 @@ public class FollowController implements FollowApi {
     public ApiResponse<FollowingSummaryResponse> findFollowingSummary(@LoginMember Long memberId) {
         FollowingSummaryResponse response = followFacade.findFollowingSummary(memberId);
         return ApiResponse.success(FollowSuccessType.GET_FOLLOWING_SUMMARY_SUCCESS, response);
+    }
+
+    @GetMapping("/{memberId}")
+    @Logging(item = "Follower/Following", action = "GET")
+    public ApiResponse<IsFollowingResponse> checkFollowing(
+            @LoginMember Long memberId, @PathVariable("memberId") Long targetMemberId) {
+        IsFollowingResponse response = followFacade.isFollowing(memberId, targetMemberId);
+        return ApiResponse.success(FollowSuccessType.CHECK_FOLLOWING_SUCCESS, response);
     }
 }

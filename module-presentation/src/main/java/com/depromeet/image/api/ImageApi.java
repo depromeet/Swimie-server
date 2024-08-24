@@ -9,7 +9,6 @@ import com.depromeet.member.annotation.LoginMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -39,5 +38,5 @@ public interface ImageApi {
     ApiResponse<List<ImageResponse>> findImages(@PathVariable("memoryId") Long memoryId);
 
     @Operation(summary = "Delete images belongs to memory", description = "수영 기록의 이미지 삭제")
-    ResponseEntity<?> deleteImages(@PathVariable("memoryId") Long memoryId);
+    ApiResponse<?> deleteImages(@PathVariable("memoryId") Long memoryId);
 }
