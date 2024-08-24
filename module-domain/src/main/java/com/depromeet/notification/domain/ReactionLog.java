@@ -10,13 +10,13 @@ public class ReactionLog {
     private Long id;
     private Reaction reaction;
     private LocalDateTime createdAt;
-    private boolean isRead;
+    private boolean hasRead;
 
     @Builder
-    public ReactionLog(Long id, Reaction reaction, LocalDateTime createdAt, boolean isRead) {
+    public ReactionLog(Long id, Reaction reaction, LocalDateTime createdAt, boolean hasRead) {
         this.id = id;
         this.reaction = reaction;
         this.createdAt = createdAt;
-        this.isRead = isRead;
+        this.hasRead = hasRead;
     }
 }

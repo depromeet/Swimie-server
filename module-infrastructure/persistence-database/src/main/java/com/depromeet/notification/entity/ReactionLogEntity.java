@@ -29,13 +29,13 @@ public class ReactionLogEntity extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private ReactionEntity reaction;
 
-    private boolean isRead;
+    private boolean hasRead;
 
     @Builder
-    public ReactionLogEntity(Long id, ReactionEntity reaction, boolean isRead) {
+    public ReactionLogEntity(Long id, ReactionEntity reaction, boolean hasRead) {
         this.id = id;
         this.reaction = reaction;
-        this.isRead = isRead;
+        this.hasRead = hasRead;
     }
 
     public ReactionLog toModel() {
@@ -43,7 +43,7 @@ public class ReactionLogEntity extends BaseTimeEntity {
                 .id(this.id)
                 .reaction(this.reaction.toModel())
                 .createdAt(this.getCreatedAt())
-                .isRead(this.isRead)
+                .hasRead(this.hasRead)
                 .build();
     }
 
@@ -52,14 +52,14 @@ public class ReactionLogEntity extends BaseTimeEntity {
                 .id(this.id)
                 .reaction(this.reaction.pureToModel())
                 .createdAt(this.getCreatedAt())
-                .isRead(this.isRead)
+                .hasRead(this.hasRead)
                 .build();
     }
 
     public static ReactionLogEntity from(ReactionLog reactionLog) {
         return ReactionLogEntity.builder()
                 .reaction(ReactionEntity.from(reactionLog.getReaction()))
-                .isRead(reactionLog.isRead())
+                .hasRead(reactionLog.isHasRead())
                 .build();
     }
 }

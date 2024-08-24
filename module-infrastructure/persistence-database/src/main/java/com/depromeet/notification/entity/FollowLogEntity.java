@@ -35,7 +35,7 @@ public class FollowLogEntity extends BaseTimeEntity {
 
     private PersistenceFollowType type;
 
-    private boolean isRead;
+    private boolean hasRead;
 
     @Builder
     public FollowLogEntity(
@@ -43,12 +43,12 @@ public class FollowLogEntity extends BaseTimeEntity {
             MemberEntity receiver,
             MemberEntity follower,
             PersistenceFollowType type,
-            boolean isRead) {
+            boolean hasRead) {
         this.id = id;
         this.receiver = receiver;
         this.follower = follower;
         this.type = type;
-        this.isRead = isRead;
+        this.hasRead = hasRead;
     }
 
     public FollowLog toModel() {
@@ -58,7 +58,7 @@ public class FollowLogEntity extends BaseTimeEntity {
                 .follower(this.follower.toModel())
                 .type(this.type.toModel())
                 .createdAt(this.getCreatedAt())
-                .isRead(this.isRead)
+                .hasRead(this.hasRead)
                 .build();
     }
 
@@ -68,7 +68,7 @@ public class FollowLogEntity extends BaseTimeEntity {
                 .receiver(MemberEntity.from(followLog.getReceiver()))
                 .follower(MemberEntity.from(followLog.getFollower()))
                 .type(PersistenceFollowType.from(followLog.getType()))
-                .isRead(followLog.isRead())
+                .hasRead(followLog.isHasRead())
                 .build();
     }
 }
