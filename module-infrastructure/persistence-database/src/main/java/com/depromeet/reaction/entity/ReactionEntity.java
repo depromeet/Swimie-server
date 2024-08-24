@@ -53,11 +53,20 @@ public class ReactionEntity extends BaseTimeEntity {
 
     public static ReactionEntity from(Reaction reaction) {
         return ReactionEntity.builder()
-                .member(MemberEntity.from(reaction.getMember()))
-                .memory(MemoryEntity.from(reaction.getMemory()))
+                .id(reaction.getId())
+                .member(getMemberEntityOrNull(reaction))
+                .memory(getMemoryEntityOrNull(reaction))
                 .emoji(reaction.getEmoji())
                 .comment(reaction.getComment())
                 .build();
+    }
+
+    private static MemoryEntity getMemoryEntityOrNull(Reaction reaction) {
+        return reaction.getMember() != null ? MemoryEntity.from(reaction.getMemory()) : null;
+    }
+
+    private static MemberEntity getMemberEntityOrNull(Reaction reaction) {
+        return reaction.getMember() != null ? MemberEntity.from(reaction.getMember()) : null;
     }
 
     public static ReactionEntity pureFrom(Reaction reaction) {

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Tag(name = "사용자(members)")
+@Tag(name = "사용자(Member)")
 public interface MemberApi {
     @Operation(summary = "id로 member 단일 검색")
     ApiResponse<MemberProfileResponse> getMember(

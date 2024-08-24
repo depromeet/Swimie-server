@@ -7,7 +7,7 @@ import java.util.List;
 public interface GetReactionUseCase {
     List<Reaction> getReactionsOfMemory(Long memoryId);
 
-    ReactionPage getDetailReactions(Long memberId, Long memoryId, Long cursorId);
+    ReactionPage getDetailReactions(Long memoryId, Long cursorId);
 
     Long getDetailReactionsCount(Long memoryId);
 
