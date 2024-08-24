@@ -1,4 +1,4 @@
-package com.depromeet.notification.port.in.usecaase;
+package com.depromeet.notification.port.in.usecase;
 
 import com.depromeet.notification.domain.ReactionLog;
 import java.time.LocalDateTime;

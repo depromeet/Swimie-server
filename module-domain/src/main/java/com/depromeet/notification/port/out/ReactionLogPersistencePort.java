@@ -9,4 +9,6 @@ public interface ReactionLogPersistencePort {
 
     List<ReactionLog> findByMemberIdAndCursorCreatedAt(
             Long memberId, LocalDateTime cursorCreatedAt);
+
+    void updateRead(Long memberId, Long reactionLogId);
 }

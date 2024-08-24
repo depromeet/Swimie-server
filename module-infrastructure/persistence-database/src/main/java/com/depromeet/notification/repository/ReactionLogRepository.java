@@ -1,6 +1,5 @@
 package com.depromeet.notification.repository;
 
-import static com.depromeet.member.entity.QMemberEntity.*;
 import static com.depromeet.memory.entity.QMemoryEntity.*;
 import static com.depromeet.notification.entity.QReactionLogEntity.*;
 import static com.depromeet.reaction.entity.QReactionEntity.*;
@@ -20,8 +19,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class ReactionLogRepository implements ReactionLogPersistencePort {
-    private final ReactionLogJpaRepository reactionLogJpaRepository;
     private final JPAQueryFactory queryFactory;
+    private final ReactionLogJpaRepository reactionLogJpaRepository;
 
     QMemberEntity member = new QMemberEntity("member");
     QMemberEntity memoryMember = new QMemberEntity("memoryMember");
@@ -53,6 +52,27 @@ public class ReactionLogRepository implements ReactionLogPersistencePort {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void updateRead(Long memberId, Long reactionLogId) {
+        ReactionLogEntity reactionLogEntity = findByMemberIdAndLogId(memberId, reactionLogId);
+        reactionLogEntity.updateHasRead(true);
+    }
+
+    private ReactionLogEntity findByMemberIdAndLogId(Long memberId, Long reactionLogId) {
+        return queryFactory
+                .selectFrom(reactionLogEntity)
+                .join(reactionLogEntity.reaction, reactionEntity)
+                .fetchJoin()
+                .join(reactionEntity.member, member)
+                .fetchJoin()
+                .join(reactionEntity.memory, memoryEntity)
+                .fetchJoin()
+                .join(memoryEntity.member, memoryMember)
+                .fetchJoin()
+                .where(memberEq(memberId), reactionLogEq(reactionLogId))
+                .fetchOne();
+    }
+
     private BooleanExpression createdAtLoe(LocalDateTime cursorCreatedAt) {
         if (cursorCreatedAt == null) {
             return null;
@@ -65,5 +85,12 @@ public class ReactionLogRepository implements ReactionLogPersistencePort {
             return null;
         }
         return memoryMember.id.eq(memberId);
+    }
+
+    private BooleanExpression reactionLogEq(Long reactionLogId) {
+        if (reactionLogId == null) {
+            return null;
+        }
+        return reactionLogEntity.id.eq(reactionLogId);
     }
 }

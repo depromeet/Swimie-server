@@ -5,7 +5,9 @@ import static com.depromeet.notification.entity.QFollowLogEntity.*;
 
 import com.depromeet.member.entity.QMemberEntity;
 import com.depromeet.notification.domain.FollowLog;
+import com.depromeet.notification.domain.FollowType;
 import com.depromeet.notification.entity.FollowLogEntity;
+import com.depromeet.notification.entity.PersistenceFollowType;
 import com.depromeet.notification.port.out.FollowLogPersistencePort;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -45,6 +47,15 @@ public class FollowLogRepository implements FollowLogPersistencePort {
                 .toList();
     }
 
+    @Override
+    public void updateRead(Long memberId, Long followLogId, FollowType type) {
+        queryFactory
+                .update(followLogEntity)
+                .where(memberEq(memberId), followLogEq(followLogId), followTypeEq(type))
+                .set(followLogEntity.hasRead, true)
+                .execute();
+    }
+
     private BooleanExpression memberEq(Long memberId) {
         if (memberId == null) {
             return null;
@@ -57,5 +68,19 @@ public class FollowLogRepository implements FollowLogPersistencePort {
             return null;
         }
         return followLogEntity.createdAt.loe(cursorCreatedAt);
+    }
+
+    private BooleanExpression followLogEq(Long followLogId) {
+        if (followLogId == null) {
+            return null;
+        }
+        return followLogEntity.id.eq(followLogId);
+    }
+
+    private BooleanExpression followTypeEq(FollowType type) {
+        if (type == null) {
+            return null;
+        }
+        return followLogEntity.type.eq(PersistenceFollowType.from(type));
     }
 }

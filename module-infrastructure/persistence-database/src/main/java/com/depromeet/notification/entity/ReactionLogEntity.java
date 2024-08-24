@@ -62,4 +62,9 @@ public class ReactionLogEntity extends BaseTimeEntity {
                 .hasRead(reactionLog.isHasRead())
                 .build();
     }
+
+    public boolean updateHasRead(boolean hasRead) {
+        this.hasRead = hasRead;
+        return this.hasRead;
+    }
 }

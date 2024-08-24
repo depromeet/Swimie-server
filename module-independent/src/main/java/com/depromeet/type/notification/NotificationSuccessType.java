@@ -3,7 +3,8 @@ package com.depromeet.type.notification;
 import com.depromeet.type.SuccessType;
 
 public enum NotificationSuccessType implements SuccessType {
-    GET_NOTIFICATION_SUCCESS("NOTIFICATION_1", "알림 조회에 성공하였습니다");
+    GET_NOTIFICATION_SUCCESS("NOTIFICATION_1", "알림 조회에 성공하였습니다"),
+    MARK_AS_READ_NOTIFICATION_SUCCESS("NOTIFICATION_2", "알림을 읽음 처리하였습니다");
 
     private final String code;
     private final String message;
