@@ -66,7 +66,7 @@ public class MemoryFacade {
             poolSearchLogUseCase.createSearchLog(writer, request.getPoolId());
         }
         // 팔로잉 소식 저장
-        eventPublisher.publishEvent(new CreateFollowingMemoryCommand(writer, newMemory));
+        eventPublisher.publishEvent(new CreateFollowingMemoryCommand(newMemory));
         return MemoryCreateResponse.of(month, rank, memoryId);
     }
 

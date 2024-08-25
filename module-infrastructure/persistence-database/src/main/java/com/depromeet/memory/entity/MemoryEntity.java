@@ -155,6 +155,7 @@ public class MemoryEntity {
     public Memory toModelForFollowingLog() {
         return Memory.builder()
                 .id(this.id)
+                .member(this.member.toModel())
                 .memoryDetail(getMemoryDetailOrNull())
                 .strokes(getStrokeListOrNull())
                 .images(getImageListOrNull())
