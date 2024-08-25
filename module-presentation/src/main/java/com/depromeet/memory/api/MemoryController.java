@@ -71,10 +71,11 @@ public class MemoryController implements MemoryApi {
     @GetMapping("/calendar")
     @Logging(item = "Memory", action = "GET")
     public ApiResponse<CalendarResponse> getCalendar(
-            @LoginMember Long memberId,
+            @LoginMember Long requesterId,
             @RequestParam("year") Integer year,
-            @RequestParam("month") Short month) {
-        CalendarResponse response = memoryFacade.getCalendar(memberId, year, month);
+            @RequestParam("month") Short month,
+            @RequestParam(value = "targetId", required = false) Long targetId) {
+        CalendarResponse response = memoryFacade.getCalendar(requesterId, targetId, year, month);
         return ApiResponse.success(MemorySuccessType.GET_CALENDAR_SUCCESS, response);
     }
 }
