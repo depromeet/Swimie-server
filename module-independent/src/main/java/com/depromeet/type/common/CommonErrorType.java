@@ -15,7 +15,8 @@ public enum CommonErrorType implements ErrorType {
     RUNTIME("COMMON_10", "런타임 예외가 발생했습니다"),
     IO("COMMON_11", "I/O 예외가 발생했습니다"),
     NULL("COMMON_12", "객체가 null 인 상태에서 접근하였습니다"),
-    NO_SUCH_ELEMENT("COMMON_13", "요소가 존재하지 않습니다");
+    NO_SUCH_ELEMENT("COMMON_13", "요소가 존재하지 않습니다"),
+    TOO_MANY_REQUESTS("COMMON_14", "요청이 너무 많습니다");
 
     private final String code;
     private final String message;
