@@ -64,7 +64,7 @@ pipeline {
                     """
 
                     sshagent (credentials: ['jenkins-ssh']) {
-                        sh "ssh -o StrictHostKeyChecking=no ${TARGET_HOST} '${remoteCommands}'"
+                        sh "ssh ${TARGET_HOST} '${remoteCommands}'"
                     }
                 }
             }
