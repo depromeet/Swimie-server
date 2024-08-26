@@ -16,7 +16,7 @@ public class WithdrawalReasonService implements CreateWithdrawalReasonUseCase {
 
     @Override
     public void save(CreateWithdrawalReasonCommand withdrawalReasonCommand) {
-        ReasonType reasonType = ReasonType.valueOf(withdrawalReasonCommand.reason());
+        ReasonType reasonType = ReasonType.findByCode(withdrawalReasonCommand.reasonCode());
         String feedback = withdrawalReasonCommand.feedback();
         withdrawalReasonPort.writeToSheet(reasonType, feedback);
     }

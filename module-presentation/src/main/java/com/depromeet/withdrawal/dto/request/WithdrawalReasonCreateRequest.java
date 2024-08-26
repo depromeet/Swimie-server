@@ -7,8 +7,8 @@ public record WithdrawalReasonCreateRequest(
         @NotNull
                 @Schema(
                         description = "탈퇴 사유",
-                        example = "REASON_NOT_SWIM",
+                        example = "REASON_01",
                         requiredMode = Schema.RequiredMode.REQUIRED)
-                String reason,
+                String reasonCode,
         @Schema(description = "피드백", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
                 String feedback) {}

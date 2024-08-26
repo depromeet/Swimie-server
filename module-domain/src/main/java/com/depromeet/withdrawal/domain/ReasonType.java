@@ -1,5 +1,8 @@
 package com.depromeet.withdrawal.domain;
 
+import com.depromeet.exception.BadRequestException;
+import com.depromeet.type.withdrawal.WithdrawalReasonErrorType;
+import java.util.Arrays;
 import lombok.Getter;
 
 @Getter
@@ -16,5 +19,15 @@ public enum ReasonType {
     ReasonType(String code, String reason) {
         this.code = code;
         this.reason = reason;
+    }
+
+    public static ReasonType findByCode(String code) {
+        return Arrays.stream(ReasonType.values())
+                .filter(reason -> reason.code.equals(code))
+                .findAny()
+                .orElseThrow(
+                        () ->
+                                new BadRequestException(
+                                        WithdrawalReasonErrorType.REASON_CODE_NOT_FOUND));
     }
 }

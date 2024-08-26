@@ -6,7 +6,7 @@ import com.depromeet.withdrawal.port.in.command.CreateWithdrawalReasonCommand;
 public class WithdrawalReasonMapper {
     public static CreateWithdrawalReasonCommand toCommand(WithdrawalReasonCreateRequest request) {
         return CreateWithdrawalReasonCommand.builder()
-                .reason(request.reason())
+                .reasonCode(request.reasonCode())
                 .feedback(request.feedback())
                 .build();
     }
