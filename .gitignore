@@ -45,3 +45,6 @@ Application.run.xml
 
 ### localhost.p12
 localhost.p12
+
+## google sheet credentials
+**.json

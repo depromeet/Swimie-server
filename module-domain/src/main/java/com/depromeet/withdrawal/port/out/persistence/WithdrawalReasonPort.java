@@ -1,7 +1,7 @@
 package com.depromeet.withdrawal.port.out.persistence;
 
-import com.depromeet.withdrawal.domain.WithdrawalReason;
+import com.depromeet.withdrawal.domain.ReasonType;
 
 public interface WithdrawalReasonPort {
-    void save(WithdrawalReason withdrawalReason);
+    void writeToSheet(ReasonType reasonType, String feedback);
 }

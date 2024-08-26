@@ -1,7 +1,6 @@
 package com.depromeet.withdrawal.service;
 
 import com.depromeet.withdrawal.domain.ReasonType;
-import com.depromeet.withdrawal.domain.WithdrawalReason;
 import com.depromeet.withdrawal.port.in.command.CreateWithdrawalReasonCommand;
 import com.depromeet.withdrawal.port.in.usecase.CreateWithdrawalReasonUseCase;
 import com.depromeet.withdrawal.port.out.persistence.WithdrawalReasonPort;
@@ -17,11 +16,8 @@ public class WithdrawalReasonService implements CreateWithdrawalReasonUseCase {
 
     @Override
     public void save(CreateWithdrawalReasonCommand withdrawalReasonCommand) {
-        WithdrawalReason withdrawalReason =
-                WithdrawalReason.builder()
-                        .reason(ReasonType.valueOf(withdrawalReasonCommand.reason()))
-                        .feedback(withdrawalReasonCommand.feedback())
-                        .build();
-        withdrawalReasonPort.save(withdrawalReason);
+        ReasonType reasonType = ReasonType.valueOf(withdrawalReasonCommand.reason());
+        String feedback = withdrawalReasonCommand.feedback();
+        withdrawalReasonPort.writeToSheet(reasonType, feedback);
     }
 }

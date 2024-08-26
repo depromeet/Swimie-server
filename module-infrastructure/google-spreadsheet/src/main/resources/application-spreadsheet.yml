@@ -1,0 +1,11 @@
+spring:
+  config:
+    activate:
+      on-profile: spreadsheet
+
+google:
+  sheet:
+    credentials-file-path: ${GOOGLE_SHEET_CREDENTIALS}
+    application-name: ${GOOGLE_SHEET_APPLICATION_NAME}
+    sheet-id: ${GOOGLE_SHEET_ID}
+    range: ${GOOGLE_SHEET_RANGE}
