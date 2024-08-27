@@ -83,9 +83,11 @@ public class ImageFacade {
 
     public void changeProfileImageUrl(Long memberId, String imageName) {
         // 존재하는 이미지를 지운다
-        Member member = memberService.findById(memberId);
-        if (member.getProfileImageUrl() != null && !member.getProfileImageUrl().isEmpty()) {
-            imageDeleteUseCase.deleteProfileImage(member.getProfileImageUrl());
+        if (!isDefaultProfileNumber(imageName)) {
+            Member member = memberService.findById(memberId);
+            if (member.getProfileImageUrl() != null && !member.getProfileImageUrl().isEmpty()) {
+                imageDeleteUseCase.deleteProfileImage(member.getProfileImageUrl());
+            }
         }
         // 멤버의 프로필 이미지 URL 정보를 수정한다
         memberService.updateProfileImageUrl(memberId, imageName);
@@ -98,5 +100,9 @@ public class ImageFacade {
 
     public void deleteAllImagesByMemoryId(Long memoryId) {
         imageDeleteUseCase.deleteAllImagesByMemoryId(memoryId);
+    }
+
+    private static boolean isDefaultProfileNumber(String imageName) {
+        return imageName.equals("1") || imageName.equals("2") || imageName.equals("3") || imageName.equals("4");
     }
 }
