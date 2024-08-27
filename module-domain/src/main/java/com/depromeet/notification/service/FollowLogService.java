@@ -31,6 +31,11 @@ public class FollowLogService
     public void save(FollowLogEvent event) {
         Long receiverId = event.receiver().getId();
         Long followerId = event.follower().getId();
+
+        if (followLogPersistencePort.existsByReceiverIdAndFollowerId(receiverId, followerId)) {
+            return;
+        }
+
         String typeString =
                 friendPersistencePort
                         .findByMemberIdAndFollowingId(receiverId, followerId)

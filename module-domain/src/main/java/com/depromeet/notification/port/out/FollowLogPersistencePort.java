@@ -15,4 +15,6 @@ public interface FollowLogPersistencePort {
     Long countUnread(Long memberId);
 
     void deleteAllByMemberId(Long memberId);
+
+    boolean existsByReceiverIdAndFollowerId(Long receiverId, Long followerId);
 }
