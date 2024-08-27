@@ -26,8 +26,6 @@ pipeline {
 
         stage('빌드') {
             steps {
-                withCredentials([file(credentialsId: 'GOOGLE_CREDENTIAL_JSON', variable: 'spreadsheetJson')])
-                sh 'cp $spreadsheetJson ./module-infrastructure/google-spreadsheet/src/main/resources/'
                 sh 'chmod u+w ./module-presentation/src/main/resources/'
                 sh 'chmod +x ./gradlew'
                 sh './gradlew :module-presentation:build'
