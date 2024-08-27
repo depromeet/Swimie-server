@@ -19,18 +19,14 @@ public interface FollowApi {
 
     @Operation(summary = "팔로잉 리스트 조회")
     ApiResponse<FollowSliceResponse<FollowingResponse>> findFollowingList(
-            @LoginMember Long requesterId,
-            @Parameter(description = "팔로잉 리스트 조회할 대상의 member PK")
-                    @RequestParam(value = "targetId", required = false)
-                    Long targetId,
+            @Parameter(description = "팔로잉 리스트 조회할 대상의 member PK") @PathVariable(value = "memberId")
+                    Long memberId,
             @RequestParam(value = "cursorId", required = false) Long cursorId);
 
     @Operation(summary = "팔로워 리스트 조회")
     ApiResponse<FollowSliceResponse<FollowerResponse>> findFollowerList(
-            @LoginMember Long requesterId,
-            @Parameter(description = "팔로워 리스트 조회할 대상의 member PK")
-                    @RequestParam(value = "targetId", required = false)
-                    Long targetId,
+            @Parameter(description = "팔로워 리스트 조회할 대상의 member PK") @PathVariable(value = "memberId")
+                    Long memberId,
             @RequestParam(value = "cursorId", required = false) Long cursorId);
 
     @Operation(summary = "팔로잉 소식 페이지에 사용할 팔로잉 유저 목록 조회")

@@ -36,19 +36,13 @@ public class FollowFacade {
         return isAdd;
     }
 
-    public FollowSliceResponse<FollowingResponse> findFollowingList(
-            Long memberId, Long targetId, Long cursorId) {
-        memberId = targetId == null ? memberId : targetId;
-
+    public FollowSliceResponse<FollowingResponse> findFollowingList(Long memberId, Long cursorId) {
         FollowSlice<Following> followingSlice =
                 followUseCase.getFollowingByMemberIdAndCursorId(memberId, cursorId);
         return FollowSliceResponse.toFollowingSliceResponse(followingSlice, profileImageOrigin);
     }
 
-    public FollowSliceResponse<FollowerResponse> findFollowerList(
-            Long memberId, Long targetId, Long cursorId) {
-        memberId = targetId == null ? memberId : targetId;
-
+    public FollowSliceResponse<FollowerResponse> findFollowerList(Long memberId, Long cursorId) {
         FollowSlice<Follower> followerSlice =
                 followUseCase.getFollowerByMemberIdAndCursorId(memberId, cursorId);
         return FollowSliceResponse.toFollowerSliceResponses(followerSlice, profileImageOrigin);
