@@ -217,6 +217,14 @@ public class MemoryRepository implements MemoryPersistencePort {
         em.clear();
     }
 
+    @Override
+    public void deleteAllByMemberId(Long memberId) {
+        queryFactory
+                .delete(memory)
+                .where(memberEq(memberId))
+                .execute();
+    }
+
     private BooleanExpression loeRecordAt(LocalDate recordAt) {
         if (recordAt == null) {
             return null;

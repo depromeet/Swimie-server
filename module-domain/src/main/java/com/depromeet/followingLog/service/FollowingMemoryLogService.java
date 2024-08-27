@@ -9,6 +9,8 @@ import com.depromeet.member.domain.Member;
 import com.depromeet.memory.domain.Memory;
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -45,5 +47,10 @@ public class FollowingMemoryLogService implements FollowingMemoryLogUseCase {
             nextCursorId = followingMemoryLogs.getLast().getId();
         }
         return FollowingLogSlice.from(followingMemoryLogs, nextCursorId, hasNext);
+    }
+
+    @Override
+    public void deleteAllByMemoryId(List<Long> memoryIds) {
+        followingMemoryLogPersistencePort.deleteAllByMemoryId(memoryIds);
     }
 }

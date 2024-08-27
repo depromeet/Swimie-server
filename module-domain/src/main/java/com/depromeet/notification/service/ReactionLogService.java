@@ -2,6 +2,7 @@ package com.depromeet.notification.service;
 
 import com.depromeet.notification.domain.ReactionLog;
 import com.depromeet.notification.event.ReactionLogEvent;
+import com.depromeet.notification.port.in.usecase.DeleteReactionLogUseCase;
 import com.depromeet.notification.port.in.usecase.GetReactionLogUseCase;
 import com.depromeet.notification.port.in.usecase.UpdateReactionLogUseCase;
 import com.depromeet.notification.port.out.ReactionLogPersistencePort;
@@ -17,7 +18,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ReactionLogService implements GetReactionLogUseCase, UpdateReactionLogUseCase {
+public class ReactionLogService implements GetReactionLogUseCase, UpdateReactionLogUseCase, DeleteReactionLogUseCase {
     private final ReactionLogPersistencePort reactionLogPersistencePort;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -43,5 +44,10 @@ public class ReactionLogService implements GetReactionLogUseCase, UpdateReaction
     @Transactional
     public void markAsReadReactionLog(Long memberId, Long reactionLogId) {
         reactionLogPersistencePort.updateRead(memberId, reactionLogId);
+    }
+
+    @Override
+    public void deleteAllById(List<Long> reactionLogIds) {
+        reactionLogPersistencePort.deleteAllById(reactionLogIds);
     }
 }

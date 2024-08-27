@@ -5,6 +5,7 @@ import com.depromeet.notification.domain.FollowLog;
 import com.depromeet.notification.domain.FollowType;
 import com.depromeet.notification.event.FollowLogEvent;
 import com.depromeet.notification.port.in.command.UpdateReadFollowLogCommand;
+import com.depromeet.notification.port.in.usecase.DeleteFollowLogUseCase;
 import com.depromeet.notification.port.in.usecase.GetFollowLogUseCase;
 import com.depromeet.notification.port.in.usecase.UpdateFollowLogUseCase;
 import com.depromeet.notification.port.out.FollowLogPersistencePort;
@@ -20,7 +21,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class FollowLogService implements GetFollowLogUseCase, UpdateFollowLogUseCase {
+public class FollowLogService implements GetFollowLogUseCase, UpdateFollowLogUseCase, DeleteFollowLogUseCase {
     private final FollowLogPersistencePort followLogPersistencePort;
     private final FriendPersistencePort friendPersistencePort;
 
@@ -62,5 +63,10 @@ public class FollowLogService implements GetFollowLogUseCase, UpdateFollowLogUse
     @Override
     public void markAsReadFollowLog(Long memberId, UpdateReadFollowLogCommand command) {
         followLogPersistencePort.updateRead(memberId, command.followLogId(), command.type());
+    }
+
+    @Override
+    public void deleteAllByMemberId(Long memberId) {
+        followLogPersistencePort.deleteAllByMemberId(memberId);
     }
 }

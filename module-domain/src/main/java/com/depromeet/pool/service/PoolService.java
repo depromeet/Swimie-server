@@ -45,6 +45,11 @@ public class PoolService
     }
 
     @Override
+    public void deleteAllFavoritePoolByMemberId(Long memberId) {
+        poolPersistencePort.deleteAllFavoritePoolByMemberId(memberId);
+    }
+
+    @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public String createSearchLog(Member member, Long poolId) {
         Pool pool = getPool(poolId);
@@ -52,6 +57,11 @@ public class PoolService
         PoolSearch savedPoolSearch = poolPersistencePort.savePoolSearch(poolSearch);
 
         return savedPoolSearch.getId().toString();
+    }
+
+    @Override
+    public void deleteAllPoolSearchLogByMemberId(Long memberId) {
+        poolPersistencePort.deleteAllPoolSearchLogByMemberId(memberId);
     }
 
     @Override

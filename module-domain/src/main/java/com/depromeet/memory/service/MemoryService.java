@@ -194,4 +194,9 @@ public class MemoryService
     public void deleteAllMemoryDetailById(List<Long> memoryDetailIds) {
         memoryDetailPersistencePort.deleteAllById(memoryDetailIds);
     }
+
+    @Override
+    public void deleteAllMemoryByMemberId(Long memberId) {
+        memoryPersistencePort.deleteAllByMemberId(memberId);
+    }
 }

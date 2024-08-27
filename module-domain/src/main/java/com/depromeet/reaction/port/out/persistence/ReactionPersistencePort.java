@@ -22,4 +22,6 @@ public interface ReactionPersistencePort {
     void deleteByMemberId(Long memberId);
 
     List<Reaction> getPureReactionsByMemberAndMemory(Long memberId, Long memoryId);
+
+    List<Long> findAllIdByMemberId(List<Long> memoryIds);
 }

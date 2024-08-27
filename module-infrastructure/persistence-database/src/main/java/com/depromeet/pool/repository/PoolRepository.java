@@ -149,6 +149,22 @@ public class PoolRepository implements PoolPersistencePort {
         favoritePoolJpaRepository.deleteByMemberAndPool(member, pool);
     }
 
+    @Override
+    public void deleteAllFavoritePoolByMemberId(Long memberId) {
+        queryFactory
+                .delete(favoritePoolEntity)
+                .where(favoritePoolMemberEq(memberId))
+                .execute();
+    }
+
+    @Override
+    public void deleteAllPoolSearchLogByMemberId(Long memberId) {
+        queryFactory
+                .delete(poolSearchEntity)
+                .where(poolSearchMemberEq(memberId))
+                .execute();
+    }
+
     private BooleanExpression nameLike(String query) {
         BooleanExpression whereExpression = poolEntity.isNotNull();
 
@@ -178,5 +194,12 @@ public class PoolRepository implements PoolPersistencePort {
             return null;
         }
         return favoritePoolEntity.member.id.eq(memberId);
+    }
+
+    private BooleanExpression poolSearchMemberEq(Long memberId) {
+        if (memberId == null) {
+            return null;
+        }
+        return poolSearchEntity.member.id.eq(memberId);
     }
 }

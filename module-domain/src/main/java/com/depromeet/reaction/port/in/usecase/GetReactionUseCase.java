@@ -12,4 +12,6 @@ public interface GetReactionUseCase {
     Long getDetailReactionsCount(Long memoryId);
 
     List<Reaction> getReactionsByMemberAndMemory(Long memberId, Long memoryId);
+
+    List<Long> findAllIdByMemoryId(List<Long> memoryIds);
 }

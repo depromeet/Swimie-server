@@ -31,4 +31,8 @@ public interface PoolPersistencePort {
     boolean existsFavoritePool(FavoritePool favoritePool);
 
     void deleteFavoritePool(FavoritePool favoritePool);
+
+    void deleteAllFavoritePoolByMemberId(Long memberId);
+
+    void deleteAllPoolSearchLogByMemberId(Long memberId);
 }
