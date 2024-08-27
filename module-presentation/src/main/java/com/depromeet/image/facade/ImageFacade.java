@@ -102,10 +102,9 @@ public class ImageFacade {
         imageDeleteUseCase.deleteAllImagesByMemoryId(memoryId);
     }
 
+    private static final List<String> DEFAULT_IMAGE_NAMES = List.of("1", "2", "3", "4");
+
     private static boolean isDefaultProfileNumber(String imageName) {
-        return imageName.equals("1")
-                || imageName.equals("2")
-                || imageName.equals("3")
-                || imageName.equals("4");
+        return DEFAULT_IMAGE_NAMES.contains(imageName);
     }
 }
