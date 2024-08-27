@@ -43,10 +43,14 @@ public class ReactionNotificationResponse extends BaseNotificationResponse {
                                         "CHEER",
                                         it.isHasRead(),
                                         it.getReaction().getMemory().getId(),
-                                        it.getReaction().getEmoji()
-                                                + " "
-                                                + it.getReaction().getComment(),
+                                        it.getReaction().getEmoji() + getComment(it),
                                         it.getReaction().getMemory().getRecordAt()))
                 .collect(Collectors.toList());
+    }
+
+    private static String getComment(ReactionLog reactionLog) {
+        return reactionLog.getReaction().getComment() != null
+                ? " " + reactionLog.getReaction().getComment()
+                : "";
     }
 }
