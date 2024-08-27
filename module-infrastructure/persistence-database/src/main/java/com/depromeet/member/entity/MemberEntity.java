@@ -126,8 +126,12 @@ public class MemberEntity {
     }
 
     public MemberEntity update(UpdateMemberCommand command) {
-        this.nickname = command.nickname();
-        this.introduction = command.introduction();
+        if (!command.nickname().isBlank()) {
+            this.nickname = command.nickname();
+        }
+        if (!command.introduction().isBlank()) {
+            this.introduction = command.introduction();
+        }
         return this;
     }
 
