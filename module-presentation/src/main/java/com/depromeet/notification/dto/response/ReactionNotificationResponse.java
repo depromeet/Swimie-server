@@ -12,8 +12,9 @@ import lombok.Getter;
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReactionNotificationResponse extends BaseNotificationResponse {
-    private final LocalDate recordCreatedAt;
+    private final Long memoryId;
     private final String content;
+    private final LocalDate recordCreatedAt;
 
     @Builder
     public ReactionNotificationResponse(
@@ -22,11 +23,13 @@ public class ReactionNotificationResponse extends BaseNotificationResponse {
             LocalDateTime createdAt,
             String type,
             boolean hasRead,
-            LocalDate recordCreatedAt,
-            String content) {
+            Long memoryId,
+            String content,
+            LocalDate recordCreatedAt) {
         super(notificationId, nickname, createdAt, type, hasRead);
-        this.recordCreatedAt = recordCreatedAt;
+        this.memoryId = memoryId;
         this.content = content;
+        this.recordCreatedAt = recordCreatedAt;
     }
 
     public static List<BaseNotificationResponse> from(List<ReactionLog> reactionLogs) {
@@ -39,10 +42,11 @@ public class ReactionNotificationResponse extends BaseNotificationResponse {
                                         it.getCreatedAt(),
                                         "CHEER",
                                         it.isHasRead(),
-                                        it.getReaction().getMemory().getRecordAt(),
+                                        it.getReaction().getMemory().getId(),
                                         it.getReaction().getEmoji()
                                                 + " "
-                                                + it.getReaction().getComment()))
+                                                + it.getReaction().getComment(),
+                                        it.getReaction().getMemory().getRecordAt()))
                 .collect(Collectors.toList());
     }
 }

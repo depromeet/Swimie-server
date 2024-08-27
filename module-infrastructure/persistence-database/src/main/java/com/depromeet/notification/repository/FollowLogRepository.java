@@ -75,6 +75,15 @@ public class FollowLogRepository implements FollowLogPersistencePort {
                 .execute();
     }
 
+    @Override
+    public boolean existsByReceiverIdAndFollowerId(Long receiverId, Long followerId) {
+        return queryFactory
+                        .selectFrom(followLogEntity)
+                        .where(memberEq(receiverId), followerEq(followerId))
+                        .fetchFirst()
+                != null;
+    }
+
     private static BooleanExpression followerEq(Long memberId) {
         if (memberId == null) {
             return null;

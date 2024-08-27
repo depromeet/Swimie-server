@@ -9,16 +9,19 @@ import lombok.Getter;
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FriendNotificationResponse extends BaseNotificationResponse {
+    private final Long memberId;
     private final String profileImageUrl;
 
     public FriendNotificationResponse(
-            Long id,
+            Long notificationId,
             String nickname,
             LocalDateTime createdAt,
             String type,
             boolean hasRead,
+            Long memberId,
             String profileImageUrl) {
-        super(id, nickname, createdAt, type, hasRead);
+        super(notificationId, nickname, createdAt, type, hasRead);
+        this.memberId = memberId;
         this.profileImageUrl = profileImageUrl;
     }
 
@@ -29,6 +32,7 @@ public class FriendNotificationResponse extends BaseNotificationResponse {
                 followLog.getCreatedAt(),
                 "FRIEND",
                 followLog.isHasRead(),
+                followLog.getFollower().getId(),
                 getImageUrl(profileImageOrigin, followLog.getFollower()));
     }
 
