@@ -100,8 +100,8 @@ public class ReactionService
     }
 
     @Override
-    public List<Long> findAllIdByMemoryId(List<Long> memoryIds) {
-        return reactionPersistencePort.findAllIdByMemberId(memoryIds);
+    public List<Long> findAllIdByMemoryIdOrMemberId(List<Long> memoryIds, Long memberId) {
+        return reactionPersistencePort.findAllIdByMemoryIdOrMemberId(memoryIds, memberId);
     }
 
     private boolean isOverMaximumCreationLimit(List<Reaction> reactions) {

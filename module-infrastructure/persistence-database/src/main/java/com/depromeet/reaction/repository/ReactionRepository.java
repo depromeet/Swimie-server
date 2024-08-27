@@ -54,11 +54,11 @@ public class ReactionRepository implements ReactionPersistencePort {
     }
 
     @Override
-    public List<Long> findAllIdByMemberId(List<Long> memoryIds) {
+    public List<Long> findAllIdByMemoryIdOrMemberId(List<Long> memoryIds, Long memberId) {
         return queryFactory
                 .select(reactionEntity.id)
                 .from(reactionEntity)
-                .where(memoryIn(memoryIds))
+                .where(memoryIn(memoryIds).or(memberEq(memberId)))
                 .fetch();
     }
 
