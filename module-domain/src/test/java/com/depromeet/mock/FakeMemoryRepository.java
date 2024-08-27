@@ -205,4 +205,9 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
                     }
                 });
     }
+
+    @Override
+    public void deleteAllByMemberId(Long memberId) {
+        data.removeIf(item -> item.getMember().getId().equals(memberId));
+    }
 }

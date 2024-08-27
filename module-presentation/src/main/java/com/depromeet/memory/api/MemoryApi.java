@@ -48,5 +48,8 @@ public interface MemoryApi {
     ApiResponse<CalendarResponse> getCalendar(
             @LoginMember Long memberId,
             @RequestParam("year") Integer year,
-            @RequestParam("month") Short month);
+            @RequestParam("month") Short month,
+            @Parameter(description = "조회 대상 멤버 ID")
+                    @RequestParam(value = "targetId", required = false)
+                    Long targetId);
 }

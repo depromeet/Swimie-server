@@ -2,7 +2,7 @@ package com.depromeet.memory.facade;
 
 import static com.depromeet.memory.service.MemoryValidator.validatePermission;
 
-import com.depromeet.followingLog.port.in.command.CreateFollowingMemoryCommand;
+import com.depromeet.followinglog.port.in.command.CreateFollowingMemoryCommand;
 import com.depromeet.image.port.in.ImageUploadUseCase;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
@@ -66,7 +66,7 @@ public class MemoryFacade {
             poolSearchLogUseCase.createSearchLog(writer, request.getPoolId());
         }
         // 팔로잉 소식 저장
-        eventPublisher.publishEvent(new CreateFollowingMemoryCommand(writer, newMemory));
+        eventPublisher.publishEvent(new CreateFollowingMemoryCommand(newMemory));
         return MemoryCreateResponse.of(month, rank, memoryId);
     }
 
@@ -102,11 +102,16 @@ public class MemoryFacade {
         return MemoryMapper.toSliceResponse(member, timelineSlice);
     }
 
-    public CalendarResponse getCalendar(Long memberId, Integer year, Short month) {
+    public CalendarResponse getCalendar(Long memberId, Long targetId, Integer year, Short month) {
         YearMonth yearMonth = YearMonth.of(year, month);
-        Member member = memberUseCase.findById(memberId);
+        Member member = memberUseCase.findById(getTargetMemberId(memberId, targetId));
         List<Memory> calendarMemories =
-                calendarUseCase.getCalendarByYearAndMonth(memberId, yearMonth);
+                calendarUseCase.getCalendarByYearAndMonth(
+                        getTargetMemberId(memberId, targetId), yearMonth);
         return CalendarResponse.of(member, calendarMemories);
+    }
+
+    private Long getTargetMemberId(Long memberId, Long targetId) {
+        return targetId == null ? memberId : targetId;
     }
 }

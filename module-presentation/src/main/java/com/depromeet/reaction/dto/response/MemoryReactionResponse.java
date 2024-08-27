@@ -18,8 +18,15 @@ public record MemoryReactionResponse(
                                                 it.getId(),
                                                 it.getEmoji(),
                                                 it.getComment(),
+                                                it.getMember().getId(),
                                                 it.getMember().getNickname(),
-                                                null))
+                                                getProfileImageUrl(it)))
                         .toList());
+    }
+
+    private static String getProfileImageUrl(Reaction reaction) {
+        return reaction.getMember().getProfileImageUrl() != null
+                ? reaction.getMember().getProfileImageUrl()
+                : null;
     }
 }

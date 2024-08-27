@@ -2,6 +2,7 @@ package com.depromeet.notification.dto.response;
 
 import com.depromeet.notification.domain.ReactionLog;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,17 +12,20 @@ import lombok.Getter;
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReactionNotificationResponse extends BaseNotificationResponse {
+    private final LocalDate recordCreatedAt;
     private final String content;
 
     @Builder
     public ReactionNotificationResponse(
-            Long id,
+            Long notificationId,
             String nickname,
             LocalDateTime createdAt,
             String type,
-            boolean isRead,
+            boolean hasRead,
+            LocalDate recordCreatedAt,
             String content) {
-        super(id, nickname, createdAt, type, isRead);
+        super(notificationId, nickname, createdAt, type, hasRead);
+        this.recordCreatedAt = recordCreatedAt;
         this.content = content;
     }
 
@@ -35,6 +39,7 @@ public class ReactionNotificationResponse extends BaseNotificationResponse {
                                         it.getCreatedAt(),
                                         "CHEER",
                                         it.isHasRead(),
+                                        it.getReaction().getMemory().getRecordAt(),
                                         it.getReaction().getEmoji()
                                                 + " "
                                                 + it.getReaction().getComment()))

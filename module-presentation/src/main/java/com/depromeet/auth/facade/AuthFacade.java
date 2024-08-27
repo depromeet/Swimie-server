@@ -12,6 +12,7 @@ import com.depromeet.auth.vo.JwtToken;
 import com.depromeet.auth.vo.kakao.KakaoAccountProfile;
 import com.depromeet.dto.auth.AccountProfileResponse;
 import com.depromeet.exception.NotFoundException;
+import com.depromeet.followinglog.port.in.FollowingMemoryLogUseCase;
 import com.depromeet.friend.port.in.FollowUseCase;
 import com.depromeet.image.port.in.ImageUpdateUseCase;
 import com.depromeet.member.domain.Member;
@@ -21,8 +22,12 @@ import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.port.in.usecase.DeleteMemoryUseCase;
 import com.depromeet.memory.port.in.usecase.GetMemoryUseCase;
 import com.depromeet.memory.port.in.usecase.StrokeUseCase;
-import com.depromeet.memory.port.in.usecase.UpdateMemoryUseCase;
+import com.depromeet.notification.port.in.usecase.DeleteFollowLogUseCase;
+import com.depromeet.notification.port.in.usecase.DeleteReactionLogUseCase;
+import com.depromeet.pool.port.in.usecase.FavoritePoolUseCase;
+import com.depromeet.pool.port.in.usecase.SearchLogUseCase;
 import com.depromeet.reaction.port.in.usecase.DeleteReactionUseCase;
+import com.depromeet.reaction.port.in.usecase.GetReactionUseCase;
 import com.depromeet.type.auth.AuthErrorType;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -38,11 +43,16 @@ public class AuthFacade {
     private final FollowUseCase followUseCase;
     private final SocialUseCase socialUseCase;
     private final GetMemoryUseCase getMemoryUseCase;
+    private final SearchLogUseCase searchLogUseCase;
+    private final GetReactionUseCase getReactionUseCase;
     private final CreateTokenUseCase createTokenUseCase;
     private final ImageUpdateUseCase imageUpdateUseCase;
     private final DeleteMemoryUseCase deleteMemoryUseCase;
-    private final UpdateMemoryUseCase updateMemoryUseCase;
+    private final FavoritePoolUseCase favoritePoolUseCase;
     private final DeleteReactionUseCase deleteReactionUseCase;
+    private final DeleteFollowLogUseCase deleteFollowLogUseCase;
+    private final DeleteReactionLogUseCase deleteReactionLogUseCase;
+    private final FollowingMemoryLogUseCase followingMemoryLogUseCase;
 
     public JwtTokenResponse loginByGoogle(GoogleLoginRequest request, String origin) {
         final AccountProfileResponse profile =
@@ -105,18 +115,32 @@ public class AuthFacade {
         List<Long> memoryIds = memories.stream().map(Memory::getId).toList();
         List<Long> memoryDetailIds =
                 memories.stream().map(memory -> memory.getMemoryDetail().getId()).toList();
-        updateMemoryUseCase.setNullByIds(memoryIds);
-        // MemoryDetail 삭제
-        deleteMemoryUseCase.deleteAllMemoryDetailById(memoryDetailIds);
+        // Following memory log 삭제
+        followingMemoryLogUseCase.deleteAllByMemoryId(memoryIds);
+        // Reaction 조회
+        List<Long> reactionIds =
+                getReactionUseCase.findAllIdByMemoryIdOrMemberId(memoryIds, memberId);
+        // Reaction log 삭제
+        deleteReactionLogUseCase.deleteAllById(reactionIds);
+        // Reaction 삭제
+        deleteReactionUseCase.deleteByMemberId(memberId);
         // Stroke 삭제
         strokeUseCase.deleteAllByMemoryId(memoryIds);
         // Image FK Null
         imageUpdateUseCase.setNullByMemoryIds(memoryIds);
-        // Reaction 삭제
-        deleteReactionUseCase.deleteByMemberId(memberId);
-        // Friend 조회 및 삭제
+        // Memory 삭제
+        deleteMemoryUseCase.deleteAllMemoryByMemberId(memberId);
+        // MemoryDetail 삭제
+        deleteMemoryUseCase.deleteAllMemoryDetailById(memoryDetailIds);
+        // Favorite pool 삭제
+        favoritePoolUseCase.deleteAllFavoritePoolByMemberId(memberId);
+        // Pool search 삭제
+        searchLogUseCase.deleteAllPoolSearchLogByMemberId(memberId);
+        // Friend 삭제
         followUseCase.deleteByMemberId(memberId);
-
+        // Follow log 삭제
+        deleteFollowLogUseCase.deleteAllByMemberId(memberId);
+        // Member 삭제
         memberUseCase.deleteById(memberId);
         socialUseCase.revokeAccount(accountType);
     }

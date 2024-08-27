@@ -15,6 +15,11 @@ public record ReactionDetailResponse(
                         example = "물개세요?",
                         requiredMode = Schema.RequiredMode.NOT_REQUIRED)
                 String comment,
+        @Schema(
+                        description = "응원을 한 멤버 ID",
+                        example = "1",
+                        requiredMode = Schema.RequiredMode.REQUIRED)
+                Long memberId,
         @Schema(description = "닉네임", example = "스위미", requiredMode = Schema.RequiredMode.REQUIRED)
                 String nickname,
         @Schema(
@@ -27,6 +32,7 @@ public record ReactionDetailResponse(
                 reaction.getId(),
                 reaction.getEmoji(),
                 reaction.getComment(),
+                reaction.getMember().getId(),
                 reaction.getMember().getNickname(),
                 reaction.getMember().getProfileImageUrl());
     }

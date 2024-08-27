@@ -4,4 +4,6 @@ import com.depromeet.member.domain.Member;
 
 public interface SearchLogUseCase {
     String createSearchLog(Member member, Long poolId);
+
+    void deleteAllPoolSearchLogByMemberId(Long memberId);
 }
