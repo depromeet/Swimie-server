@@ -18,6 +18,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -49,7 +50,7 @@ public class GoogleSheetManager implements WithdrawalReasonPort {
                                     spreadSheetProperties.sheetId(),
                                     spreadSheetProperties.range(),
                                     valueRange)
-                            .setValueInputOption("USER_ENTERED")
+                            .setValueInputOption("RAW")
                             .setInsertDataOption("INSERT_ROWS")
                             .setIncludeValuesInResponse(true)
                             .execute();
@@ -73,11 +74,13 @@ public class GoogleSheetManager implements WithdrawalReasonPort {
                 .build();
     }
 
-    private List<List<Object>> getData(ReasonType reason, String feedback) {
-        String date = LocalDateTime.now().toString();
+    private List<List<Object>> getData(ReasonType reasonType, String feedback) {
+        String date =
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        feedback = feedback != null ? feedback : "";
 
         List<List<Object>> data = new ArrayList<>();
-        data.add(List.of(reason.getCode(), reason.getReason(), feedback, date));
+        data.add(List.of(reasonType.getCode(), reasonType.getReason(), feedback, date));
         return data;
     }
 }
