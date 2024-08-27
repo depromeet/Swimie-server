@@ -49,5 +49,7 @@ public interface MemoryApi {
             @LoginMember Long memberId,
             @RequestParam("year") Integer year,
             @RequestParam("month") Short month,
-            @RequestParam(value = "targetId", required = false) Long targetId);
+            @Parameter(description = "조회 대상 멤버 ID")
+                    @RequestParam(value = "targetId", required = false)
+                    Long targetId);
 }
