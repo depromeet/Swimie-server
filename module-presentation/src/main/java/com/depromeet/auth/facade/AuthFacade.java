@@ -12,7 +12,7 @@ import com.depromeet.auth.vo.JwtToken;
 import com.depromeet.auth.vo.kakao.KakaoAccountProfile;
 import com.depromeet.dto.auth.AccountProfileResponse;
 import com.depromeet.exception.NotFoundException;
-import com.depromeet.followingLog.port.in.FollowingMemoryLogUseCase;
+import com.depromeet.followinglog.port.in.FollowingMemoryLogUseCase;
 import com.depromeet.friend.port.in.FollowUseCase;
 import com.depromeet.image.port.in.ImageUpdateUseCase;
 import com.depromeet.member.domain.Member;

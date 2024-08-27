@@ -1,4 +1,4 @@
-package com.depromeet.followingLog.port.in;
+package com.depromeet.followinglog.port.in;
 
 import com.depromeet.followinglog.domain.vo.FollowingLogSlice;
 import com.depromeet.followinglog.port.in.command.CreateFollowingMemoryCommand;
