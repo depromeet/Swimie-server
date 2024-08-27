@@ -13,4 +13,6 @@ public interface FollowLogPersistencePort {
     void updateRead(Long memberId, Long followLogId, FollowType type);
 
     Long countUnread(Long memberId);
+
+    void deleteAllByMemberId(Long memberId);
 }

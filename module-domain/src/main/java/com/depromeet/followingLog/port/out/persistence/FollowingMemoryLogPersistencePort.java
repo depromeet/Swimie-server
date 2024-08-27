@@ -7,4 +7,6 @@ public interface FollowingMemoryLogPersistencePort {
     Long save(FollowingMemoryLog followingMemoryLog);
 
     List<FollowingMemoryLog> findLogsByMemberIdAndCursorId(Long memberId, Long cursorId);
+
+    void deleteAllByMemoryId(List<Long> memoryIds);
 }

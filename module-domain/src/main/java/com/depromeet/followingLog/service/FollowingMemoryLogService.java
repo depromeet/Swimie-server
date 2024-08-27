@@ -44,4 +44,9 @@ public class FollowingMemoryLogService implements FollowingMemoryLogUseCase {
         }
         return FollowingLogSlice.from(followingMemoryLogs, nextCursorId, hasNext);
     }
+
+    @Override
+    public void deleteAllByMemoryId(List<Long> memoryIds) {
+        followingMemoryLogPersistencePort.deleteAllByMemoryId(memoryIds);
+    }
 }

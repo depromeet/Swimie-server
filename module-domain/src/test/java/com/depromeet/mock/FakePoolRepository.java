@@ -134,4 +134,14 @@ public class FakePoolRepository implements PoolPersistencePort {
                         it.getPool().getId().equals(favoritePool.getPool().getId())
                                 && it.getMember().getId().equals(favoritePool.getMember().getId()));
     }
+
+    @Override
+    public void deleteAllFavoritePoolByMemberId(Long memberId) {
+        favoritePoolData.removeIf(item -> item.getMember().getId().equals(memberId));
+    }
+
+    @Override
+    public void deleteAllPoolSearchLogByMemberId(Long memberId) {
+        poolSearchData.removeIf(item -> item.getMember().getId().equals(memberId));
+    }
 }

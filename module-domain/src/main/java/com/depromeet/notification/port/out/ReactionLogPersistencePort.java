@@ -13,4 +13,6 @@ public interface ReactionLogPersistencePort {
     void updateRead(Long memberId, Long reactionLogId);
 
     Long countUnread(Long memberId);
+
+    void deleteAllById(List<Long> reactionLogIds);
 }

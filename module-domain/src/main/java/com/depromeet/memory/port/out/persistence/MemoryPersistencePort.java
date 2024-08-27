@@ -33,4 +33,6 @@ public interface MemoryPersistencePort {
     List<Memory> findByMemberId(Long memberId);
 
     void setNullByIds(List<Long> memoryIds);
+
+    void deleteAllByMemberId(Long memberId);
 }

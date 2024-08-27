@@ -54,6 +54,22 @@ public class ReactionRepository implements ReactionPersistencePort {
     }
 
     @Override
+    public List<Long> findAllIdByMemoryIdOrMemberId(List<Long> memoryIds, Long memberId) {
+        return queryFactory
+                .select(reactionEntity.id)
+                .from(reactionEntity)
+                .where(memoryIn(memoryIds).or(memberEq(memberId)))
+                .fetch();
+    }
+
+    private static BooleanExpression memoryIn(List<Long> memoryIds) {
+        if (memoryIds == null) {
+            return null;
+        }
+        return reactionEntity.memory.id.in(memoryIds);
+    }
+
+    @Override
     public List<Reaction> getAllByMemoryId(Long memoryId) {
         return queryFactory
                 .selectFrom(reactionEntity)

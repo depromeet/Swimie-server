@@ -65,6 +65,18 @@ public class FollowingMemoryLogRepository implements FollowingMemoryLogPersisten
         return contents.stream().map(FollowingMemoryLogEntity::toModel).toList();
     }
 
+    @Override
+    public void deleteAllByMemoryId(List<Long> memoryIds) {
+        queryFactory.delete(followingMemoryLog).where(memoryIdIn(memoryIds)).execute();
+    }
+
+    private BooleanExpression memoryIdIn(List<Long> memoryIds) {
+        if (memoryIds == null) {
+            return null;
+        }
+        return followingMemoryLog.memory.id.in(memoryIds);
+    }
+
     private BooleanExpression cursorIdLt(Long cursorId) {
         if (cursorId == null) {
             return null;

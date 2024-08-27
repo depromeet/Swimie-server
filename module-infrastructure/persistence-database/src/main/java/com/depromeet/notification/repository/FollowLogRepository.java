@@ -67,6 +67,21 @@ public class FollowLogRepository implements FollowLogPersistencePort {
                 .fetchOne();
     }
 
+    @Override
+    public void deleteAllByMemberId(Long memberId) {
+        queryFactory
+                .delete(followLogEntity)
+                .where(memberEq(memberId), followerEq(memberId))
+                .execute();
+    }
+
+    private static BooleanExpression followerEq(Long memberId) {
+        if (memberId == null) {
+            return null;
+        }
+        return followLogEntity.follower.id.eq(memberId);
+    }
+
     private BooleanExpression memberEq(Long memberId) {
         if (memberId == null) {
             return null;
