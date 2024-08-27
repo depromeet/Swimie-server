@@ -74,10 +74,7 @@ public class ReactionLogRepository implements ReactionLogPersistencePort {
 
     @Override
     public void deleteAllById(List<Long> reactionLogIds) {
-        queryFactory
-                .delete(reactionLogEntity)
-                .where(idIn(reactionLogIds))
-                .execute();
+        queryFactory.delete(reactionLogEntity).where(idIn(reactionLogIds)).execute();
     }
 
     private static BooleanExpression idIn(List<Long> reactionLogIds) {

@@ -67,10 +67,7 @@ public class FollowingMemoryLogRepository implements FollowingMemoryLogPersisten
 
     @Override
     public void deleteAllByMemoryId(List<Long> memoryIds) {
-        queryFactory
-                .delete(followingMemoryLog)
-                .where(memoryIdIn(memoryIds))
-                .execute();
+        queryFactory.delete(followingMemoryLog).where(memoryIdIn(memoryIds)).execute();
     }
 
     private BooleanExpression memoryIdIn(List<Long> memoryIds) {

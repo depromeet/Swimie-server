@@ -9,8 +9,6 @@ import com.depromeet.member.domain.Member;
 import com.depromeet.memory.domain.Memory;
 import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;

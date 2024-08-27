@@ -21,7 +21,8 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class FollowLogService implements GetFollowLogUseCase, UpdateFollowLogUseCase, DeleteFollowLogUseCase {
+public class FollowLogService
+        implements GetFollowLogUseCase, UpdateFollowLogUseCase, DeleteFollowLogUseCase {
     private final FollowLogPersistencePort followLogPersistencePort;
     private final FriendPersistencePort friendPersistencePort;
 

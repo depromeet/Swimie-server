@@ -18,7 +18,8 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ReactionLogService implements GetReactionLogUseCase, UpdateReactionLogUseCase, DeleteReactionLogUseCase {
+public class ReactionLogService
+        implements GetReactionLogUseCase, UpdateReactionLogUseCase, DeleteReactionLogUseCase {
     private final ReactionLogPersistencePort reactionLogPersistencePort;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

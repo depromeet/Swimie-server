@@ -118,7 +118,8 @@ public class AuthFacade {
         // Following memory log 삭제
         followingMemoryLogUseCase.deleteAllByMemoryId(memoryIds);
         // Reaction 조회
-        List<Long> reactionIds = getReactionUseCase.findAllIdByMemoryIdOrMemberId(memoryIds, memberId);
+        List<Long> reactionIds =
+                getReactionUseCase.findAllIdByMemoryIdOrMemberId(memoryIds, memberId);
         // Reaction log 삭제
         deleteReactionLogUseCase.deleteAllById(reactionIds);
         // Reaction 삭제

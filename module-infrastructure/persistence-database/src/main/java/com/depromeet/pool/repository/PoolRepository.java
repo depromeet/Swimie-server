@@ -151,18 +151,12 @@ public class PoolRepository implements PoolPersistencePort {
 
     @Override
     public void deleteAllFavoritePoolByMemberId(Long memberId) {
-        queryFactory
-                .delete(favoritePoolEntity)
-                .where(favoritePoolMemberEq(memberId))
-                .execute();
+        queryFactory.delete(favoritePoolEntity).where(favoritePoolMemberEq(memberId)).execute();
     }
 
     @Override
     public void deleteAllPoolSearchLogByMemberId(Long memberId) {
-        queryFactory
-                .delete(poolSearchEntity)
-                .where(poolSearchMemberEq(memberId))
-                .execute();
+        queryFactory.delete(poolSearchEntity).where(poolSearchMemberEq(memberId)).execute();
     }
 
     private BooleanExpression nameLike(String query) {
