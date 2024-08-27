@@ -5,6 +5,7 @@ import com.depromeet.friend.dto.request.FollowRequest;
 import com.depromeet.friend.dto.response.*;
 import com.depromeet.member.annotation.LoginMember;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,12 +19,18 @@ public interface FollowApi {
 
     @Operation(summary = "팔로잉 리스트 조회")
     ApiResponse<FollowSliceResponse<FollowingResponse>> findFollowingList(
-            @LoginMember Long memberId,
+            @LoginMember Long requesterId,
+            @Parameter(description = "팔로잉 리스트 조회할 대상의 member PK")
+                    @RequestParam(value = "targetId", required = false)
+                    Long targetId,
             @RequestParam(value = "cursorId", required = false) Long cursorId);
 
     @Operation(summary = "팔로워 리스트 조회")
     ApiResponse<FollowSliceResponse<FollowerResponse>> findFollowerList(
-            @LoginMember Long memberId,
+            @LoginMember Long requesterId,
+            @Parameter(description = "팔로워 리스트 조회할 대상의 member PK")
+                    @RequestParam(value = "targetId", required = false)
+                    Long targetId,
             @RequestParam(value = "cursorId", required = false) Long cursorId);
 
     @Operation(summary = "팔로잉 소식 페이지에 사용할 팔로잉 유저 목록 조회")

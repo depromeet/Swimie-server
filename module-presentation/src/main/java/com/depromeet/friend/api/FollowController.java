@@ -31,20 +31,22 @@ public class FollowController implements FollowApi {
     @GetMapping("/following")
     @Logging(item = "Follower/Following", action = "GET")
     public ApiResponse<FollowSliceResponse<FollowingResponse>> findFollowingList(
-            @LoginMember Long memberId,
+            @LoginMember Long requesterId,
+            @RequestParam(value = "targetId", required = false) Long targetId,
             @RequestParam(value = "cursorId", required = false) Long cursorId) {
         FollowSliceResponse<FollowingResponse> response =
-                followFacade.findFollowingList(memberId, cursorId);
+                followFacade.findFollowingList(requesterId, targetId, cursorId);
         return ApiResponse.success(FollowSuccessType.GET_FOLLOWINGS_SUCCESS, response);
     }
 
     @GetMapping("/follower")
     @Logging(item = "Follower/Following", action = "GET")
     public ApiResponse<FollowSliceResponse<FollowerResponse>> findFollowerList(
-            @LoginMember Long memberId,
+            @LoginMember Long requesterId,
+            @RequestParam(value = "targetId", required = false) Long targetId,
             @RequestParam(value = "cursorId", required = false) Long cursorId) {
         FollowSliceResponse<FollowerResponse> response =
-                followFacade.findFollowerList(memberId, cursorId);
+                followFacade.findFollowerList(requesterId, targetId, cursorId);
         return ApiResponse.success(FollowSuccessType.GET_FOLLOWERS_SUCCESS, response);
     }
 
