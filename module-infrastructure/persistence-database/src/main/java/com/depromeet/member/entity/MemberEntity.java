@@ -129,7 +129,7 @@ public class MemberEntity {
         if (command.nickname() != null && !command.nickname().isBlank()) {
             this.nickname = command.nickname();
         }
-        if (command.introduction() != null && !command.introduction().isBlank()) {
+        if (command.introduction() != null) {
             this.introduction = command.introduction();
         }
         return this;
