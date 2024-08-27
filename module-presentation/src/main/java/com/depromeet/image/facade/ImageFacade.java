@@ -103,6 +103,9 @@ public class ImageFacade {
     }
 
     private static boolean isDefaultProfileNumber(String imageName) {
-        return imageName.equals("1") || imageName.equals("2") || imageName.equals("3") || imageName.equals("4");
+        return imageName.equals("1")
+                || imageName.equals("2")
+                || imageName.equals("3")
+                || imageName.equals("4");
     }
 }
