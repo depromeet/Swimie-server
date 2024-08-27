@@ -28,20 +28,20 @@ public class FollowController implements FollowApi {
         return ApiResponse.success(FollowSuccessType.DELETE_FOLLOWING_SUCCESS);
     }
 
-    @GetMapping("/following")
+    @GetMapping("/{memberId}/following")
     @Logging(item = "Follower/Following", action = "GET")
     public ApiResponse<FollowSliceResponse<FollowingResponse>> findFollowingList(
-            @LoginMember Long memberId,
+            @PathVariable(value = "memberId") Long memberId,
             @RequestParam(value = "cursorId", required = false) Long cursorId) {
         FollowSliceResponse<FollowingResponse> response =
                 followFacade.findFollowingList(memberId, cursorId);
         return ApiResponse.success(FollowSuccessType.GET_FOLLOWINGS_SUCCESS, response);
     }
 
-    @GetMapping("/follower")
+    @GetMapping("/{memberId}/follower")
     @Logging(item = "Follower/Following", action = "GET")
     public ApiResponse<FollowSliceResponse<FollowerResponse>> findFollowerList(
-            @LoginMember Long memberId,
+            @PathVariable(value = "memberId") Long memberId,
             @RequestParam(value = "cursorId", required = false) Long cursorId) {
         FollowSliceResponse<FollowerResponse> response =
                 followFacade.findFollowerList(memberId, cursorId);
