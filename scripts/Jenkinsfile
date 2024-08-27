@@ -29,7 +29,6 @@ pipeline {
                 sh 'chmod u+w ./module-presentation/src/main/resources/'
                 sh 'chmod +x ./gradlew'
                 sh './gradlew :module-infrastructure:clean'
-                sh './gradlew :module-infrastructure:jar'
                 sh './gradlew :module-presentation:build'
             }
         }
