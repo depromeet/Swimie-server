@@ -21,9 +21,12 @@ public record PagingReactionResponse(
                         example = "true",
                         requiredMode = Schema.RequiredMode.REQUIRED)
                 boolean hasNext) {
-    public static PagingReactionResponse of(ReactionPage page, Long totalCount) {
+    public static PagingReactionResponse of(
+            ReactionPage page, Long totalCount, String profileImageOrigin) {
         return new PagingReactionResponse(
-                page.getReactions().stream().map(ReactionDetailResponse::from).toList(),
+                page.getReactions().stream()
+                        .map(it -> ReactionDetailResponse.from(it, profileImageOrigin))
+                        .toList(),
                 totalCount,
                 page.getCursorId(),
                 page.isHasNext());

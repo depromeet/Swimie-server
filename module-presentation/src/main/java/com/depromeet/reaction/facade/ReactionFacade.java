@@ -15,6 +15,7 @@ import com.depromeet.reaction.port.in.usecase.DeleteReactionUseCase;
 import com.depromeet.reaction.port.in.usecase.GetReactionUseCase;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,9 @@ public class ReactionFacade {
 
     private static final int MAXIMUM_REACTION_NUMBER = 3;
 
+    @Value("${cloud-front.domain}")
+    private String profileImageOrigin;
+
     @Transactional
     public void create(Long memberId, ReactionCreateRequest request) {
         Memory memory = getMemoryUseCase.findByIdWithMember(request.memoryId());
@@ -42,13 +46,13 @@ public class ReactionFacade {
 
     public MemoryReactionResponse getReactionsOfMemory(Long memoryId) {
         List<Reaction> reactionDomains = getReactionUseCase.getReactionsOfMemory(memoryId);
-        return MemoryReactionResponse.from(reactionDomains);
+        return MemoryReactionResponse.from(reactionDomains, profileImageOrigin);
     }
 
     public PagingReactionResponse getDetailReactions(Long memoryId, Long cursorId) {
         ReactionPage page = getReactionUseCase.getDetailReactions(memoryId, cursorId);
         Long totalCount = getReactionUseCase.getDetailReactionsCount(memoryId);
-        return PagingReactionResponse.of(page, totalCount);
+        return PagingReactionResponse.of(page, totalCount, profileImageOrigin);
     }
 
     @Transactional

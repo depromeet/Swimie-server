@@ -1,7 +1,6 @@
 package com.depromeet.followinglog.dto.response;
 
 import com.depromeet.followinglog.domain.FollowingMemoryLog;
-import com.depromeet.member.domain.Member;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.Stroke;
 import com.depromeet.memory.dto.response.StrokeResponse;
@@ -109,7 +108,7 @@ public record FollowingLogMemoryResponse(
         return FollowingLogMemoryResponse.builder()
                 .memberId(memory.getMember().getId())
                 .memberNickname(memory.getMember().getNickname())
-                .memberProfileUrl(getMemberProfileUrl(memory.getMember(), profileImageOrigin))
+                .memberProfileUrl(memory.getMember().getProfileImageUrl(profileImageOrigin))
                 .memoryId(memory.getId())
                 .recordAt(memory.getRecordAt().toString())
                 .startTime(memory.parseStartTime())
@@ -124,13 +123,6 @@ public record FollowingLogMemoryResponse(
                 .createdAt(followingMemoryLog.getCreatedAt())
                 .isRecentNews(isRecentNews)
                 .build();
-    }
-
-    private static String getMemberProfileUrl(Member member, String profileImageOrigin) {
-        if (member.getProfileImageUrl() != null) {
-            return profileImageOrigin + "/" + member.getProfileImageUrl();
-        }
-        return null;
     }
 
     private static Integer getKcalFromMemoryDetail(Memory memory) {
