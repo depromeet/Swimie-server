@@ -1,5 +1,6 @@
 package com.depromeet.friend.facade;
 
+import com.depromeet.friend.domain.vo.FollowCheck;
 import com.depromeet.friend.domain.vo.FollowSlice;
 import com.depromeet.friend.domain.vo.Follower;
 import com.depromeet.friend.domain.vo.Following;
@@ -58,7 +59,7 @@ public class FollowFacade {
     }
 
     public IsFollowingResponse isFollowing(Long memberId, FollowCheckListRequest targetMemberId) {
-        List<Boolean> isFollowing = followUseCase.isFollowing(memberId, targetMemberId.friends());
+        List<FollowCheck> isFollowing = followUseCase.isFollowing(memberId, targetMemberId.friends());
         return IsFollowingResponse.toIsFollowingResponse(isFollowing);
     }
 }
