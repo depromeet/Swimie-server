@@ -19,13 +19,6 @@ public record MemberDetailResponse(
                 member.getId(),
                 member.getNickname(),
                 member.getGoal(),
-                getProfileImageUrl(profileImageOrigin, member.getProfileImageUrl()));
-    }
-
-    private static String getProfileImageUrl(String profileImageOrigin, String profileImageUrl) {
-        if (profileImageUrl == null) {
-            return null;
-        }
-        return profileImageOrigin + "/" + profileImageUrl;
+                member.getProfileImageUrl(profileImageOrigin));
     }
 }

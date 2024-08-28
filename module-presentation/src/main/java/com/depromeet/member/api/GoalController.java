@@ -9,6 +9,7 @@ import com.depromeet.member.dto.response.MemberSimpleResponse;
 import com.depromeet.member.port.in.usecase.GoalUpdateUseCase;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
 import com.depromeet.type.member.MemberSuccessType;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class GoalController implements GoalApi {
     @PatchMapping
     @Logging(item = "Goal", action = "PATCH")
     public ApiResponse<MemberSimpleResponse> update(
-            @LoginMember Long memberId, @RequestBody GoalUpdateRequest goalUpdateRequest) {
+            @LoginMember Long memberId, @Valid @RequestBody GoalUpdateRequest goalUpdateRequest) {
         Member member = goalUpdateUseCase.updateGoal(memberId, goalUpdateRequest.goal());
         return ApiResponse.success(
                 MemberSuccessType.UPDATE_GOAL_SUCCESS,

@@ -27,7 +27,7 @@ public record MemberSearchResponse(
     }
 
     private static List<MemberInfoResponse> getMemberInfoResponses(
-            MemberSearchPage memberSearchPage, String profileImageDomain) {
+            MemberSearchPage memberSearchPage, String profileImageOrigin) {
         return memberSearchPage.getMembers().stream()
                 .map(
                         member ->
@@ -35,19 +35,10 @@ public record MemberSearchResponse(
                                         .memberId(member.getMemberId())
                                         .nickname(member.getNickname())
                                         .profileImageUrl(
-                                                getProfileImageUrl(
-                                                        profileImageDomain,
-                                                        member.getProfileImageUrl()))
+                                                member.getProfileImageUrl(profileImageOrigin))
                                         .introduction(member.getIntroduction())
                                         .hasFollowed(member.isHasFollowed())
                                         .build())
                 .toList();
-    }
-
-    private static String getProfileImageUrl(String profileImageDomain, String profileImageUrl) {
-        if (profileImageUrl == null) {
-            return null;
-        }
-        return profileImageDomain + "/" + profileImageUrl;
     }
 }

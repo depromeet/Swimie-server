@@ -1,6 +1,5 @@
 package com.depromeet.notification.dto.response;
 
-import com.depromeet.member.domain.Member;
 import com.depromeet.notification.domain.FollowLog;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.LocalDateTime;
@@ -36,17 +35,7 @@ public class FollowNotificationResponse extends BaseNotificationResponse {
                 "FOLLOW",
                 followLog.isHasRead(),
                 followLog.getFollower().getId(),
-                getImageUrl(profileImageOrigin, followLog.getFollower()),
+                followLog.getFollower().getProfileImageUrl(profileImageOrigin),
                 true);
-    }
-
-    private static String getImageUrl(String profileImageOrigin, Member follower) {
-        if (follower.getProfileImageUrl() == null) {
-            return null;
-        }
-
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(profileImageOrigin).append("/").append(follower.getProfileImageUrl());
-        return buffer.toString();
     }
 }

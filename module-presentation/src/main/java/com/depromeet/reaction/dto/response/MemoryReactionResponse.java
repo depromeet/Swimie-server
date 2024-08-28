@@ -9,7 +9,8 @@ import java.util.List;
 public record MemoryReactionResponse(
         @Schema(description = "응원 리스트", requiredMode = Schema.RequiredMode.REQUIRED)
                 List<ReactionDetailResponse> reactions) {
-    public static MemoryReactionResponse from(List<Reaction> reactionDomains) {
+    public static MemoryReactionResponse from(
+            List<Reaction> reactionDomains, String profileImageOrigin) {
         return new MemoryReactionResponse(
                 reactionDomains.stream()
                         .map(
@@ -20,13 +21,8 @@ public record MemoryReactionResponse(
                                                 it.getComment(),
                                                 it.getMember().getId(),
                                                 it.getMember().getNickname(),
-                                                getProfileImageUrl(it)))
+                                                it.getMember()
+                                                        .getProfileImageUrl(profileImageOrigin)))
                         .toList());
-    }
-
-    private static String getProfileImageUrl(Reaction reaction) {
-        return reaction.getMember().getProfileImageUrl() != null
-                ? reaction.getMember().getProfileImageUrl()
-                : null;
     }
 }

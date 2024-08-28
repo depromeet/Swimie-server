@@ -39,16 +39,9 @@ public record MemberProfileResponse(
                 member.getId(),
                 member.getNickname(),
                 member.getIntroduction(),
-                getProfileImageUrl(profileImageOrigin, member.getProfileImageUrl()),
+                member.getProfileImageUrl(profileImageOrigin),
                 followerCount,
                 followingCount,
                 isMyProfile);
-    }
-
-    private static String getProfileImageUrl(String profileImageOrigin, String profileImageUrl) {
-        if (profileImageUrl == null) {
-            return null;
-        }
-        return profileImageOrigin + "/" + profileImageUrl;
     }
 }
