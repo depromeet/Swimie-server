@@ -4,10 +4,7 @@ import static com.depromeet.friend.entity.QFriendEntity.friendEntity;
 import static com.querydsl.jpa.JPAExpressions.select;
 
 import com.depromeet.friend.domain.Friend;
-import com.depromeet.friend.domain.vo.FollowSlice;
-import com.depromeet.friend.domain.vo.Follower;
-import com.depromeet.friend.domain.vo.Following;
-import com.depromeet.friend.domain.vo.FriendCount;
+import com.depromeet.friend.domain.vo.*;
 import com.depromeet.friend.entity.FriendEntity;
 import com.depromeet.friend.entity.QFriendEntity;
 import com.depromeet.friend.port.out.persistence.FriendPersistencePort;
@@ -17,6 +14,7 @@ import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +29,7 @@ public class FriendRepository implements FriendPersistencePort {
     private final FriendJpaRepository friendJpaRepository;
 
     private QFriendEntity friend = QFriendEntity.friendEntity;
+    private QMemberEntity member = QMemberEntity.memberEntity;
 
     @Override
     public Friend addFollow(Friend friend) {
@@ -215,5 +214,24 @@ public class FriendRepository implements FriendPersistencePort {
                 .delete(friend)
                 .where(friend.member.id.eq(memberId).or(friend.following.id.eq(memberId)))
                 .execute();
+    }
+
+    @Override
+    public List<FollowCheck> findByMemberIdAndFollowingIds(
+            Long memberId, List<Long> targetMemberId) {
+        JPAQuery<Tuple> result =
+                queryFactory
+                        .select(
+                                member.id,
+                                member.id.in(
+                                        queryFactory
+                                                .select(friend.following.id)
+                                                .from(friend)
+                                                .where(friend.member.id.eq(memberId))))
+                        .from(member)
+                        .where(member.id.in(targetMemberId));
+        return result.stream()
+                .map(res -> new FollowCheck(res.get(0, Long.class), res.get(1, Boolean.class)))
+                .toList();
     }
 }
