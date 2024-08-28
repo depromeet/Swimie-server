@@ -129,7 +129,7 @@ public class AuthFacade {
         // Reaction log 삭제
         deleteReactionLogUseCase.deleteAllById(reactionIds);
         // Reaction 삭제
-        deleteReactionUseCase.deleteByMemberId(memberId);
+        deleteReactionUseCase.deleteAllById(reactionIds);
         // Stroke 삭제
         strokeUseCase.deleteAllByMemoryId(memoryIds);
         // Image FK Null

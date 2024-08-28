@@ -65,8 +65,8 @@ public class ReactionService
     }
 
     @Override
-    public void deleteByMemberId(Long memberId) {
-        reactionPersistencePort.deleteByMemberId(memberId);
+    public void deleteAllById(List<Long> reactionIds) {
+        reactionPersistencePort.deleteAllById(reactionIds);
     }
 
     @Override

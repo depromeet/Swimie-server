@@ -16,7 +16,7 @@ public record FollowingResponse(
                         description = "팔로잉 member 이름",
                         example = "홍길동",
                         requiredMode = Schema.RequiredMode.REQUIRED)
-                String name,
+                String nickname,
         @Schema(
                         description = "팔로잉 member 프로필 사진 url",
                         example = "https://image.webp",
@@ -34,7 +34,7 @@ public record FollowingResponse(
             Following following, String profileImageOrigin) {
         return FollowingResponse.builder()
                 .memberId(following.getMemberId())
-                .name(following.getName())
+                .nickname(following.getName())
                 .profileImageUrl(following.getProfileImageUrl(profileImageOrigin))
                 .introduction(following.getIntroduction())
                 .build();
