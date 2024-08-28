@@ -81,10 +81,12 @@ public class FollowService implements FollowUseCase {
                     if (memberId.equals(targetId)) {
                         throw new BadRequestException(FollowErrorType.SELF_FOLLOWING_NOT_ALLOWED);
                     }
-                    result.add(new FollowCheck(targetId,
-                            friendPersistencePort
-                                    .findByMemberIdAndFollowingId(memberId, targetId)
-                                    .isPresent()));
+                    result.add(
+                            new FollowCheck(
+                                    targetId,
+                                    friendPersistencePort
+                                            .findByMemberIdAndFollowingId(memberId, targetId)
+                                            .isPresent()));
                 });
         return result;
     }

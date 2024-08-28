@@ -59,7 +59,8 @@ public class FollowFacade {
     }
 
     public IsFollowingResponse isFollowing(Long memberId, FollowCheckListRequest targetMemberId) {
-        List<FollowCheck> isFollowing = followUseCase.isFollowing(memberId, targetMemberId.friends());
+        List<FollowCheck> isFollowing =
+                followUseCase.isFollowing(memberId, targetMemberId.friends());
         return IsFollowingResponse.toIsFollowingResponse(isFollowing);
     }
 }
