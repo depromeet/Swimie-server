@@ -48,7 +48,7 @@ public class ReactionLogService
     }
 
     @Override
-    public void deleteAllById(List<Long> reactionLogIds) {
-        reactionLogPersistencePort.deleteAllById(reactionLogIds);
+    public void deleteAllByReactionId(List<Long> reactionIds) {
+        reactionLogPersistencePort.deleteAllByReactionId(reactionIds);
     }
 }
