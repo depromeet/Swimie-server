@@ -15,7 +15,7 @@ public record FollowerResponse(
                         description = "팔로워 member nickname",
                         example = "홍길동",
                         requiredMode = Schema.RequiredMode.REQUIRED)
-                String name,
+                String nickname,
         @Schema(
                         description = "팔로워 프로필 사진 url",
                         example = "https://image.webp",
