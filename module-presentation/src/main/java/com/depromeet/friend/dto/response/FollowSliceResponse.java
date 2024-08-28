@@ -58,7 +58,7 @@ public record FollowSliceResponse<T>(
                         following ->
                                 FollowingResponse.builder()
                                         .memberId(following.getMemberId())
-                                        .name(following.getName())
+                                        .nickname(following.getName())
                                         .profileImageUrl(
                                                 getProfileImageUrl(
                                                         profileImageDomain,
@@ -75,7 +75,7 @@ public record FollowSliceResponse<T>(
                         follower ->
                                 FollowerResponse.builder()
                                         .memberId(follower.getMemberId())
-                                        .name(follower.getName())
+                                        .nickname(follower.getName())
                                         .profileImageUrl(
                                                 getProfileImageUrl(
                                                         profileImageOrigin,
