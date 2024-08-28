@@ -127,7 +127,7 @@ public class AuthFacade {
         List<Long> reactionIds =
                 getReactionUseCase.findAllIdByMemoryIdOrMemberId(memoryIds, memberId);
         // Reaction log 삭제
-        deleteReactionLogUseCase.deleteAllById(reactionIds);
+        deleteReactionLogUseCase.deleteAllByReactionId(reactionIds);
         // Reaction 삭제
         deleteReactionUseCase.deleteAllById(reactionIds);
         // Stroke 삭제
