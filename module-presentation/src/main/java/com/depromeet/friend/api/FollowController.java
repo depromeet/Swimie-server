@@ -59,8 +59,7 @@ public class FollowController implements FollowApi {
     @PostMapping
     @Logging(item = "Follower/Following", action = "GET")
     public ApiResponse<IsFollowingResponse> checkFollowing(
-            @LoginMember Long memberId,
-            @RequestBody FollowCheckListRequest targetMemberId) {
+            @LoginMember Long memberId, @RequestBody FollowCheckListRequest targetMemberId) {
         IsFollowingResponse response = followFacade.isFollowing(memberId, targetMemberId);
         return ApiResponse.success(FollowSuccessType.CHECK_FOLLOWING_SUCCESS, response);
     }
