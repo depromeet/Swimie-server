@@ -2,6 +2,7 @@ package com.depromeet.member.domain;
 
 import com.depromeet.member.port.in.command.UpdateMemberCommand;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -71,5 +72,21 @@ public class Member {
     public Member updateProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
         return this;
+    }
+
+    public String getProfileImageUrl(String profileImageOrigin) {
+        if (profileImageUrl == null) {
+            return null;
+        } else if (isDefaultProfileNumber(profileImageUrl)) {
+            return profileImageUrl;
+        }
+        StringBuilder builder = new StringBuilder();
+        return builder.append(profileImageOrigin).append("/").append(profileImageUrl).toString();
+    }
+
+    private static final List<String> DEFAULT_IMAGE_NAMES = List.of("1", "2", "3", "4");
+
+    private static boolean isDefaultProfileNumber(String imageName) {
+        return DEFAULT_IMAGE_NAMES.contains(imageName);
     }
 }
