@@ -22,9 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -77,8 +74,6 @@ public class FriendRepository implements FriendPersistencePort {
     @Override
     public FollowSlice<Following> findFollowingsByMemberIdAndCursorId(
             Long memberId, Long cursorId) {
-        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id");
-
         List<Following> content =
                 queryFactory
                         .select(
@@ -91,13 +86,13 @@ public class FriendRepository implements FriendPersistencePort {
                                         friend.following.introduction.as("introduction")))
                         .from(friend)
                         .where(friend.member.id.eq(memberId), ltCursorId(cursorId))
-                        .limit(pageable.getPageSize() + 1)
+                        .limit(11)
                         .orderBy(friend.id.desc())
                         .fetch();
 
         boolean hasNext = false;
         Long nextCursorId = null;
-        if (content.size() > pageable.getPageSize()) {
+        if (content.size() > 10) {
             content = new ArrayList<>(content);
             content.removeLast();
             hasNext = true;
@@ -114,8 +109,6 @@ public class FriendRepository implements FriendPersistencePort {
     @Override
     public FollowSlice<Follower> findFollowersByMemberIdAndCursorId(Long memberId, Long cursorId) {
         QFriendEntity subFriend = new QFriendEntity("sub");
-        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id");
-
         List<Follower> result =
                 queryFactory
                         .select(
@@ -137,13 +130,13 @@ public class FriendRepository implements FriendPersistencePort {
                                                 "hasFollowedBack")))
                         .from(friend)
                         .where(friend.following.id.eq(memberId), ltCursorId(cursorId))
-                        .limit(pageable.getPageSize() + 1)
+                        .limit(11)
                         .orderBy(friend.id.desc())
                         .fetch();
 
         boolean hasNext = false;
         Long nextCursorId = null;
-        if (result.size() > pageable.getPageSize()) {
+        if (result.size() > 10) {
             result = new ArrayList<>(result);
             result.removeLast();
             hasNext = true;
