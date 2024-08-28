@@ -126,10 +126,10 @@ public class AuthFacade {
         // Reaction 조회
         List<Long> reactionIds =
                 getReactionUseCase.findAllIdByMemoryIdOrMemberId(memoryIds, memberId);
-        // Reaction 삭제
-        deleteReactionUseCase.deleteByMemberId(memberId);
         // Reaction log 삭제
         deleteReactionLogUseCase.deleteAllById(reactionIds);
+        // Reaction 삭제
+        deleteReactionUseCase.deleteByIds(reactionIds);
         // Stroke 삭제
         strokeUseCase.deleteAllByMemoryId(memoryIds);
         // Image FK Null

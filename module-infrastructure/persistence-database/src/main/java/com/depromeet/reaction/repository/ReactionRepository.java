@@ -62,6 +62,11 @@ public class ReactionRepository implements ReactionPersistencePort {
                 .fetch();
     }
 
+    @Override
+    public void deleteByIds(List<Long> reactionIds) {
+        queryFactory.delete(reactionEntity).where(reactionEntity.id.in(reactionIds)).execute();
+    }
+
     private static BooleanExpression memoryIn(List<Long> memoryIds) {
         if (memoryIds == null) {
             return null;
@@ -131,11 +136,6 @@ public class ReactionRepository implements ReactionPersistencePort {
     @Override
     public void deleteById(Long reactionId) {
         reactionJpaRepository.deleteById(reactionId);
-    }
-
-    @Override
-    public void deleteByMemberId(Long memberId) {
-        reactionJpaRepository.deleteByMemberId(memberId);
     }
 
     private BooleanExpression memberEq(Long memberId) {
