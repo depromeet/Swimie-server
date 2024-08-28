@@ -1,9 +1,6 @@
 package com.depromeet.friend.port.in;
 
-import com.depromeet.friend.domain.vo.FollowSlice;
-import com.depromeet.friend.domain.vo.Follower;
-import com.depromeet.friend.domain.vo.Following;
-import com.depromeet.friend.domain.vo.FriendCount;
+import com.depromeet.friend.domain.vo.*;
 import com.depromeet.member.domain.Member;
 import java.util.List;
 
@@ -24,5 +21,5 @@ public interface FollowUseCase {
 
     void deleteByMemberId(Long memberId);
 
-    Boolean isFollowing(Long memberId, Long targetMemberId);
+    List<FollowCheck> isFollowing(Long memberId, List<Long> targetMemberId);
 }

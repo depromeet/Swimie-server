@@ -1,8 +1,10 @@
 package com.depromeet.friend.facade;
 
+import com.depromeet.friend.domain.vo.FollowCheck;
 import com.depromeet.friend.domain.vo.FollowSlice;
 import com.depromeet.friend.domain.vo.Follower;
 import com.depromeet.friend.domain.vo.Following;
+import com.depromeet.friend.dto.request.FollowCheckListRequest;
 import com.depromeet.friend.dto.request.FollowRequest;
 import com.depromeet.friend.dto.response.*;
 import com.depromeet.friend.port.in.FollowUseCase;
@@ -56,8 +58,11 @@ public class FollowFacade {
                 followingCount, followings, profileImageOrigin);
     }
 
-    public IsFollowingResponse isFollowing(Long memberId, Long targetMemberId) {
-        Boolean isFollowing = followUseCase.isFollowing(memberId, targetMemberId);
+    @Transactional
+    public IsFollowingResponse isFollowing(Long memberId, FollowCheckListRequest targetMemberId) {
+        memberUseCase.checkByIdExist(targetMemberId.friends());
+        List<FollowCheck> isFollowing =
+                followUseCase.isFollowing(memberId, targetMemberId.friends());
         return IsFollowingResponse.toIsFollowingResponse(isFollowing);
     }
 }

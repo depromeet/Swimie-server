@@ -86,10 +86,10 @@ public class JwtTokenService implements CreateTokenUseCase {
 
     public boolean validateRefreshToken(Long memberId, String refreshToken) {
         String refreshTokenData = refreshRedisPersistencePort.getData(memberId);
-        if (refreshTokenData.isBlank()) {
+        if (refreshTokenData != null && refreshTokenData.isBlank()) {
             throw new NotFoundException(AuthErrorType.JWT_REFRESH_TOKEN_NOT_FOUND);
         }
-        if (refreshTokenData.equals(refreshToken)) {
+        if (refreshTokenData != null && refreshTokenData.equals(refreshToken)) {
             return true;
         }
         throw new ForbiddenException(AuthErrorType.REFRESH_TOKEN_NOT_MATCH);
