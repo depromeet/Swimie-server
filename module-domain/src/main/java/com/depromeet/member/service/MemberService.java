@@ -15,6 +15,7 @@ import com.depromeet.member.port.in.usecase.MemberUpdateUseCase;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import com.depromeet.type.member.MemberErrorType;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -77,8 +78,16 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUp
                         .email(command.email())
                         .role(MemberRole.USER)
                         .providerId(command.providerId())
+                        .profileImageUrl(command.defaultProfile())
                         .build();
         return memberPersistencePort.save(member);
+    }
+
+    @Override
+    public void checkByIdExist(List<Long> friends) {
+        if (!memberPersistencePort.checkByIdExist(friends)) {
+            throw new BadRequestException(MemberErrorType.NOT_FOUND_FROM_ID_LIST);
+        }
     }
 
     @Override

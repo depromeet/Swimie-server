@@ -2,10 +2,7 @@ package com.depromeet.friend.service;
 
 import com.depromeet.exception.BadRequestException;
 import com.depromeet.friend.domain.Friend;
-import com.depromeet.friend.domain.vo.FollowSlice;
-import com.depromeet.friend.domain.vo.Follower;
-import com.depromeet.friend.domain.vo.Following;
-import com.depromeet.friend.domain.vo.FriendCount;
+import com.depromeet.friend.domain.vo.*;
 import com.depromeet.friend.port.in.FollowUseCase;
 import com.depromeet.friend.port.out.persistence.FriendPersistencePort;
 import com.depromeet.member.domain.Member;
@@ -76,12 +73,10 @@ public class FollowService implements FollowUseCase {
     }
 
     @Override
-    public Boolean isFollowing(Long memberId, Long targetMemberId) {
-        if (memberId.equals(targetMemberId)) {
+    public List<FollowCheck> isFollowing(Long memberId, List<Long> targetMemberId) {
+        if (targetMemberId != null && targetMemberId.contains(memberId)) {
             throw new BadRequestException(FollowErrorType.SELF_FOLLOWING_NOT_ALLOWED);
         }
-        return friendPersistencePort
-                .findByMemberIdAndFollowingId(memberId, targetMemberId)
-                .isPresent();
+        return friendPersistencePort.findByMemberIdAndFollowingIds(memberId, targetMemberId);
     }
 }

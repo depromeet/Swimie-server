@@ -115,8 +115,8 @@ public record FollowingLogMemoryResponse(
                 .startTime(memory.parseStartTime())
                 .endTime(memory.parseEndTime())
                 .diary(memory.getDiary())
-                .totalDistance(memory.calculateTotalDistance())
-                .isAchieved(isAchieved(totalDistance, memory.getMember().getGoal()))
+                .totalDistance(totalDistance)
+                .isAchieved(memory.isAchieved(totalDistance))
                 .kcal(getKcalFromMemoryDetail(memory))
                 .type(memory.classifyType())
                 .strokes(strokeToDto(memory.getStrokes(), memory.getLane()))
@@ -131,10 +131,6 @@ public record FollowingLogMemoryResponse(
             return profileImageOrigin + "/" + member.getProfileImageUrl();
         }
         return null;
-    }
-
-    private static boolean isAchieved(Integer totalDistance, int goal) {
-        return totalDistance >= goal;
     }
 
     private static Integer getKcalFromMemoryDetail(Memory memory) {

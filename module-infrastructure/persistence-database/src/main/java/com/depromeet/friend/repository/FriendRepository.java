@@ -4,10 +4,7 @@ import static com.depromeet.friend.entity.QFriendEntity.friendEntity;
 import static com.querydsl.jpa.JPAExpressions.select;
 
 import com.depromeet.friend.domain.Friend;
-import com.depromeet.friend.domain.vo.FollowSlice;
-import com.depromeet.friend.domain.vo.Follower;
-import com.depromeet.friend.domain.vo.Following;
-import com.depromeet.friend.domain.vo.FriendCount;
+import com.depromeet.friend.domain.vo.*;
 import com.depromeet.friend.entity.FriendEntity;
 import com.depromeet.friend.entity.QFriendEntity;
 import com.depromeet.friend.port.out.persistence.FriendPersistencePort;
@@ -17,14 +14,12 @@ import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -34,6 +29,7 @@ public class FriendRepository implements FriendPersistencePort {
     private final FriendJpaRepository friendJpaRepository;
 
     private QFriendEntity friend = QFriendEntity.friendEntity;
+    private QMemberEntity member = QMemberEntity.memberEntity;
 
     @Override
     public Friend addFollow(Friend friend) {
@@ -77,8 +73,6 @@ public class FriendRepository implements FriendPersistencePort {
     @Override
     public FollowSlice<Following> findFollowingsByMemberIdAndCursorId(
             Long memberId, Long cursorId) {
-        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id");
-
         List<Following> content =
                 queryFactory
                         .select(
@@ -91,13 +85,13 @@ public class FriendRepository implements FriendPersistencePort {
                                         friend.following.introduction.as("introduction")))
                         .from(friend)
                         .where(friend.member.id.eq(memberId), ltCursorId(cursorId))
-                        .limit(pageable.getPageSize() + 1)
+                        .limit(11)
                         .orderBy(friend.id.desc())
                         .fetch();
 
         boolean hasNext = false;
         Long nextCursorId = null;
-        if (content.size() > pageable.getPageSize()) {
+        if (content.size() > 10) {
             content = new ArrayList<>(content);
             content.removeLast();
             hasNext = true;
@@ -114,8 +108,6 @@ public class FriendRepository implements FriendPersistencePort {
     @Override
     public FollowSlice<Follower> findFollowersByMemberIdAndCursorId(Long memberId, Long cursorId) {
         QFriendEntity subFriend = new QFriendEntity("sub");
-        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "id");
-
         List<Follower> result =
                 queryFactory
                         .select(
@@ -137,13 +129,13 @@ public class FriendRepository implements FriendPersistencePort {
                                                 "hasFollowedBack")))
                         .from(friend)
                         .where(friend.following.id.eq(memberId), ltCursorId(cursorId))
-                        .limit(pageable.getPageSize() + 1)
+                        .limit(11)
                         .orderBy(friend.id.desc())
                         .fetch();
 
         boolean hasNext = false;
         Long nextCursorId = null;
-        if (result.size() > pageable.getPageSize()) {
+        if (result.size() > 10) {
             result = new ArrayList<>(result);
             result.removeLast();
             hasNext = true;
@@ -222,5 +214,24 @@ public class FriendRepository implements FriendPersistencePort {
                 .delete(friend)
                 .where(friend.member.id.eq(memberId).or(friend.following.id.eq(memberId)))
                 .execute();
+    }
+
+    @Override
+    public List<FollowCheck> findByMemberIdAndFollowingIds(
+            Long memberId, List<Long> targetMemberId) {
+        JPAQuery<Tuple> result =
+                queryFactory
+                        .select(
+                                member.id,
+                                member.id.in(
+                                        queryFactory
+                                                .select(friend.following.id)
+                                                .from(friend)
+                                                .where(friend.member.id.eq(memberId))))
+                        .from(member)
+                        .where(member.id.in(targetMemberId));
+        return result.stream()
+                .map(res -> new FollowCheck(res.get(0, Long.class), res.get(1, Boolean.class)))
+                .toList();
     }
 }

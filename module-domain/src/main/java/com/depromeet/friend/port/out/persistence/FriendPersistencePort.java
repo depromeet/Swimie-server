@@ -1,10 +1,7 @@
 package com.depromeet.friend.port.out.persistence;
 
 import com.depromeet.friend.domain.Friend;
-import com.depromeet.friend.domain.vo.FollowSlice;
-import com.depromeet.friend.domain.vo.Follower;
-import com.depromeet.friend.domain.vo.Following;
-import com.depromeet.friend.domain.vo.FriendCount;
+import com.depromeet.friend.domain.vo.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,4 +27,6 @@ public interface FriendPersistencePort {
     FriendCount countFriendByMemberId(Long memberId);
 
     void deleteByMemberId(Long memberId);
+
+    List<FollowCheck> findByMemberIdAndFollowingIds(Long memberId, List<Long> targetMemberId);
 }
