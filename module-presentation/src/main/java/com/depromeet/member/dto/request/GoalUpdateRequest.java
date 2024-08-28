@@ -1,3 +1,5 @@
 package com.depromeet.member.dto.request;
 
-public record GoalUpdateRequest(Integer goal) {}
+import jakarta.validation.constraints.Min;
+
+public record GoalUpdateRequest(@Min(0) Integer goal) {}
