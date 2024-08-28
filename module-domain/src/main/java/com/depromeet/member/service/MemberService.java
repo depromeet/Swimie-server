@@ -78,6 +78,7 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUp
                         .email(command.email())
                         .role(MemberRole.USER)
                         .providerId(command.providerId())
+                        .profileImageUrl(command.defaultProfile())
                         .build();
         return memberPersistencePort.save(member);
     }

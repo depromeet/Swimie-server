@@ -7,9 +7,9 @@ import com.depromeet.member.port.in.command.UpdateMemberCommand;
 
 public class MemberMapper {
     public static SocialMemberCommand toCommand(
-            AccountProfileResponse response, String providerId) {
+            AccountProfileResponse response, String providerId, String defaultProfile) {
         return new SocialMemberCommand(
-                response.id(), response.name(), response.email(), providerId);
+                response.id(), response.name(), response.email(), providerId, defaultProfile);
     }
 
     public static UpdateMemberCommand toCommand(
