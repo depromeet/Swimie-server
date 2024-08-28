@@ -23,5 +23,5 @@ public interface ReactionPersistencePort {
 
     List<Long> findAllIdByMemoryIdOrMemberId(List<Long> memoryIds, Long memberId);
 
-    void deleteByIds(List<Long> reactionIds);
+    void deleteAllById(List<Long> reactionIds);
 }

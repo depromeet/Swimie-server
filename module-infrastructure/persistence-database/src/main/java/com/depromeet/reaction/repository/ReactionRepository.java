@@ -63,7 +63,7 @@ public class ReactionRepository implements ReactionPersistencePort {
     }
 
     @Override
-    public void deleteByIds(List<Long> reactionIds) {
+    public void deleteAllById(List<Long> reactionIds) {
         queryFactory.delete(reactionEntity).where(reactionEntity.id.in(reactionIds)).execute();
     }
 
