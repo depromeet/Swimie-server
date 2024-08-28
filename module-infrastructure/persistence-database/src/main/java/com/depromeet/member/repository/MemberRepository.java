@@ -1,5 +1,7 @@
 package com.depromeet.member.repository;
 
+import static com.querydsl.core.types.ExpressionUtils.count;
+
 import com.depromeet.friend.entity.QFriendEntity;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
@@ -148,6 +150,17 @@ public class MemberRepository implements MemberPersistencePort {
         return memberJpaRepository
                 .findById(memberId)
                 .map(memberEntity -> memberEntity.updateProfileImageUrl(profileImageUrl).toModel());
+    }
+
+    @Override
+    public Boolean checkByIdExist(List<Long> friends) {
+        Long resultSize =
+                queryFactory
+                        .select(count(member.id))
+                        .from(member)
+                        .where(member.id.in(friends))
+                        .fetchOne();
+        return resultSize != null && resultSize.intValue() == friends.size();
     }
 
     @Override

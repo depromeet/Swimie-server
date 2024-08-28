@@ -7,7 +7,6 @@ import com.depromeet.friend.port.in.FollowUseCase;
 import com.depromeet.friend.port.out.persistence.FriendPersistencePort;
 import com.depromeet.member.domain.Member;
 import com.depromeet.type.friend.FollowErrorType;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -75,19 +74,9 @@ public class FollowService implements FollowUseCase {
 
     @Override
     public List<FollowCheck> isFollowing(Long memberId, List<Long> targetMemberId) {
-        List<FollowCheck> result = new ArrayList<>();
-        targetMemberId.forEach(
-                targetId -> {
-                    if (memberId.equals(targetId)) {
-                        throw new BadRequestException(FollowErrorType.SELF_FOLLOWING_NOT_ALLOWED);
-                    }
-                    result.add(
-                            new FollowCheck(
-                                    targetId,
-                                    friendPersistencePort
-                                            .findByMemberIdAndFollowingId(memberId, targetId)
-                                            .isPresent()));
-                });
-        return result;
+        if (targetMemberId != null && targetMemberId.contains(memberId)) {
+            throw new BadRequestException(FollowErrorType.SELF_FOLLOWING_NOT_ALLOWED);
+        }
+        return friendPersistencePort.findByMemberIdAndFollowingIds(memberId, targetMemberId);
     }
 }

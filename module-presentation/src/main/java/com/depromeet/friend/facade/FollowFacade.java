@@ -58,7 +58,9 @@ public class FollowFacade {
                 followingCount, followings, profileImageOrigin);
     }
 
+    @Transactional
     public IsFollowingResponse isFollowing(Long memberId, FollowCheckListRequest targetMemberId) {
+        memberUseCase.checkByIdExist(targetMemberId.friends());
         List<FollowCheck> isFollowing =
                 followUseCase.isFollowing(memberId, targetMemberId.friends());
         return IsFollowingResponse.toIsFollowingResponse(isFollowing);
