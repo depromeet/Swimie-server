@@ -57,12 +57,21 @@ public class ImageFacade {
         }
         // 전달 받은 이미지가 없는 경우 기존 이미지 삭제
         Member member = memberService.findById(memberId);
-        if (member.getProfileImageUrl() != null && !member.getProfileImageUrl().isBlank()) {
+        if (canDeleteImage(member.getProfileImageUrl())) {
             imageDeleteUseCase.deleteProfileImage(member.getProfileImageUrl());
         }
         // 멤버의 프로필 이미지 URL 정보를 수정한다
+        if (isDefaultProfileNumber(member.getProfileImageUrl())) {
+            return null;
+        }
         memberService.updateProfileImageUrl(memberId, null);
         return null;
+    }
+
+    private static boolean canDeleteImage(String profileImageUrl) {
+        return profileImageUrl != null
+                && !profileImageUrl.isBlank()
+                && !isDefaultProfileNumber(profileImageUrl);
     }
 
     public List<ImageUploadResponse> updateImages(
@@ -83,8 +92,8 @@ public class ImageFacade {
 
     public void changeProfileImageUrl(Long memberId, String imageName) {
         // 존재하는 이미지를 지운다
-        if (!isDefaultProfileNumber(imageName)) {
-            Member member = memberService.findById(memberId);
+        Member member = memberService.findById(memberId);
+        if (!isDefaultProfileNumber(member.getProfileImageUrl())) {
             if (member.getProfileImageUrl() != null && !member.getProfileImageUrl().isEmpty()) {
                 imageDeleteUseCase.deleteProfileImage(member.getProfileImageUrl());
             }

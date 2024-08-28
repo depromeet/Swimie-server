@@ -52,7 +52,7 @@ public record FollowSliceResponse<T>(
     }
 
     private static List<FollowingResponse> getFollowingResponses(
-            FollowSlice<Following> followingSlice, String profileImageDomain) {
+            FollowSlice<Following> followingSlice, String profileImageOrigin) {
         return followingSlice.getFollowContents().stream()
                 .map(
                         following ->
@@ -60,9 +60,7 @@ public record FollowSliceResponse<T>(
                                         .memberId(following.getMemberId())
                                         .nickname(following.getName())
                                         .profileImageUrl(
-                                                getProfileImageUrl(
-                                                        profileImageDomain,
-                                                        following.getProfileImageUrl()))
+                                                following.getProfileImageUrl(profileImageOrigin))
                                         .introduction(following.getIntroduction())
                                         .build())
                 .toList();
@@ -77,19 +75,10 @@ public record FollowSliceResponse<T>(
                                         .memberId(follower.getMemberId())
                                         .nickname(follower.getName())
                                         .profileImageUrl(
-                                                getProfileImageUrl(
-                                                        profileImageOrigin,
-                                                        follower.getProfileImageUrl()))
+                                                follower.getProfileImageUrl(profileImageOrigin))
                                         .introduction(follower.getIntroduction())
                                         .hasFollowedBack(follower.isHasFollowedBack())
                                         .build())
                 .toList();
-    }
-
-    private static String getProfileImageUrl(String profileImageOrigin, String profileImageUrl) {
-        if (profileImageUrl != null) {
-            return profileImageOrigin + "/" + profileImageUrl;
-        }
-        return null;
     }
 }

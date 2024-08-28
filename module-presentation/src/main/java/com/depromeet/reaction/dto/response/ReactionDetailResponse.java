@@ -27,13 +27,13 @@ public record ReactionDetailResponse(
                         example = "https://url.com",
                         requiredMode = Schema.RequiredMode.REQUIRED)
                 String profileImageUrl) {
-    public static ReactionDetailResponse from(Reaction reaction) {
+    public static ReactionDetailResponse from(Reaction reaction, String profileImageOrigin) {
         return new ReactionDetailResponse(
                 reaction.getId(),
                 reaction.getEmoji(),
                 reaction.getComment(),
                 reaction.getMember().getId(),
                 reaction.getMember().getNickname(),
-                reaction.getMember().getProfileImageUrl());
+                reaction.getMember().getProfileImageUrl(profileImageOrigin));
     }
 }

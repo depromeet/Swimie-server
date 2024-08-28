@@ -35,16 +35,8 @@ public record FollowingResponse(
         return FollowingResponse.builder()
                 .memberId(following.getMemberId())
                 .nickname(following.getName())
-                .profileImageUrl(
-                        getProfileImageUrl(profileImageOrigin, following.getProfileImageUrl()))
+                .profileImageUrl(following.getProfileImageUrl(profileImageOrigin))
                 .introduction(following.getIntroduction())
                 .build();
-    }
-
-    private static String getProfileImageUrl(String profileImageOrigin, String profileImageUrl) {
-        if (profileImageUrl != null) {
-            return profileImageOrigin + "/" + profileImageUrl;
-        }
-        return null;
     }
 }
