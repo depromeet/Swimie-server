@@ -12,7 +12,7 @@ public record IsFollowingResponse(
                         description = "팔로잉 여부",
                         example = "[true, false, true]",
                         requiredMode = Schema.RequiredMode.REQUIRED)
-                List<FollowCheckResponse> isFollowing) {
+                List<FollowCheckResponse> followingList) {
     public static IsFollowingResponse toIsFollowingResponse(List<FollowCheck> isFollowing) {
         return new IsFollowingResponse(isFollowing.stream().map(FollowCheckResponse::of).toList());
     }
