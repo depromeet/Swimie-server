@@ -24,5 +24,5 @@ public interface FollowUseCase {
 
     void deleteByMemberId(Long memberId);
 
-    Boolean isFollowing(Long memberId, Long targetMemberId);
+    List<Boolean> isFollowing(Long memberId, List<Long> targetMemberId);
 }
