@@ -30,7 +30,7 @@ import com.depromeet.reaction.port.in.usecase.DeleteReactionUseCase;
 import com.depromeet.reaction.port.in.usecase.GetReactionUseCase;
 import com.depromeet.type.auth.AuthErrorType;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -93,7 +93,7 @@ public class AuthFacade {
         Member member = memberUseCase.findByProviderId(providerId);
         if (member == null) {
             isSignUpComplete = false;
-            Random rand = new Random();
+            ThreadLocalRandom rand = ThreadLocalRandom.current();
             String defaultProfile = String.valueOf(rand.nextInt(4) + 1);
             member =
                     memberUseCase.createMemberBy(
