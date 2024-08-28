@@ -115,7 +115,7 @@ public record FollowingLogMemoryResponse(
                 .startTime(memory.parseStartTime())
                 .endTime(memory.parseEndTime())
                 .diary(memory.getDiary())
-                .totalDistance(memory.calculateTotalDistance())
+                .totalDistance(totalDistance)
                 .isAchieved(isAchieved(totalDistance, memory.getMember().getGoal()))
                 .kcal(getKcalFromMemoryDetail(memory))
                 .type(memory.classifyType())
@@ -134,6 +134,9 @@ public record FollowingLogMemoryResponse(
     }
 
     private static boolean isAchieved(Integer totalDistance, int goal) {
+        if (totalDistance == null) {
+            return false;
+        }
         return totalDistance >= goal;
     }
 
