@@ -1,6 +1,10 @@
 package com.depromeet.memory.dto.request;
 
+import com.depromeet.exception.BadRequestException;
+import com.depromeet.type.memory.MemoryErrorType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -20,15 +24,19 @@ public class MemoryUpdateRequest {
     @Schema(description = "수영 장비", example = "오리발")
     private String item;
 
+    @Min(0)
     @Schema(description = "심박수", example = "129")
     private Short heartRate;
 
+    @Min(0)
     @Schema(description = "페이스 분", example = "5", maxLength = 2, type = "int")
     private int paceMinutes;
 
+    @Min(0)
     @Schema(description = "페이스 초", example = "30", maxLength = 2, type = "int")
     private int paceSeconds;
 
+    @Min(0)
     @Schema(description = "칼로리", example = "300")
     private Integer kcal;
 
@@ -47,6 +55,7 @@ public class MemoryUpdateRequest {
     @Schema(description = "수영 종료 시간", example = "11:50", maxLength = 5, type = "string")
     private LocalTime endTime;
 
+    @Min(0)
     @Schema(description = "레인 길이", example = "25")
     private Short lane;
 
@@ -54,6 +63,7 @@ public class MemoryUpdateRequest {
     private String diary;
 
     // Stroke
+    @Valid
     @Schema(description = "영법 목록")
     private List<StrokeUpdateRequest> strokes;
 
@@ -71,6 +81,7 @@ public class MemoryUpdateRequest {
             Short lane,
             String diary,
             List<StrokeUpdateRequest> strokes) {
+        validateTime();
         this.poolId = poolId;
         this.item = item;
         this.heartRate = heartRate;
@@ -83,5 +94,11 @@ public class MemoryUpdateRequest {
         this.lane = lane;
         this.diary = diary;
         this.strokes = strokes;
+    }
+
+    private void validateTime() {
+        if (startTime.isAfter(endTime)) {
+            throw new BadRequestException(MemoryErrorType.TIME_NOT_VALID);
+        }
     }
 }
