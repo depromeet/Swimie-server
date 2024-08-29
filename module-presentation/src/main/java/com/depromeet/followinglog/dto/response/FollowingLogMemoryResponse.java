@@ -23,7 +23,7 @@ public record FollowingLogMemoryResponse(
                         description = "member 이름(팔로잉 이름)",
                         example = "김민석",
                         requiredMode = Schema.RequiredMode.REQUIRED)
-                String memberNickname,
+                String nickname,
         @Schema(
                         description = "member 프로필 url",
                         example = "https://presignedUrl/image.webp",
@@ -107,7 +107,7 @@ public record FollowingLogMemoryResponse(
 
         return FollowingLogMemoryResponse.builder()
                 .memberId(memory.getMember().getId())
-                .memberNickname(memory.getMember().getNickname())
+                .nickname(memory.getMember().getNickname())
                 .profileImageUrl(memory.getMember().getProfileImageUrl(profileImageOrigin))
                 .memoryId(memory.getId())
                 .recordAt(memory.getRecordAt().toString())
