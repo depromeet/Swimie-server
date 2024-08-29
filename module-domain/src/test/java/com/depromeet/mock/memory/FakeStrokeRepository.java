@@ -1,4 +1,4 @@
-package com.depromeet.mock;
+package com.depromeet.mock.memory;
 
 import com.depromeet.memory.domain.Stroke;
 import com.depromeet.memory.port.out.persistence.StrokePersistencePort;

@@ -1,4 +1,4 @@
-package com.depromeet.mock;
+package com.depromeet.mock.auth;
 
 import com.depromeet.auth.port.out.persistence.RefreshRedisPersistencePort;
 import java.util.HashMap;

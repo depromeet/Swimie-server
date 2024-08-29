@@ -1,4 +1,4 @@
-package com.depromeet.mock;
+package com.depromeet.mock.member;
 
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;

@@ -1,4 +1,4 @@
-package com.depromeet.mock;
+package com.depromeet.mock.image;
 
 import com.depromeet.image.port.out.s3.S3ManagePort;
 

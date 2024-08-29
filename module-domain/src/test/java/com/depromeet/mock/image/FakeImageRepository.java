@@ -1,4 +1,4 @@
-package com.depromeet.mock;
+package com.depromeet.mock.image;
 
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.image.domain.Image;

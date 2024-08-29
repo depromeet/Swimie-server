@@ -1,4 +1,4 @@
-package com.depromeet.mock;
+package com.depromeet.mock.pool;
 
 import com.depromeet.pool.domain.FavoritePool;
 import com.depromeet.pool.domain.Pool;
