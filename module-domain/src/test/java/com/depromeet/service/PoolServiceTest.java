@@ -2,11 +2,11 @@ package com.depromeet.service;
 
 import static org.assertj.core.api.Assertions.*;
 
-import com.depromeet.fixture.MemberFixture;
-import com.depromeet.fixture.PoolFixture;
+import com.depromeet.fixture.domain.member.MemberFixture;
+import com.depromeet.fixture.domain.pool.PoolFixture;
 import com.depromeet.member.domain.Member;
-import com.depromeet.mock.FakeMemberRepository;
-import com.depromeet.mock.FakePoolRepository;
+import com.depromeet.mock.member.FakeMemberRepository;
+import com.depromeet.mock.pool.FakePoolRepository;
 import com.depromeet.pool.domain.FavoritePool;
 import com.depromeet.pool.domain.Pool;
 import com.depromeet.pool.domain.PoolSearch;
@@ -36,7 +36,7 @@ public class PoolServiceTest {
 
         memberId = 1L;
         String memberRole = "USER";
-        member = MemberFixture.make(memberId, memberRole);
+        member = MemberFixture.make();
         member = memberRepository.save(member);
 
         // poolService = new PoolService(poolRepository, memberRepository);
