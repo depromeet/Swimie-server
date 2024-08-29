@@ -3,9 +3,9 @@ package com.depromeet.followinglog.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.depromeet.TestQueryDslConfig;
-import com.depromeet.fixture.member.MemberFixture;
-import com.depromeet.fixture.memory.MemoryDetailFixture;
-import com.depromeet.fixture.memory.MemoryFixture;
+import com.depromeet.fixture.domain.member.MemberFixture;
+import com.depromeet.fixture.domain.memory.MemoryDetailFixture;
+import com.depromeet.fixture.domain.memory.MemoryFixture;
 import com.depromeet.followinglog.domain.FollowingMemoryLog;
 import com.depromeet.followinglog.port.out.persistence.FollowingMemoryLogPersistencePort;
 import com.depromeet.friend.domain.Friend;
@@ -69,7 +69,7 @@ public class FollowingMemoryLogRepositoryTest {
         followingMemoryLogRepository =
                 new FollowingMemoryLogRepository(queryFactory, followingMemoryLogJpaRepository);
 
-        member = MemberFixture.make("user", "user@gmail.com", "google 1234");
+        member = MemberFixture.make();
         member = memberRepository.save(member);
         members = saveMembers();
         saveFollowers(members);
@@ -122,12 +122,9 @@ public class FollowingMemoryLogRepositoryTest {
     }
 
     private List<Member> saveMembers() {
-        List<MemberEntity> memberEntities = new ArrayList<>();
-        for (int i = 2; i <= 12; i++) {
-            Member following =
-                    MemberFixture.make("user" + i, "user" + i + "@gmail.com", "google 1234" + i);
-            memberEntities.add(MemberEntity.from(following));
-        }
+        List<Member> followings = MemberFixture.makeMembers(10);
+        List<MemberEntity> memberEntities = followings.stream().map(MemberEntity::from).toList();
+
         return memberJpaRepository.saveAll(memberEntities).stream()
                 .map(MemberEntity::toModel)
                 .toList();
@@ -149,7 +146,7 @@ public class FollowingMemoryLogRepositoryTest {
         memoryDetail = memoryDetailRepository.save(memoryDetail);
 
         LocalDate recordAt = LocalDate.of(2024, 7, 1);
-        Memory memory = MemoryFixture.make(member, memoryDetail, null, recordAt);
+        Memory memory = MemoryFixture.make(member, null, memoryDetail, recordAt);
 
         return memoryRepository.save(memory);
     }
@@ -162,7 +159,7 @@ public class FollowingMemoryLogRepositoryTest {
             MemoryDetail memoryDetail = memoryDetailRepository.save(memoryDetails.get(i));
             Memory memory =
                     MemoryFixture.make(
-                            members.get(i), memoryDetail, null, LocalDate.of(2024, 7, 1));
+                            members.get(i), null, memoryDetail, LocalDate.of(2024, 7, 1));
             memory = memoryRepository.save(memory);
             memories.add(memory);
         }

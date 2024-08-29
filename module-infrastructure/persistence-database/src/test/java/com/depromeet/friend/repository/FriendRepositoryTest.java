@@ -3,7 +3,7 @@ package com.depromeet.friend.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.depromeet.TestQueryDslConfig;
-import com.depromeet.fixture.member.MemberFixture;
+import com.depromeet.fixture.domain.member.MemberFixture;
 import com.depromeet.friend.domain.Friend;
 import com.depromeet.friend.domain.vo.FollowSlice;
 import com.depromeet.friend.domain.vo.Follower;
@@ -195,12 +195,9 @@ public class FriendRepositoryTest {
     }
 
     private List<Member> saveMembers() {
-        List<MemberEntity> memberEntities = new ArrayList<>();
-        for (int i = 1; i <= 15; i++) {
-            Member following =
-                    MemberFixture.make("user" + i, "user" + i + "@gmail.com", "google 1234" + i);
-            memberEntities.add(MemberEntity.from(following));
-        }
+        List<Member> members = MemberFixture.makeMembers(15);
+        List<MemberEntity> memberEntities = members.stream().map(MemberEntity::from).toList();
+
         return memberJpaRepository.saveAll(memberEntities).stream()
                 .map(MemberEntity::toModel)
                 .toList();
