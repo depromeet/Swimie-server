@@ -135,4 +135,14 @@ public class Memory {
         this.memoryDetail = null;
         return this;
     }
+
+    public int getLaneFromMemoryOrPool() {
+        if (this.lane != null && this.lane != 0) {
+            return this.lane;
+        }
+        if (this.pool != null) {
+            return this.pool.getLane() != null ? this.pool.getLane() : 0;
+        }
+        return 0;
+    }
 }
