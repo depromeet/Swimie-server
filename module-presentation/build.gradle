@@ -1,4 +1,4 @@
-jar { enabled = false }
+jar { enabled = true }
 
 dependencies {
     implementation project(':module-domain')
@@ -26,4 +26,7 @@ dependencies {
     // Sentry
     implementation 'io.sentry:sentry-logback:7.6.0'
     implementation 'io.sentry:sentry-spring-boot-starter-jakarta:7.6.0'
+
+    // test
+    testImplementation(testFixtures(project(':module-domain')))
 }
