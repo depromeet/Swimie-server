@@ -28,7 +28,7 @@ public record FollowingLogMemoryResponse(
                         description = "member 프로필 url",
                         example = "https://presignedUrl/image.webp",
                         requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-                String memberProfileUrl,
+                String profileImageUrl,
         @Schema(
                         description = "memory PK",
                         example = "1",
@@ -108,7 +108,7 @@ public record FollowingLogMemoryResponse(
         return FollowingLogMemoryResponse.builder()
                 .memberId(memory.getMember().getId())
                 .memberNickname(memory.getMember().getNickname())
-                .memberProfileUrl(memory.getMember().getProfileImageUrl(profileImageOrigin))
+                .profileImageUrl(memory.getMember().getProfileImageUrl(profileImageOrigin))
                 .memoryId(memory.getId())
                 .recordAt(memory.getRecordAt().toString())
                 .startTime(memory.parseStartTime())
