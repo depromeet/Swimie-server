@@ -16,12 +16,13 @@ import com.depromeet.type.common.CommonErrorType;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
 import io.jsonwebtoken.*;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
+
+import java.io.*;
 import java.math.BigInteger;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -40,6 +41,7 @@ import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -187,7 +189,15 @@ public class AppleClient implements ApplePort {
     }
 
     private PrivateKey getPrivateKey() throws IOException {
-        Reader pemReader = new StringReader(appleSignKey);
+        File keyFile = new File(appleSignKey);
+        FileReader reader = new FileReader(keyFile);
+        StringBuilder privateKey = new StringBuilder();
+        int singleCh = 0;
+        while ((singleCh = reader.read()) != -1) {
+            privateKey.append((char) singleCh);
+        }
+        reader.close();
+        Reader pemReader = new StringReader(privateKey.toString());
         PEMParser pemParser = new PEMParser(pemReader);
         JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
         PrivateKeyInfo object = (PrivateKeyInfo) pemParser.readObject();
