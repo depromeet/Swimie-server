@@ -5,6 +5,7 @@ import com.depromeet.auth.dto.request.GoogleLoginRequest;
 import com.depromeet.auth.dto.request.KakaoLoginRequest;
 import com.depromeet.auth.dto.response.JwtAccessTokenResponse;
 import com.depromeet.auth.dto.response.JwtTokenResponse;
+import com.depromeet.auth.mapper.AppleMapper;
 import com.depromeet.auth.port.in.usecase.CreateTokenUseCase;
 import com.depromeet.auth.port.in.usecase.SocialUseCase;
 import com.depromeet.auth.vo.AccessTokenInfo;
@@ -80,7 +81,8 @@ public class AuthFacade {
 
     public JwtTokenResponse loginByApple(AppleLoginRequest request) {
         final AccountProfileResponse profile =
-                socialUseCase.getAppleAccountToken(request.code(), "https://swimie.life");
+                socialUseCase.getAppleAccountToken(
+                        AppleMapper.toCommand(request), "https://swimie.life");
         if (profile == null) {
             throw new NotFoundException(AuthErrorType.NOT_FOUND);
         }
@@ -88,7 +90,7 @@ public class AuthFacade {
     }
 
     private JwtTokenResponse getJwtTokenResponse(AccountProfileResponse profile, String provider) {
-        Boolean isSignUpComplete = true;
+        boolean isSignUpComplete = true;
         String providerId = provider + " " + profile.id();
         Member member = memberUseCase.findByProviderId(providerId);
         if (member == null) {
