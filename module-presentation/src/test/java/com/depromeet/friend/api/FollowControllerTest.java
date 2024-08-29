@@ -9,13 +9,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.depromeet.config.ControllerTestConfig;
 import com.depromeet.config.mock.WithCustomMockMember;
-import com.depromeet.following.dto.response.FollowerResponseFixture;
-import com.depromeet.following.dto.response.FollowingResponseFixture;
 import com.depromeet.friend.dto.request.FollowRequest;
 import com.depromeet.friend.dto.response.FollowSliceResponse;
 import com.depromeet.friend.dto.response.FollowerResponse;
 import com.depromeet.friend.dto.response.FollowingResponse;
 import com.depromeet.friend.facade.FollowFacade;
+import com.depromeet.friend.fixture.response.FollowerResponseFixture;
+import com.depromeet.friend.fixture.response.FollowingResponseFixture;
 import com.depromeet.type.friend.FollowSuccessType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;

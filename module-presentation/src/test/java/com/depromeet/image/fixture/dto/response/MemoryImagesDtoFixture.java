@@ -1,5 +1,6 @@
-package com.depromeet.image.dto.response;
+package com.depromeet.image.fixture.dto.response;
 
+import com.depromeet.image.dto.response.ImageResponse;
 import java.util.ArrayList;
 import java.util.List;
 

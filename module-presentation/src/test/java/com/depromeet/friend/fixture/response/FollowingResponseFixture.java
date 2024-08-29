@@ -1,4 +1,4 @@
-package com.depromeet.following.dto.response;
+package com.depromeet.friend.fixture.response;
 
 import com.depromeet.friend.dto.response.FollowingResponse;
 import java.util.ArrayList;
