@@ -41,4 +41,14 @@ public class Stroke {
         }
         return this.meter;
     }
+
+    public Integer getMeter(int lane) {
+        if (this.meter != null && this.meter != 0) {
+            return this.meter;
+        }
+        if (this.laps != null && this.laps != 0) {
+            return (int) (this.laps * 2 * lane);
+        }
+        return 0;
+    }
 }
