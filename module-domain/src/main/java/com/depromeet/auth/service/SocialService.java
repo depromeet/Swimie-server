@@ -4,6 +4,7 @@ import com.depromeet.auth.port.in.usecase.SocialUseCase;
 import com.depromeet.auth.port.out.ApplePort;
 import com.depromeet.auth.port.out.GooglePort;
 import com.depromeet.auth.port.out.KakaoPort;
+import com.depromeet.auth.vo.apple.AppleAccountCommand;
 import com.depromeet.auth.vo.kakao.KakaoAccountProfile;
 import com.depromeet.dto.auth.AccountProfileResponse;
 import com.depromeet.exception.NotFoundException;
@@ -31,8 +32,9 @@ public class SocialService implements SocialUseCase {
     }
 
     @Override
-    public AccountProfileResponse getAppleAccountToken(String code, String origin) {
-        return applePort.getAppleAccountToken(code, origin);
+    public AccountProfileResponse getAppleAccountToken(
+            AppleAccountCommand appleAccountCommand, String origin) {
+        return applePort.getAppleAccountToken(appleAccountCommand, origin);
     }
 
     @Override
