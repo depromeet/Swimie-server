@@ -2,6 +2,7 @@ package com.depromeet.util;
 
 import com.depromeet.auth.port.out.ApplePort;
 import com.depromeet.auth.port.out.persistence.SocialRedisPersistencePort;
+import com.depromeet.auth.vo.apple.AppleAccountCommand;
 import com.depromeet.dto.auth.AccountProfileResponse;
 import com.depromeet.exception.BadRequestException;
 import com.depromeet.exception.InternalServerException;
@@ -77,8 +78,10 @@ public class AppleClient implements ApplePort {
     private final SocialRedisPersistencePort socialRedisPersistencePort;
 
     @Override
-    public AccountProfileResponse getAppleAccountToken(String code, String origin) {
-        final AppleTokenResponse appleTokenResponse = requestTokens(code, origin);
+    public AccountProfileResponse getAppleAccountToken(
+            AppleAccountCommand appleAccountCommand, String origin) {
+        final AppleTokenResponse appleTokenResponse =
+                requestTokens(appleAccountCommand.getCode(), origin);
         if (appleTokenResponse == null) {
             throw new BadRequestException(AuthErrorType.LOGIN_FAILED);
         }
@@ -100,7 +103,9 @@ public class AppleClient implements ApplePort {
         socialRedisPersistencePort.setRTData(
                 payload.getSubject(), appleTokenResponse.refreshToken(), RTExpireTime);
         return new AccountProfileResponse(
-                payload.getSubject(), "김스위미", payload.get("email", String.class));
+                payload.getSubject(),
+                appleAccountCommand.getFullName(),
+                appleAccountCommand.getEmail());
     }
 
     @Override
