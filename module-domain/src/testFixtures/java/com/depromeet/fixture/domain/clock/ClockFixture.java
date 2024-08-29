@@ -1,4 +1,4 @@
-package com.depromeet.fixture;
+package com.depromeet.fixture.domain.clock;
 
 import java.time.Clock;
 import java.time.Instant;

@@ -2,7 +2,12 @@ package com.depromeet.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.depromeet.fixture.*;
+import com.depromeet.fixture.domain.clock.ClockFixture;
+import com.depromeet.fixture.domain.image.ImageFixture;
+import com.depromeet.fixture.domain.member.MemberFixture;
+import com.depromeet.fixture.domain.memory.MemoryDetailFixture;
+import com.depromeet.fixture.domain.memory.MemoryFixture;
+import com.depromeet.fixture.domain.pool.PoolFixture;
 import com.depromeet.image.domain.Image;
 import com.depromeet.image.domain.ImageUploadStatus;
 import com.depromeet.image.domain.vo.ImagePresignedUrlVo;
@@ -13,7 +18,12 @@ import com.depromeet.image.service.ImageUploadService;
 import com.depromeet.member.domain.Member;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.MemoryDetail;
-import com.depromeet.mock.*;
+import com.depromeet.mock.image.FakeImageRepository;
+import com.depromeet.mock.image.FakeS3ImageManager;
+import com.depromeet.mock.member.FakeMemberRepository;
+import com.depromeet.mock.memory.FakeMemoryDetailRepository;
+import com.depromeet.mock.memory.FakeMemoryRepository;
+import com.depromeet.mock.pool.FakePoolRepository;
 import com.depromeet.pool.domain.Pool;
 import com.depromeet.util.ImageNameUtil;
 import java.time.Clock;
@@ -56,7 +66,7 @@ class ImageServiceTest {
         poolRepository = new FakePoolRepository();
         clock = new ClockFixture();
 
-        Member member = MemberFixture.make(memberId, "USER");
+        Member member = MemberFixture.make();
         member = memberRepository.save(member);
 
         Pool pool = PoolFixture.make("testPool", "test address", 25);

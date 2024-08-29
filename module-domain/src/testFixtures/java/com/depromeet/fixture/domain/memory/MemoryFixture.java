@@ -1,4 +1,4 @@
-package com.depromeet.fixture;
+package com.depromeet.fixture.domain.memory;
 
 import com.depromeet.member.domain.Member;
 import com.depromeet.memory.domain.Memory;

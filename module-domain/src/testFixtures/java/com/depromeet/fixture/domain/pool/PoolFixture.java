@@ -1,4 +1,4 @@
-package com.depromeet.fixture;
+package com.depromeet.fixture.domain.pool;
 
 import com.depromeet.pool.domain.Pool;
 

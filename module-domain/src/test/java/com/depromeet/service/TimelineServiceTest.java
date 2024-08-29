@@ -2,16 +2,20 @@ package com.depromeet.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.depromeet.fixture.MemberFixture;
-import com.depromeet.fixture.MemoryDetailFixture;
-import com.depromeet.fixture.MemoryFixture;
-import com.depromeet.fixture.PoolFixture;
+import com.depromeet.fixture.domain.member.MemberFixture;
+import com.depromeet.fixture.domain.memory.MemoryDetailFixture;
+import com.depromeet.fixture.domain.memory.MemoryFixture;
+import com.depromeet.fixture.domain.pool.PoolFixture;
 import com.depromeet.member.domain.Member;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.MemoryDetail;
 import com.depromeet.memory.domain.vo.TimelineSlice;
 import com.depromeet.memory.service.TimelineService;
-import com.depromeet.mock.*;
+import com.depromeet.mock.member.FakeMemberRepository;
+import com.depromeet.mock.memory.FakeMemoryDetailRepository;
+import com.depromeet.mock.memory.FakeMemoryRepository;
+import com.depromeet.mock.memory.FakeStrokeRepository;
+import com.depromeet.mock.pool.FakePoolRepository;
 import com.depromeet.pool.domain.Pool;
 import java.time.LocalDate;
 import java.util.ArrayList;
