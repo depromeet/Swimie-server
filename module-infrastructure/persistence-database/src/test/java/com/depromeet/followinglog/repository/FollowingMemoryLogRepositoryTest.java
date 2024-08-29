@@ -122,7 +122,7 @@ public class FollowingMemoryLogRepositoryTest {
     }
 
     private List<Member> saveMembers() {
-        List<Member> followings = MemberFixture.makeMembers(10);
+        List<Member> followings = MemberFixture.makeMembers(11);
         List<MemberEntity> memberEntities = followings.stream().map(MemberEntity::from).toList();
 
         return memberJpaRepository.saveAll(memberEntities).stream()
