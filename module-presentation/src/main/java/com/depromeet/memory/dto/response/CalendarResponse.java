@@ -36,11 +36,7 @@ public class CalendarResponse {
                         it ->
                                 StrokeResponse.builder()
                                         .name(it.getName())
-                                        .meter(
-                                                it.getMeter() == null
-                                                        ? (int) (it.getLaps() * 2)
-                                                                * memoryDomain.getPool().getLane()
-                                                        : it.getMeter())
+                                        .meter(it.getMeter(memoryDomain.getLaneFromMemoryOrPool()))
                                         .build())
                 .toList();
     }
