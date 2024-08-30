@@ -1,13 +1,13 @@
 package com.depromeet.friend.api;
 
 import com.depromeet.dto.response.ApiResponse;
-import com.depromeet.friend.dto.request.FollowCheckListRequest;
 import com.depromeet.friend.dto.request.FollowRequest;
 import com.depromeet.friend.dto.response.*;
 import com.depromeet.member.annotation.LoginMember;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,6 +34,9 @@ public interface FollowApi {
     ApiResponse<FollowingSummaryResponse> findFollowingSummary(@LoginMember Long memberId);
 
     @Operation(summary = "팔로잉 여부 조회")
-    ApiResponse<IsFollowingResponse> checkFollowing(
-            @LoginMember Long memberId, @RequestBody FollowCheckListRequest targetMemberId);
+    ApiResponse<FollowingStateResponse> checkFollowingState(
+            @LoginMember Long memberId,
+            @Parameter(description = "팔로잉 여부를 조회할 대상들의 PK 리스트", example = "1,2,3,4,5")
+                    @RequestParam("ids")
+                    List<Long> ids);
 }

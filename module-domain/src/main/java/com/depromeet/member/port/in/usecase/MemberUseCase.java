@@ -3,7 +3,6 @@ package com.depromeet.member.port.in.usecase;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.vo.MemberSearchPage;
 import com.depromeet.member.port.in.command.SocialMemberCommand;
-import java.util.List;
 
 public interface MemberUseCase {
     Member findById(Long id);
@@ -17,6 +16,4 @@ public interface MemberUseCase {
     Member findByProviderId(String providerId);
 
     Member createMemberBy(SocialMemberCommand command);
-
-    void checkByIdExist(List<Long> friends);
 }

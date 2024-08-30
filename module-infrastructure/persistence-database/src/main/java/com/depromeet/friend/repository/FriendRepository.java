@@ -217,8 +217,7 @@ public class FriendRepository implements FriendPersistencePort {
     }
 
     @Override
-    public List<FollowCheck> findByMemberIdAndFollowingIds(
-            Long memberId, List<Long> targetMemberId) {
+    public List<FollowCheck> findByMemberIdAndFollowingIds(Long memberId, List<Long> targetIds) {
         JPAQuery<Tuple> result =
                 queryFactory
                         .select(
@@ -229,7 +228,7 @@ public class FriendRepository implements FriendPersistencePort {
                                                 .from(friend)
                                                 .where(friend.member.id.eq(memberId))))
                         .from(member)
-                        .where(member.id.in(targetMemberId));
+                        .where(member.id.in(targetIds));
         return result.stream()
                 .map(res -> new FollowCheck(res.get(0, Long.class), res.get(1, Boolean.class)))
                 .toList();

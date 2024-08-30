@@ -28,5 +28,5 @@ public interface FriendPersistencePort {
 
     void deleteByMemberId(Long memberId);
 
-    List<FollowCheck> findByMemberIdAndFollowingIds(Long memberId, List<Long> targetMemberId);
+    List<FollowCheck> findByMemberIdAndFollowingIds(Long memberId, List<Long> targetIds);
 }

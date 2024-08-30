@@ -122,15 +122,4 @@ public class FakeMemberRepository implements MemberPersistencePort {
                             return member;
                         });
     }
-
-    @Override
-    public Boolean checkByIdExist(List<Long> friends) {
-        List<Long> idList = data.stream().map(Member::getId).toList();
-        for (Long id : friends) {
-            if (!idList.contains(id)) {
-                return false;
-            }
-        }
-        return true;
-    }
 }
