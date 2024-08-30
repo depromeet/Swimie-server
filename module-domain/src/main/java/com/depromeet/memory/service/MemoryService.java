@@ -160,6 +160,15 @@ public class MemoryService
     }
 
     private MemoryDetail updateMemoryDetail(UpdateMemoryCommand command, Memory memory) {
+        if (isEmptyMemoryDetail(command)) {
+            if (memory.getMemoryDetail() == null) {
+                return null;
+            }
+            Long removeTargetId = memory.getMemoryDetail().getId();
+            memoryDetailPersistencePort.deleteById(removeTargetId);
+            return null;
+        }
+
         MemoryDetail updateMemoryDetail =
                 MemoryDetail.builder()
                         .item(command.item())
@@ -178,6 +187,13 @@ public class MemoryService
             updateMemoryDetail = memoryDetailPersistencePort.save(updateMemoryDetail);
         }
         return updateMemoryDetail;
+    }
+
+    private boolean isEmptyMemoryDetail(UpdateMemoryCommand command) {
+        return command.item() == null
+                && command.heartRate() == null
+                && command.pace() == null
+                && command.kcal() == null;
     }
 
     private Pool getUpdatePool(Long poolId, Pool pool) {

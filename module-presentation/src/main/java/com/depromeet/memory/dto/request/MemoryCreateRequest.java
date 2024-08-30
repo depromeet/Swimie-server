@@ -30,11 +30,11 @@ public class MemoryCreateRequest {
 
     @Min(0)
     @Schema(description = "페이스 분", example = "5", maxLength = 3, type = "int")
-    private int paceMinutes;
+    private Integer paceMinutes;
 
     @Min(0)
     @Schema(description = "페이스 초", example = "30", maxLength = 2, type = "int")
-    private int paceSeconds;
+    private Integer paceSeconds;
 
     @Min(0)
     @Schema(description = "칼로리", example = "300")

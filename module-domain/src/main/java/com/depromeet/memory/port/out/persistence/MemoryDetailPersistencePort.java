@@ -10,4 +10,6 @@ public interface MemoryDetailPersistencePort {
     Optional<MemoryDetail> update(Long id, MemoryDetail updateMemoryDetail);
 
     void deleteAllById(List<Long> memoryDetailIds);
+
+    void deleteById(Long removeTargetId);
 }
