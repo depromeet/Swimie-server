@@ -4,7 +4,6 @@ import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.domain.vo.MemberSearchPage;
 import com.depromeet.member.port.in.command.UpdateMemberCommand;
-import java.util.List;
 import java.util.Optional;
 
 public interface MemberPersistencePort {
@@ -31,6 +30,4 @@ public interface MemberPersistencePort {
     Optional<Member> update(UpdateMemberCommand command);
 
     Optional<Member> updateProfileImageUrl(Long memberId, String profileImageUrl);
-
-    Boolean checkByIdExist(List<Long> friends);
 }

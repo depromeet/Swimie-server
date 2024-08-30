@@ -6,14 +6,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
-public record IsFollowingResponse(
+public record FollowingStateResponse(
         @NotNull
                 @Schema(
                         description = "팔로잉 여부",
                         example = "[true, false, true]",
                         requiredMode = Schema.RequiredMode.REQUIRED)
                 List<FollowCheckResponse> followingList) {
-    public static IsFollowingResponse toIsFollowingResponse(List<FollowCheck> isFollowing) {
-        return new IsFollowingResponse(isFollowing.stream().map(FollowCheckResponse::of).toList());
+    public static FollowingStateResponse toIsFollowingResponse(List<FollowCheck> followCheckVos) {
+        return new FollowingStateResponse(
+                followCheckVos.stream().map(FollowCheckResponse::of).toList());
     }
 }

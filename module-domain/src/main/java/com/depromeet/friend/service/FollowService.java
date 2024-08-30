@@ -73,7 +73,7 @@ public class FollowService implements FollowUseCase {
     }
 
     @Override
-    public List<FollowCheck> isFollowing(Long memberId, List<Long> targetMemberId) {
-        return friendPersistencePort.findByMemberIdAndFollowingIds(memberId, targetMemberId);
+    public List<FollowCheck> checkFollowingState(Long memberId, List<Long> targetIds) {
+        return friendPersistencePort.findByMemberIdAndFollowingIds(memberId, targetIds);
     }
 }
