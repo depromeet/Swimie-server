@@ -1,7 +1,5 @@
 package com.depromeet.memory.entity;
 
-import static org.eclipse.jdt.internal.compiler.parser.Parser.*;
-
 import com.depromeet.image.domain.Image;
 import com.depromeet.image.entity.ImageEntity;
 import com.depromeet.member.entity.MemberEntity;
