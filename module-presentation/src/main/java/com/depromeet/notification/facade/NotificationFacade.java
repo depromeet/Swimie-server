@@ -20,6 +20,7 @@ import com.depromeet.notification.port.in.usecase.UpdateReactionLogUseCase;
 import com.depromeet.type.friend.FollowErrorType;
 import com.depromeet.type.notification.NotificationErrorType;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -41,12 +42,19 @@ public class NotificationFacade {
 
     public NotificationResponse getNotifications(Long memberId, LocalDateTime cursorCreatedAt) {
         List<FollowLog> followLogs = getFollowLogUseCase.getFollowLogs(memberId, cursorCreatedAt);
-        List<Long> friendList =
-                getFollowLogUseCase.getFriendList(
-                        memberId,
-                        followLogs.stream()
-                                .map(it -> it.getFollower().getId())
-                                .collect(Collectors.toList()));
+        List<Long> friendList = new ArrayList<>();
+        for (FollowLog followLog : followLogs) {
+            if (followLog.getType().equals(FollowType.FOLLOW)) {
+                friendList =
+                        getFollowLogUseCase.getFriendList(
+                                memberId,
+                                followLogs.stream()
+                                        .map(it -> it.getFollower().getId())
+                                        .collect(Collectors.toList()));
+                break;
+            }
+        }
+
         List<ReactionLog> reactionLogs =
                 getReactionLogUseCase.getReactionsLogs(memberId, cursorCreatedAt);
 

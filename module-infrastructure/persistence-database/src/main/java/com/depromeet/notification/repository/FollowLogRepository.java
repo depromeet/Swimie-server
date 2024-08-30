@@ -98,15 +98,15 @@ public class FollowLogRepository implements FollowLogPersistencePort {
                 .toList();
     }
 
-    private static BooleanExpression isFriendMember(Long memberId) {
+    private BooleanExpression isFriendMember(Long memberId) {
         return friendEntity.member.id.eq(memberId);
     }
 
-    private static BooleanExpression isFollowing(List<Long> followerIds) {
+    private BooleanExpression isFollowing(List<Long> followerIds) {
         return friendEntity.following.id.in(followerIds);
     }
 
-    private static BooleanExpression followerEq(Long memberId) {
+    private BooleanExpression followerEq(Long memberId) {
         if (memberId == null) {
             return null;
         }
