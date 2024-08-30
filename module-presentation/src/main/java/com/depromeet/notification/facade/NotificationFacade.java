@@ -20,6 +20,7 @@ import com.depromeet.notification.port.in.usecase.UpdateReactionLogUseCase;
 import com.depromeet.type.friend.FollowErrorType;
 import com.depromeet.type.notification.NotificationErrorType;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -41,10 +42,23 @@ public class NotificationFacade {
 
     public NotificationResponse getNotifications(Long memberId, LocalDateTime cursorCreatedAt) {
         List<FollowLog> followLogs = getFollowLogUseCase.getFollowLogs(memberId, cursorCreatedAt);
+        List<Long> friendList = new ArrayList<>();
+        for (FollowLog followLog : followLogs) {
+            if (followLog.getType().equals(FollowType.FOLLOW)) {
+                friendList =
+                        getFollowLogUseCase.getFriendList(
+                                memberId,
+                                followLogs.stream()
+                                        .map(it -> it.getFollower().getId())
+                                        .collect(Collectors.toList()));
+                break;
+            }
+        }
+
         List<ReactionLog> reactionLogs =
                 getReactionLogUseCase.getReactionsLogs(memberId, cursorCreatedAt);
 
-        List<BaseNotificationResponse> followResponses = getFollowResponses(followLogs);
+        List<BaseNotificationResponse> followResponses = getFollowResponses(followLogs, friendList);
         List<BaseNotificationResponse> reactionResponses =
                 ReactionNotificationResponse.from(reactionLogs);
         followResponses.addAll(reactionResponses);
@@ -54,7 +68,7 @@ public class NotificationFacade {
         boolean hasNext = followResponses.size() > 10;
         LocalDateTime nextCursorCreatedAt = null;
         if (hasNext) {
-            BaseNotificationResponse response = followResponses.removeLast();
+            BaseNotificationResponse response = followResponses.get(10);
             nextCursorCreatedAt = response.getCreatedAt();
         }
         List<BaseNotificationResponse> result =
@@ -63,14 +77,16 @@ public class NotificationFacade {
         return new NotificationResponse(result, nextCursorCreatedAt, hasNext);
     }
 
-    private List<BaseNotificationResponse> getFollowResponses(List<FollowLog> followLogs) {
+    private List<BaseNotificationResponse> getFollowResponses(
+            List<FollowLog> followLogs, List<Long> friendList) {
         return followLogs.stream()
                 .map(
                         log -> {
                             if (log.getType().equals(FollowType.FRIEND)) {
                                 return FriendNotificationResponse.from(log, profileImageOrigin);
                             } else if (log.getType().equals(FollowType.FOLLOW)) {
-                                return FollowNotificationResponse.from(log, profileImageOrigin);
+                                return FollowNotificationResponse.from(
+                                        log, profileImageOrigin, friendList);
                             } else {
                                 throw new InternalServerException(
                                         FollowErrorType.INVALID_FOLLOW_TYPE);

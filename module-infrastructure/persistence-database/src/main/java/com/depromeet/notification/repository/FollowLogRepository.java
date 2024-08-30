@@ -1,5 +1,6 @@
 package com.depromeet.notification.repository;
 
+import static com.depromeet.friend.entity.QFriendEntity.*;
 import static com.depromeet.member.entity.QMemberEntity.*;
 import static com.depromeet.notification.entity.QFollowLogEntity.*;
 import static com.querydsl.core.types.ExpressionUtils.*;
@@ -84,7 +85,28 @@ public class FollowLogRepository implements FollowLogPersistencePort {
                 != null;
     }
 
-    private static BooleanExpression followerEq(Long memberId) {
+    @Override
+    public List<Long> getFriendList(Long memberId, List<Long> followerIds) {
+        return queryFactory
+                .selectFrom(friendEntity)
+                .join(friendEntity.following, memberEntity)
+                .fetchJoin()
+                .where(isFriendMember(memberId), isFollowing(followerIds))
+                .fetch()
+                .stream()
+                .map(friendEntity -> friendEntity.getFollowing().getId())
+                .toList();
+    }
+
+    private BooleanExpression isFriendMember(Long memberId) {
+        return friendEntity.member.id.eq(memberId);
+    }
+
+    private BooleanExpression isFollowing(List<Long> followerIds) {
+        return friendEntity.following.id.in(followerIds);
+    }
+
+    private BooleanExpression followerEq(Long memberId) {
         if (memberId == null) {
             return null;
         }
