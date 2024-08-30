@@ -2,12 +2,12 @@ package com.depromeet.friend.api;
 
 import com.depromeet.config.Logging;
 import com.depromeet.dto.response.ApiResponse;
-import com.depromeet.friend.dto.request.FollowCheckListRequest;
 import com.depromeet.friend.dto.request.FollowRequest;
 import com.depromeet.friend.dto.response.*;
 import com.depromeet.friend.facade.FollowFacade;
 import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.type.friend.FollowSuccessType;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,11 +56,11 @@ public class FollowController implements FollowApi {
         return ApiResponse.success(FollowSuccessType.GET_FOLLOWING_SUMMARY_SUCCESS, response);
     }
 
-    @PostMapping
+    @GetMapping
     @Logging(item = "Follower/Following", action = "GET")
-    public ApiResponse<IsFollowingResponse> checkFollowing(
-            @LoginMember Long memberId, @RequestBody FollowCheckListRequest targetMemberId) {
-        IsFollowingResponse response = followFacade.isFollowing(memberId, targetMemberId);
+    public ApiResponse<FollowingStateResponse> checkFollowingState(
+            @LoginMember Long memberId, @RequestParam("ids") List<Long> ids) {
+        FollowingStateResponse response = followFacade.checkFollowingState(memberId, ids);
         return ApiResponse.success(FollowSuccessType.CHECK_FOLLOWING_SUCCESS, response);
     }
 }

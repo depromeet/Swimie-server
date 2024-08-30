@@ -7,6 +7,7 @@ build/
 **/application-secret.properties
 **/data.sql
 generated
+**/Swimie_AuthKey_B52ZG9MWCW.p8
 
 ### STS ###
 .apt_generated

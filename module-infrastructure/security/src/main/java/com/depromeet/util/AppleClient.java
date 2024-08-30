@@ -16,9 +16,7 @@ import com.depromeet.type.common.CommonErrorType;
 import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTParser;
 import io.jsonwebtoken.*;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
 import java.math.BigInteger;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -187,7 +185,15 @@ public class AppleClient implements ApplePort {
     }
 
     private PrivateKey getPrivateKey() throws IOException {
-        Reader pemReader = new StringReader(appleSignKey);
+        File keyFile = new File(appleSignKey);
+        FileReader reader = new FileReader(keyFile);
+        StringBuilder privateKey = new StringBuilder();
+        int singleCh = 0;
+        while ((singleCh = reader.read()) != -1) {
+            privateKey.append((char) singleCh);
+        }
+        reader.close();
+        Reader pemReader = new StringReader(privateKey.toString());
         PEMParser pemParser = new PEMParser(pemReader);
         JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
         PrivateKeyInfo object = (PrivateKeyInfo) pemParser.readObject();

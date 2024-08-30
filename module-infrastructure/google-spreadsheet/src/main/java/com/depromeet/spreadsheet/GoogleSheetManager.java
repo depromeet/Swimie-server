@@ -15,6 +15,7 @@ import com.google.api.services.sheets.v4.model.AppendValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
@@ -24,7 +25,6 @@ import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -63,8 +63,7 @@ public class GoogleSheetManager implements WithdrawalReasonPort {
     private Sheets getSheetService() throws IOException, GeneralSecurityException {
         GoogleCredentials googleCredentials =
                 GoogleCredentials.fromStream(
-                                new ClassPathResource(spreadSheetProperties.credentialsFilePath())
-                                        .getInputStream())
+                                new FileInputStream(spreadSheetProperties.credentialsFilePath()))
                         .createScoped(SCOPES);
         return new Sheets.Builder(
                         GoogleNetHttpTransport.newTrustedTransport(),
