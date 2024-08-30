@@ -41,10 +41,16 @@ public class NotificationFacade {
 
     public NotificationResponse getNotifications(Long memberId, LocalDateTime cursorCreatedAt) {
         List<FollowLog> followLogs = getFollowLogUseCase.getFollowLogs(memberId, cursorCreatedAt);
+        List<Long> friendList =
+                getFollowLogUseCase.getFriendList(
+                        memberId,
+                        followLogs.stream()
+                                .map(it -> it.getFollower().getId())
+                                .collect(Collectors.toList()));
         List<ReactionLog> reactionLogs =
                 getReactionLogUseCase.getReactionsLogs(memberId, cursorCreatedAt);
 
-        List<BaseNotificationResponse> followResponses = getFollowResponses(followLogs);
+        List<BaseNotificationResponse> followResponses = getFollowResponses(followLogs, friendList);
         List<BaseNotificationResponse> reactionResponses =
                 ReactionNotificationResponse.from(reactionLogs);
         followResponses.addAll(reactionResponses);
@@ -63,14 +69,16 @@ public class NotificationFacade {
         return new NotificationResponse(result, nextCursorCreatedAt, hasNext);
     }
 
-    private List<BaseNotificationResponse> getFollowResponses(List<FollowLog> followLogs) {
+    private List<BaseNotificationResponse> getFollowResponses(
+            List<FollowLog> followLogs, List<Long> friendList) {
         return followLogs.stream()
                 .map(
                         log -> {
                             if (log.getType().equals(FollowType.FRIEND)) {
                                 return FriendNotificationResponse.from(log, profileImageOrigin);
                             } else if (log.getType().equals(FollowType.FOLLOW)) {
-                                return FollowNotificationResponse.from(log, profileImageOrigin);
+                                return FollowNotificationResponse.from(
+                                        log, profileImageOrigin, friendList);
                             } else {
                                 throw new InternalServerException(
                                         FollowErrorType.INVALID_FOLLOW_TYPE);

@@ -8,4 +8,6 @@ public interface GetFollowLogUseCase {
     List<FollowLog> getFollowLogs(Long memberId, LocalDateTime cursorCreatedAt);
 
     Long getUnreadFollowLogCount(Long memberId);
+
+    List<Long> getFriendList(Long memberId, List<Long> followerIds);
 }

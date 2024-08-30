@@ -67,6 +67,11 @@ public class FollowLogService
     }
 
     @Override
+    public List<Long> getFriendList(Long memberId, List<Long> followerIds) {
+        return followLogPersistencePort.getFriendList(memberId, followerIds);
+    }
+
+    @Override
     public void markAsReadFollowLog(Long memberId, UpdateReadFollowLogCommand command) {
         followLogPersistencePort.updateRead(memberId, command.followLogId(), command.type());
     }
