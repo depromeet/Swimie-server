@@ -32,4 +32,9 @@ public class MemoryDetailRepository implements MemoryDetailPersistencePort {
     public void deleteAllById(List<Long> memoryDetailIds) {
         memoryDetailJpaRepository.deleteAllById(memoryDetailIds);
     }
+
+    @Override
+    public void deleteById(Long removeTargetId) {
+        memoryDetailJpaRepository.deleteById(removeTargetId);
+    }
 }

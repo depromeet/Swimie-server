@@ -88,10 +88,10 @@ public class MemoryRepository implements MemoryPersistencePort {
     }
 
     @Override
-    public Optional<Memory> update(Long memoryId, Memory memoryUpdate) {
+    public Optional<Memory> update(Long memoryId, Memory updateMemory) {
         return memoryJpaRepository
                 .findById(memoryId)
-                .map(entity -> entity.update(MemoryEntity.from(memoryUpdate)).toModel());
+                .map(entity -> entity.update(MemoryEntity.from(updateMemory)).toModel());
     }
 
     @Override

@@ -14,7 +14,7 @@ public interface MemoryPersistencePort {
 
     Optional<Memory> findByRecordAtAndMemberId(LocalDate recordAt, Long memberId);
 
-    Optional<Memory> update(Long memoryId, Memory memoryUpdate);
+    Optional<Memory> update(Long memoryId, Memory updateMemory);
 
     int findOrderInMonth(Long memberId, Long memoryId, int month);
 
