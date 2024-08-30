@@ -6,7 +6,7 @@ import lombok.Builder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record MemoryDetailResponse(
-        String item, Short heartRate, int paceMinutes, int paceSeconds, Integer kcal) {
+        String item, Short heartRate, Integer paceMinutes, Integer paceSeconds, Integer kcal) {
     @Builder
     public MemoryDetailResponse {}
 
@@ -14,9 +14,17 @@ public record MemoryDetailResponse(
         return MemoryDetailResponse.builder()
                 .item(memoryDetail.getItem())
                 .heartRate(memoryDetail.getHeartRate())
-                .paceMinutes(memoryDetail.getPace().getMinute())
-                .paceSeconds(memoryDetail.getPace().getSecond())
+                .paceMinutes(getMinute(memoryDetail))
+                .paceSeconds(getSecond(memoryDetail))
                 .kcal(memoryDetail.getKcal())
                 .build();
+    }
+
+    private static Integer getSecond(MemoryDetail memoryDetail) {
+        return memoryDetail.getPace() != null ? memoryDetail.getPace().getSecond() : null;
+    }
+
+    private static Integer getMinute(MemoryDetail memoryDetail) {
+        return memoryDetail.getPace() != null ? memoryDetail.getPace().getMinute() : null;
     }
 }

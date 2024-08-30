@@ -50,8 +50,8 @@ public class MemoryController implements MemoryApi {
     public ApiResponse<MemoryResponse> update(
             @LoginMember Long memberId,
             @PathVariable("memoryId") Long memoryId,
-            @Valid @RequestBody MemoryUpdateRequest memoryUpdateRequest) {
-        MemoryResponse response = memoryFacade.update(memberId, memoryId, memoryUpdateRequest);
+            @Valid @RequestBody MemoryUpdateRequest request) {
+        MemoryResponse response = memoryFacade.update(memberId, memoryId, request);
         return ApiResponse.success(MemorySuccessType.PATCH_RESULT_SUCCESS, response);
     }
 
