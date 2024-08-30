@@ -3,6 +3,7 @@ package com.depromeet.notification.dto.response;
 import com.depromeet.notification.domain.FollowLog;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Getter;
 
 @Getter
@@ -27,7 +28,8 @@ public class FollowNotificationResponse extends BaseNotificationResponse {
         this.isFollow = isFollow;
     }
 
-    public static BaseNotificationResponse from(FollowLog followLog, String profileImageOrigin) {
+    public static BaseNotificationResponse from(
+            FollowLog followLog, String profileImageOrigin, List<Long> friendList) {
         return new FollowNotificationResponse(
                 followLog.getId(),
                 followLog.getFollower().getNickname(),
@@ -36,6 +38,6 @@ public class FollowNotificationResponse extends BaseNotificationResponse {
                 followLog.isHasRead(),
                 followLog.getFollower().getId(),
                 followLog.getFollower().getProfileImageUrl(profileImageOrigin),
-                true);
+                friendList.contains(followLog.getFollower().getId()));
     }
 }

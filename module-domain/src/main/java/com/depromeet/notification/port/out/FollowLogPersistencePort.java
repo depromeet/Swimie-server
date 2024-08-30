@@ -17,4 +17,6 @@ public interface FollowLogPersistencePort {
     void deleteAllByMemberId(Long memberId);
 
     boolean existsByReceiverIdAndFollowerId(Long receiverId, Long followerId);
+
+    List<Long> getFriendList(Long memberId, List<Long> followerIds);
 }
