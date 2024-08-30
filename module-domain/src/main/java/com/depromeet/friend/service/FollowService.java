@@ -74,9 +74,6 @@ public class FollowService implements FollowUseCase {
 
     @Override
     public List<FollowCheck> isFollowing(Long memberId, List<Long> targetMemberId) {
-        if (targetMemberId != null && targetMemberId.contains(memberId)) {
-            throw new BadRequestException(FollowErrorType.SELF_FOLLOWING_NOT_ALLOWED);
-        }
         return friendPersistencePort.findByMemberIdAndFollowingIds(memberId, targetMemberId);
     }
 }
