@@ -60,7 +60,7 @@ public class NotificationFacade {
         boolean hasNext = followResponses.size() > 10;
         LocalDateTime nextCursorCreatedAt = null;
         if (hasNext) {
-            BaseNotificationResponse response = followResponses.removeLast();
+            BaseNotificationResponse response = followResponses.get(10);
             nextCursorCreatedAt = response.getCreatedAt();
         }
         List<BaseNotificationResponse> result =
