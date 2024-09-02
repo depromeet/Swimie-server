@@ -1,4 +1,4 @@
-package com.depromeet.service;
+package com.depromeet.service.pool;
 
 import static org.assertj.core.api.Assertions.*;
 

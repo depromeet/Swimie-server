@@ -1,4 +1,4 @@
-package com.depromeet.service;
+package com.depromeet.service.memory;
 
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberRole;

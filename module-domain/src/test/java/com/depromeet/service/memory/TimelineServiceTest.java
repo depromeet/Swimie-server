@@ -1,4 +1,4 @@
-package com.depromeet.service;
+package com.depromeet.service.memory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,4 +1,4 @@
-package com.depromeet.service;
+package com.depromeet.service.memory;
 
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.Stroke;

@@ -1,4 +1,4 @@
-package com.depromeet.service;
+package com.depromeet.service.member;
 
 import com.depromeet.auth.port.out.persistence.RefreshRedisPersistencePort;
 import com.depromeet.member.domain.Member;
