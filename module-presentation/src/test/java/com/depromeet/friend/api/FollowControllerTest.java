@@ -3,13 +3,11 @@ package com.depromeet.friend.api;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.depromeet.config.ControllerTestConfig;
 import com.depromeet.config.mock.WithCustomMockMember;
-import com.depromeet.friend.dto.request.FollowCheckListRequest;
 import com.depromeet.friend.dto.request.FollowCheckResponse;
 import com.depromeet.friend.dto.request.FollowRequest;
 import com.depromeet.friend.dto.response.*;
@@ -53,8 +51,7 @@ public class FollowControllerTest extends ControllerTestConfig {
                                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("FOLLOW_1"))
-                .andExpect(jsonPath("$.message").value("팔로잉 추가에 성공하였습니다"))
-                .andReturn();
+                .andExpect(jsonPath("$.message").value("팔로잉 추가에 성공하였습니다"));
     }
 
     @Test
@@ -76,8 +73,7 @@ public class FollowControllerTest extends ControllerTestConfig {
                                 .content(objectMapper.writeValueAsString(requestBody)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("FOLLOW_2"))
-                .andExpect(jsonPath("$.message").value("팔로잉 삭제에 성공하였습니다"))
-                .andReturn();
+                .andExpect(jsonPath("$.message").value("팔로잉 삭제에 성공하였습니다"));
     }
 
     @Test
@@ -109,8 +105,7 @@ public class FollowControllerTest extends ControllerTestConfig {
                                 .value(FollowSuccessType.GET_FOLLOWINGS_SUCCESS.getMessage()))
                 .andExpect(jsonPath("$.data.contents").isArray())
                 .andExpect(jsonPath("$.data.pageSize").value(10))
-                .andExpect(jsonPath("$.data.hasNext").value(false))
-                .andDo(print());
+                .andExpect(jsonPath("$.data.hasNext").value(false));
     }
 
     @Test
@@ -140,8 +135,7 @@ public class FollowControllerTest extends ControllerTestConfig {
                                 .value(FollowSuccessType.GET_FOLLOWERS_SUCCESS.getMessage()))
                 .andExpect(jsonPath("$.data.contents").isArray())
                 .andExpect(jsonPath("$.data.pageSize").value(10))
-                .andExpect(jsonPath("$.data.hasNext").value(false))
-                .andDo(print());
+                .andExpect(jsonPath("$.data.hasNext").value(false));
     }
 
     @Test
@@ -172,26 +166,37 @@ public class FollowControllerTest extends ControllerTestConfig {
                                         FollowSuccessType.GET_FOLLOWING_SUMMARY_SUCCESS
                                                 .getMessage()))
                 .andExpect(jsonPath("$.data.followings").isArray())
-                .andExpect(jsonPath("$.data.followingCount").value(10))
-                .andDo(print());
+                .andExpect(jsonPath("$.data.followingCount").value(10));
     }
 
     @Test
     @WithCustomMockMember
-    void 팔로잉_여부_체크() {
+    void 팔로잉_여부_체크() throws Exception {
         List<FollowCheckResponse> followCheckResponses = new ArrayList<>();
         List<Long> followingIds = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 2; i++) {
             long followingId = i + 2;
             FollowCheckResponse followCheckResponse =
                     new FollowCheckResponse(followingId, i % 2 == 0);
             followCheckResponses.add(followCheckResponse);
             followingIds.add(followingId);
         }
-        IsFollowingResponse response = new IsFollowingResponse(followCheckResponses);
+        FollowingStateResponse response = new FollowingStateResponse(followCheckResponses);
 
-        FollowCheckListRequest request = new FollowCheckListRequest(followingIds);
+        when(followFacade.checkFollowingState(anyLong(), anyList())).thenReturn(response);
 
-        Map<String, Object> requestBody = new HashMap<>();
+        // then
+        mockMvc.perform(
+                        get("/friend")
+                                .param("ids", followingIds.get(0).toString())
+                                .param("ids", followingIds.get(1).toString()))
+                .andExpect(status().isOk())
+                .andExpect(
+                        jsonPath("$.code")
+                                .value(FollowSuccessType.CHECK_FOLLOWING_SUCCESS.getCode()))
+                .andExpect(
+                        jsonPath("$.message")
+                                .value(FollowSuccessType.CHECK_FOLLOWING_SUCCESS.getMessage()))
+                .andExpect(jsonPath("$.data.followingList").isArray());
     }
 }
