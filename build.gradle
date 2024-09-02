@@ -17,7 +17,6 @@ subprojects {
     apply plugin: 'com.diffplug.spotless'
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
-    apply plugin: 'java-test-fixtures'
 
     configurations {
         compileOnly {
@@ -53,6 +52,10 @@ subprojects {
     tasks.named('compileJava') {
         dependsOn(rootProject.tasks.named('updateGitHooks'))
     }
+}
+
+project(":module-domain") {
+    apply plugin: 'java-test-fixtures'
 }
 
 tasks.register('updateGitHooks', Copy) {
