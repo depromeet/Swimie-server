@@ -64,4 +64,9 @@ public class FakeMemoryDetailRepository implements MemoryDetailPersistencePort {
     public void deleteAllById(List<Long> memoryDetailIds) {
         data.removeIf(item -> memoryDetailIds.contains(item.getId()));
     }
+
+    @Override
+    public void deleteById(Long removeTargetId) {
+        data.removeIf(item -> item.getId().equals(removeTargetId));
+    }
 }

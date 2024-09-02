@@ -26,7 +26,7 @@ public class MemoryMapper {
     }
 
     public static CreateMemoryCommand toCommand(MemoryCreateRequest request) {
-        LocalTime pace = LocalTime.of(0, request.getPaceMinutes(), request.getPaceSeconds());
+        LocalTime pace = getPace(request.getPaceMinutes(), request.getPaceSeconds());
         return CreateMemoryCommand.builder()
                 .poolId(request.getPoolId())
                 .item(request.getItem())
@@ -49,7 +49,7 @@ public class MemoryMapper {
     }
 
     public static UpdateMemoryCommand toCommand(MemoryUpdateRequest request) {
-        LocalTime pace = LocalTime.of(0, request.getPaceMinutes(), request.getPaceSeconds());
+        LocalTime pace = getPace(request.getPaceMinutes(), request.getPaceSeconds());
         return UpdateMemoryCommand.builder()
                 .poolId(request.getPoolId())
                 .item(request.getItem())
@@ -68,6 +68,15 @@ public class MemoryMapper {
                                         .toList()
                                 : null)
                 .build();
+    }
+
+    private static LocalTime getPace(Integer minute, Integer second) {
+        if (minute != null || second != null) {
+            int min = minute != null ? minute : 0;
+            int sec = second != null ? second : 0;
+            return LocalTime.of(0, min, sec);
+        }
+        return null;
     }
 
     public static TimelineSliceResponse toSliceResponse(

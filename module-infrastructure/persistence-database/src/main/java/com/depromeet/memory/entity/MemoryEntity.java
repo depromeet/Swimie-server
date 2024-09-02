@@ -23,6 +23,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(
+        name = "memory_entity",
+        indexes = {@Index(name = "idx_memory_detail_id", columnList = "memory_detail_id")})
 public class MemoryEntity {
     @Id
     @Column(name = "memory_id")
@@ -39,7 +42,7 @@ public class MemoryEntity {
     private PoolEntity pool;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memory_detail_id")
+    @JoinColumn(name = "memory_detail_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private MemoryDetailEntity memoryDetail;
 
     @OneToMany(mappedBy = "memory")
@@ -219,14 +222,14 @@ public class MemoryEntity {
 
     public MemoryEntity update(MemoryEntity me) {
         if (me.getPool() != null) this.pool = me.getPool();
-        if (me.getMemoryDetail() != null) this.memoryDetail = me.getMemoryDetail();
         if (me.getStrokes() != null) this.strokes = me.getStrokes();
         if (me.getImages() != null) this.images = me.getImages();
         if (me.getRecordAt() != null) this.recordAt = me.getRecordAt();
         if (me.getStartTime() != null) this.startTime = me.getStartTime();
         if (me.getEndTime() != null) this.endTime = me.getEndTime();
         if (me.getLane() != null) this.lane = me.getLane();
-        if (me.getDiary() != null) this.diary = me.getDiary();
+        this.memoryDetail = me.getMemoryDetail();
+        this.diary = me.getDiary();
         return this;
     }
 }

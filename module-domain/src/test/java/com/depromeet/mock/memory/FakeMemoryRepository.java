@@ -52,7 +52,7 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
     }
 
     @Override
-    public Optional<Memory> update(Long memoryId, Memory memoryUpdate) {
+    public Optional<Memory> update(Long memoryId, Memory updateMemory) {
         Optional<Memory> md = data.stream().filter(item -> item.getId().equals(memoryId)).findAny();
         if (md.isEmpty()) {
             return Optional.empty();
@@ -63,40 +63,40 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
                             .id(memoryId)
                             .member(origin.getMember())
                             .pool(
-                                    memoryUpdate.getPool() != null
-                                            ? memoryUpdate.getPool()
+                                    updateMemory.getPool() != null
+                                            ? updateMemory.getPool()
                                             : origin.getPool())
                             .memoryDetail(
-                                    memoryUpdate.getMemoryDetail() != null
-                                            ? memoryUpdate.getMemoryDetail()
+                                    updateMemory.getMemoryDetail() != null
+                                            ? updateMemory.getMemoryDetail()
                                             : origin.getMemoryDetail())
                             .strokes(
-                                    memoryUpdate.getStrokes() != null
-                                            ? memoryUpdate.getStrokes()
+                                    updateMemory.getStrokes() != null
+                                            ? updateMemory.getStrokes()
                                             : origin.getStrokes())
                             .images(
-                                    memoryUpdate.getImages() != null
-                                            ? memoryUpdate.getImages()
+                                    updateMemory.getImages() != null
+                                            ? updateMemory.getImages()
                                             : origin.getImages())
                             .recordAt(
-                                    memoryUpdate.getRecordAt() != null
-                                            ? memoryUpdate.getRecordAt()
+                                    updateMemory.getRecordAt() != null
+                                            ? updateMemory.getRecordAt()
                                             : origin.getRecordAt())
                             .startTime(
-                                    memoryUpdate.getStartTime() != null
-                                            ? memoryUpdate.getStartTime()
+                                    updateMemory.getStartTime() != null
+                                            ? updateMemory.getStartTime()
                                             : origin.getStartTime())
                             .endTime(
-                                    memoryUpdate.getEndTime() != null
-                                            ? memoryUpdate.getEndTime()
+                                    updateMemory.getEndTime() != null
+                                            ? updateMemory.getEndTime()
                                             : origin.getEndTime())
                             .lane(
-                                    memoryUpdate.getLane() != null
-                                            ? memoryUpdate.getLane()
+                                    updateMemory.getLane() != null
+                                            ? updateMemory.getLane()
                                             : origin.getLane())
                             .diary(
-                                    memoryUpdate.getDiary() != null
-                                            ? memoryUpdate.getDiary()
+                                    updateMemory.getDiary() != null
+                                            ? updateMemory.getDiary()
                                             : origin.getDiary())
                             .build());
         }
