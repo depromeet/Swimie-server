@@ -3,10 +3,10 @@ package com.depromeet.image.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.depromeet.TestQueryDslConfig;
-import com.depromeet.fixture.image.ImageFixture;
-import com.depromeet.fixture.member.MemberFixture;
-import com.depromeet.fixture.memory.MemoryDetailFixture;
-import com.depromeet.fixture.memory.MemoryFixture;
+import com.depromeet.fixture.domain.image.ImageFixture;
+import com.depromeet.fixture.domain.member.MemberFixture;
+import com.depromeet.fixture.domain.memory.MemoryDetailFixture;
+import com.depromeet.fixture.domain.memory.MemoryFixture;
 import com.depromeet.image.domain.Image;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
@@ -123,10 +123,10 @@ public class ImageRepositoryTest {
         memoryDetail = memoryDetailPersistencePort.save(memoryDetail);
         memory =
                 memoryPersistencePort.save(
-                        MemoryFixture.make(member, memoryDetail, null, LocalDate.of(2024, 7, 1)));
+                        MemoryFixture.make(member, null, memoryDetail, LocalDate.of(2024, 7, 1)));
     }
 
     List<Image> saveImages(Memory memory) {
-        return imageRepository.saveAll(ImageFixture.imageListFixture(memory));
+        return imageRepository.saveAll(ImageFixture.makeImages(memory));
     }
 }

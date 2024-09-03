@@ -18,9 +18,9 @@ public class FollowController implements FollowApi {
     private final FollowFacade followFacade;
 
     @PutMapping
-    @Logging(item = "Follower/Following", action = "POST")
+    @Logging(item = "Follower/Following", action = "PUT")
     public ApiResponse<?> addOrDeleteFollow(
-            @LoginMember Long memberId, FollowRequest followRequest) {
+            @LoginMember Long memberId, @RequestBody FollowRequest followRequest) {
         boolean hasFollowAdded = followFacade.addOrDeleteFollow(memberId, followRequest);
 
         if (hasFollowAdded) {

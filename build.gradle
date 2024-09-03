@@ -54,6 +54,10 @@ subprojects {
     }
 }
 
+project(":module-domain") {
+    apply plugin: 'java-test-fixtures'
+}
+
 tasks.register('updateGitHooks', Copy) {
     from 'scripts/pre-commit'
     into '.git/hooks'
