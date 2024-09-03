@@ -28,7 +28,9 @@ public class ReactionLogRepository implements ReactionLogPersistencePort {
 
     @Override
     public ReactionLog save(ReactionLog reactionLog) {
-        return reactionLogJpaRepository.save(ReactionLogEntity.from(reactionLog)).toPureModel();
+        return reactionLogJpaRepository
+                .save(ReactionLogEntity.of(reactionLog.getReceiver(), reactionLog))
+                .toPureModel();
     }
 
     @Override
@@ -41,8 +43,6 @@ public class ReactionLogRepository implements ReactionLogPersistencePort {
                 .join(reactionEntity.member, member)
                 .fetchJoin()
                 .join(reactionEntity.memory, memoryEntity)
-                .fetchJoin()
-                .join(memoryEntity.member, memoryMember)
                 .fetchJoin()
                 .where(memberEq(memberId), createdAtLoe(cursorCreatedAt))
                 .limit(11)
@@ -67,7 +67,6 @@ public class ReactionLogRepository implements ReactionLogPersistencePort {
                 .join(reactionLogEntity.reaction, reactionEntity)
                 .join(reactionEntity.member, member)
                 .join(reactionEntity.memory, memoryEntity)
-                .join(memoryEntity.member, memoryMember)
                 .where(memberEq(memberId), reactionLogEntity.hasRead.isFalse())
                 .fetchOne();
     }
@@ -93,8 +92,6 @@ public class ReactionLogRepository implements ReactionLogPersistencePort {
                 .fetchJoin()
                 .join(reactionEntity.memory, memoryEntity)
                 .fetchJoin()
-                .join(memoryEntity.member, memoryMember)
-                .fetchJoin()
                 .where(memberEq(memberId), reactionLogEq(reactionLogId))
                 .fetchOne();
     }
@@ -110,7 +107,7 @@ public class ReactionLogRepository implements ReactionLogPersistencePort {
         if (memberId == null) {
             return null;
         }
-        return memoryMember.id.eq(memberId);
+        return reactionLogEntity.receiver.id.eq(memberId);
     }
 
     private BooleanExpression reactionLogEq(Long reactionLogId) {
