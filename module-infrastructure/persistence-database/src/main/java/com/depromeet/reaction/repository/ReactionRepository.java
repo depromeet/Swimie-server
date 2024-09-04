@@ -5,9 +5,12 @@ import static com.depromeet.memory.entity.QMemoryEntity.*;
 import static com.depromeet.reaction.entity.QReactionEntity.*;
 
 import com.depromeet.member.entity.QMemberEntity;
+import com.depromeet.memory.entity.QMemoryEntity;
 import com.depromeet.reaction.domain.Reaction;
+import com.depromeet.reaction.domain.vo.ReactionCount;
 import com.depromeet.reaction.entity.ReactionEntity;
 import com.depromeet.reaction.port.out.persistence.ReactionPersistencePort;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -113,6 +116,21 @@ public class ReactionRepository implements ReactionPersistencePort {
                 .from(reactionEntity)
                 .where(memoryEq(memoryId))
                 .fetchOne();
+    }
+
+    @Override
+    public List<ReactionCount> getAllCountByMemoryIds(List<Long> memoryIds) {
+        QMemoryEntity memoryEntity = QMemoryEntity.memoryEntity;
+        return queryFactory
+                .select(
+                        Projections.constructor(
+                                ReactionCount.class,
+                                memoryEntity.id.as("memoryId"),
+                                reactionEntity.id.count().as("reactionCount")))
+                .from(reactionEntity)
+                .join(reactionEntity.memory, memoryEntity)
+                .where(memoryEntity.id.in(memoryIds))
+                .fetch();
     }
 
     @Override
