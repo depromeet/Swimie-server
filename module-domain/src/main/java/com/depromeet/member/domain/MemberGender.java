@@ -5,7 +5,8 @@ import com.depromeet.converter.CodedEnum;
 
 public enum MemberGender implements CodedEnum<String> {
     M("M"),
-    W("W");
+    W("W"),
+    N("N");
 
     private final String value;
 
