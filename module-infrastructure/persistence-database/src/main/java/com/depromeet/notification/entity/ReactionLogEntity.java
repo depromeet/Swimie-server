@@ -1,6 +1,8 @@
 package com.depromeet.notification.entity;
 
 import com.depromeet.basetime.BaseTimeEntity;
+import com.depromeet.member.domain.Member;
+import com.depromeet.member.entity.MemberEntity;
 import com.depromeet.notification.domain.ReactionLog;
 import com.depromeet.reaction.entity.ReactionEntity;
 import jakarta.persistence.Column;
@@ -25,6 +27,10 @@ public class ReactionLogEntity extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JoinColumn(name = "receiver_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private MemberEntity receiver;
+
     @JoinColumn(name = "reaction_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private ReactionEntity reaction;
@@ -32,8 +38,10 @@ public class ReactionLogEntity extends BaseTimeEntity {
     private boolean hasRead;
 
     @Builder
-    public ReactionLogEntity(Long id, ReactionEntity reaction, boolean hasRead) {
+    public ReactionLogEntity(
+            Long id, MemberEntity receiver, ReactionEntity reaction, boolean hasRead) {
         this.id = id;
+        this.receiver = receiver;
         this.reaction = reaction;
         this.hasRead = hasRead;
     }
@@ -56,8 +64,9 @@ public class ReactionLogEntity extends BaseTimeEntity {
                 .build();
     }
 
-    public static ReactionLogEntity from(ReactionLog reactionLog) {
+    public static ReactionLogEntity of(Member receiver, ReactionLog reactionLog) {
         return ReactionLogEntity.builder()
+                .receiver(MemberEntity.from(receiver))
                 .reaction(ReactionEntity.from(reactionLog.getReaction()))
                 .hasRead(reactionLog.isHasRead())
                 .build();

@@ -41,7 +41,7 @@ public class ReactionFacade {
         Memory memory = getMemoryUseCase.findByIdWithMember(request.memoryId());
         Reaction reaction =
                 createReactionUseCase.save(memberId, memory, ReactionMapper.toCommand(request));
-        eventPublisher.publishEvent(ReactionLogEvent.from(reaction));
+        eventPublisher.publishEvent(ReactionLogEvent.of(memory.getMember(), reaction));
     }
 
     public MemoryReactionResponse getReactionsOfMemory(Long memoryId) {
