@@ -26,7 +26,11 @@ public class ReactionLogService
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void save(ReactionLogEvent event) {
         ReactionLog reactionLog =
-                ReactionLog.builder().reaction(event.reaction()).hasRead(false).build();
+                ReactionLog.builder()
+                        .receiver(event.receiver())
+                        .reaction(event.reaction())
+                        .hasRead(false)
+                        .build();
         reactionLogPersistencePort.save(reactionLog);
     }
 

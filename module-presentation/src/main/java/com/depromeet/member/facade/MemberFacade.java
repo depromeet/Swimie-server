@@ -60,8 +60,7 @@ public class MemberFacade {
     }
 
     public Member updateGender(Long memberId, String gender) {
-        MemberGender newGender =
-                gender.equals(MemberGender.M.getValue()) ? MemberGender.M : MemberGender.W;
+        MemberGender newGender = MemberGender.valueOf(gender);
         return memberUpdateUseCase.updateGender(memberId, newGender);
     }
 

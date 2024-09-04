@@ -72,7 +72,7 @@ public class MemberEntity {
     @PrePersist
     public void prePersist() {
         this.goal = 1000;
-        this.gender = MemberGender.M;
+        this.gender = MemberGender.W;
     }
 
     public static MemberEntity from(Member member) {
