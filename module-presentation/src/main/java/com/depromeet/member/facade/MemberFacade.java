@@ -60,14 +60,8 @@ public class MemberFacade {
     }
 
     public Member updateGender(Long memberId, String gender) {
-        MemberGender newGender = getGender(gender);
+        MemberGender newGender = MemberGender.valueOf(gender);
         return memberUpdateUseCase.updateGender(memberId, newGender);
-    }
-
-    private static MemberGender getGender(String gender) {
-        return gender.equals(MemberGender.M.getValue())
-                ? MemberGender.M
-                : gender.equals(MemberGender.W.getValue()) ? MemberGender.W : MemberGender.N;
     }
 
     public MemberSearchResponse searchByName(Long memberId, String nameQuery, Long cursorId) {
