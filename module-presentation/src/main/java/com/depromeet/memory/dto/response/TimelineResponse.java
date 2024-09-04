@@ -1,11 +1,15 @@
 package com.depromeet.memory.dto.response;
 
+import com.depromeet.image.domain.vo.MemoryImageUrlVo;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.Stroke;
+import com.depromeet.reaction.domain.vo.ReactionCount;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.Builder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -72,9 +76,17 @@ public record TimelineResponse(
     @Builder
     public TimelineResponse {}
 
-    public static TimelineResponse mapToTimelineResponseDto(Memory memory) {
+    public static TimelineResponse mapToTimelineResponseDto(
+            Memory memory,
+            List<ReactionCount> reactionCounts,
+            List<MemoryImageUrlVo> memoryImageUrls,
+            String imageOrigin) {
         Integer totalDistance = memory.calculateTotalDistance();
         Short lane = memory.getLane() != null ? memory.getLane() : 0;
+
+        Map<Long, Long> reactionCountMap = getMapReactionCount(reactionCounts);
+        Map<Long, String> imageMap = getImageMap(memoryImageUrls);
+
         return TimelineResponse.builder()
                 .memoryId(memory.getId())
                 .recordAt(memory.getRecordAt().toString())
@@ -87,9 +99,30 @@ public record TimelineResponse(
                 .kcal(getKcalFromMemoryDetail(memory))
                 .type(memory.classifyType())
                 .strokes(strokeToDto(memory.getStrokes(), lane))
-                .imageUrl(memory.getThumbnailUrl())
-                .reactionCount(getReactionCount(memory))
+                .imageUrl(getImageUrl(memory, imageMap, imageOrigin))
+                .reactionCount(getReactionCount(memory.getId(), reactionCountMap))
                 .build();
+    }
+
+    private static String getImageUrl(
+            Memory memory, Map<Long, String> imageMap, String imageOrigin) {
+        String image = imageMap.getOrDefault(memory.getId(), null);
+        if (image != null) {
+            return imageOrigin + "/" + image;
+        }
+        return imageOrigin;
+    }
+
+    private static Map<Long, String> getImageMap(List<MemoryImageUrlVo> memoryImageUrls) {
+        return memoryImageUrls.stream()
+                .collect(Collectors.toMap(MemoryImageUrlVo::memoryId, MemoryImageUrlVo::imageName));
+    }
+
+    private static Map<Long, Long> getMapReactionCount(List<ReactionCount> reactionCounts) {
+        return reactionCounts.stream()
+                .collect(
+                        Collectors.toMap(
+                                ReactionCount::getMemoryId, ReactionCount::getReactionCount));
     }
 
     private static List<StrokeResponse> strokeToDto(List<Stroke> strokes, Short lane) {
@@ -105,10 +138,7 @@ public record TimelineResponse(
                 : null;
     }
 
-    private static int getReactionCount(Memory memory) {
-        if (memory.getReactions() == null || memory.getReactions().isEmpty()) {
-            return 0;
-        }
-        return memory.getReactions().size();
+    private static int getReactionCount(Long memoryId, Map<Long, Long> reactionCountMap) {
+        return Math.toIntExact(reactionCountMap.getOrDefault(memoryId, 0L));
     }
 }

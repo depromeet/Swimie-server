@@ -1,5 +1,6 @@
 package com.depromeet.memory.mapper;
 
+import com.depromeet.image.domain.vo.MemoryImageUrlVo;
 import com.depromeet.member.domain.Member;
 import com.depromeet.memory.domain.vo.TimelineSlice;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
@@ -12,6 +13,7 @@ import com.depromeet.memory.port.in.command.CreateMemoryCommand;
 import com.depromeet.memory.port.in.command.CreateStrokeCommand;
 import com.depromeet.memory.port.in.command.UpdateMemoryCommand;
 import com.depromeet.memory.port.in.command.UpdateStrokeCommand;
+import com.depromeet.reaction.domain.vo.ReactionCount;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -80,10 +82,20 @@ public class MemoryMapper {
     }
 
     public static TimelineSliceResponse toSliceResponse(
-            Member member, TimelineSlice timelineSlice) {
+            Member member,
+            TimelineSlice timelineSlice,
+            List<ReactionCount> reactionCounts,
+            List<MemoryImageUrlVo> memoryImageUrls,
+            String imageOrigin) {
         List<TimelineResponse> result =
                 timelineSlice.getTimelineContents().stream()
-                        .map(TimelineResponse::mapToTimelineResponseDto)
+                        .map(
+                                memory ->
+                                        TimelineResponse.mapToTimelineResponseDto(
+                                                memory,
+                                                reactionCounts,
+                                                memoryImageUrls,
+                                                imageOrigin))
                         .toList();
         return TimelineSliceResponse.builder()
                 .content(result)

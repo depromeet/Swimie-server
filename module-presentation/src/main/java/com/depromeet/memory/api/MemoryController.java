@@ -63,8 +63,7 @@ public class MemoryController implements MemoryApi {
                     @DateTimeFormat(pattern = "yyyy-MM-dd")
                     LocalDate cursorRecordAt) {
         TimelineSliceResponse result =
-                memoryFacade.getTimelineByMemberIdAndCursorAndDate(
-                        memberId, cursorRecordAt, null, false);
+                memoryFacade.getTimelineByMemberIdAndCursorAndDate(memberId, cursorRecordAt);
         return ApiResponse.success(MemorySuccessType.GET_TIMELINE_SUCCESS, result);
     }
 
