@@ -19,11 +19,7 @@ public interface MemoryPersistencePort {
 
     int findOrderInMonth(Long memberId, Long memoryId, int month);
 
-    List<Memory> findPrevMemoryByMemberId(
-            Long memberId, LocalDate cursorRecordAt, LocalDate recordAt);
-
-    List<Memory> findNextMemoryByMemberId(
-            Long memberId, LocalDate cursorRecordAt, LocalDate recordAt);
+    List<Memory> findPrevMemoryByMemberId(Long memberId, LocalDate cursorRecordAt);
 
     List<Memory> getCalendarByYearAndMonth(Long memberId, Integer year, Short month);
 

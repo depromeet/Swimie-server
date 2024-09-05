@@ -3,7 +3,6 @@ package com.depromeet.memory.domain;
 import com.depromeet.image.domain.Image;
 import com.depromeet.member.domain.Member;
 import com.depromeet.pool.domain.Pool;
-import com.depromeet.reaction.domain.Reaction;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -19,7 +18,6 @@ public class Memory {
     private MemoryDetail memoryDetail;
     private List<Stroke> strokes;
     private List<Image> images;
-    private List<Reaction> reactions;
     private LocalDate recordAt;
     private LocalTime startTime;
     private LocalTime endTime;
@@ -34,7 +32,6 @@ public class Memory {
             MemoryDetail memoryDetail,
             List<Stroke> strokes,
             List<Image> images,
-            List<Reaction> reactions,
             LocalDate recordAt,
             LocalTime startTime,
             LocalTime endTime,
@@ -46,7 +43,6 @@ public class Memory {
         this.memoryDetail = memoryDetail;
         this.strokes = strokes;
         this.images = images;
-        this.reactions = reactions;
         this.recordAt = recordAt;
         this.startTime = startTime;
         this.endTime = endTime;

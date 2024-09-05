@@ -3,6 +3,8 @@ package com.depromeet.memory.facade;
 import static com.depromeet.memory.service.MemoryValidator.validatePermission;
 
 import com.depromeet.followinglog.port.in.command.CreateFollowingMemoryCommand;
+import com.depromeet.image.domain.vo.MemoryImageUrlVo;
+import com.depromeet.image.port.in.ImageGetUseCase;
 import com.depromeet.image.port.in.ImageUploadUseCase;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
@@ -24,10 +26,13 @@ import com.depromeet.memory.port.in.usecase.StrokeUseCase;
 import com.depromeet.memory.port.in.usecase.TimelineUseCase;
 import com.depromeet.memory.port.in.usecase.UpdateMemoryUseCase;
 import com.depromeet.pool.port.in.usecase.SearchLogUseCase;
+import com.depromeet.reaction.domain.vo.ReactionCount;
+import com.depromeet.reaction.port.in.usecase.GetReactionUseCase;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +43,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemoryFacade {
     private final MemberUseCase memberUseCase;
     private final StrokeUseCase strokeUseCase;
+    private final ImageGetUseCase imageGetUseCase;
     private final CalendarUseCase calendarUseCase;
     private final TimelineUseCase timelineUseCase;
     private final GetMemoryUseCase getMemoryUseCase;
@@ -45,7 +51,11 @@ public class MemoryFacade {
     private final SearchLogUseCase poolSearchLogUseCase;
     private final CreateMemoryUseCase createMemoryUseCase;
     private final UpdateMemoryUseCase updateMemoryUseCase;
+    private final GetReactionUseCase getReactionUseCase;
     private final ApplicationEventPublisher eventPublisher;
+
+    @Value("${cloud-front.domain}")
+    private String imageOrigin;
 
     @Transactional
     public MemoryCreateResponse create(Long memberId, MemoryCreateRequest request) {
@@ -94,12 +104,21 @@ public class MemoryFacade {
     }
 
     public TimelineSliceResponse getTimelineByMemberIdAndCursorAndDate(
-            Long memberId, LocalDate cursorRecordAt, YearMonth date, boolean showNewer) {
+            Long memberId, LocalDate cursorRecordAt) {
         Member member = memberUseCase.findById(memberId);
         TimelineSlice timelineSlice =
-                timelineUseCase.getTimelineByMemberIdAndCursorAndDate(
-                        memberId, cursorRecordAt, date, showNewer);
-        return MemoryMapper.toSliceResponse(member, timelineSlice);
+                timelineUseCase.getTimelineByMemberIdAndCursorAndDate(memberId, cursorRecordAt);
+        List<Long> memoryIds =
+                timelineSlice.getTimelineContents().stream()
+                        .mapToLong(Memory::getId)
+                        .boxed()
+                        .toList();
+        List<MemoryImageUrlVo> memoryImageUrls = imageGetUseCase.findImagesByMemoryIds(memoryIds);
+        List<ReactionCount> reactionCounts =
+                getReactionUseCase.getDetailReactionsCountByMemoryIds(memoryIds);
+
+        return MemoryMapper.toSliceResponse(
+                member, timelineSlice, reactionCounts, memoryImageUrls, imageOrigin);
     }
 
     public CalendarResponse getCalendar(Long memberId, Long targetId, Integer year, Short month) {

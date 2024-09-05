@@ -7,6 +7,7 @@ import com.depromeet.member.domain.Member;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.reaction.domain.Reaction;
 import com.depromeet.reaction.domain.ReactionPage;
+import com.depromeet.reaction.domain.vo.ReactionCount;
 import com.depromeet.reaction.port.in.command.CreateReactionCommand;
 import com.depromeet.reaction.port.in.usecase.CreateReactionUseCase;
 import com.depromeet.reaction.port.in.usecase.DeleteReactionUseCase;
@@ -92,6 +93,11 @@ public class ReactionService
     @Override
     public Long getDetailReactionsCount(Long memoryId) {
         return reactionPersistencePort.getAllCountByMemoryId(memoryId);
+    }
+
+    @Override
+    public List<ReactionCount> getDetailReactionsCountByMemoryIds(List<Long> memoryIds) {
+        return reactionPersistencePort.getAllCountByMemoryIds(memoryIds);
     }
 
     @Override
