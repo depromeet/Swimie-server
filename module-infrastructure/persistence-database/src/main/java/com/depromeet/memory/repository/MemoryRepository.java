@@ -7,9 +7,11 @@ import static com.depromeet.memory.entity.QStrokeEntity.strokeEntity;
 import static com.depromeet.pool.entity.QPoolEntity.poolEntity;
 
 import com.depromeet.memory.domain.Memory;
+import com.depromeet.memory.domain.vo.MemoryAndDetailId;
 import com.depromeet.memory.entity.MemoryEntity;
 import com.depromeet.memory.entity.QMemoryEntity;
 import com.depromeet.memory.port.out.persistence.MemoryPersistencePort;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -220,6 +222,21 @@ public class MemoryRepository implements MemoryPersistencePort {
     @Override
     public void deleteAllByMemberId(Long memberId) {
         queryFactory.delete(memory).where(memberEq(memberId)).execute();
+    }
+
+    @Override
+    public MemoryAndDetailId findMemoryAndDetailIdsByMemberId(Long memberId) {
+        List<Tuple> result =
+                queryFactory
+                        .select(memory.id, memory.memoryDetail.id)
+                        .from(memory)
+                        .leftJoin(memory.memoryDetail, memoryDetailEntity)
+                        .where(memberEq(memberId))
+                        .fetch();
+        List<Long> memoryIds = result.stream().map(r -> r.get(memory.id)).toList();
+        List<Long> memoryDetailIds =
+                result.stream().map(r -> r.get(memory.memoryDetail.id)).toList();
+        return new MemoryAndDetailId(memoryIds, memoryDetailIds);
     }
 
     private BooleanExpression loeRecordAt(LocalDate recordAt) {

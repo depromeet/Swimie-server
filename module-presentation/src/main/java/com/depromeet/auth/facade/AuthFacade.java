@@ -19,7 +19,7 @@ import com.depromeet.image.port.in.ImageUpdateUseCase;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.mapper.MemberMapper;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
-import com.depromeet.memory.domain.Memory;
+import com.depromeet.memory.domain.vo.MemoryAndDetailId;
 import com.depromeet.memory.port.in.usecase.DeleteMemoryUseCase;
 import com.depromeet.memory.port.in.usecase.GetMemoryUseCase;
 import com.depromeet.memory.port.in.usecase.StrokeUseCase;
@@ -119,10 +119,10 @@ public class AuthFacade {
         Member member = memberUseCase.findById(memberId);
         String accountType = member.getProviderId();
         // Memory 조회
-        List<Memory> memories = getMemoryUseCase.findByMemberId(memberId);
-        List<Long> memoryIds = memories.stream().map(Memory::getId).toList();
-        List<Long> memoryDetailIds =
-                memories.stream().map(memory -> memory.getMemoryDetail().getId()).toList();
+        MemoryAndDetailId memoryAndDetailId =
+                getMemoryUseCase.findMemoryAndDetailIdsByMemberId(memberId);
+        List<Long> memoryIds = memoryAndDetailId.memoryIds();
+        List<Long> memoryDetailIds = memoryAndDetailId.memoryDetailIds();
         // Following memory log 삭제
         followingMemoryLogUseCase.deleteAllByMemoryId(memoryIds);
         // Reaction 조회

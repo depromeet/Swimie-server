@@ -2,7 +2,9 @@ package com.depromeet.memory.repository;
 
 import com.depromeet.memory.domain.MemoryDetail;
 import com.depromeet.memory.entity.MemoryDetailEntity;
+import com.depromeet.memory.entity.QMemoryDetailEntity;
 import com.depromeet.memory.port.out.persistence.MemoryDetailPersistencePort;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +13,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class MemoryDetailRepository implements MemoryDetailPersistencePort {
+    private final JPAQueryFactory queryFactory;
     private final MemoryDetailJpaRepository memoryDetailJpaRepository;
+
+    private QMemoryDetailEntity memoryDetail = QMemoryDetailEntity.memoryDetailEntity;
 
     @Override
     public MemoryDetail save(MemoryDetail memoryDetail) {
@@ -30,7 +35,7 @@ public class MemoryDetailRepository implements MemoryDetailPersistencePort {
 
     @Override
     public void deleteAllById(List<Long> memoryDetailIds) {
-        memoryDetailJpaRepository.deleteAllById(memoryDetailIds);
+        queryFactory.delete(memoryDetail).where(memoryDetail.id.in(memoryDetailIds)).execute();
     }
 
     @Override
