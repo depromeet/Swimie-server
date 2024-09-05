@@ -53,7 +53,8 @@ public class ImageRepositoryTest {
         imageRepository = new ImageRepository(em, queryFactory, imageJpaRepository);
         memberPersistencePort = new MemberRepository(queryFactory, memberJpaRepository);
         memoryPersistencePort = new MemoryRepository(em, queryFactory, memoryJpaRepository);
-        memoryDetailPersistencePort = new MemoryDetailRepository(memoryDetailJpaRepository);
+        memoryDetailPersistencePort =
+                new MemoryDetailRepository(queryFactory, memoryDetailJpaRepository);
         member = memberPersistencePort.save(MemberFixture.make());
     }
 
