@@ -9,6 +9,7 @@ import com.depromeet.member.domain.Member;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.MemoryDetail;
 import com.depromeet.memory.domain.Stroke;
+import com.depromeet.memory.domain.vo.MemoryAndDetailId;
 import com.depromeet.memory.domain.vo.MemoryInfo;
 import com.depromeet.memory.port.in.command.CreateMemoryCommand;
 import com.depromeet.memory.port.in.command.UpdateMemoryCommand;
@@ -102,6 +103,11 @@ public class MemoryService
                         memory.getRecordAt(), memory.getMember().getId());
         Boolean isMyMemory = isMyMemory(memory.getMember().getId(), requestMemberId);
         return new MemoryInfo(memory, prevId, nextId, isMyMemory);
+    }
+
+    @Override
+    public MemoryAndDetailId findMemoryAndDetailIdsByMemberId(Long memberId) {
+        return memoryPersistencePort.findMemoryAndDetailIdsByMemberId(memberId);
     }
 
     @Override
