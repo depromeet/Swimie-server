@@ -65,7 +65,8 @@ public class FollowingMemoryLogRepositoryTest {
         memberRepository = new MemberRepository(queryFactory, memberJpaRepository);
         friendRepository = new FriendRepository(queryFactory, friendJpaRepository);
         memoryRepository = new MemoryRepository(em, queryFactory, memoryJpaRepository);
-        memoryDetailRepository = new MemoryDetailRepository(memoryDetailJpaRepository);
+        memoryDetailRepository =
+                new MemoryDetailRepository(queryFactory, memoryDetailJpaRepository);
         followingMemoryLogRepository =
                 new FollowingMemoryLogRepository(queryFactory, followingMemoryLogJpaRepository);
 

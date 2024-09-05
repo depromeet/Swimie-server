@@ -45,7 +45,8 @@ public class MemoryRepositoryTest {
     void setUp() {
         memberRepository = new MemberRepository(queryFactory, memberJpaRepository);
         memoryRepository = new MemoryRepository(em, queryFactory, memoryJpaRepository);
-        memoryDetailRepository = new MemoryDetailRepository(memoryDetailJpaRepository);
+        memoryDetailRepository =
+                new MemoryDetailRepository(queryFactory, memoryDetailJpaRepository);
         member = memberRepository.save(MemberFixture.make());
         List<MemoryDetail> memoryDetailList = MemoryDetailFixture.makeMemoryDetails(30);
 
