@@ -32,6 +32,7 @@ import com.depromeet.type.memory.MemoryErrorType;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -119,7 +120,8 @@ public class MemoryFacade {
                         .mapToLong(Memory::getId)
                         .boxed()
                         .toList();
-        List<MemoryImageUrlVo> memoryImageUrls = imageGetUseCase.findImagesByMemoryIds(memoryIds);
+        Map<Long, MemoryImageUrlVo> memoryImageUrls =
+                imageGetUseCase.findImagesByMemoryIds(memoryIds);
         List<ReactionCount> reactionCounts =
                 getReactionUseCase.getDetailReactionsCountByMemoryIds(memoryIds);
 

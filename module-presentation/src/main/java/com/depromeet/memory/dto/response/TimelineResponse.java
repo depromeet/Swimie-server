@@ -79,13 +79,12 @@ public record TimelineResponse(
     public static TimelineResponse mapToTimelineResponseDto(
             Memory memory,
             List<ReactionCount> reactionCounts,
-            List<MemoryImageUrlVo> memoryImageUrls,
+            Map<Long, MemoryImageUrlVo> memoryImageUrls,
             String imageOrigin) {
         Integer totalDistance = memory.calculateTotalDistance();
         Short lane = memory.getLane() != null ? memory.getLane() : 0;
 
         Map<Long, Long> reactionCountMap = getMapReactionCount(reactionCounts);
-        Map<Long, String> imageMap = getImageMap(memoryImageUrls);
 
         return TimelineResponse.builder()
                 .memoryId(memory.getId())
@@ -99,23 +98,18 @@ public record TimelineResponse(
                 .kcal(getKcalFromMemoryDetail(memory))
                 .type(memory.classifyType())
                 .strokes(strokeToDto(memory.getStrokes(), lane))
-                .imageUrl(getImageUrl(memory, imageMap, imageOrigin))
+                .imageUrl(getImageUrl(memory, memoryImageUrls, imageOrigin))
                 .reactionCount(getReactionCount(memory.getId(), reactionCountMap))
                 .build();
     }
 
     private static String getImageUrl(
-            Memory memory, Map<Long, String> imageMap, String imageOrigin) {
-        String image = imageMap.getOrDefault(memory.getId(), null);
+            Memory memory, Map<Long, MemoryImageUrlVo> imageMap, String imageOrigin) {
+        MemoryImageUrlVo image = imageMap.getOrDefault(memory.getId(), null);
         if (image != null) {
-            return imageOrigin + "/" + image;
+            return imageOrigin + "/" + image.imageName();
         }
-        return imageOrigin;
-    }
-
-    private static Map<Long, String> getImageMap(List<MemoryImageUrlVo> memoryImageUrls) {
-        return memoryImageUrls.stream()
-                .collect(Collectors.toMap(MemoryImageUrlVo::memoryId, MemoryImageUrlVo::imageName));
+        return null;
     }
 
     private static Map<Long, Long> getMapReactionCount(List<ReactionCount> reactionCounts) {

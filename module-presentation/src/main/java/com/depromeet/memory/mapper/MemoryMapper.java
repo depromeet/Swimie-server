@@ -16,6 +16,7 @@ import com.depromeet.memory.port.in.command.UpdateStrokeCommand;
 import com.depromeet.reaction.domain.vo.ReactionCount;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 public class MemoryMapper {
     public static CreateStrokeCommand toCommand(StrokeCreateRequest request) {
@@ -85,7 +86,7 @@ public class MemoryMapper {
             Member member,
             TimelineSlice timelineSlice,
             List<ReactionCount> reactionCounts,
-            List<MemoryImageUrlVo> memoryImageUrls,
+            Map<Long, MemoryImageUrlVo> memoryImageUrls,
             String imageOrigin) {
         List<TimelineResponse> result =
                 timelineSlice.getTimelineContents().stream()
