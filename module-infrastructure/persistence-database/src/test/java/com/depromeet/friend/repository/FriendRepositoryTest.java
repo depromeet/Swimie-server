@@ -125,6 +125,7 @@ public class FriendRepositoryTest {
         List<String> resultFollowingNames = result.stream().map(Following::getName).toList();
 
         if (resultFollowingNames.size() > 10) {
+            resultFollowingNames = new ArrayList<>(resultFollowingNames);
             resultFollowingNames.removeLast();
         }
         // then
@@ -160,6 +161,7 @@ public class FriendRepositoryTest {
                 friendRepository.findFollowersByMemberIdAndCursorId(member.getId(), null);
         List<String> resultFollowerNames = result.stream().map(Follower::getName).toList();
         if (resultFollowerNames.size() > 10) {
+            resultFollowerNames = new ArrayList<>(resultFollowerNames);
             resultFollowerNames.removeLast();
         }
 
