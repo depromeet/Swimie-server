@@ -79,6 +79,7 @@ public class MemoryController implements MemoryApi {
     }
 
     @DeleteMapping("/{memoryId}")
+    @Logging(item = "Memory", action = "DELETE")
     public ApiResponse<?> delete(
             @LoginMember Long memberId, @PathVariable("memoryId") Long memoryId) {
         memoryFacade.deleteById(memberId, memoryId);
