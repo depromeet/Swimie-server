@@ -42,7 +42,6 @@ public class PoolRepository implements PoolPersistencePort {
                         .selectFrom(poolEntity)
                         .where(
                                 CustomFunction.match(poolEntity.name, nameQuery),
-                                // nameLike(nameQuery),
                                 poolIdNotIn(favoritePoolIds),
                                 goePoolId(cursorId))
                         .limit(limit + 1)
@@ -112,7 +111,9 @@ public class PoolRepository implements PoolPersistencePort {
                         .fetchJoin()
                         .join(favoritePoolEntity.pool, poolEntity)
                         .fetchJoin()
-                        .where(favoritePoolMemberEq(memberId), nameLike(nameQuery))
+                        .where(
+                                favoritePoolMemberEq(memberId),
+                                CustomFunction.match(poolEntity.name, nameQuery))
                         .fetch();
 
         return favoritePoolEntities.stream().map(FavoritePoolEntity::toModel).toList();
@@ -159,16 +160,6 @@ public class PoolRepository implements PoolPersistencePort {
     @Override
     public void deleteAllPoolSearchLogByMemberId(Long memberId) {
         queryFactory.delete(poolSearchEntity).where(poolSearchMemberEq(memberId)).execute();
-    }
-
-    private BooleanExpression nameLike(String query) {
-        BooleanExpression whereExpression = poolEntity.isNotNull();
-
-        if (query != null && !query.isEmpty()) {
-            whereExpression = poolEntity.name.contains(query);
-        }
-
-        return whereExpression;
     }
 
     private BooleanExpression poolIdNotIn(Set<Long> favoritePoolIds) {
