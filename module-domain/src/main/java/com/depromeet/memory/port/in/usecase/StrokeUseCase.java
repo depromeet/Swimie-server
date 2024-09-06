@@ -15,5 +15,7 @@ public interface StrokeUseCase {
 
     List<Stroke> updateAll(Memory memory, List<UpdateStrokeCommand> commands);
 
-    void deleteAllByMemoryId(List<Long> memoryIds);
+    void deleteAllByMemoryIds(List<Long> memoryIds);
+
+    void deleteAllByMemoryId(Long memoryId);
 }

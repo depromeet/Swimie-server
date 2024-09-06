@@ -124,7 +124,7 @@ public class AuthFacade {
         List<Long> memoryIds = memoryAndDetailId.memoryIds();
         List<Long> memoryDetailIds = memoryAndDetailId.memoryDetailIds();
         // Following memory log 삭제
-        followingMemoryLogUseCase.deleteAllByMemoryId(memoryIds);
+        followingMemoryLogUseCase.deleteAllByMemoryIds(memoryIds);
         // Reaction 조회
         List<Long> reactionIds =
                 getReactionUseCase.findAllIdByMemoryIdOrMemberId(memoryIds, memberId);
@@ -133,7 +133,7 @@ public class AuthFacade {
         // Reaction 삭제
         deleteReactionUseCase.deleteAllById(reactionIds);
         // Stroke 삭제
-        strokeUseCase.deleteAllByMemoryId(memoryIds);
+        strokeUseCase.deleteAllByMemoryIds(memoryIds);
         // Image FK Null
         imageUpdateUseCase.setNullByMemoryIds(memoryIds);
         // Memory 삭제

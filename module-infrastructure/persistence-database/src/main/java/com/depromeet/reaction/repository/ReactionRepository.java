@@ -70,6 +70,15 @@ public class ReactionRepository implements ReactionPersistencePort {
         queryFactory.delete(reactionEntity).where(reactionEntity.id.in(reactionIds)).execute();
     }
 
+    @Override
+    public List<Long> findAllIdByMemoryId(Long memoryId) {
+        return queryFactory
+                .select(reactionEntity.id)
+                .from(reactionEntity)
+                .where(memoryEq(memoryId))
+                .fetch();
+    }
+
     private static BooleanExpression memoryIn(List<Long> memoryIds) {
         if (memoryIds == null) {
             return null;

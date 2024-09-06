@@ -52,4 +52,7 @@ public interface MemoryApi {
             @Parameter(description = "조회 대상 멤버 ID")
                     @RequestParam(value = "targetId", required = false)
                     Long targetId);
+
+    @Operation(summary = "기록 단건 삭제")
+    ApiResponse<?> delete(@LoginMember Long memberId, @PathVariable("memoryId") Long memoryId);
 }
