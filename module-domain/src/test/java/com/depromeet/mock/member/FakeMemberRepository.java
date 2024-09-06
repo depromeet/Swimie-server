@@ -2,6 +2,7 @@ package com.depromeet.mock.member;
 
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
+import com.depromeet.member.domain.vo.MemberIdAndNickname;
 import com.depromeet.member.domain.vo.MemberSearchPage;
 import com.depromeet.member.port.in.command.UpdateMemberCommand;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
@@ -121,5 +122,11 @@ public class FakeMemberRepository implements MemberPersistencePort {
                             save(member);
                             return member;
                         });
+    }
+
+    @Override
+    public Optional<MemberIdAndNickname> findIdAndNicknameById(Long memberId) {
+        return findById(memberId)
+                .map(item -> new MemberIdAndNickname(item.getId(), item.getNickname()));
     }
 }
