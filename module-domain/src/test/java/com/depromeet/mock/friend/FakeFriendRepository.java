@@ -81,44 +81,22 @@ public class FakeFriendRepository implements FriendPersistencePort {
     }
 
     @Override
-    public FollowSlice<Following> findFollowingsByMemberIdAndCursorId(
-            Long memberId, Long cursorId) {
-        List<Following> followings =
-                friends.stream()
-                        .filter(
-                                item ->
-                                        item.getMember().getId().equals(memberId)
-                                                && ltCursorId(cursorId, item))
-                        .map(
-                                item ->
-                                        Following.builder()
-                                                .friendId(item.getId())
-                                                .memberId(item.getFollowing().getId())
-                                                .name(item.getFollowing().getNickname())
-                                                .profileImageUrl(
-                                                        item.getFollowing().getProfileImageUrl())
-                                                .introduction(item.getFollowing().getIntroduction())
-                                                .build())
-                        .toList();
-
-        followings = new ArrayList<>(followings);
-
-        followings.sort(
-                (follow1, follow2) -> follow2.getFriendId().compareTo(follow1.getFriendId()));
-
-        boolean hasNext = false;
-        Long nextCursorId = null;
-        if (followings.size() > 10) {
-            followings.removeLast();
-            hasNext = true;
-            nextCursorId = followings.getLast().getFriendId();
-        }
-        return FollowSlice.<Following>builder()
-                .followContents(followings)
-                .pageSize(followings.size())
-                .cursorId(nextCursorId)
-                .hasNext(hasNext)
-                .build();
+    public List<Following> findFollowingsByMemberIdAndCursorId(Long memberId, Long cursorId) {
+        return friends.stream()
+                .filter(
+                        item ->
+                                item.getMember().getId().equals(memberId)
+                                        && ltCursorId(cursorId, item))
+                .map(
+                        item ->
+                                Following.builder()
+                                        .friendId(item.getId())
+                                        .memberId(item.getFollowing().getId())
+                                        .name(item.getFollowing().getNickname())
+                                        .profileImageUrl(item.getFollowing().getProfileImageUrl())
+                                        .introduction(item.getFollowing().getIntroduction())
+                                        .build())
+                .toList();
     }
 
     public boolean ltCursorId(Long cursorId, Friend friend) {
@@ -127,43 +105,22 @@ public class FakeFriendRepository implements FriendPersistencePort {
     }
 
     @Override
-    public FollowSlice<Follower> findFollowersByMemberIdAndCursorId(Long memberId, Long cursorId) {
-        List<Follower> followers =
-                friends.stream()
-                        .filter(
-                                item ->
-                                        item.getFollowing().getId().equals(memberId)
-                                                && ltCursorId(cursorId, item))
-                        .map(
-                                item ->
-                                        Follower.builder()
-                                                .friendId(item.getId())
-                                                .memberId(item.getMember().getId())
-                                                .name(item.getMember().getNickname())
-                                                .profileImageUrl(
-                                                        item.getMember().getProfileImageUrl())
-                                                .introduction(item.getMember().getIntroduction())
-                                                .build())
-                        .toList();
-
-        followers = new ArrayList<>(followers);
-
-        followers.sort(
-                (follow1, follow2) -> follow2.getFriendId().compareTo(follow1.getFriendId()));
-
-        boolean hasNext = false;
-        Long nextCursorId = null;
-        if (followers.size() > 10) {
-            followers.removeLast();
-            hasNext = true;
-            nextCursorId = followers.getLast().getFriendId();
-        }
-        return FollowSlice.<Follower>builder()
-                .followContents(followers)
-                .pageSize(followers.size())
-                .cursorId(nextCursorId)
-                .hasNext(hasNext)
-                .build();
+    public List<Follower> findFollowersByMemberIdAndCursorId(Long memberId, Long cursorId) {
+        return friends.stream()
+                .filter(
+                        item ->
+                                item.getFollowing().getId().equals(memberId)
+                                        && ltCursorId(cursorId, item))
+                .map(
+                        item ->
+                                Follower.builder()
+                                        .friendId(item.getId())
+                                        .memberId(item.getMember().getId())
+                                        .name(item.getMember().getNickname())
+                                        .profileImageUrl(item.getMember().getProfileImageUrl())
+                                        .introduction(item.getMember().getIntroduction())
+                                        .build())
+                .toList();
     }
 
     @Override

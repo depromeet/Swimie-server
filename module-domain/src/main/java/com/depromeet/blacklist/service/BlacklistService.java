@@ -5,6 +5,9 @@ import com.depromeet.blacklist.port.in.usecase.BlacklistCommandUseCase;
 import com.depromeet.blacklist.port.in.usecase.BlacklistQueryUseCase;
 import com.depromeet.blacklist.port.out.persistence.BlacklistPersistencePort;
 import com.depromeet.member.domain.Member;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,5 +37,23 @@ public class BlacklistService implements BlacklistQueryUseCase, BlacklistCommand
     @Override
     public boolean checkBlackMember(Long memberId, Long blackMemberId) {
         return blacklistPersistencePort.existsByMemberIdAndBlackMemberId(memberId, blackMemberId);
+    }
+
+    @Override
+    public Set<Long> getBlackMemberIds(Long memberId) {
+        List<Long> blackMemberIds = getBlackMemberIdsByMemberId(memberId);
+        List<Long> memberIdsWhoBlockedMe = getMemberIdsWhoBlockedMe(memberId);
+
+        blackMemberIds.addAll(memberIdsWhoBlockedMe);
+
+        return new HashSet<>(blackMemberIds);
+    }
+
+    private List<Long> getBlackMemberIdsByMemberId(Long memberId) {
+        return blacklistPersistencePort.findBlackMemberIdsByMemberId(memberId);
+    }
+
+    private List<Long> getMemberIdsWhoBlockedMe(Long memberId) {
+        return blacklistPersistencePort.findMemberIdsWhoBlockedMe(memberId);
     }
 }
