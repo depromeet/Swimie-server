@@ -10,5 +10,7 @@ public interface StrokePersistencePort {
 
     void deleteById(Long id);
 
-    void deleteAllByMemoryId(List<Long> memoryIds);
+    void deleteAllByMemoryIds(List<Long> memoryIds);
+
+    void deleteAllByMemoryId(Long memoryId);
 }

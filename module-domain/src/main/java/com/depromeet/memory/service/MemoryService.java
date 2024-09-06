@@ -221,4 +221,14 @@ public class MemoryService
     public void deleteAllMemoryByMemberId(Long memberId) {
         memoryPersistencePort.deleteAllByMemberId(memberId);
     }
+
+    @Override
+    public void deleteById(Long memoryId) {
+        memoryPersistencePort.deleteById(memoryId);
+    }
+
+    @Override
+    public void deleteMemoryDetailById(Long memoryDetailId) {
+        memoryDetailPersistencePort.deleteById(memoryDetailId);
+    }
 }

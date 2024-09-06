@@ -34,4 +34,6 @@ public interface MemoryPersistencePort {
     void deleteAllByMemberId(Long memberId);
 
     MemoryAndDetailId findMemoryAndDetailIdsByMemberId(Long memberId);
+
+    void deleteById(Long memoryId);
 }

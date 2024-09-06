@@ -77,4 +77,11 @@ public class MemoryController implements MemoryApi {
         CalendarResponse response = memoryFacade.getCalendar(requesterId, targetId, year, month);
         return ApiResponse.success(MemorySuccessType.GET_CALENDAR_SUCCESS, response);
     }
+
+    @DeleteMapping("/{memoryId}")
+    public ApiResponse<?> delete(
+            @LoginMember Long memberId, @PathVariable("memoryId") Long memoryId) {
+        memoryFacade.deleteById(memberId, memoryId);
+        return ApiResponse.success(MemorySuccessType.DELETE_SUCCESS);
+    }
 }

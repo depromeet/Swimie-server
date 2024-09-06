@@ -2,9 +2,12 @@ package com.depromeet.memory.facade;
 
 import static com.depromeet.memory.service.MemoryValidator.validatePermission;
 
+import com.depromeet.exception.BadRequestException;
+import com.depromeet.followinglog.port.in.FollowingMemoryLogUseCase;
 import com.depromeet.followinglog.port.in.command.CreateFollowingMemoryCommand;
 import com.depromeet.image.domain.vo.MemoryImageUrlVo;
 import com.depromeet.image.port.in.ImageGetUseCase;
+import com.depromeet.image.port.in.ImageUpdateUseCase;
 import com.depromeet.image.port.in.ImageUploadUseCase;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
@@ -19,15 +22,13 @@ import com.depromeet.memory.mapper.MemoryMapper;
 import com.depromeet.memory.port.in.command.CreateStrokeCommand;
 import com.depromeet.memory.port.in.command.UpdateMemoryCommand;
 import com.depromeet.memory.port.in.command.UpdateStrokeCommand;
-import com.depromeet.memory.port.in.usecase.CalendarUseCase;
-import com.depromeet.memory.port.in.usecase.CreateMemoryUseCase;
-import com.depromeet.memory.port.in.usecase.GetMemoryUseCase;
-import com.depromeet.memory.port.in.usecase.StrokeUseCase;
-import com.depromeet.memory.port.in.usecase.TimelineUseCase;
-import com.depromeet.memory.port.in.usecase.UpdateMemoryUseCase;
+import com.depromeet.memory.port.in.usecase.*;
+import com.depromeet.notification.port.in.usecase.DeleteReactionLogUseCase;
 import com.depromeet.pool.port.in.usecase.SearchLogUseCase;
 import com.depromeet.reaction.domain.vo.ReactionCount;
+import com.depromeet.reaction.port.in.usecase.DeleteReactionUseCase;
 import com.depromeet.reaction.port.in.usecase.GetReactionUseCase;
+import com.depromeet.type.memory.MemoryErrorType;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -51,8 +52,13 @@ public class MemoryFacade {
     private final SearchLogUseCase poolSearchLogUseCase;
     private final CreateMemoryUseCase createMemoryUseCase;
     private final UpdateMemoryUseCase updateMemoryUseCase;
+    private final DeleteMemoryUseCase deleteMemoryUseCase;
     private final GetReactionUseCase getReactionUseCase;
+    private final ImageUpdateUseCase imageUpdateUseCase;
     private final ApplicationEventPublisher eventPublisher;
+    private final DeleteReactionUseCase deleteReactionUseCase;
+    private final DeleteReactionLogUseCase deleteReactionLogUseCase;
+    private final FollowingMemoryLogUseCase followingMemoryLogUseCase;
 
     @Value("${cloud-front.domain}")
     private String imageOrigin;
@@ -132,5 +138,33 @@ public class MemoryFacade {
 
     private Long getTargetMemberId(Long memberId, Long targetId) {
         return targetId == null ? memberId : targetId;
+    }
+
+    @Transactional
+    public void deleteById(Long memberId, Long memoryId) {
+        Memory memory = getMemoryUseCase.findById(memoryId);
+        if (memory.getMember().getId().equals(memberId)) {
+            // Following memory log 삭제
+            followingMemoryLogUseCase.deleteAllByMemoryId(memoryId);
+            // Reaction 조회
+            List<Long> reactionIds = getReactionUseCase.findAllIdByMemoryId(memoryId);
+            // Reaction log 삭제
+            deleteReactionLogUseCase.deleteAllByReactionId(reactionIds);
+            // Reaction 삭제
+            deleteReactionUseCase.deleteAllById(reactionIds);
+            // Stroke 삭제
+            strokeUseCase.deleteAllByMemoryId(memoryId);
+            // Image FK Null
+            imageUpdateUseCase.setNullByMemoryId(memoryId);
+            // Memory 삭제
+            deleteMemoryUseCase.deleteById(memoryId);
+            // MemoryDetail 삭제
+            if (memory.getMemoryDetail() != null) {
+                Long memoryDetailId = memory.getMemoryDetail().getId();
+                deleteMemoryUseCase.deleteMemoryDetailById(memoryDetailId);
+            }
+        } else {
+            throw new BadRequestException(MemoryErrorType.ONLY_OWNER_CAN_DELETE_MEMORY);
+        }
     }
 }

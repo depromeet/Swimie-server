@@ -64,6 +64,11 @@ public class ImageUpdateService implements ImageUpdateUseCase {
         imagePersistencePort.setNullByMemoryIds(memoryIds);
     }
 
+    @Override
+    public void setNullByMemoryId(Long memoryId) {
+        imagePersistencePort.setNullByMemoryId(memoryId);
+    }
+
     private List<String> getExistingImageNames(List<Image> existingImages) {
         return existingImages.stream().map(Image::getImageName).toList();
     }

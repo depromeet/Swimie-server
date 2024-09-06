@@ -121,4 +121,15 @@ public class ImageRepository implements ImagePersistencePort {
         em.flush();
         em.clear();
     }
+
+    @Override
+    public void setNullByMemoryId(Long memoryId) {
+        queryFactory
+                .update(imageEntity)
+                .setNull(imageEntity.memory.id)
+                .where(imageEntity.memory.id.eq(memoryId))
+                .execute();
+        em.flush();
+        em.clear();
+    }
 }
