@@ -26,6 +26,12 @@ public class BlacklistService implements BlacklistQueryUseCase, BlacklistCommand
     }
 
     @Override
+    @Transactional
+    public void unblackMember(Long memberId, Long blackMemberId) {
+        blacklistPersistencePort.unblackMember(memberId, blackMemberId);
+    }
+
+    @Override
     public boolean checkBlackMember(Long memberId, Long blackMemberId) {
         return blacklistPersistencePort.existsByMemberIdAndBlackMemberId(memberId, blackMemberId);
     }
