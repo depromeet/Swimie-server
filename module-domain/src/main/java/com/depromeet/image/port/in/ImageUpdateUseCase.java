@@ -10,4 +10,6 @@ public interface ImageUpdateUseCase {
     void changeImageStatus(List<Long> imageIds);
 
     void setNullByMemoryIds(List<Long> memoryIds);
+
+    void setNullByMemoryId(Long memoryId);
 }

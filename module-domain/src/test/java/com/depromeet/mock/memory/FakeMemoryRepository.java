@@ -109,8 +109,7 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
     }
 
     @Override
-    public List<Memory> findPrevMemoryByMemberId(
-            Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
+    public List<Memory> findPrevMemoryByMemberId(Long memberId, LocalDate cursorRecordAt) {
         List<Memory> memories;
         if (cursorRecordAt == null) {
             memories =
@@ -118,47 +117,16 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
                             .filter(memory -> memory.getMember().getId().equals(memberId))
                             .toList();
         } else {
-            LocalDate finalCursorRecordAt = cursorRecordAt;
             memories =
                     data.stream()
                             .filter(memory -> memory.getMember().getId().equals(memberId))
-                            .filter(memory -> memory.getRecordAt().isBefore(finalCursorRecordAt))
+                            .filter(memory -> memory.getRecordAt().isBefore(cursorRecordAt))
                             .toList();
         }
         memories = new ArrayList<>(memories);
         memories.sort((memory1, memory2) -> memory2.getRecordAt().compareTo(memory1.getRecordAt()));
         if (memories.size() > 11) {
             memories = memories.subList(0, 11);
-        }
-        return memories;
-    }
-
-    @Override
-    public List<Memory> findNextMemoryByMemberId(
-            Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
-        List<Memory> memories;
-        if (cursorRecordAt == null) {
-            memories =
-                    data.stream()
-                            .filter(memory -> memory.getMember().getId().equals(memberId))
-                            .toList();
-            memories = new ArrayList<>(memories);
-            memories.sort(
-                    (memory1, memory2) -> memory2.getRecordAt().compareTo(memory1.getRecordAt()));
-            if (memories.size() > 11) {
-                memories = memories.subList(0, 11);
-            }
-        } else {
-            memories =
-                    data.stream()
-                            .filter(memory -> memory.getMember().getId().equals(memberId))
-                            .filter(memory -> memory.getRecordAt().isAfter(cursorRecordAt))
-                            .toList();
-            if (memories.size() > 10) {
-                memories = memories.subList(0, 10);
-            }
-            memories.sort(
-                    (memory1, memory2) -> memory2.getRecordAt().compareTo(memory1.getRecordAt()));
         }
         return memories;
     }
@@ -220,5 +188,10 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
         List<Long> memoryDetailIds =
                 memories.stream().map(item -> item.getMemoryDetail().getId()).toList();
         return new MemoryAndDetailId(memoryIds, memoryDetailIds);
+    }
+
+    @Override
+    public void deleteById(Long memoryId) {
+        data.removeIf(item -> item.getId().equals(memoryId));
     }
 }

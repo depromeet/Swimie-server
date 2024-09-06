@@ -22,32 +22,18 @@ public class TimelineService implements TimelineUseCase {
 
     @Override
     public TimelineSlice getTimelineByMemberIdAndCursorAndDate(
-            Long memberId, LocalDate cursorRecordAt, YearMonth date, boolean showNewer) {
-        return getTimelines(memberId, cursorRecordAt, date, showNewer);
+            Long memberId, LocalDate cursorRecordAt) {
+        return getTimelines(memberId, cursorRecordAt);
     }
 
-    private TimelineSlice getTimelines(
-            Long memberId, LocalDate cursorRecordAt, YearMonth date, boolean showNewer) {
-        LocalDate parsedDate = getLocalDateOrNull(date); // date 파라미터 임시 제거로 인해 임시 null 처리
+    private TimelineSlice getTimelines(Long memberId, LocalDate cursorRecordAt) {
         boolean hasNext;
         LocalDate nextMemoryRecordAt;
         List<Memory> memories;
-        if (showNewer) {
-            memories =
-                    memoryPersistencePort.findNextMemoryByMemberId(
-                            memberId, cursorRecordAt, parsedDate);
-            hasNext = checkHasNext(memories);
-            nextMemoryRecordAt = getCursorRecordAt(memories);
-            memories = getMemories(memories);
-            memories = memories.reversed();
-        } else {
-            memories =
-                    memoryPersistencePort.findPrevMemoryByMemberId(
-                            memberId, cursorRecordAt, parsedDate);
-            hasNext = checkHasNext(memories);
-            nextMemoryRecordAt = getCursorRecordAt(memories);
-            memories = getMemories(memories);
-        }
+        memories = memoryPersistencePort.findPrevMemoryByMemberId(memberId, cursorRecordAt);
+        hasNext = checkHasNext(memories);
+        nextMemoryRecordAt = getCursorRecordAt(memories);
+        memories = getMemories(memories);
         return TimelineSlice.from(memories, nextMemoryRecordAt, hasNext);
     }
 

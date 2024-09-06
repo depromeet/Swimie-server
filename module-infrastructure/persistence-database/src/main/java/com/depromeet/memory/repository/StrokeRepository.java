@@ -35,7 +35,12 @@ public class StrokeRepository implements StrokePersistencePort {
     }
 
     @Override
-    public void deleteAllByMemoryId(List<Long> memoryIds) {
+    public void deleteAllByMemoryIds(List<Long> memoryIds) {
         queryFactory.delete(stroke).where(stroke.memory.id.in(memoryIds)).execute();
+    }
+
+    @Override
+    public void deleteAllByMemoryId(Long memoryId) {
+        queryFactory.delete(stroke).where(stroke.memory.id.eq(memoryId)).execute();
     }
 }

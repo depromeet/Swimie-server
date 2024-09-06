@@ -63,8 +63,7 @@ public class MemoryController implements MemoryApi {
                     @DateTimeFormat(pattern = "yyyy-MM-dd")
                     LocalDate cursorRecordAt) {
         TimelineSliceResponse result =
-                memoryFacade.getTimelineByMemberIdAndCursorAndDate(
-                        memberId, cursorRecordAt, null, false);
+                memoryFacade.getTimelineByMemberIdAndCursorAndDate(memberId, cursorRecordAt);
         return ApiResponse.success(MemorySuccessType.GET_TIMELINE_SUCCESS, result);
     }
 
@@ -77,5 +76,12 @@ public class MemoryController implements MemoryApi {
             @RequestParam(value = "targetId", required = false) Long targetId) {
         CalendarResponse response = memoryFacade.getCalendar(requesterId, targetId, year, month);
         return ApiResponse.success(MemorySuccessType.GET_CALENDAR_SUCCESS, response);
+    }
+
+    @DeleteMapping("/{memoryId}")
+    public ApiResponse<?> delete(
+            @LoginMember Long memberId, @PathVariable("memoryId") Long memoryId) {
+        memoryFacade.deleteById(memberId, memoryId);
+        return ApiResponse.success(MemorySuccessType.DELETE_SUCCESS);
     }
 }

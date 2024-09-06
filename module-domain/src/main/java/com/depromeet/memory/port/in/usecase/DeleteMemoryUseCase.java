@@ -6,4 +6,8 @@ public interface DeleteMemoryUseCase {
     void deleteAllMemoryDetailById(List<Long> memoryDetailIds);
 
     void deleteAllMemoryByMemberId(Long memberId);
+
+    void deleteById(Long memoryId);
+
+    void deleteMemoryDetailById(Long memoryDetailId);
 }

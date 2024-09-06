@@ -109,8 +109,7 @@ public class MemoryRepository implements MemoryPersistencePort {
     }
 
     @Override
-    public List<Memory> findPrevMemoryByMemberId(
-            Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
+    public List<Memory> findPrevMemoryByMemberId(Long memberId, LocalDate cursorRecordAt) {
         List<MemoryEntity> memories =
                 queryFactory
                         .selectFrom(memory)
@@ -122,38 +121,11 @@ public class MemoryRepository implements MemoryPersistencePort {
                         .fetchJoin()
                         .leftJoin(memory.strokes)
                         .fetchJoin()
-                        .where(
-                                memory.member.id.eq(memberId),
-                                ltCursorRecordAt(cursorRecordAt),
-                                loeRecordAt(recordAt))
+                        .where(memory.member.id.eq(memberId), ltCursorRecordAt(cursorRecordAt))
                         .limit(11)
                         .orderBy(memory.recordAt.desc())
                         .fetch();
-        return toModel(memories);
-    }
-
-    @Override
-    public List<Memory> findNextMemoryByMemberId(
-            Long memberId, LocalDate cursorRecordAt, LocalDate recordAt) {
-        List<MemoryEntity> memories =
-                queryFactory
-                        .selectFrom(memory)
-                        .join(memory.member)
-                        .fetchJoin()
-                        .leftJoin(memory.pool)
-                        .fetchJoin()
-                        .leftJoin(memory.memoryDetail)
-                        .fetchJoin()
-                        .leftJoin(memory.strokes)
-                        .fetchJoin()
-                        .where(
-                                memory.member.id.eq(memberId),
-                                gtCursorRecordAt(cursorRecordAt),
-                                goeRecordAt(recordAt))
-                        .limit(11)
-                        .orderBy(memory.recordAt.asc())
-                        .fetch();
-        return toModel(memories);
+        return toTimelineModel(memories);
     }
 
     @Override
@@ -239,6 +211,11 @@ public class MemoryRepository implements MemoryPersistencePort {
         return new MemoryAndDetailId(memoryIds, memoryDetailIds);
     }
 
+    @Override
+    public void deleteById(Long memoryId) {
+        memoryJpaRepository.deleteById(memoryId);
+    }
+
     private BooleanExpression loeRecordAt(LocalDate recordAt) {
         if (recordAt == null) {
             return null;
@@ -286,5 +263,9 @@ public class MemoryRepository implements MemoryPersistencePort {
 
     private List<Memory> toModel(List<MemoryEntity> memoryEntities) {
         return memoryEntities.stream().map(MemoryEntity::toModel).toList();
+    }
+
+    private List<Memory> toTimelineModel(List<MemoryEntity> memoryEntities) {
+        return memoryEntities.stream().map(MemoryEntity::toModelForTimeline).toList();
     }
 }

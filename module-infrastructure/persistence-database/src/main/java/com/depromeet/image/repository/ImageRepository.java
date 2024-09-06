@@ -5,8 +5,10 @@ import static com.depromeet.memory.entity.QMemoryEntity.memoryEntity;
 
 import com.depromeet.image.domain.Image;
 import com.depromeet.image.domain.ImageUploadStatus;
+import com.depromeet.image.domain.vo.MemoryImageUrlVo;
 import com.depromeet.image.entity.ImageEntity;
 import com.depromeet.image.port.out.persistence.ImagePersistencePort;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.util.List;
@@ -42,6 +44,20 @@ public class ImageRepository implements ImagePersistencePort {
                 .set(imageEntity.imageUploadStatus, ImageUploadStatus.UPLOADED)
                 .where(imageEntity.id.in(imageIds))
                 .execute();
+    }
+
+    @Override
+    public List<MemoryImageUrlVo> findByImageByMemoryIds(List<Long> memoryIds) {
+        return queryFactory
+                .select(
+                        Projections.constructor(
+                                MemoryImageUrlVo.class,
+                                imageEntity.memory.id.as("memoryId"),
+                                imageEntity.id.as("imageId"),
+                                imageEntity.imageName.as("imageName")))
+                .from(imageEntity)
+                .where(imageEntity.memory.id.in(memoryIds))
+                .fetch();
     }
 
     @Override
@@ -101,6 +117,17 @@ public class ImageRepository implements ImagePersistencePort {
                 .update(imageEntity)
                 .setNull(imageEntity.memory.id)
                 .where(imageEntity.memory.id.in(memoryIds))
+                .execute();
+        em.flush();
+        em.clear();
+    }
+
+    @Override
+    public void setNullByMemoryId(Long memoryId) {
+        queryFactory
+                .update(imageEntity)
+                .setNull(imageEntity.memory.id)
+                .where(imageEntity.memory.id.eq(memoryId))
                 .execute();
         em.flush();
         em.clear();

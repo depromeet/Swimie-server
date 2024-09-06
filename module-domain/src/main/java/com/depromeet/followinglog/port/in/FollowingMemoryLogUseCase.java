@@ -9,5 +9,7 @@ public interface FollowingMemoryLogUseCase {
 
     FollowingLogSlice findLogsByMemberIdAndCursorId(Long memberId, Long cursorId);
 
-    void deleteAllByMemoryId(List<Long> memoryIds);
+    void deleteAllByMemoryIds(List<Long> memoryIds);
+
+    void deleteAllByMemoryId(Long memoryId);
 }

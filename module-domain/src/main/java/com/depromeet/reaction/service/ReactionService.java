@@ -7,6 +7,7 @@ import com.depromeet.member.domain.Member;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.reaction.domain.Reaction;
 import com.depromeet.reaction.domain.ReactionPage;
+import com.depromeet.reaction.domain.vo.ReactionCount;
 import com.depromeet.reaction.port.in.command.CreateReactionCommand;
 import com.depromeet.reaction.port.in.usecase.CreateReactionUseCase;
 import com.depromeet.reaction.port.in.usecase.DeleteReactionUseCase;
@@ -95,6 +96,11 @@ public class ReactionService
     }
 
     @Override
+    public List<ReactionCount> getDetailReactionsCountByMemoryIds(List<Long> memoryIds) {
+        return reactionPersistencePort.getAllCountByMemoryIds(memoryIds);
+    }
+
+    @Override
     public List<Reaction> getReactionsByMemberAndMemory(Long memberId, Long memoryId) {
         return reactionPersistencePort.getPureReactionsByMemberAndMemory(memberId, memoryId);
     }
@@ -102,6 +108,11 @@ public class ReactionService
     @Override
     public List<Long> findAllIdByMemoryIdOrMemberId(List<Long> memoryIds, Long memberId) {
         return reactionPersistencePort.findAllIdByMemoryIdOrMemberId(memoryIds, memberId);
+    }
+
+    @Override
+    public List<Long> findAllIdByMemoryId(Long memoryId) {
+        return reactionPersistencePort.findAllIdByMemoryId(memoryId);
     }
 
     private boolean isOverMaximumCreationLimit(List<Reaction> reactions) {

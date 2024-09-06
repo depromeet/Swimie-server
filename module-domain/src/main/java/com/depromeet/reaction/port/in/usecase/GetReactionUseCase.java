@@ -2,6 +2,7 @@ package com.depromeet.reaction.port.in.usecase;
 
 import com.depromeet.reaction.domain.Reaction;
 import com.depromeet.reaction.domain.ReactionPage;
+import com.depromeet.reaction.domain.vo.ReactionCount;
 import java.util.List;
 
 public interface GetReactionUseCase {
@@ -11,7 +12,11 @@ public interface GetReactionUseCase {
 
     Long getDetailReactionsCount(Long memoryId);
 
+    List<ReactionCount> getDetailReactionsCountByMemoryIds(List<Long> memoryIds);
+
     List<Reaction> getReactionsByMemberAndMemory(Long memberId, Long memoryId);
 
     List<Long> findAllIdByMemoryIdOrMemberId(List<Long> memoryIds, Long memberId);
+
+    List<Long> findAllIdByMemoryId(Long memoryId);
 }

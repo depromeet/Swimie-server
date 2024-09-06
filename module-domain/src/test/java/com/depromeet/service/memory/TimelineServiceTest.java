@@ -81,7 +81,7 @@ public class TimelineServiceTest {
         LocalDate expectedCursorDate = lastDate.minusDays(10);
         // when
         TimelineSlice timelineSlice =
-                timelineService.getTimelineByMemberIdAndCursorAndDate(memberId, null, null, false);
+                timelineService.getTimelineByMemberIdAndCursorAndDate(memberId, null);
         // then
         List<Memory> timelineContents = timelineSlice.getTimelineContents();
         int pageSize = timelineSlice.getPageSize();
@@ -99,13 +99,12 @@ public class TimelineServiceTest {
     void 타임라인_최초조회이후_cursorRecordAt로_다음_페이지_조회() {
         // given
         TimelineSlice initTimelineSlice =
-                timelineService.getTimelineByMemberIdAndCursorAndDate(memberId, null, null, false);
+                timelineService.getTimelineByMemberIdAndCursorAndDate(memberId, null);
         LocalDate initCursorRecordAt = initTimelineSlice.getCursorRecordAt();
 
         // when
         TimelineSlice timelineSlice =
-                timelineService.getTimelineByMemberIdAndCursorAndDate(
-                        memberId, initCursorRecordAt, null, false);
+                timelineService.getTimelineByMemberIdAndCursorAndDate(memberId, initCursorRecordAt);
         // then
         List<Memory> timelineContents = timelineSlice.getTimelineContents();
         int pageSize = timelineSlice.getPageSize();

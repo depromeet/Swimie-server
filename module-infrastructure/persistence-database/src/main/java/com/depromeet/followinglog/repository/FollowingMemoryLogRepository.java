@@ -66,8 +66,13 @@ public class FollowingMemoryLogRepository implements FollowingMemoryLogPersisten
     }
 
     @Override
-    public void deleteAllByMemoryId(List<Long> memoryIds) {
+    public void deleteAllByMemoryIds(List<Long> memoryIds) {
         queryFactory.delete(followingMemoryLog).where(memoryIdIn(memoryIds)).execute();
+    }
+
+    @Override
+    public void deleteAllByMemoryId(Long memoryId) {
+        queryFactory.delete(followingMemoryLog).where(memoryIdEq(memoryId)).execute();
     }
 
     private BooleanExpression memoryIdIn(List<Long> memoryIds) {
@@ -75,6 +80,13 @@ public class FollowingMemoryLogRepository implements FollowingMemoryLogPersisten
             return null;
         }
         return followingMemoryLog.memory.id.in(memoryIds);
+    }
+
+    private BooleanExpression memoryIdEq(Long memoryId) {
+        if (memoryId == null) {
+            return null;
+        }
+        return followingMemoryLog.memory.id.eq(memoryId);
     }
 
     private BooleanExpression cursorIdLt(Long cursorId) {

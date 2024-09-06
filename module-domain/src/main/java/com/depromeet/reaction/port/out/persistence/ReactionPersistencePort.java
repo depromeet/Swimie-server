@@ -1,6 +1,7 @@
 package com.depromeet.reaction.port.out.persistence;
 
 import com.depromeet.reaction.domain.Reaction;
+import com.depromeet.reaction.domain.vo.ReactionCount;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +16,8 @@ public interface ReactionPersistencePort {
 
     Long getAllCountByMemoryId(Long memoryId);
 
+    List<ReactionCount> getAllCountByMemoryIds(List<Long> memoryIds);
+
     Optional<Reaction> getReactionById(Long reactionId);
 
     void deleteById(Long reactionId);
@@ -24,4 +27,6 @@ public interface ReactionPersistencePort {
     List<Long> findAllIdByMemoryIdOrMemberId(List<Long> memoryIds, Long memberId);
 
     void deleteAllById(List<Long> reactionIds);
+
+    List<Long> findAllIdByMemoryId(Long memoryId);
 }

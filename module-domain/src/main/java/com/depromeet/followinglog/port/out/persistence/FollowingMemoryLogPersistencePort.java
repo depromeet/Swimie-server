@@ -8,5 +8,7 @@ public interface FollowingMemoryLogPersistencePort {
 
     List<FollowingMemoryLog> findLogsByMemberIdAndCursorId(Long memberId, Long cursorId);
 
-    void deleteAllByMemoryId(List<Long> memoryIds);
+    void deleteAllByMemoryIds(List<Long> memoryIds);
+
+    void deleteAllByMemoryId(Long memoryId);
 }

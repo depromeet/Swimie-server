@@ -3,6 +3,7 @@ package com.depromeet.mock.image;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.image.domain.Image;
 import com.depromeet.image.domain.ImageUploadStatus;
+import com.depromeet.image.domain.vo.MemoryImageUrlVo;
 import com.depromeet.image.port.out.persistence.ImagePersistencePort;
 import com.depromeet.type.image.ImageErrorType;
 import java.util.ArrayList;
@@ -74,6 +75,11 @@ public class FakeImageRepository implements ImagePersistencePort {
     }
 
     @Override
+    public List<MemoryImageUrlVo> findByImageByMemoryIds(List<Long> memoryIds) {
+        return List.of();
+    }
+
+    @Override
     public Optional<Image> findById(Long id) {
         return data.stream().filter(image -> image.getId().equals(id)).findAny();
     }
@@ -129,6 +135,17 @@ public class FakeImageRepository implements ImagePersistencePort {
                 image -> {
                     if (image.getMemory().isPresent()
                             && memoryIds.contains(image.getMemory().get().getId())) {
+                        image.setMemoryNull();
+                    }
+                });
+    }
+
+    @Override
+    public void setNullByMemoryId(Long memoryId) {
+        data.forEach(
+                image -> {
+                    if (image.getMemory().isPresent()
+                            && image.getMemory().get().getId().equals(memoryId)) {
                         image.setMemoryNull();
                     }
                 });
