@@ -1,3 +1,9 @@
 package com.depromeet.blacklist.port.out;
 
-public interface BlacklistPersistencePort {}
+import java.util.List;
+
+public interface BlacklistPersistencePort {
+    List<Long> findBlackMemberIdsByMemberId(Long memberId);
+
+    List<Long> findMemberIdsByWhoBlockedMe(Long memberId);
+}

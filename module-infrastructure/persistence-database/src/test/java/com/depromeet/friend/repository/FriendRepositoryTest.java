@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.depromeet.TestQueryDslConfig;
 import com.depromeet.fixture.domain.member.MemberFixture;
 import com.depromeet.friend.domain.Friend;
-import com.depromeet.friend.domain.vo.FollowSlice;
 import com.depromeet.friend.domain.vo.Follower;
 import com.depromeet.friend.domain.vo.Following;
 import com.depromeet.member.domain.Member;
@@ -121,14 +120,14 @@ public class FriendRepositoryTest {
                 expectedFollowing.stream().map(Following::getName).toList();
 
         // when
-        FollowSlice<Following> result =
+        List<Following> result =
                 friendRepository.findFollowingsByMemberIdAndCursorId(member.getId(), null);
-        List<String> resultFollowingNames =
-                result.getFollowContents().stream().map(Following::getName).toList();
+        List<String> resultFollowingNames = result.stream().map(Following::getName).toList();
 
+        if (resultFollowingNames.size() > 10) {
+            resultFollowingNames.removeLast();
+        }
         // then
-        assertThat(result.getFollowContents()).isNotNull();
-        assertThat(result.getFollowContents()).hasSize(10);
         assertThat(resultFollowingNames)
                 .containsExactlyInAnyOrderElementsOf(expectedFollowingNames);
     }
@@ -157,14 +156,14 @@ public class FriendRepositoryTest {
                 expectedFollowers.stream().map(Follower::getName).toList();
 
         // when
-        FollowSlice<Follower> result =
+        List<Follower> result =
                 friendRepository.findFollowersByMemberIdAndCursorId(member.getId(), null);
-        List<String> resultFollowerNames =
-                result.getFollowContents().stream().map(Follower::getName).toList();
+        List<String> resultFollowerNames = result.stream().map(Follower::getName).toList();
+        if (resultFollowerNames.size() > 10) {
+            resultFollowerNames.removeLast();
+        }
 
         // then
-        assertThat(result.getFollowContents()).isNotNull();
-        assertThat(result.getFollowContents()).hasSize(10);
         assertThat(resultFollowerNames).containsExactlyInAnyOrderElementsOf(expectedFollowerNames);
     }
 

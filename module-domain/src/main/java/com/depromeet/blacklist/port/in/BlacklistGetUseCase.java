@@ -1,3 +1,7 @@
 package com.depromeet.blacklist.port.in;
 
-public interface BlacklistGetUseCase {}
+import java.util.Set;
+
+public interface BlacklistGetUseCase {
+    Set<Long> getHiddenMemberIds(Long memberId);
+}
