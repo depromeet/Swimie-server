@@ -8,7 +8,6 @@ public enum FollowErrorType implements ErrorType {
     INVALID_FOLLOW_TYPE("FOLLOW_3", "올바르지 않은 팔로우 타입입니다");
 
     private final String code;
-
     private final String message;
 
     FollowErrorType(String code, String message) {
