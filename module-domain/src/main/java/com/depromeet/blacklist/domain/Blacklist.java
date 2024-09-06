@@ -9,14 +9,14 @@ import lombok.Getter;
 public class Blacklist {
     private Long id;
     private Member member;
-    private Member blackTarget;
+    private Member blackMember;
     private LocalDateTime createdAt;
 
     @Builder
-    public Blacklist(Long id, Member member, Member blackTarget, LocalDateTime createdAt) {
+    public Blacklist(Long id, Member member, Member blackMember, LocalDateTime createdAt) {
         this.id = id;
         this.member = member;
-        this.blackTarget = blackTarget;
+        this.blackMember = blackMember;
         this.createdAt = createdAt;
     }
 }
