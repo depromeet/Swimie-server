@@ -41,7 +41,7 @@ public class BlacklistRepository implements BlacklistPersistencePort {
     }
 
     @Override
-    public List<Long> findMemberIdsByWhoBlockedMe(Long memberId) {
+    public List<Long> findMemberIdsWhoBlockedMe(Long memberId) {
         return queryFactory
                 .select(blacklistEntity.member.id)
                 .from(blacklistEntity)

@@ -40,7 +40,7 @@ public class BlacklistService implements BlacklistQueryUseCase, BlacklistCommand
     }
 
     @Override
-    public Set<Long> getHiddenMemberIds(Long memberId) {
+    public Set<Long> getBlackMemberIds(Long memberId) {
         List<Long> blackMemberIds = getBlackMemberIdsByMemberId(memberId);
         List<Long> memberIdsWhoBlockedMe = getMemberIdsWhoBlockedMe(memberId);
 
@@ -54,6 +54,6 @@ public class BlacklistService implements BlacklistQueryUseCase, BlacklistCommand
     }
 
     private List<Long> getMemberIdsWhoBlockedMe(Long memberId) {
-        return blacklistPersistencePort.findMemberIdsByWhoBlockedMe(memberId);
+        return blacklistPersistencePort.findMemberIdsWhoBlockedMe(memberId);
     }
 }

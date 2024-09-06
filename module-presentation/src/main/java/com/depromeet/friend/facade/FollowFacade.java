@@ -43,11 +43,11 @@ public class FollowFacade {
     public FollowSliceResponse<FollowingResponse> findFollowingList(Long memberId, Long cursorId) {
         FollowSlice<Following> followingSlice =
                 followUseCase.getFollowingByMemberIdAndCursorId(memberId, cursorId);
-        Set<Long> hiddenMemberIds = blacklistQueryUseCase.getHiddenMemberIds(memberId);
+        Set<Long> blackMemberIds = blacklistQueryUseCase.getBlackMemberIds(memberId);
 
         List<Following> filteredFollowings =
                 followingSlice.getFollowContents().stream()
-                        .filter(following -> !hiddenMemberIds.contains(following.getMemberId()))
+                        .filter(following -> !blackMemberIds.contains(following.getMemberId()))
                         .toList();
 
         return FollowSliceResponse.toFollowingSliceResponse(
@@ -57,10 +57,10 @@ public class FollowFacade {
     public FollowSliceResponse<FollowerResponse> findFollowerList(Long memberId, Long cursorId) {
         FollowSlice<Follower> followerSlice =
                 followUseCase.getFollowerByMemberIdAndCursorId(memberId, cursorId);
-        Set<Long> hiddenMemberIds = blacklistQueryUseCase.getHiddenMemberIds(memberId);
+        Set<Long> blackMemberIds = blacklistQueryUseCase.getBlackMemberIds(memberId);
         List<Follower> filteredFollowers =
                 followerSlice.getFollowContents().stream()
-                        .filter(following -> !hiddenMemberIds.contains(following.getMemberId()))
+                        .filter(following -> !blackMemberIds.contains(following.getMemberId()))
                         .toList();
 
         return FollowSliceResponse.toFollowerSliceResponses(

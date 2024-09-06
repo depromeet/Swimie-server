@@ -12,5 +12,5 @@ public interface BlacklistPersistencePort {
 
     List<Long> findBlackMemberIdsByMemberId(Long memberId);
 
-    List<Long> findMemberIdsByWhoBlockedMe(Long memberId);
+    List<Long> findMemberIdsWhoBlockedMe(Long memberId);
 }
