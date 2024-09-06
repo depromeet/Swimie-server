@@ -14,6 +14,7 @@ import com.depromeet.pool.entity.FavoritePoolEntity;
 import com.depromeet.pool.entity.PoolEntity;
 import com.depromeet.pool.entity.PoolSearchEntity;
 import com.depromeet.pool.port.out.persistence.PoolPersistencePort;
+import com.depromeet.util.CustomFunction;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -40,7 +41,8 @@ public class PoolRepository implements PoolPersistencePort {
                 queryFactory
                         .selectFrom(poolEntity)
                         .where(
-                                nameLike(nameQuery),
+                                CustomFunction.match(poolEntity.name, nameQuery),
+                                // nameLike(nameQuery),
                                 poolIdNotIn(favoritePoolIds),
                                 goePoolId(cursorId))
                         .limit(limit + 1)
