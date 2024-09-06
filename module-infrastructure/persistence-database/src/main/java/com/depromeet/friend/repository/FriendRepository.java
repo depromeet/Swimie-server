@@ -1,7 +1,6 @@
 package com.depromeet.friend.repository;
 
 import static com.depromeet.friend.entity.QFriendEntity.friendEntity;
-import static com.querydsl.jpa.JPAExpressions.select;
 
 import com.depromeet.friend.domain.Friend;
 import com.depromeet.friend.domain.vo.*;
@@ -10,10 +9,8 @@ import com.depromeet.friend.entity.QFriendEntity;
 import com.depromeet.friend.port.out.persistence.FriendPersistencePort;
 import com.depromeet.member.entity.QMemberEntity;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
@@ -107,7 +104,6 @@ public class FriendRepository implements FriendPersistencePort {
 
     @Override
     public FollowSlice<Follower> findFollowersByMemberIdAndCursorId(Long memberId, Long cursorId) {
-        QFriendEntity subFriend = new QFriendEntity("sub");
         List<Follower> result =
                 queryFactory
                         .select(
@@ -117,16 +113,7 @@ public class FriendRepository implements FriendPersistencePort {
                                         friend.member.id.as("memberId"),
                                         friend.member.nickname.as("name"),
                                         friend.member.profileImageUrl.as("profileImageUrl"),
-                                        friend.member.introduction.as("introduction"),
-                                        ExpressionUtils.as(
-                                                select(Expressions.constant(true))
-                                                        .from(subFriend)
-                                                        .where(
-                                                                friend.member.id.eq(
-                                                                        subFriend.following.id),
-                                                                friend.following.id.eq(
-                                                                        subFriend.member.id)),
-                                                "hasFollowedBack")))
+                                        friend.member.introduction.as("introduction")))
                         .from(friend)
                         .where(friend.following.id.eq(memberId), ltCursorId(cursorId))
                         .limit(11)

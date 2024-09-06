@@ -56,29 +56,15 @@ public record FollowSliceResponse<T>(
         return followingSlice.getFollowContents().stream()
                 .map(
                         following ->
-                                FollowingResponse.builder()
-                                        .memberId(following.getMemberId())
-                                        .nickname(following.getName())
-                                        .profileImageUrl(
-                                                following.getProfileImageUrl(profileImageOrigin))
-                                        .introduction(following.getIntroduction())
-                                        .build())
+                                FollowingResponse.toFollowingResponse(
+                                        following, profileImageOrigin))
                 .toList();
     }
 
     private static List<FollowerResponse> getFollowerResponses(
             FollowSlice<Follower> followingSlice, String profileImageOrigin) {
         return followingSlice.getFollowContents().stream()
-                .map(
-                        follower ->
-                                FollowerResponse.builder()
-                                        .memberId(follower.getMemberId())
-                                        .nickname(follower.getName())
-                                        .profileImageUrl(
-                                                follower.getProfileImageUrl(profileImageOrigin))
-                                        .introduction(follower.getIntroduction())
-                                        .hasFollowedBack(follower.isHasFollowedBack())
-                                        .build())
+                .map(follower -> FollowerResponse.toFollowerResponse(follower, profileImageOrigin))
                 .toList();
     }
 }
