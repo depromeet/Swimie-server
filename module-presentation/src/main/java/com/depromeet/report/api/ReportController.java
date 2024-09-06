@@ -6,6 +6,7 @@ import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.report.dto.request.ReportRequest;
 import com.depromeet.report.facade.ReportFacade;
 import com.depromeet.type.report.ReportSuccessType;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +21,8 @@ public class ReportController implements ReportApi {
 
     @PostMapping
     @Logging(item = "Report", action = "POST")
-    public ApiResponse<?> create(@LoginMember Long memberId, @RequestBody ReportRequest request) {
+    public ApiResponse<?> create(
+            @LoginMember Long memberId, @Valid @RequestBody ReportRequest request) {
         reportFacade.save(memberId, request);
         return ApiResponse.success(ReportSuccessType.POST_RESULT_SUCCESS);
     }
