@@ -1,5 +1,6 @@
 package com.depromeet.friend.facade;
 
+import com.depromeet.blacklist.port.in.BlacklistGetUseCase;
 import com.depromeet.friend.domain.vo.FollowCheck;
 import com.depromeet.friend.domain.vo.FollowSlice;
 import com.depromeet.friend.domain.vo.Follower;
@@ -11,6 +12,7 @@ import com.depromeet.member.domain.Member;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
 import com.depromeet.notification.event.FollowLogEvent;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FollowFacade {
     private final FollowUseCase followUseCase;
     private final MemberUseCase memberUseCase;
+    private final BlacklistGetUseCase blacklistGetUseCase;
     private final ApplicationEventPublisher eventPublisher;
 
     @Value("${cloud-front.domain}")
@@ -40,13 +43,28 @@ public class FollowFacade {
     public FollowSliceResponse<FollowingResponse> findFollowingList(Long memberId, Long cursorId) {
         FollowSlice<Following> followingSlice =
                 followUseCase.getFollowingByMemberIdAndCursorId(memberId, cursorId);
-        return FollowSliceResponse.toFollowingSliceResponse(followingSlice, profileImageOrigin);
+        Set<Long> hiddenMemberIds = blacklistGetUseCase.getHiddenMemberIds(memberId);
+
+        List<Following> filteredFollowings =
+                followingSlice.getFollowContents().stream()
+                        .filter(following -> !hiddenMemberIds.contains(following.getMemberId()))
+                        .toList();
+
+        return FollowSliceResponse.toFollowingSliceResponse(
+                followingSlice, filteredFollowings, profileImageOrigin);
     }
 
     public FollowSliceResponse<FollowerResponse> findFollowerList(Long memberId, Long cursorId) {
         FollowSlice<Follower> followerSlice =
                 followUseCase.getFollowerByMemberIdAndCursorId(memberId, cursorId);
-        return FollowSliceResponse.toFollowerSliceResponses(followerSlice, profileImageOrigin);
+        Set<Long> hiddenMemberIds = blacklistGetUseCase.getHiddenMemberIds(memberId);
+        List<Follower> filteredFollowers =
+                followerSlice.getFollowContents().stream()
+                        .filter(following -> !hiddenMemberIds.contains(following.getMemberId()))
+                        .toList();
+
+        return FollowSliceResponse.toFollowerSliceResponses(
+                followerSlice, filteredFollowers, profileImageOrigin);
     }
 
     public FollowingSummaryResponse findFollowingSummary(Long memberId) {

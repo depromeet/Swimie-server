@@ -1,6 +1,7 @@
 package com.depromeet.friend.repository;
 
 import static com.depromeet.friend.entity.QFriendEntity.friendEntity;
+import static com.querydsl.jpa.JPAExpressions.select;
 
 import com.depromeet.friend.domain.Friend;
 import com.depromeet.friend.domain.vo.*;
@@ -9,11 +10,12 @@ import com.depromeet.friend.entity.QFriendEntity;
 import com.depromeet.friend.port.out.persistence.FriendPersistencePort;
 import com.depromeet.member.entity.QMemberEntity;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -68,72 +70,48 @@ public class FriendRepository implements FriendPersistencePort {
     }
 
     @Override
-    public FollowSlice<Following> findFollowingsByMemberIdAndCursorId(
-            Long memberId, Long cursorId) {
-        List<Following> content =
-                queryFactory
-                        .select(
-                                Projections.constructor(
-                                        Following.class,
-                                        friend.id.as("friendId"),
-                                        friend.following.id.as("memberId"),
-                                        friend.following.nickname.as("name"),
-                                        friend.following.profileImageUrl.as("profileImageUrl"),
-                                        friend.following.introduction.as("introduction")))
-                        .from(friend)
-                        .where(friend.member.id.eq(memberId), ltCursorId(cursorId))
-                        .limit(11)
-                        .orderBy(friend.id.desc())
-                        .fetch();
-
-        boolean hasNext = false;
-        Long nextCursorId = null;
-        if (content.size() > 10) {
-            content = new ArrayList<>(content);
-            content.removeLast();
-            hasNext = true;
-            nextCursorId = content.getLast().getFriendId();
-        }
-        return FollowSlice.<Following>builder()
-                .followContents(content)
-                .pageSize(content.size())
-                .cursorId(nextCursorId)
-                .hasNext(hasNext)
-                .build();
+    public List<Following> findFollowingsByMemberIdAndCursorId(Long memberId, Long cursorId) {
+        return queryFactory
+                .select(
+                        Projections.constructor(
+                                Following.class,
+                                friend.id.as("friendId"),
+                                friend.following.id.as("memberId"),
+                                friend.following.nickname.as("name"),
+                                friend.following.profileImageUrl.as("profileImageUrl"),
+                                friend.following.introduction.as("introduction")))
+                .from(friend)
+                .where(friend.member.id.eq(memberId), ltCursorId(cursorId))
+                .limit(11)
+                .orderBy(friend.id.desc())
+                .fetch();
     }
 
     @Override
-    public FollowSlice<Follower> findFollowersByMemberIdAndCursorId(Long memberId, Long cursorId) {
-        List<Follower> result =
-                queryFactory
-                        .select(
-                                Projections.constructor(
-                                        Follower.class,
-                                        friend.id.as("friendId"),
-                                        friend.member.id.as("memberId"),
-                                        friend.member.nickname.as("name"),
-                                        friend.member.profileImageUrl.as("profileImageUrl"),
-                                        friend.member.introduction.as("introduction")))
-                        .from(friend)
-                        .where(friend.following.id.eq(memberId), ltCursorId(cursorId))
-                        .limit(11)
-                        .orderBy(friend.id.desc())
-                        .fetch();
-
-        boolean hasNext = false;
-        Long nextCursorId = null;
-        if (result.size() > 10) {
-            result = new ArrayList<>(result);
-            result.removeLast();
-            hasNext = true;
-            nextCursorId = result.getLast().getFriendId();
-        }
-        return FollowSlice.<Follower>builder()
-                .followContents(result)
-                .pageSize(result.size())
-                .cursorId(nextCursorId)
-                .hasNext(hasNext)
-                .build();
+    public List<Follower> findFollowersByMemberIdAndCursorId(Long memberId, Long cursorId) {
+        QFriendEntity subFriend = new QFriendEntity("sub");
+        return queryFactory
+                .select(
+                        Projections.constructor(
+                                Follower.class,
+                                friend.id.as("friendId"),
+                                friend.member.id.as("memberId"),
+                                friend.member.nickname.as("name"),
+                                friend.member.profileImageUrl.as("profileImageUrl"),
+                                friend.member.introduction.as("introduction"),
+                                ExpressionUtils.as(
+                                        select(Expressions.constant(true))
+                                                .from(subFriend)
+                                                .where(
+                                                        friend.member.id.eq(subFriend.following.id),
+                                                        friend.following.id.eq(
+                                                                subFriend.member.id)),
+                                        "hasFollowedBack")))
+                .from(friend)
+                .where(friend.following.id.eq(memberId), ltCursorId(cursorId))
+                .limit(11)
+                .orderBy(friend.id.desc())
+                .fetch();
     }
 
     @Override
