@@ -10,6 +10,7 @@ import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.MemoryDetail;
 import com.depromeet.memory.domain.Stroke;
 import com.depromeet.memory.domain.vo.MemoryAndDetailId;
+import com.depromeet.memory.domain.vo.MemoryIdAndDiaryAndMember;
 import com.depromeet.memory.domain.vo.MemoryInfo;
 import com.depromeet.memory.port.in.command.CreateMemoryCommand;
 import com.depromeet.memory.port.in.command.UpdateMemoryCommand;
@@ -108,6 +109,13 @@ public class MemoryService
     @Override
     public MemoryAndDetailId findMemoryAndDetailIdsByMemberId(Long memberId) {
         return memoryPersistencePort.findMemoryAndDetailIdsByMemberId(memberId);
+    }
+
+    @Override
+    public MemoryIdAndDiaryAndMember findIdAndNicknameById(Long memberId) {
+        return memoryPersistencePort
+                .findIdAndNicknameById(memberId)
+                .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND));
     }
 
     @Override

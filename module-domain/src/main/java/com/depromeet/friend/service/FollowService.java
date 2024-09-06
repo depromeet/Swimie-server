@@ -7,6 +7,7 @@ import com.depromeet.friend.port.in.FollowUseCase;
 import com.depromeet.friend.port.out.persistence.FriendPersistencePort;
 import com.depromeet.member.domain.Member;
 import com.depromeet.type.friend.FollowErrorType;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -39,12 +40,42 @@ public class FollowService implements FollowUseCase {
 
     @Override
     public FollowSlice<Following> getFollowingByMemberIdAndCursorId(Long memberId, Long cursorId) {
-        return friendPersistencePort.findFollowingsByMemberIdAndCursorId(memberId, cursorId);
+        List<Following> followings =
+                friendPersistencePort.findFollowingsByMemberIdAndCursorId(memberId, cursorId);
+
+        boolean hasNext = false;
+        Long nextCursorId = null;
+        if (followings.size() > 10) {
+            followings = new ArrayList<>(followings);
+            followings.removeLast();
+            hasNext = true;
+            nextCursorId = followings.getLast().getFriendId();
+        }
+        return FollowSlice.<Following>builder()
+                .followContents(followings)
+                .cursorId(nextCursorId)
+                .hasNext(hasNext)
+                .build();
     }
 
     @Override
     public FollowSlice<Follower> getFollowerByMemberIdAndCursorId(Long memberId, Long cursorId) {
-        return friendPersistencePort.findFollowersByMemberIdAndCursorId(memberId, cursorId);
+        List<Follower> followers =
+                friendPersistencePort.findFollowersByMemberIdAndCursorId(memberId, cursorId);
+
+        boolean hasNext = false;
+        Long nextCursorId = null;
+        if (followers.size() > 10) {
+            followers = new ArrayList<>(followers);
+            followers.removeLast();
+            hasNext = true;
+            nextCursorId = followers.getLast().getFriendId();
+        }
+        return FollowSlice.<Follower>builder()
+                .followContents(followers)
+                .cursorId(nextCursorId)
+                .hasNext(hasNext)
+                .build();
     }
 
     @Override

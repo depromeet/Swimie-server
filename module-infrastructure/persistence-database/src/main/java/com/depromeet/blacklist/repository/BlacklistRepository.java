@@ -1,6 +1,7 @@
 package com.depromeet.blacklist.repository;
 
 import static com.depromeet.blacklist.entity.QBlacklistEntity.*;
+import static com.depromeet.blacklist.entity.QBlacklistEntity.blacklistEntity;
 
 import com.depromeet.blacklist.domain.Blacklist;
 import com.depromeet.blacklist.entity.BlacklistEntity;
@@ -68,5 +69,23 @@ public class BlacklistRepository implements BlacklistPersistencePort {
             return null;
         }
         return blacklistEntity.blackMember.id.loe(cursorId);
+    }
+
+    @Override
+    public List<Long> findBlackMemberIdsByMemberId(Long memberId) {
+        return queryFactory
+                .select(blacklistEntity.blackMember.id)
+                .from(blacklistEntity)
+                .where(blacklistEntity.member.id.eq(memberId))
+                .fetch();
+    }
+
+    @Override
+    public List<Long> findMemberIdsWhoBlockedMe(Long memberId) {
+        return queryFactory
+                .select(blacklistEntity.member.id)
+                .from(blacklistEntity)
+                .where(blacklistEntity.blackMember.id.eq(memberId))
+                .fetch();
     }
 }

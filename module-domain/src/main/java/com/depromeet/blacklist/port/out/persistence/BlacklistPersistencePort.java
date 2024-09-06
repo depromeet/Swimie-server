@@ -12,4 +12,8 @@ public interface BlacklistPersistencePort {
     void unblackMember(Long memberId, Long blackMemberId);
 
     List<Member> findBlackMembers(Long memberId, Long cursorId);
+
+    List<Long> findBlackMemberIdsByMemberId(Long memberId);
+
+    List<Long> findMemberIdsWhoBlockedMe(Long memberId);
 }

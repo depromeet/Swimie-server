@@ -2,6 +2,7 @@ package com.depromeet.memory.port.out.persistence;
 
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.vo.MemoryAndDetailId;
+import com.depromeet.memory.domain.vo.MemoryIdAndDiaryAndMember;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -36,4 +37,6 @@ public interface MemoryPersistencePort {
     MemoryAndDetailId findMemoryAndDetailIdsByMemberId(Long memberId);
 
     void deleteById(Long memoryId);
+
+    Optional<MemoryIdAndDiaryAndMember> findIdAndNicknameById(Long memberId);
 }

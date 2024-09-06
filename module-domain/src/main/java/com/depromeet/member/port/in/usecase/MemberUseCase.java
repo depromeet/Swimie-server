@@ -1,6 +1,7 @@
 package com.depromeet.member.port.in.usecase;
 
 import com.depromeet.member.domain.Member;
+import com.depromeet.member.domain.vo.MemberIdAndNickname;
 import com.depromeet.member.domain.vo.MemberSearchPage;
 import com.depromeet.member.port.in.command.SocialMemberCommand;
 
@@ -16,4 +17,6 @@ public interface MemberUseCase {
     Member findByProviderId(String providerId);
 
     Member createMemberBy(SocialMemberCommand command);
+
+    MemberIdAndNickname findIdAndNicknameById(Long memberId);
 }
