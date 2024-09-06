@@ -7,6 +7,7 @@ import com.depromeet.exception.NotFoundException;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.domain.MemberRole;
+import com.depromeet.member.domain.vo.MemberIdAndNickname;
 import com.depromeet.member.domain.vo.MemberSearchPage;
 import com.depromeet.member.port.in.command.SocialMemberCommand;
 import com.depromeet.member.port.in.command.UpdateMemberCommand;
@@ -80,6 +81,13 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUp
                         .profileImageUrl(command.defaultProfile())
                         .build();
         return memberPersistencePort.save(member);
+    }
+
+    @Override
+    public MemberIdAndNickname findIdAndNicknameById(Long memberId) {
+        return memberPersistencePort
+                .findIdAndNicknameById(memberId)
+                .orElseThrow(() -> new NotFoundException(MemberErrorType.NOT_FOUND));
     }
 
     @Override
