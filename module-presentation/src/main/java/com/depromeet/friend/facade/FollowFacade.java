@@ -1,6 +1,6 @@
 package com.depromeet.friend.facade;
 
-import com.depromeet.blacklist.port.in.BlacklistGetUseCase;
+import com.depromeet.blacklist.port.in.usecase.BlacklistQueryUseCase;
 import com.depromeet.friend.domain.vo.FollowCheck;
 import com.depromeet.friend.domain.vo.FollowSlice;
 import com.depromeet.friend.domain.vo.Follower;
@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FollowFacade {
     private final FollowUseCase followUseCase;
     private final MemberUseCase memberUseCase;
-    private final BlacklistGetUseCase blacklistGetUseCase;
+    private final BlacklistQueryUseCase blacklistQueryUseCase;
     private final ApplicationEventPublisher eventPublisher;
 
     @Value("${cloud-front.domain}")
@@ -43,7 +43,7 @@ public class FollowFacade {
     public FollowSliceResponse<FollowingResponse> findFollowingList(Long memberId, Long cursorId) {
         FollowSlice<Following> followingSlice =
                 followUseCase.getFollowingByMemberIdAndCursorId(memberId, cursorId);
-        Set<Long> hiddenMemberIds = blacklistGetUseCase.getHiddenMemberIds(memberId);
+        Set<Long> hiddenMemberIds = blacklistQueryUseCase.getHiddenMemberIds(memberId);
 
         List<Following> filteredFollowings =
                 followingSlice.getFollowContents().stream()
@@ -57,7 +57,7 @@ public class FollowFacade {
     public FollowSliceResponse<FollowerResponse> findFollowerList(Long memberId, Long cursorId) {
         FollowSlice<Follower> followerSlice =
                 followUseCase.getFollowerByMemberIdAndCursorId(memberId, cursorId);
-        Set<Long> hiddenMemberIds = blacklistGetUseCase.getHiddenMemberIds(memberId);
+        Set<Long> hiddenMemberIds = blacklistQueryUseCase.getHiddenMemberIds(memberId);
         List<Follower> filteredFollowers =
                 followerSlice.getFollowContents().stream()
                         .filter(following -> !hiddenMemberIds.contains(following.getMemberId()))
