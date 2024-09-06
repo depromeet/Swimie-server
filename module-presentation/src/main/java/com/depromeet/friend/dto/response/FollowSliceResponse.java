@@ -28,32 +28,36 @@ public record FollowSliceResponse<T>(
     public FollowSliceResponse {}
 
     public static FollowSliceResponse<FollowingResponse> toFollowingSliceResponse(
-            FollowSlice<Following> followingSlice, String profileImageDomain) {
+            FollowSlice<Following> followingSlice,
+            List<Following> filteredFollowings,
+            String profileImageDomain) {
         List<FollowingResponse> followingResponses =
-                getFollowingResponses(followingSlice, profileImageDomain);
+                getFollowingResponses(filteredFollowings, profileImageDomain);
         return FollowSliceResponse.<FollowingResponse>builder()
                 .contents(followingResponses)
-                .pageSize(followingSlice.getPageSize())
+                .pageSize(followingResponses.size())
                 .cursorId(followingSlice.getCursorId())
                 .hasNext(followingSlice.isHasNext())
                 .build();
     }
 
     public static FollowSliceResponse<FollowerResponse> toFollowerSliceResponses(
-            FollowSlice<Follower> followingSlice, String profileImageOrigin) {
-        List<FollowerResponse> followingResponses =
-                getFollowerResponses(followingSlice, profileImageOrigin);
+            FollowSlice<Follower> followingSlice,
+            List<Follower> filteredFollowers,
+            String profileImageOrigin) {
+        List<FollowerResponse> followerResponses =
+                getFollowerResponses(filteredFollowers, profileImageOrigin);
         return FollowSliceResponse.<FollowerResponse>builder()
-                .contents(followingResponses)
-                .pageSize(followingSlice.getPageSize())
+                .contents(followerResponses)
+                .pageSize(followerResponses.size())
                 .cursorId(followingSlice.getCursorId())
                 .hasNext(followingSlice.isHasNext())
                 .build();
     }
 
     private static List<FollowingResponse> getFollowingResponses(
-            FollowSlice<Following> followingSlice, String profileImageOrigin) {
-        return followingSlice.getFollowContents().stream()
+            List<Following> followings, String profileImageOrigin) {
+        return followings.stream()
                 .map(
                         following ->
                                 FollowingResponse.builder()
@@ -67,8 +71,8 @@ public record FollowSliceResponse<T>(
     }
 
     private static List<FollowerResponse> getFollowerResponses(
-            FollowSlice<Follower> followingSlice, String profileImageOrigin) {
-        return followingSlice.getFollowContents().stream()
+            List<Follower> followers, String profileImageOrigin) {
+        return followers.stream()
                 .map(
                         follower ->
                                 FollowerResponse.builder()

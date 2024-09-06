@@ -9,3 +9,6 @@ google:
     application-name: ${GOOGLE_SHEET_APPLICATION_NAME}
     sheet-id: ${GOOGLE_SHEET_ID}
     range: ${GOOGLE_SHEET_RANGE}
+    report-application-name: ${GOOGLE_SHEET_REPORT_APPLICATION_NAME}
+    report-sheet-id: ${GOOGLE_SHEET_REPORT_ID}
+    report-range: ${GOOGLE_SHEET_REPORT_RANGE}

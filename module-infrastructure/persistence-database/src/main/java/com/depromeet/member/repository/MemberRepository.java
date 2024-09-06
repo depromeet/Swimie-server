@@ -3,12 +3,14 @@ package com.depromeet.member.repository;
 import com.depromeet.friend.entity.QFriendEntity;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
+import com.depromeet.member.domain.vo.MemberIdAndNickname;
 import com.depromeet.member.domain.vo.MemberSearchInfo;
 import com.depromeet.member.domain.vo.MemberSearchPage;
 import com.depromeet.member.entity.MemberEntity;
 import com.depromeet.member.entity.QMemberEntity;
 import com.depromeet.member.port.in.command.UpdateMemberCommand;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -148,6 +150,21 @@ public class MemberRepository implements MemberPersistencePort {
         return memberJpaRepository
                 .findById(memberId)
                 .map(memberEntity -> memberEntity.updateProfileImageUrl(profileImageUrl).toModel());
+    }
+
+    @Override
+    public Optional<MemberIdAndNickname> findIdAndNicknameById(Long memberId) {
+        Tuple result =
+                queryFactory
+                        .select(member.id, member.nickname)
+                        .from(member)
+                        .where(member.id.eq(memberId))
+                        .fetchOne();
+        if (result == null) {
+            return Optional.empty();
+        }
+        return Optional.of(
+                new MemberIdAndNickname(result.get(0, Long.class), result.get(1, String.class)));
     }
 
     @Override
