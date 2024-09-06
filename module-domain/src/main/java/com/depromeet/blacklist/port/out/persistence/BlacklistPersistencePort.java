@@ -6,4 +6,6 @@ public interface BlacklistPersistencePort {
     Blacklist save(Blacklist blacklist);
 
     boolean existsByMemberIdAndBlackMemberId(Long memberId, Long blackMemberId);
+
+    void unblackMember(Long memberId, Long blackMemberId);
 }

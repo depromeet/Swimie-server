@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BlacklistJpaRepository extends JpaRepository<BlacklistEntity, Long> {
     boolean existsByMemberIdAndBlackMemberId(Long memberId, Long blackMemberId);
+
+    void deleteByMemberIdAndBlackMemberId(Long memberId, Long blackMemberId);
 }

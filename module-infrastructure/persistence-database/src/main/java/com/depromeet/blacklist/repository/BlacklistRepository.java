@@ -20,4 +20,9 @@ public class BlacklistRepository implements BlacklistPersistencePort {
     public boolean existsByMemberIdAndBlackMemberId(Long memberId, Long blackMemberId) {
         return blacklistJpaRepository.existsByMemberIdAndBlackMemberId(memberId, blackMemberId);
     }
+
+    @Override
+    public void unblackMember(Long memberId, Long blackMemberId) {
+        blacklistJpaRepository.deleteByMemberIdAndBlackMemberId(memberId, blackMemberId);
+    }
 }

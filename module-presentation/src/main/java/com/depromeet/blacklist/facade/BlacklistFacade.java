@@ -25,4 +25,8 @@ public class BlacklistFacade {
 
         blacklistCommandUseCase.blackMember(memberId, blackMemberId);
     }
+
+    public void unblackMember(Long memberId, Long blackMemberId) {
+        blacklistCommandUseCase.unblackMember(memberId, blackMemberId);
+    }
 }
