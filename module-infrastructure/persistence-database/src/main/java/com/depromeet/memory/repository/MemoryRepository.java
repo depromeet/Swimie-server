@@ -6,8 +6,10 @@ import static com.depromeet.memory.entity.QMemoryDetailEntity.memoryDetailEntity
 import static com.depromeet.memory.entity.QStrokeEntity.strokeEntity;
 import static com.depromeet.pool.entity.QPoolEntity.poolEntity;
 
+import com.depromeet.member.domain.vo.MemberIdAndNickname;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.vo.MemoryAndDetailId;
+import com.depromeet.memory.domain.vo.MemoryIdAndDiaryAndMember;
 import com.depromeet.memory.entity.MemoryEntity;
 import com.depromeet.memory.entity.QMemoryEntity;
 import com.depromeet.memory.port.out.persistence.MemoryPersistencePort;
@@ -214,6 +216,25 @@ public class MemoryRepository implements MemoryPersistencePort {
     @Override
     public void deleteById(Long memoryId) {
         memoryJpaRepository.deleteById(memoryId);
+    }
+
+    @Override
+    public Optional<MemoryIdAndDiaryAndMember> findIdAndNicknameById(Long memoryId) {
+        Tuple result =
+                queryFactory
+                        .select(memory.id, memory.diary, memory.member.id, memory.member.nickname)
+                        .from(memory)
+                        .join(memory.member, memberEntity)
+                        .where(memory.id.eq(memoryId))
+                        .fetchOne();
+        if (result == null) {
+            return Optional.empty();
+        }
+        MemberIdAndNickname member =
+                new MemberIdAndNickname(result.get(2, Long.class), result.get(3, String.class));
+        return Optional.of(
+                new MemoryIdAndDiaryAndMember(
+                        result.get(0, Long.class), result.get(1, String.class), member));
     }
 
     private BooleanExpression loeRecordAt(LocalDate recordAt) {
