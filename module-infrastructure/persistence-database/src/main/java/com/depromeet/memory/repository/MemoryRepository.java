@@ -211,6 +211,11 @@ public class MemoryRepository implements MemoryPersistencePort {
         return new MemoryAndDetailId(memoryIds, memoryDetailIds);
     }
 
+    @Override
+    public void deleteById(Long memoryId) {
+        memoryJpaRepository.deleteById(memoryId);
+    }
+
     private BooleanExpression loeRecordAt(LocalDate recordAt) {
         if (recordAt == null) {
             return null;
