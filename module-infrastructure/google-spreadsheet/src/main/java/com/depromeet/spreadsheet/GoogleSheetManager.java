@@ -135,9 +135,7 @@ public class GoogleSheetManager implements WithdrawalReasonPort, ReportPersisten
     }
 
     private static String getDateTimeNow() {
-        String date =
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        return date;
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     private String getImagesUrl(List<Image> images) {
