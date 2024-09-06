@@ -2,6 +2,7 @@ package com.depromeet.member.port.out.persistence;
 
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
+import com.depromeet.member.domain.vo.MemberIdAndNickname;
 import com.depromeet.member.domain.vo.MemberSearchPage;
 import com.depromeet.member.port.in.command.UpdateMemberCommand;
 import java.util.Optional;
@@ -30,4 +31,6 @@ public interface MemberPersistencePort {
     Optional<Member> update(UpdateMemberCommand command);
 
     Optional<Member> updateProfileImageUrl(Long memberId, String profileImageUrl);
+
+    Optional<MemberIdAndNickname> findIdAndNicknameById(Long memberId);
 }
