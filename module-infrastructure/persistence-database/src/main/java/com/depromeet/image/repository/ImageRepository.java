@@ -53,10 +53,10 @@ public class ImageRepository implements ImagePersistencePort {
                         Projections.constructor(
                                 MemoryImageUrlVo.class,
                                 imageEntity.memory.id.as("memoryId"),
+                                imageEntity.id.as("imageId"),
                                 imageEntity.imageName.as("imageName")))
                 .from(imageEntity)
                 .where(imageEntity.memory.id.in(memoryIds))
-                .groupBy(imageEntity.memory)
                 .fetch();
     }
 
