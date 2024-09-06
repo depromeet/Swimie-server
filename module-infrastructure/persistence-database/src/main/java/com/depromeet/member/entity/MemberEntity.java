@@ -69,6 +69,13 @@ public class MemberEntity {
         this.lastViewedFollowingLogAt = lastViewedFollowingLogAt;
     }
 
+    public MemberEntity(Long id, String nickname, String profileImageUrl, String introduction) {
+        this.id = id;
+        this.nickname = nickname;
+        this.profileImageUrl = profileImageUrl;
+        this.introduction = introduction;
+    }
+
     @PrePersist
     public void prePersist() {
         this.goal = 1000;
