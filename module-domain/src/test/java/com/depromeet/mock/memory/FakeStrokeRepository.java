@@ -40,7 +40,12 @@ public class FakeStrokeRepository implements StrokePersistencePort {
     }
 
     @Override
-    public void deleteAllByMemoryId(List<Long> memoryIds) {
+    public void deleteAllByMemoryIds(List<Long> memoryIds) {
         data.removeIf(item -> memoryIds.contains(item.getMemory().getId()));
+    }
+
+    @Override
+    public void deleteAllByMemoryId(Long memoryId) {
+        data.removeIf(item -> item.getMemory().getId().equals(memoryId));
     }
 }
