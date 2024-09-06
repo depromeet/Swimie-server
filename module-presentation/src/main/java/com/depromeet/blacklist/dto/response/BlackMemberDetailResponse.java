@@ -34,23 +34,8 @@ public record BlackMemberDetailResponse(
                                 new BlackMemberDetailResponse(
                                         member.getId(),
                                         member.getNickname(),
-                                        getProfileImageUrl(member, domain),
+                                        member.getProfileImageUrl(domain),
                                         member.getIntroduction()))
                 .toList();
-    }
-
-    private static String getProfileImageUrl(Member member, String domain) {
-        if (member.getProfileImageUrl() == null) {
-            return null;
-        }
-        if (isDefaultImage(member)) {
-            return member.getProfileImageUrl();
-        }
-        return domain + "/" + member.getProfileImageUrl();
-    }
-
-    private static boolean isDefaultImage(Member member) {
-        String url = member.getProfileImageUrl();
-        return url.equals("1") || url.equals("2") || url.equals("3") || url.equals("4");
     }
 }
