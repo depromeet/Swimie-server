@@ -31,19 +31,19 @@ public class BlacklistEntity extends BaseTimeEntity {
 
     @JoinColumn(name = "black_target_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private MemberEntity blackTarget;
+    private MemberEntity blackMember;
 
     @Builder
-    public BlacklistEntity(Long id, MemberEntity member, MemberEntity blackTarget) {
+    public BlacklistEntity(Long id, MemberEntity member, MemberEntity blackMember) {
         this.id = id;
         this.member = member;
-        this.blackTarget = blackTarget;
+        this.blackMember = blackMember;
     }
 
     public static BlacklistEntity from(Blacklist blacklist) {
         return BlacklistEntity.builder()
                 .member(MemberEntity.from(blacklist.getMember()))
-                .blackTarget(MemberEntity.from(blacklist.getBlackTarget()))
+                .blackMember(MemberEntity.from(blacklist.getBlackMember()))
                 .build();
     }
 
@@ -51,7 +51,7 @@ public class BlacklistEntity extends BaseTimeEntity {
         return Blacklist.builder()
                 .id(this.id)
                 .member(this.member.toModel())
-                .blackTarget(this.blackTarget.toModel())
+                .blackMember(this.blackMember.toModel())
                 .createdAt(getCreatedAt())
                 .build();
     }
