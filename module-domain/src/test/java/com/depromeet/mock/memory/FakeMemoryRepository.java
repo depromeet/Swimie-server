@@ -189,4 +189,9 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
                 memories.stream().map(item -> item.getMemoryDetail().getId()).toList();
         return new MemoryAndDetailId(memoryIds, memoryDetailIds);
     }
+
+    @Override
+    public void deleteById(Long memoryId) {
+        data.removeIf(item -> item.getId().equals(memoryId));
+    }
 }

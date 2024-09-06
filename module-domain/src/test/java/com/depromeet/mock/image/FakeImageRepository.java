@@ -139,4 +139,15 @@ public class FakeImageRepository implements ImagePersistencePort {
                     }
                 });
     }
+
+    @Override
+    public void setNullByMemoryId(Long memoryId) {
+        data.forEach(
+                image -> {
+                    if (image.getMemory().isPresent()
+                            && image.getMemory().get().getId().equals(memoryId)) {
+                        image.setMemoryNull();
+                    }
+                });
+    }
 }
