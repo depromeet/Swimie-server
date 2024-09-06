@@ -1,7 +1,9 @@
 package com.depromeet.mock.memory;
 
+import com.depromeet.member.domain.vo.MemberIdAndNickname;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.vo.MemoryAndDetailId;
+import com.depromeet.memory.domain.vo.MemoryIdAndDiaryAndMember;
 import com.depromeet.memory.port.out.persistence.MemoryPersistencePort;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -193,5 +195,18 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
     @Override
     public void deleteById(Long memoryId) {
         data.removeIf(item -> item.getId().equals(memoryId));
+    }
+
+    @Override
+    public Optional<MemoryIdAndDiaryAndMember> findIdAndNicknameById(Long memberId) {
+        return findById(memberId)
+                .map(
+                        item ->
+                                new MemoryIdAndDiaryAndMember(
+                                        item.getId(),
+                                        item.getDiary(),
+                                        new MemberIdAndNickname(
+                                                item.getMember().getId(),
+                                                item.getMember().getNickname())));
     }
 }
