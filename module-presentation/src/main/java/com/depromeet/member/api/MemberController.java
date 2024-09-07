@@ -25,7 +25,7 @@ public class MemberController implements MemberApi {
     public ApiResponse<MemberProfileResponse> getMember(
             @LoginMember Long memberId, @PathVariable("id") Long id) {
         return ApiResponse.success(
-                MemberSuccessType.GET_SUCCESS, memberFacade.findById(memberId, id));
+                MemberSuccessType.GET_SUCCESS, memberFacade.findByIdAndCheckBlack(memberId, id));
     }
 
     @PatchMapping

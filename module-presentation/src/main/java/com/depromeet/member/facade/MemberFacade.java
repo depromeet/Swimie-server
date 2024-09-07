@@ -3,6 +3,7 @@ package com.depromeet.member.facade;
 import static com.depromeet.member.service.MemberValidator.isMyProfile;
 
 import com.depromeet.blacklist.port.in.usecase.BlacklistQueryUseCase;
+import com.depromeet.exception.ForbiddenException;
 import com.depromeet.friend.domain.vo.FriendCount;
 import com.depromeet.friend.port.in.FollowUseCase;
 import com.depromeet.member.domain.Member;
@@ -18,6 +19,7 @@ import com.depromeet.member.mapper.MemberMapper;
 import com.depromeet.member.port.in.command.SocialMemberCommand;
 import com.depromeet.member.port.in.usecase.MemberUpdateUseCase;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
+import com.depromeet.type.member.MemberErrorType;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -30,15 +32,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class MemberFacade {
     private final MemberUseCase memberUseCase;
-    private final BlacklistQueryUseCase blacklistQueryUseCase;
-    private final MemberUpdateUseCase memberUpdateUseCase;
     private final FollowUseCase followUseCase;
+    private final MemberUpdateUseCase memberUpdateUseCase;
+    private final BlacklistQueryUseCase blacklistQueryUseCase;
 
     @Value("${cloud-front.domain}")
     private String profileImageOrigin;
 
     @Transactional(readOnly = true)
-    public MemberProfileResponse findById(Long loginMemberId, Long memberId) {
+    public MemberProfileResponse findByIdAndCheckBlack(Long loginMemberId, Long memberId) {
+        Boolean isBlackOrBlacked =
+                blacklistQueryUseCase.checkBlockOrBlocked(loginMemberId, memberId);
+        if (isBlackOrBlacked) {
+            throw new ForbiddenException(MemberErrorType.MEMBER_BLOCK_OR_BLOCKED);
+        }
         Boolean isMyProfile = isMyProfile(memberId, loginMemberId);
         Member member = memberUseCase.findById(memberId);
         FriendCount friendCount = followUseCase.countFriendByMemberId(memberId);
