@@ -9,8 +9,10 @@ import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.type.friend.FollowSuccessType;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/friend")
@@ -32,20 +34,22 @@ public class FollowController implements FollowApi {
     @GetMapping("/{memberId}/following")
     @Logging(item = "Follower/Following", action = "GET")
     public ApiResponse<FollowSliceResponse<FollowingResponse>> findFollowingList(
+            @LoginMember Long requesterId,
             @PathVariable(value = "memberId") Long memberId,
             @RequestParam(value = "cursorId", required = false) Long cursorId) {
         FollowSliceResponse<FollowingResponse> response =
-                followFacade.findFollowingList(memberId, cursorId);
+                followFacade.findFollowingList(memberId, requesterId, cursorId);
         return ApiResponse.success(FollowSuccessType.GET_FOLLOWINGS_SUCCESS, response);
     }
 
     @GetMapping("/{memberId}/follower")
     @Logging(item = "Follower/Following", action = "GET")
     public ApiResponse<FollowSliceResponse<FollowerResponse>> findFollowerList(
+            @LoginMember Long requesterId,
             @PathVariable(value = "memberId") Long memberId,
             @RequestParam(value = "cursorId", required = false) Long cursorId) {
         FollowSliceResponse<FollowerResponse> response =
-                followFacade.findFollowerList(memberId, cursorId);
+                followFacade.findFollowerList(memberId, requesterId, cursorId);
         return ApiResponse.success(FollowSuccessType.GET_FOLLOWERS_SUCCESS, response);
     }
 

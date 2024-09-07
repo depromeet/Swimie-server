@@ -9,15 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberSearchPage {
     private List<MemberSearchInfo> members;
-    private int pageSize;
     private Long cursorId;
     private boolean hasNext;
 
     @Builder
-    public MemberSearchPage(
-            List<MemberSearchInfo> members, int pageSize, Long cursorId, boolean hasNext) {
+    public MemberSearchPage(List<MemberSearchInfo> members, Long cursorId, boolean hasNext) {
         this.members = members;
-        this.pageSize = pageSize;
         this.cursorId = cursorId;
         this.hasNext = hasNext;
     }

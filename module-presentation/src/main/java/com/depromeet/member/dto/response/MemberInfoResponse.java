@@ -1,5 +1,6 @@
 package com.depromeet.member.dto.response;
 
+import com.depromeet.member.domain.vo.MemberSearchInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 
@@ -12,4 +13,13 @@ public record MemberInfoResponse(
         boolean hasFollowed) {
     @Builder
     public MemberInfoResponse {}
+
+    public static MemberInfoResponse of(MemberSearchInfo member, String profileImageOrigin) {
+        return MemberInfoResponse.builder()
+                .memberId(member.getMemberId())
+                .nickname(member.getNickname())
+                .profileImageUrl(member.getProfileImageUrl(profileImageOrigin))
+                .introduction(member.getIntroduction())
+                .build();
+    }
 }

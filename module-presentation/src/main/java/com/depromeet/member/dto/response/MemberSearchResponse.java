@@ -1,6 +1,6 @@
 package com.depromeet.member.dto.response;
 
-import com.depromeet.member.domain.vo.MemberSearchPage;
+import com.depromeet.member.domain.vo.MemberSearchInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 import lombok.Builder;
@@ -14,31 +14,25 @@ public record MemberSearchResponse(
     @Builder
     public MemberSearchResponse {}
 
-    public static MemberSearchResponse toMemberSearchResponse(
-            MemberSearchPage memberSearchPage, String profileImageDomain) {
+    public static MemberSearchResponse of(
+            Long cursorId,
+            boolean hasNext,
+            List<MemberSearchInfo> filteredMembers,
+            String profileImageDomain) {
         List<MemberInfoResponse> contents =
-                getMemberInfoResponses(memberSearchPage, profileImageDomain);
+                getMemberInfoResponses(filteredMembers, profileImageDomain);
         return MemberSearchResponse.builder()
                 .memberInfoResponses(contents)
-                .pageSize(memberSearchPage.getPageSize())
-                .cursorId(memberSearchPage.getCursorId())
-                .hasNext(memberSearchPage.isHasNext())
+                .pageSize(filteredMembers.size())
+                .cursorId(cursorId)
+                .hasNext(hasNext)
                 .build();
     }
 
     private static List<MemberInfoResponse> getMemberInfoResponses(
-            MemberSearchPage memberSearchPage, String profileImageOrigin) {
-        return memberSearchPage.getMembers().stream()
-                .map(
-                        member ->
-                                MemberInfoResponse.builder()
-                                        .memberId(member.getMemberId())
-                                        .nickname(member.getNickname())
-                                        .profileImageUrl(
-                                                member.getProfileImageUrl(profileImageOrigin))
-                                        .introduction(member.getIntroduction())
-                                        .hasFollowed(member.isHasFollowed())
-                                        .build())
+            List<MemberSearchInfo> filteredMembers, String profileImageOrigin) {
+        return filteredMembers.stream()
+                .map(member -> MemberInfoResponse.of(member, profileImageOrigin))
                 .toList();
     }
 }

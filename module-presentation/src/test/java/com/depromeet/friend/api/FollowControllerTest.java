@@ -90,7 +90,7 @@ public class FollowControllerTest extends ControllerTestConfig {
                         followingResponses, followingResponses.size(), null, false);
 
         // when
-        when(followFacade.findFollowingList(anyLong(), anyLong())).thenReturn(response);
+        when(followFacade.findFollowingList(anyLong(), anyLong(), anyLong())).thenReturn(response);
 
         // then
         mockMvc.perform(
@@ -121,7 +121,7 @@ public class FollowControllerTest extends ControllerTestConfig {
                 new FollowSliceResponse<>(followerResponses, followerResponses.size(), null, false);
 
         // when
-        when(followFacade.findFollowerList(anyLong(), anyLong())).thenReturn(response);
+        when(followFacade.findFollowerList(anyLong(), anyLong(), anyLong())).thenReturn(response);
 
         // then
         mockMvc.perform(
