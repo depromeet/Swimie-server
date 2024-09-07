@@ -1,16 +1,18 @@
 package com.depromeet.friend.facade;
 
 import com.depromeet.blacklist.port.in.usecase.BlacklistQueryUseCase;
+import com.depromeet.exception.BadRequestException;
 import com.depromeet.friend.domain.vo.FollowCheck;
 import com.depromeet.friend.domain.vo.FollowSlice;
 import com.depromeet.friend.domain.vo.Follower;
 import com.depromeet.friend.domain.vo.Following;
 import com.depromeet.friend.dto.request.FollowRequest;
 import com.depromeet.friend.dto.response.*;
-import com.depromeet.friend.port.in.FollowUseCase;
+import com.depromeet.friend.port.in.usecase.FollowUseCase;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
 import com.depromeet.notification.event.FollowLogEvent;
+import com.depromeet.type.friend.FollowErrorType;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,14 @@ public class FollowFacade {
     public boolean addOrDeleteFollow(Long memberId, FollowRequest followRequest) {
         Member member = memberUseCase.findById(memberId);
         Member following = memberUseCase.findById(followRequest.followingId());
+
+        if (blacklistQueryUseCase.checkBlackMember(member.getId(), following.getId())) {
+            throw new BadRequestException(FollowErrorType.CANNOT_FOLLOW_BLACK);
+        }
+        if (blacklistQueryUseCase.checkBlackMember(following.getId(), member.getId())) {
+            throw new BadRequestException(FollowErrorType.CANNOT_FOLLOW_MEMBER_WHO_BLOCKED_YOU);
+        }
+
         boolean isAdd = followUseCase.addOrDeleteFollow(member, following);
         eventPublisher.publishEvent(FollowLogEvent.of(following, member));
 

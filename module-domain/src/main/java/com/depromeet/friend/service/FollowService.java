@@ -3,7 +3,8 @@ package com.depromeet.friend.service;
 import com.depromeet.exception.BadRequestException;
 import com.depromeet.friend.domain.Friend;
 import com.depromeet.friend.domain.vo.*;
-import com.depromeet.friend.port.in.FollowUseCase;
+import com.depromeet.friend.port.in.command.DeleteFollowCommand;
+import com.depromeet.friend.port.in.usecase.FollowUseCase;
 import com.depromeet.friend.port.out.persistence.FriendPersistencePort;
 import com.depromeet.member.domain.Member;
 import com.depromeet.type.friend.FollowErrorType;
@@ -12,7 +13,10 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Service
 @RequiredArgsConstructor
@@ -106,5 +110,15 @@ public class FollowService implements FollowUseCase {
     @Override
     public List<FollowCheck> checkFollowingState(Long memberId, List<Long> targetIds) {
         return friendPersistencePort.findByMemberIdAndFollowingIds(memberId, targetIds);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void deleteBlackMemberInFollowList(DeleteFollowCommand deleteFollowCommand) {
+        Long requesterId = deleteFollowCommand.requesterId();
+        Long blackMemberId = deleteFollowCommand.blackMemberId();
+
+        friendPersistencePort.deleteFollowerFollowingByMemberIdAndFollowingId(
+                requesterId, blackMemberId);
     }
 }
