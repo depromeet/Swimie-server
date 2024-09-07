@@ -4,7 +4,7 @@ import static com.depromeet.member.service.MemberValidator.isMyProfile;
 
 import com.depromeet.blacklist.port.in.usecase.BlacklistQueryUseCase;
 import com.depromeet.friend.domain.vo.FriendCount;
-import com.depromeet.friend.port.in.FollowUseCase;
+import com.depromeet.friend.port.in.usecase.FollowUseCase;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.domain.vo.MemberSearchInfo;

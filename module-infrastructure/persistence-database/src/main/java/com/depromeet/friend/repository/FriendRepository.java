@@ -70,6 +70,18 @@ public class FriendRepository implements FriendPersistencePort {
     }
 
     @Override
+    public void deleteFollowerFollowingByMemberIdAndFollowingId(Long memberId, Long followingId) {
+        queryFactory
+                .delete(friend)
+                .where(checkFollow(memberId, followingId).or(checkFollow(followingId, memberId)))
+                .execute();
+    }
+
+    private BooleanExpression checkFollow(Long memberId, Long followingId) {
+        return friend.member.id.eq(memberId).and(friend.following.id.eq(followingId));
+    }
+
+    @Override
     public List<Following> findFollowingsByMemberIdAndCursorId(Long memberId, Long cursorId) {
         return queryFactory
                 .select(

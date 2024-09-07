@@ -81,6 +81,9 @@ public class FakeFriendRepository implements FriendPersistencePort {
     }
 
     @Override
+    public void deleteFollowerFollowingByMemberIdAndFollowingId(Long memberId, Long followingId) {}
+
+    @Override
     public List<Following> findFollowingsByMemberIdAndCursorId(Long memberId, Long cursorId) {
         return friends.stream()
                 .filter(
