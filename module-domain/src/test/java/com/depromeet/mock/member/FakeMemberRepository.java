@@ -130,9 +130,4 @@ public class FakeMemberRepository implements MemberPersistencePort {
         return findById(memberId)
                 .map(item -> new MemberIdAndNickname(item.getId(), item.getNickname()));
     }
-
-    @Override
-    public boolean existsByMemberId(Long memberId) {
-        return false;
-    }
 }

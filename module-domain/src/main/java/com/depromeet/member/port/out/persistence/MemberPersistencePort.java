@@ -34,6 +34,4 @@ public interface MemberPersistencePort {
     Optional<Member> updateProfileImageUrl(Long memberId, String profileImageUrl);
 
     Optional<MemberIdAndNickname> findIdAndNicknameById(Long memberId);
-
-    boolean existsByMemberId(Long memberId);
 }
