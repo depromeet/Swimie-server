@@ -133,16 +133,6 @@ public class MemberRepository implements MemberPersistencePort {
     }
 
     @Override
-    public boolean existsByMemberId(Long memberId) {
-        return !queryFactory
-                .select(member.id)
-                .from(member)
-                .where(member.id.eq(memberId))
-                .fetch()
-                .isEmpty();
-    }
-
-    @Override
     public Optional<Member> updateGender(Long memberId, MemberGender gender) {
         return memberJpaRepository
                 .findById(memberId)

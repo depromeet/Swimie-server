@@ -19,6 +19,7 @@ import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import com.depromeet.type.member.MemberErrorType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -110,7 +111,8 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUp
 
     @Override
     public boolean existsByMemberId(Long memberId) {
-        return memberPersistencePort.existsByMemberId(memberId);
+        Optional<Member> memberOptional = memberPersistencePort.findById(memberId);
+        return memberOptional.isPresent();
     }
 
     @Override
