@@ -2,10 +2,12 @@ package com.depromeet.member.facade;
 
 import static com.depromeet.member.service.MemberValidator.isMyProfile;
 
+import com.depromeet.blacklist.port.in.usecase.BlacklistQueryUseCase;
 import com.depromeet.friend.domain.vo.FriendCount;
 import com.depromeet.friend.port.in.FollowUseCase;
 import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
+import com.depromeet.member.domain.vo.MemberSearchInfo;
 import com.depromeet.member.domain.vo.MemberSearchPage;
 import com.depromeet.member.dto.request.MemberUpdateRequest;
 import com.depromeet.member.dto.response.MemberDetailResponse;
@@ -16,6 +18,8 @@ import com.depromeet.member.mapper.MemberMapper;
 import com.depromeet.member.port.in.command.SocialMemberCommand;
 import com.depromeet.member.port.in.usecase.MemberUpdateUseCase;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
+import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -26,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class MemberFacade {
     private final MemberUseCase memberUseCase;
+    private final BlacklistQueryUseCase blacklistQueryUseCase;
     private final MemberUpdateUseCase memberUpdateUseCase;
     private final FollowUseCase followUseCase;
 
@@ -67,7 +72,20 @@ public class MemberFacade {
     public MemberSearchResponse searchByName(Long memberId, String nameQuery, Long cursorId) {
         MemberSearchPage memberSearchPage =
                 memberUseCase.searchMemberByName(memberId, nameQuery, cursorId);
-        return MemberSearchResponse.toMemberSearchResponse(memberSearchPage, profileImageOrigin);
+
+        Set<Long> blackMemberIds = blacklistQueryUseCase.getBlackMemberIds(memberId);
+
+        List<MemberSearchInfo> filteredMembers =
+                memberSearchPage.getMembers().stream()
+                        .filter(
+                                memberSearchInfo ->
+                                        !blackMemberIds.contains(memberSearchInfo.getMemberId()))
+                        .toList();
+        Long newCursorId = memberSearchPage.getCursorId();
+        boolean hasNext = memberSearchPage.isHasNext();
+
+        return MemberSearchResponse.toMemberSearchResponse(
+                newCursorId, hasNext, filteredMembers, profileImageOrigin);
     }
 
     public MemberDetailResponse findDetailById(Long memberId) {

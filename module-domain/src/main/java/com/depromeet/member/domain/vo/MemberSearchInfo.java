@@ -12,20 +12,14 @@ public class MemberSearchInfo {
     private String nickname;
     private String profileImageUrl;
     private String introduction;
-    private boolean hasFollowed;
 
     @Builder
     public MemberSearchInfo(
-            Long memberId,
-            String nickname,
-            String profileImageUrl,
-            String introduction,
-            boolean hasFollowed) {
+            Long memberId, String nickname, String profileImageUrl, String introduction) {
         this.memberId = memberId;
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
         this.introduction = introduction;
-        this.hasFollowed = hasFollowed;
     }
 
     public String getProfileImageUrl(String profileImageOrigin) {
