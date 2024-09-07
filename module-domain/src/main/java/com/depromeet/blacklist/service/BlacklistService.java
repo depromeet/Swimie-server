@@ -63,6 +63,11 @@ public class BlacklistService implements BlacklistQueryUseCase, BlacklistCommand
         return new HashSet<>(blackMemberIds);
     }
 
+    @Override
+    public Boolean checkBlockOrBlocked(Long loginMemberId, Long memberId) {
+        return blacklistPersistencePort.isBlockOrBlocked(loginMemberId, memberId);
+    }
+
     private List<Long> getBlackMemberIdsByMemberId(Long memberId) {
         return blacklistPersistencePort.findBlackMemberIdsByMemberId(memberId);
     }

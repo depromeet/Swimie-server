@@ -8,6 +8,7 @@ import com.depromeet.member.domain.Member;
 import com.depromeet.member.domain.MemberGender;
 import com.depromeet.member.domain.MemberRole;
 import com.depromeet.member.domain.vo.MemberIdAndNickname;
+import com.depromeet.member.domain.vo.MemberSearchInfo;
 import com.depromeet.member.domain.vo.MemberSearchPage;
 import com.depromeet.member.port.in.command.SocialMemberCommand;
 import com.depromeet.member.port.in.command.UpdateMemberCommand;
@@ -16,6 +17,8 @@ import com.depromeet.member.port.in.usecase.MemberUpdateUseCase;
 import com.depromeet.member.port.in.usecase.MemberUseCase;
 import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import com.depromeet.type.member.MemberErrorType;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -62,7 +65,22 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUp
 
     @Override
     public MemberSearchPage searchMemberByName(Long memberId, String nameQuery, Long cursorId) {
-        return memberPersistencePort.searchByNameQuery(memberId, nameQuery, cursorId);
+        List<MemberSearchInfo> memberSearchInfos =
+                memberPersistencePort.searchByNameQuery(memberId, nameQuery, cursorId);
+
+        boolean hasNext = false;
+        Long nextCursorId = null;
+        if (memberSearchInfos.size() > 10) {
+            memberSearchInfos = new ArrayList<>(memberSearchInfos);
+            memberSearchInfos.removeLast();
+            hasNext = true;
+            nextCursorId = memberSearchInfos.getLast().getMemberId();
+        }
+        return MemberSearchPage.builder()
+                .members(memberSearchInfos)
+                .cursorId(nextCursorId)
+                .hasNext(hasNext)
+                .build();
     }
 
     @Override

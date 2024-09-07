@@ -42,7 +42,8 @@ public record FollowSliceResponse<T>(
     }
 
     public static FollowSliceResponse<FollowerResponse> toFollowerSliceResponses(
-            FollowSlice<Follower> followingSlice,
+            Long cursorId,
+            boolean hasNext,
             List<Follower> filteredFollowers,
             String profileImageOrigin) {
         List<FollowerResponse> followerResponses =
@@ -50,8 +51,8 @@ public record FollowSliceResponse<T>(
         return FollowSliceResponse.<FollowerResponse>builder()
                 .contents(followerResponses)
                 .pageSize(followerResponses.size())
-                .cursorId(followingSlice.getCursorId())
-                .hasNext(followingSlice.isHasNext())
+                .cursorId(cursorId)
+                .hasNext(hasNext)
                 .build();
     }
 

@@ -21,6 +21,9 @@ public class BlacklistRepository implements BlacklistPersistencePort {
     private final JPAQueryFactory queryFactory;
     private final BlacklistJpaRepository blacklistJpaRepository;
 
+    QMemberEntity member = new QMemberEntity("member"); // 첫 번째 별칭 "member"
+    QMemberEntity blackMember = new QMemberEntity("blackMember");
+
     @Override
     public Blacklist save(Blacklist blacklist) {
         return blacklistJpaRepository.save(BlacklistEntity.from(blacklist)).toModel();
@@ -38,9 +41,6 @@ public class BlacklistRepository implements BlacklistPersistencePort {
 
     @Override
     public List<Member> findBlackMembers(Long memberId, Long cursorId) {
-        QMemberEntity member = new QMemberEntity("member"); // 첫 번째 별칭 "member"
-        QMemberEntity blackMember = new QMemberEntity("blackMember");
-
         return queryFactory
                 .select(
                         Projections.constructor(
@@ -57,20 +57,6 @@ public class BlacklistRepository implements BlacklistPersistencePort {
                 .fetch();
     }
 
-    private static BooleanExpression memberEq(Long memberId) {
-        if (memberId == null) {
-            return null;
-        }
-        return blacklistEntity.member.id.eq(memberId);
-    }
-
-    private BooleanExpression blacklistIdLoe(Long cursorId) {
-        if (cursorId == null) {
-            return null;
-        }
-        return blacklistEntity.blackMember.id.loe(cursorId);
-    }
-
     @Override
     public List<Long> findBlackMemberIdsByMemberId(Long memberId) {
         return queryFactory
@@ -85,7 +71,40 @@ public class BlacklistRepository implements BlacklistPersistencePort {
         return queryFactory
                 .select(blacklistEntity.member.id)
                 .from(blacklistEntity)
-                .where(blacklistEntity.blackMember.id.eq(memberId))
+                .where(blackMemberEq(memberId))
                 .fetch();
+    }
+
+    @Override
+    public Boolean isBlockOrBlocked(Long loginMemberId, Long memberId) {
+        return !queryFactory
+                .select(blacklistEntity.id)
+                .from(blacklistEntity)
+                .join(blacklistEntity.member, member)
+                .join(blacklistEntity.blackMember, blackMember)
+                .where(
+                        memberEq(loginMemberId)
+                                .and(blackMemberEq(memberId))
+                                .or(memberEq(memberId).and(blackMemberEq(loginMemberId))))
+                .fetch()
+                .isEmpty();
+    }
+
+    private static BooleanExpression memberEq(Long memberId) {
+        if (memberId == null) {
+            return null;
+        }
+        return blacklistEntity.member.id.eq(memberId);
+    }
+
+    private static BooleanExpression blackMemberEq(Long memberId) {
+        return blacklistEntity.blackMember.id.eq(memberId);
+    }
+
+    private BooleanExpression blacklistIdLoe(Long cursorId) {
+        if (cursorId == null) {
+            return null;
+        }
+        return blacklistEntity.blackMember.id.loe(cursorId);
     }
 }

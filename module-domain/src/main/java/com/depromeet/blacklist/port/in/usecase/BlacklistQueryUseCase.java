@@ -9,4 +9,6 @@ public interface BlacklistQueryUseCase {
     BlacklistPage getBlackMembers(Long memberId, Long cursorId);
 
     Set<Long> getBlackMemberIds(Long memberId);
+
+    Boolean checkBlockOrBlocked(Long loginMemberId, Long memberId);
 }
