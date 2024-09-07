@@ -63,8 +63,11 @@ public class FollowFacade {
                         .filter(following -> !blackMemberIds.contains(following.getMemberId()))
                         .toList();
 
+        Long newCursorId = followerSlice.getCursorId();
+        boolean hasNext = followerSlice.isHasNext();
+
         return FollowSliceResponse.toFollowerSliceResponses(
-                followerSlice, filteredFollowers, profileImageOrigin);
+                newCursorId, hasNext, filteredFollowers, profileImageOrigin);
     }
 
     public FollowingSummaryResponse findFollowingSummary(Long memberId) {
