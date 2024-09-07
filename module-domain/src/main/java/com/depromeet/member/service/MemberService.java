@@ -109,6 +109,11 @@ public class MemberService implements MemberUseCase, GoalUpdateUseCase, MemberUp
     }
 
     @Override
+    public boolean existsByMemberId(Long memberId) {
+        return memberPersistencePort.existsByMemberId(memberId);
+    }
+
+    @Override
     public Member update(UpdateMemberCommand command) {
         if (command.nickname() != null && command.nickname().isBlank()) {
             throw new BadRequestException(MemberErrorType.NAME_CANNOT_BE_BLANK);

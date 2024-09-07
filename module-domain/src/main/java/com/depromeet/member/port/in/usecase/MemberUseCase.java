@@ -19,4 +19,6 @@ public interface MemberUseCase {
     Member createMemberBy(SocialMemberCommand command);
 
     MemberIdAndNickname findIdAndNicknameById(Long memberId);
+
+    boolean existsByMemberId(Long memberId);
 }

@@ -7,7 +7,9 @@ import com.depromeet.blacklist.port.in.usecase.BlacklistCommandUseCase;
 import com.depromeet.blacklist.port.in.usecase.BlacklistQueryUseCase;
 import com.depromeet.exception.BadRequestException;
 import com.depromeet.friend.port.in.command.DeleteFollowCommand;
+import com.depromeet.member.port.in.usecase.MemberUseCase;
 import com.depromeet.type.blacklist.BlacklistErrorType;
+import com.depromeet.type.member.MemberErrorType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class BlacklistFacade {
     private final ApplicationEventPublisher eventPublisher;
+    private final MemberUseCase memberUseCase;
     private final BlacklistQueryUseCase blacklistQueryUseCase;
     private final BlacklistCommandUseCase blacklistCommandUseCase;
 
@@ -30,7 +33,9 @@ public class BlacklistFacade {
         if (memberId.equals(blackMemberId)) {
             throw new BadRequestException(BlacklistErrorType.CANNOT_BLACK_MYSELF);
         }
-
+        if (!memberUseCase.existsByMemberId(blackMemberId)) {
+            throw new BadRequestException(MemberErrorType.NOT_FOUND);
+        }
         boolean isAlreadyBlacked = blacklistQueryUseCase.checkBlackMember(memberId, blackMemberId);
         if (isAlreadyBlacked) {
             throw new BadRequestException(BlacklistErrorType.ALREADY_BLACKED);
