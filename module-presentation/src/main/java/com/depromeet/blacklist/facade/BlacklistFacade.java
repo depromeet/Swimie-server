@@ -32,9 +32,8 @@ public class BlacklistFacade {
         if (memberId.equals(blackMemberId)) {
             throw new BadRequestException(BlacklistErrorType.CANNOT_BLACK_MYSELF);
         }
-        if (!memberUseCase.existsByMemberId(blackMemberId)) {
-            throw new BadRequestException(BlacklistErrorType.CANNOT_BLACK_NON_EXISTS_MEMBER);
-        }
+        memberUseCase.findById(memberId);
+
         boolean isAlreadyBlacked = blacklistQueryUseCase.checkBlackMember(memberId, blackMemberId);
         if (isAlreadyBlacked) {
             throw new BadRequestException(BlacklistErrorType.ALREADY_BLACKED);
