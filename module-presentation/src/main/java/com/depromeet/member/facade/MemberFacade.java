@@ -84,8 +84,7 @@ public class MemberFacade {
         Long newCursorId = memberSearchPage.getCursorId();
         boolean hasNext = memberSearchPage.isHasNext();
 
-        return MemberSearchResponse.toMemberSearchResponse(
-                newCursorId, hasNext, filteredMembers, profileImageOrigin);
+        return MemberSearchResponse.of(newCursorId, hasNext, filteredMembers, profileImageOrigin);
     }
 
     public MemberDetailResponse findDetailById(Long memberId) {
