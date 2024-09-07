@@ -1,6 +1,7 @@
-package com.depromeet.friend.port.in;
+package com.depromeet.friend.port.in.usecase;
 
 import com.depromeet.friend.domain.vo.*;
+import com.depromeet.friend.port.in.command.DeleteFollowCommand;
 import com.depromeet.member.domain.Member;
 import java.util.List;
 
@@ -22,4 +23,6 @@ public interface FollowUseCase {
     void deleteByMemberId(Long memberId);
 
     List<FollowCheck> checkFollowingState(Long memberId, List<Long> targetIds);
+
+    void deleteBlackMemberInFollowList(DeleteFollowCommand deleteFollowCommand);
 }
