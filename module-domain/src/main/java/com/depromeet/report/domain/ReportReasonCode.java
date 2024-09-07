@@ -6,9 +6,9 @@ import com.depromeet.converter.CodedEnum;
 public enum ReportReasonCode implements CodedEnum<String> {
     REPORT_REASON_1("스팸, 광고"),
     REPORT_REASON_2("폭력적인 발언"),
-    REPORT_REASON_3("음란성, 선정 내용"),
+    REPORT_REASON_3("음란성, 선정성 내용"),
     REPORT_REASON_4("개인정보 노출"),
-    REPORT_REASON_5("주제와 무관");
+    REPORT_REASON_5("수영과 무관한 내용");
 
     private String value;
 
