@@ -14,8 +14,7 @@ public record MemberInfoResponse(
     @Builder
     public MemberInfoResponse {}
 
-    public static MemberInfoResponse toMemberInfoResponse(
-            MemberSearchInfo member, String profileImageOrigin) {
+    public static MemberInfoResponse of(MemberSearchInfo member, String profileImageOrigin) {
         return MemberInfoResponse.builder()
                 .memberId(member.getMemberId())
                 .nickname(member.getNickname())

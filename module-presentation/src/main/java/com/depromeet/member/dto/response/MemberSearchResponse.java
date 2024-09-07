@@ -14,7 +14,7 @@ public record MemberSearchResponse(
     @Builder
     public MemberSearchResponse {}
 
-    public static MemberSearchResponse toMemberSearchResponse(
+    public static MemberSearchResponse of(
             Long cursorId,
             boolean hasNext,
             List<MemberSearchInfo> filteredMembers,
@@ -32,7 +32,7 @@ public record MemberSearchResponse(
     private static List<MemberInfoResponse> getMemberInfoResponses(
             List<MemberSearchInfo> filteredMembers, String profileImageOrigin) {
         return filteredMembers.stream()
-                .map(member -> MemberInfoResponse.toMemberInfoResponse(member, profileImageOrigin))
+                .map(member -> MemberInfoResponse.of(member, profileImageOrigin))
                 .toList();
     }
 }
