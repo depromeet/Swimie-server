@@ -40,10 +40,11 @@ public class FollowFacade {
         return isAdd;
     }
 
-    public FollowSliceResponse<FollowingResponse> findFollowingList(Long memberId, Long cursorId) {
+    public FollowSliceResponse<FollowingResponse> findFollowingList(
+            Long memberId, Long requesterId, Long cursorId) {
         FollowSlice<Following> followingSlice =
                 followUseCase.getFollowingByMemberIdAndCursorId(memberId, cursorId);
-        Set<Long> blackMemberIds = blacklistQueryUseCase.getBlackMemberIds(memberId);
+        Set<Long> blackMemberIds = blacklistQueryUseCase.getBlackMemberIds(requesterId);
 
         List<Following> filteredFollowings =
                 followingSlice.getFollowContents().stream()
@@ -54,10 +55,11 @@ public class FollowFacade {
                 followingSlice, filteredFollowings, profileImageOrigin);
     }
 
-    public FollowSliceResponse<FollowerResponse> findFollowerList(Long memberId, Long cursorId) {
+    public FollowSliceResponse<FollowerResponse> findFollowerList(
+            Long memberId, Long requesterId, Long cursorId) {
         FollowSlice<Follower> followerSlice =
                 followUseCase.getFollowerByMemberIdAndCursorId(memberId, cursorId);
-        Set<Long> blackMemberIds = blacklistQueryUseCase.getBlackMemberIds(memberId);
+        Set<Long> blackMemberIds = blacklistQueryUseCase.getBlackMemberIds(requesterId);
         List<Follower> filteredFollowers =
                 followerSlice.getFollowContents().stream()
                         .filter(following -> !blackMemberIds.contains(following.getMemberId()))
