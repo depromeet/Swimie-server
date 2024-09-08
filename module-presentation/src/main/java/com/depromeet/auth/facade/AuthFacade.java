@@ -11,6 +11,7 @@ import com.depromeet.auth.port.in.usecase.SocialUseCase;
 import com.depromeet.auth.vo.AccessTokenInfo;
 import com.depromeet.auth.vo.JwtToken;
 import com.depromeet.auth.vo.kakao.KakaoAccountProfile;
+import com.depromeet.blacklist.port.in.usecase.BlacklistQueryUseCase;
 import com.depromeet.dto.auth.AccountProfileResponse;
 import com.depromeet.exception.NotFoundException;
 import com.depromeet.followinglog.port.in.FollowingMemoryLogUseCase;
@@ -51,6 +52,7 @@ public class AuthFacade {
     private final ImageUpdateUseCase imageUpdateUseCase;
     private final DeleteMemoryUseCase deleteMemoryUseCase;
     private final FavoritePoolUseCase favoritePoolUseCase;
+    private final BlacklistQueryUseCase blacklistQueryUseCase;
     private final DeleteReactionUseCase deleteReactionUseCase;
     private final DeleteFollowLogUseCase deleteFollowLogUseCase;
     private final DeleteReactionLogUseCase deleteReactionLogUseCase;
@@ -148,6 +150,8 @@ public class AuthFacade {
         followUseCase.deleteByMemberId(memberId);
         // Follow log 삭제
         deleteFollowLogUseCase.deleteAllByMemberId(memberId);
+        // Blacklist 삭제
+        blacklistQueryUseCase.deleteAllByMemberId(memberId);
         // Member 삭제
         memberUseCase.deleteById(memberId);
         socialUseCase.revokeAccount(accountType);

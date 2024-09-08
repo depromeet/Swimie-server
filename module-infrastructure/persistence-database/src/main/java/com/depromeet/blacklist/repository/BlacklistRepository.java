@@ -90,6 +90,14 @@ public class BlacklistRepository implements BlacklistPersistencePort {
                 .isEmpty();
     }
 
+    @Override
+    public void deleteAllByMemberId(Long memberId) {
+        queryFactory
+                .delete(blacklistEntity)
+                .where(memberEq(memberId).or(blackMemberEq(memberId)))
+                .execute();
+    }
+
     private static BooleanExpression memberEq(Long memberId) {
         if (memberId == null) {
             return null;
