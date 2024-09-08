@@ -18,4 +18,6 @@ public interface BlacklistPersistencePort {
     List<Long> findMemberIdsWhoBlockedMe(Long memberId);
 
     Boolean isBlockOrBlocked(Long loginMemberId, Long memberId);
+
+    void deleteAllByMemberId(Long memberId);
 }
