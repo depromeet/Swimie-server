@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -124,13 +122,6 @@ public class FollowService implements FollowUseCase {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    @Caching(
-            evict = {
-                @CacheEvict(value = "following", key = "#deleteFollowCommand.requesterId()"),
-                @CacheEvict(value = "following", key = "#deleteFollowCommand.blackMemberId()"),
-                @CacheEvict(value = "follower", key = "#deleteFollowCommand.requesterId()"),
-                @CacheEvict(value = "follower", key = "#deleteFollowCommand.blackMemberId()")
-            })
     public void deleteBlackMemberInFollowList(DeleteFollowCommand deleteFollowCommand) {
         Long requesterId = deleteFollowCommand.requesterId();
         Long blackMemberId = deleteFollowCommand.blackMemberId();
