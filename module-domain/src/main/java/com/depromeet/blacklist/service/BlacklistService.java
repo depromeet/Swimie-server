@@ -54,6 +54,11 @@ public class BlacklistService implements BlacklistQueryUseCase, BlacklistCommand
         return blacklistPersistencePort.isBlockOrBlocked(loginMemberId, memberId);
     }
 
+    @Override
+    public void deleteAllByMemberId(Long memberId) {
+        blacklistPersistencePort.deleteAllByMemberId(memberId);
+    }
+
     private List<Long> getBlackMemberIdsByMemberId(Long memberId) {
         return blacklistPersistencePort.findBlackMemberIdsByMemberId(memberId);
     }

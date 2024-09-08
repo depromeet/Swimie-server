@@ -8,4 +8,6 @@ public interface BlacklistQueryUseCase {
     Set<Long> getBlackMemberIds(Long memberId);
 
     Boolean checkBlockOrBlocked(Long loginMemberId, Long memberId);
+
+    void deleteAllByMemberId(Long memberId);
 }
