@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,20 +28,28 @@ public class FollowService implements FollowUseCase {
 
     @Transactional
     public boolean addOrDeleteFollow(Member member, Member following) {
-        if (member.getId().equals(following.getId())) {
-            throw new BadRequestException(FollowErrorType.SELF_FOLLOWING_NOT_ALLOWED);
-        }
+        validatefollowingSelf(member.getId(), following.getId());
 
-        Optional<Friend> existedFollowing =
-                friendPersistencePort.findByMemberIdAndFollowingId(
-                        member.getId(), following.getId());
-        if (existedFollowing.isPresent()) {
+        boolean followingIsExists = checkFollowingExist(member.getId(), following.getId());
+        if (followingIsExists) {
             friendPersistencePort.deleteByMemberIdAndFollowingId(member.getId(), following.getId());
             return false;
         }
         Friend friend = Friend.builder().member(member).following(following).build();
         friendPersistencePort.addFollow(friend);
         return true;
+    }
+
+    private void validatefollowingSelf(Long memberId, Long followingId) {
+        if (memberId.equals(followingId)) {
+            throw new BadRequestException(FollowErrorType.SELF_FOLLOWING_NOT_ALLOWED);
+        }
+    }
+
+    private boolean checkFollowingExist(Long memberId, Long followingId) {
+        Optional<Friend> existedFollowing =
+                friendPersistencePort.findByMemberIdAndFollowingId(memberId, followingId);
+        return existedFollowing.isPresent();
     }
 
     @Override
@@ -114,6 +124,13 @@ public class FollowService implements FollowUseCase {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Caching(
+            evict = {
+                @CacheEvict(value = "following", key = "#deleteFollowCommand.requesterId()"),
+                @CacheEvict(value = "following", key = "#deleteFollowCommand.blackMemberId()"),
+                @CacheEvict(value = "follower", key = "#deleteFollowCommand.requesterId()"),
+                @CacheEvict(value = "follower", key = "#deleteFollowCommand.blackMemberId()")
+            })
     public void deleteBlackMemberInFollowList(DeleteFollowCommand deleteFollowCommand) {
         Long requesterId = deleteFollowCommand.requesterId();
         Long blackMemberId = deleteFollowCommand.blackMemberId();

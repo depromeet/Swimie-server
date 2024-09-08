@@ -82,7 +82,6 @@ public record FollowSliceResponse<T>(
                                         .profileImageUrl(
                                                 follower.getProfileImageUrl(profileImageOrigin))
                                         .introduction(follower.getIntroduction())
-                                        .hasFollowedBack(follower.isHasFollowedBack())
                                         .build())
                 .toList();
     }
