@@ -15,7 +15,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @EnableCaching
 public class RedisCacheConfig {
-
     @Bean
     public CacheManager contentCacheManager(RedisConnectionFactory cf) {
         RedisCacheConfiguration redisCacheConfiguration =
@@ -25,9 +24,8 @@ public class RedisCacheConfig {
                                         new StringRedisSerializer()))
                         .serializeValuesWith(
                                 RedisSerializationContext.SerializationPair.fromSerializer(
-                                        new GenericJackson2JsonRedisSerializer())) // Value
-                        // Serializer 변경
-                        .entryTtl(Duration.ofHours(3L)); // 캐시 수명 3 시간
+                                        new GenericJackson2JsonRedisSerializer()))
+                        .entryTtl(Duration.ofHours(3L));
 
         return RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(cf)
                 .cacheDefaults(redisCacheConfiguration)
