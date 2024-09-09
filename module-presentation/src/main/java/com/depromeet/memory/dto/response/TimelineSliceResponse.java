@@ -4,11 +4,13 @@ import com.depromeet.image.domain.vo.MemoryImageUrlVo;
 import com.depromeet.member.domain.Member;
 import com.depromeet.memory.domain.vo.TimelineSlice;
 import com.depromeet.reaction.domain.vo.ReactionCount;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.Map;
 import lombok.Builder;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record TimelineSliceResponse(
         @Schema(description = "타임라인 리스트", requiredMode = Schema.RequiredMode.REQUIRED)
                 List<TimelineResponse> content,
