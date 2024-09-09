@@ -19,10 +19,7 @@ public record FollowingSummaryResponse(
             int followingCount, List<Following> followings, String profileImageOrigin) {
         List<FollowingResponse> followingResponses =
                 followings.stream()
-                        .map(
-                                following ->
-                                        FollowingResponse.toFollowingResponse(
-                                                following, profileImageOrigin))
+                        .map(following -> FollowingResponse.of(following, profileImageOrigin))
                         .toList();
 
         return FollowingSummaryResponse.builder()

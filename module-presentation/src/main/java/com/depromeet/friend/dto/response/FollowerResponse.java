@@ -1,5 +1,6 @@
 package com.depromeet.friend.dto.response;
 
+import com.depromeet.friend.domain.vo.Follower;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -25,12 +26,16 @@ public record FollowerResponse(
                         description = "팔로잉 member PK",
                         example = "안녕하세요. 홍길동입니다",
                         requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-                String introduction,
-        @Schema(
-                        description = "맞팔 유무",
-                        example = "false",
-                        requiredMode = Schema.RequiredMode.REQUIRED)
-                boolean hasFollowedBack) {
+                String introduction) {
     @Builder
     public FollowerResponse {}
+
+    public static FollowerResponse of(Follower follower, String profileImageOrigin) {
+        return FollowerResponse.builder()
+                .memberId(follower.getMemberId())
+                .nickname(follower.getName())
+                .profileImageUrl(follower.getProfileImageUrl(profileImageOrigin))
+                .introduction(follower.getIntroduction())
+                .build();
+    }
 }

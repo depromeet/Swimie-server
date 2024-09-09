@@ -59,30 +59,14 @@ public record FollowSliceResponse<T>(
     private static List<FollowingResponse> getFollowingResponses(
             List<Following> followings, String profileImageOrigin) {
         return followings.stream()
-                .map(
-                        following ->
-                                FollowingResponse.builder()
-                                        .memberId(following.getMemberId())
-                                        .nickname(following.getName())
-                                        .profileImageUrl(
-                                                following.getProfileImageUrl(profileImageOrigin))
-                                        .introduction(following.getIntroduction())
-                                        .build())
+                .map(following -> FollowingResponse.of(following, profileImageOrigin))
                 .toList();
     }
 
     private static List<FollowerResponse> getFollowerResponses(
             List<Follower> followers, String profileImageOrigin) {
         return followers.stream()
-                .map(
-                        follower ->
-                                FollowerResponse.builder()
-                                        .memberId(follower.getMemberId())
-                                        .nickname(follower.getName())
-                                        .profileImageUrl(
-                                                follower.getProfileImageUrl(profileImageOrigin))
-                                        .introduction(follower.getIntroduction())
-                                        .build())
+                .map(follower -> FollowerResponse.of(follower, profileImageOrigin))
                 .toList();
     }
 }
