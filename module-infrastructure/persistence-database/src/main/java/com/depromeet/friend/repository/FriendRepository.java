@@ -98,7 +98,6 @@ public class FriendRepository implements FriendPersistencePort {
 
     @Override
     public List<Follower> findFollowersByMemberIdAndCursorId(Long memberId, Long cursorId) {
-        QFriendEntity subFriend = new QFriendEntity("sub");
         return queryFactory
                 .select(
                         Projections.constructor(
