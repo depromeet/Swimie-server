@@ -15,7 +15,7 @@ public record FollowingSummaryResponse(
     @Builder
     public FollowingSummaryResponse {}
 
-    public static FollowingSummaryResponse toFollowingSummaryResponse(
+    public static FollowingSummaryResponse of(
             int followingCount, List<Following> followings, String profileImageOrigin) {
         List<FollowingResponse> followingResponses =
                 followings.stream()

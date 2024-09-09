@@ -1,6 +1,5 @@
 package com.depromeet.friend.dto.response;
 
-import com.depromeet.friend.domain.vo.FollowSlice;
 import com.depromeet.friend.domain.vo.Follower;
 import com.depromeet.friend.domain.vo.Following;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -27,8 +26,9 @@ public record FollowSliceResponse<T>(
     @Builder
     public FollowSliceResponse {}
 
-    public static FollowSliceResponse<FollowingResponse> toFollowingSliceResponse(
-            FollowSlice<Following> followingSlice,
+    public static FollowSliceResponse<FollowingResponse> followingOf(
+            Long cursorId,
+            boolean hasNext,
             List<Following> filteredFollowings,
             String profileImageDomain) {
         List<FollowingResponse> followingResponses =
@@ -36,12 +36,12 @@ public record FollowSliceResponse<T>(
         return FollowSliceResponse.<FollowingResponse>builder()
                 .contents(followingResponses)
                 .pageSize(followingResponses.size())
-                .cursorId(followingSlice.getCursorId())
-                .hasNext(followingSlice.isHasNext())
+                .cursorId(cursorId)
+                .hasNext(hasNext)
                 .build();
     }
 
-    public static FollowSliceResponse<FollowerResponse> toFollowerSliceResponses(
+    public static FollowSliceResponse<FollowerResponse> followerOf(
             Long cursorId,
             boolean hasNext,
             List<Follower> filteredFollowers,
@@ -82,7 +82,6 @@ public record FollowSliceResponse<T>(
                                         .profileImageUrl(
                                                 follower.getProfileImageUrl(profileImageOrigin))
                                         .introduction(follower.getIntroduction())
-                                        .hasFollowedBack(follower.isHasFollowedBack())
                                         .build())
                 .toList();
     }
