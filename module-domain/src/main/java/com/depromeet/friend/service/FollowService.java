@@ -28,8 +28,8 @@ public class FollowService implements FollowUseCase {
     public boolean addOrDeleteFollow(Member member, Member following) {
         validateFollowingSelf(member.getId(), following.getId());
 
-        boolean followingIsExists = checkFollowingExist(member.getId(), following.getId());
-        if (followingIsExists) {
+        boolean isFollowing = checkFollowingExist(member.getId(), following.getId());
+        if (isFollowing) {
             friendPersistencePort.deleteByMemberIdAndFollowingId(member.getId(), following.getId());
             return false;
         }
