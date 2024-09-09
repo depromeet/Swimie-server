@@ -13,8 +13,8 @@ public record FollowingStateResponse(
                         example = "[true, false, true]",
                         requiredMode = Schema.RequiredMode.REQUIRED)
                 List<FollowCheckResponse> followingList) {
-    public static FollowingStateResponse toIsFollowingResponse(List<FollowCheck> followCheckVos) {
+    public static FollowingStateResponse from(List<FollowCheck> followCheckVos) {
         return new FollowingStateResponse(
-                followCheckVos.stream().map(FollowCheckResponse::of).toList());
+                followCheckVos.stream().map(FollowCheckResponse::from).toList());
     }
 }

@@ -30,8 +30,7 @@ public record FollowerResponse(
     @Builder
     public FollowerResponse {}
 
-    public static FollowerResponse toFollowerResponse(
-            Follower follower, String profileImageOrigin) {
+    public static FollowerResponse of(Follower follower, String profileImageOrigin) {
         return FollowerResponse.builder()
                 .memberId(follower.getMemberId())
                 .nickname(follower.getName())

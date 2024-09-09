@@ -125,7 +125,7 @@ public class MemoryFacade {
         List<ReactionCount> reactionCounts =
                 getReactionUseCase.getDetailReactionsCountByMemoryIds(memoryIds);
 
-        return MemoryMapper.toSliceResponse(
+        return TimelineSliceResponse.of(
                 member, timelineSlice, reactionCounts, memoryImageUrls, imageOrigin);
     }
 

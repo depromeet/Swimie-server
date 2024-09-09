@@ -14,7 +14,7 @@ public record FollowCheckResponse(
                         example = "true",
                         requiredMode = Schema.RequiredMode.REQUIRED)
                 Boolean isFollowing) {
-    public static FollowCheckResponse of(FollowCheck isFollowing) {
+    public static FollowCheckResponse from(FollowCheck isFollowing) {
         return new FollowCheckResponse(isFollowing.targetId(), isFollowing.isFollowing());
     }
 }

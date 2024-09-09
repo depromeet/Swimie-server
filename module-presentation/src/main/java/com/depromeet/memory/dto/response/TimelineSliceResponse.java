@@ -1,7 +1,12 @@
 package com.depromeet.memory.dto.response;
 
+import com.depromeet.image.domain.vo.MemoryImageUrlVo;
+import com.depromeet.member.domain.Member;
+import com.depromeet.memory.domain.vo.TimelineSlice;
+import com.depromeet.reaction.domain.vo.ReactionCount;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
+import java.util.Map;
 import lombok.Builder;
 
 public record TimelineSliceResponse(
@@ -26,4 +31,35 @@ public record TimelineSliceResponse(
                 boolean hasNext) {
     @Builder
     public TimelineSliceResponse {}
+
+    public static TimelineSliceResponse of(
+            Member member,
+            TimelineSlice timelineSlice,
+            List<ReactionCount> reactionCounts,
+            Map<Long, MemoryImageUrlVo> memoryImageUrls,
+            String imageOrigin) {
+        List<TimelineResponse> result =
+                timelineSlice.getTimelineContents().stream()
+                        .map(
+                                memory ->
+                                        TimelineResponse.of(
+                                                memory,
+                                                reactionCounts,
+                                                memoryImageUrls,
+                                                imageOrigin))
+                        .toList();
+        return TimelineSliceResponse.builder()
+                .content(result)
+                .goal(member.getGoal())
+                .pageSize(timelineSlice.getPageSize())
+                .cursorRecordAt(getCursorRecordAtResponse(timelineSlice))
+                .hasNext(timelineSlice.isHasNext())
+                .build();
+    }
+
+    private static String getCursorRecordAtResponse(TimelineSlice timelineSlice) {
+        return timelineSlice.getCursorRecordAt() != null
+                ? timelineSlice.getCursorRecordAt().toString()
+                : null;
+    }
 }

@@ -97,7 +97,7 @@ public record FollowingLogMemoryResponse(
     @Builder
     public FollowingLogMemoryResponse {}
 
-    public static FollowingLogMemoryResponse toFollowingLogMemoryResponse(
+    public static FollowingLogMemoryResponse of(
             FollowingMemoryLog followingMemoryLog,
             LocalDateTime lastViewedFollowingLogAt,
             String profileImageOrigin) {
@@ -133,9 +133,7 @@ public record FollowingLogMemoryResponse(
 
     private static List<StrokeResponse> strokeToDto(List<Stroke> strokes, Short lane) {
         if (strokes == null || strokes.isEmpty()) return new ArrayList<>();
-        return strokes.stream()
-                .map(stroke -> StrokeResponse.toStrokeResponse(stroke, lane))
-                .toList();
+        return strokes.stream().map(stroke -> StrokeResponse.of(stroke, lane)).toList();
     }
 
     private static boolean checkIsRecentLog(
