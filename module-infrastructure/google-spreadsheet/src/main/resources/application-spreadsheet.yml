@@ -2,7 +2,6 @@ spring:
   config:
     activate:
       on-profile: spreadsheet
-
 google:
   sheet:
     credentials-file-path: ${GOOGLE_SHEET_CREDENTIALS_FILEPATH}
