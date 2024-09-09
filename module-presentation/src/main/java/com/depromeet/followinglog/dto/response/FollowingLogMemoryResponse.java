@@ -97,7 +97,7 @@ public record FollowingLogMemoryResponse(
     @Builder
     public FollowingLogMemoryResponse {}
 
-    public static FollowingLogMemoryResponse toFollowingLogMemoryResponse(
+    public static FollowingLogMemoryResponse of(
             FollowingMemoryLog followingMemoryLog,
             LocalDateTime lastViewedFollowingLogAt,
             String profileImageOrigin) {

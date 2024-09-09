@@ -43,7 +43,7 @@ public class FollowingLogSliceResponse {
         this.hasNext = hasNext;
     }
 
-    public static FollowingLogSliceResponse toFollowingLogSliceResponse(
+    public static FollowingLogSliceResponse of(
             FollowingLogSlice followingLogSlice,
             LocalDateTime lastViewedFollowingLogAt,
             String profileImageOrigin) {
@@ -51,7 +51,7 @@ public class FollowingLogSliceResponse {
                 followingLogSlice.getContents().stream()
                         .map(
                                 followingMemoryLog ->
-                                        FollowingLogMemoryResponse.toFollowingLogMemoryResponse(
+                                        FollowingLogMemoryResponse.of(
                                                 followingMemoryLog,
                                                 lastViewedFollowingLogAt,
                                                 profileImageOrigin))

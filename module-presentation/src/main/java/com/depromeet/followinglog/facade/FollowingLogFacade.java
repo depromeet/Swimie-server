@@ -27,7 +27,7 @@ public class FollowingLogFacade {
                 followingMemoryLogUseCase.findLogsByMemberIdAndCursorId(memberId, cursorId);
         Member member = memberUseCase.findById(memberId);
         FollowingLogSliceResponse followingLogSliceResponse =
-                FollowingLogSliceResponse.toFollowingLogSliceResponse(
+                FollowingLogSliceResponse.of(
                         followingLogSlice,
                         member.getLastViewedFollowingLogAt(),
                         profileImageOrigin);
