@@ -26,7 +26,7 @@ public class FollowService implements FollowUseCase {
 
     @Transactional
     public boolean addOrDeleteFollow(Member member, Member following) {
-        validatefollowingSelf(member.getId(), following.getId());
+        validateFollowingSelf(member.getId(), following.getId());
 
         boolean followingIsExists = checkFollowingExist(member.getId(), following.getId());
         if (followingIsExists) {
@@ -38,7 +38,7 @@ public class FollowService implements FollowUseCase {
         return true;
     }
 
-    private void validatefollowingSelf(Long memberId, Long followingId) {
+    private void validateFollowingSelf(Long memberId, Long followingId) {
         if (memberId.equals(followingId)) {
             throw new BadRequestException(FollowErrorType.SELF_FOLLOWING_NOT_ALLOWED);
         }
