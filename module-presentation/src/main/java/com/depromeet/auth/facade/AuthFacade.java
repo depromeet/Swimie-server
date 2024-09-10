@@ -141,7 +141,9 @@ public class AuthFacade {
         // Memory 삭제
         deleteMemoryUseCase.deleteAllMemoryByMemberId(memberId);
         // MemoryDetail 삭제
-        deleteMemoryUseCase.deleteAllMemoryDetailById(memoryDetailIds);
+        if (memoryDetailIds != null && !memoryDetailIds.isEmpty()) {
+            deleteMemoryUseCase.deleteAllMemoryDetailById(memoryDetailIds);
+        }
         // Favorite pool 삭제
         favoritePoolUseCase.deleteAllFavoritePoolByMemberId(memberId);
         // Pool search 삭제
