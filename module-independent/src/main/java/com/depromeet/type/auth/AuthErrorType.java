@@ -25,7 +25,8 @@ public enum AuthErrorType implements ErrorType {
     GENERATE_APPLE_PUBLIC_KEY_FAILED("AUTH_21", "APPLE 공개키 생성에 실패하였습니다"),
     CANNOT_FIND_MATCH_JWK("AUTH_22", "일치하는 APPLE JWK 를 찾을 수 없습니다"),
     JWT_PARSE_FAILED("AUTH_23", "JWT PARSING 에 실패하였습니다"),
-    REVOKE_APPLE_ACCOUNT_FAILED("AUTH_24", "APPLE 계정 연결 끊기에 실패하였습니다");
+    REVOKE_APPLE_ACCOUNT_FAILED("AUTH_24", "APPLE 계정 연결 끊기에 실패하였습니다"),
+    CANNOT_GET_USER_DETAIL("AUTH_25", "인증 서버로부터 계정의 이메일, 이름 정보를 받아오는 데 실패하였습니다");
 
     private final String code;
     private final String message;
