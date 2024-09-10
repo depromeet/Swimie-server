@@ -14,7 +14,7 @@ public record StrokeResponse(
     @Builder
     public StrokeResponse {}
 
-    public static StrokeResponse toStrokeResponse(Stroke stroke, Short lane) {
+    public static StrokeResponse of(Stroke stroke, Short lane) {
         return StrokeResponse.builder()
                 .strokeId(stroke.getId())
                 .name(stroke.getName())

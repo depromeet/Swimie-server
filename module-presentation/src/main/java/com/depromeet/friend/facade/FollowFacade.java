@@ -61,8 +61,11 @@ public class FollowFacade {
                         .filter(following -> !blackMemberIds.contains(following.getMemberId()))
                         .toList();
 
-        return FollowSliceResponse.toFollowingSliceResponse(
-                followingSlice, filteredFollowings, profileImageOrigin);
+        Long newCursorId = followingSlice.getCursorId();
+        boolean hasNext = followingSlice.isHasNext();
+
+        return FollowSliceResponse.followingOf(
+                newCursorId, hasNext, filteredFollowings, profileImageOrigin);
     }
 
     public FollowSliceResponse<FollowerResponse> findFollowerList(
@@ -78,7 +81,7 @@ public class FollowFacade {
         Long newCursorId = followerSlice.getCursorId();
         boolean hasNext = followerSlice.isHasNext();
 
-        return FollowSliceResponse.toFollowerSliceResponses(
+        return FollowSliceResponse.followerOf(
                 newCursorId, hasNext, filteredFollowers, profileImageOrigin);
     }
 
@@ -86,13 +89,12 @@ public class FollowFacade {
         int followingCount = followUseCase.countFollowingByMemberId(memberId);
         List<Following> followings = followUseCase.getFollowingByMemberIdLimitThree(memberId);
 
-        return FollowingSummaryResponse.toFollowingSummaryResponse(
-                followingCount, followings, profileImageOrigin);
+        return FollowingSummaryResponse.of(followingCount, followings, profileImageOrigin);
     }
 
     @Transactional(readOnly = true)
     public FollowingStateResponse checkFollowingState(Long memberId, List<Long> targetIds) {
         List<FollowCheck> followCheckVos = followUseCase.checkFollowingState(memberId, targetIds);
-        return FollowingStateResponse.toIsFollowingResponse(followCheckVos);
+        return FollowingStateResponse.from(followCheckVos);
     }
 }
