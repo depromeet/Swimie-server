@@ -15,7 +15,6 @@ public class Follower {
     private String name;
     private String profileImageUrl;
     private String introduction;
-    private boolean hasFollowedBack;
 
     @Builder
     public Follower(
@@ -23,14 +22,12 @@ public class Follower {
             Long memberId,
             String name,
             String profileImageUrl,
-            String introduction,
-            boolean hasFollowedBack) {
+            String introduction) {
         this.friendId = friendId;
         this.memberId = memberId;
         this.name = name;
         this.profileImageUrl = profileImageUrl;
         this.introduction = introduction;
-        this.hasFollowedBack = hasFollowedBack;
     }
 
     public String getProfileImageUrl(String profileImageOrigin) {

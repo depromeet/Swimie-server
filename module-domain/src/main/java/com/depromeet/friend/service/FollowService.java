@@ -26,20 +26,36 @@ public class FollowService implements FollowUseCase {
 
     @Transactional
     public boolean addOrDeleteFollow(Member member, Member following) {
+        validateMembers(member, following);
+        Optional<Friend> optionalFriend = findFriend(member, following);
+
+        if (optionalFriend.isPresent()) {
+            deleteFollowing(member, following);
+            return false;
+        }
+
+        createFollowing(member, following);
+        return true;
+    }
+
+    private void validateMembers(Member member, Member following) {
         if (member.getId().equals(following.getId())) {
             throw new BadRequestException(FollowErrorType.SELF_FOLLOWING_NOT_ALLOWED);
         }
+    }
 
-        Optional<Friend> existedFollowing =
-                friendPersistencePort.findByMemberIdAndFollowingId(
-                        member.getId(), following.getId());
-        if (existedFollowing.isPresent()) {
-            friendPersistencePort.deleteByMemberIdAndFollowingId(member.getId(), following.getId());
-            return false;
-        }
+    private Optional<Friend> findFriend(Member member, Member following) {
+        return friendPersistencePort.findByMemberIdAndFollowingId(
+                member.getId(), following.getId());
+    }
+
+    private void deleteFollowing(Member member, Member following) {
+        friendPersistencePort.deleteByMemberIdAndFollowingId(member.getId(), following.getId());
+    }
+
+    private void createFollowing(Member member, Member following) {
         Friend friend = Friend.builder().member(member).following(following).build();
         friendPersistencePort.addFollow(friend);
-        return true;
     }
 
     @Override

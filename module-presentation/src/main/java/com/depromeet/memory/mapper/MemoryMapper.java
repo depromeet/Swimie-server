@@ -1,22 +1,14 @@
 package com.depromeet.memory.mapper;
 
-import com.depromeet.image.domain.vo.MemoryImageUrlVo;
-import com.depromeet.member.domain.Member;
-import com.depromeet.memory.domain.vo.TimelineSlice;
 import com.depromeet.memory.dto.request.MemoryCreateRequest;
 import com.depromeet.memory.dto.request.MemoryUpdateRequest;
 import com.depromeet.memory.dto.request.StrokeCreateRequest;
 import com.depromeet.memory.dto.request.StrokeUpdateRequest;
-import com.depromeet.memory.dto.response.TimelineResponse;
-import com.depromeet.memory.dto.response.TimelineSliceResponse;
 import com.depromeet.memory.port.in.command.CreateMemoryCommand;
 import com.depromeet.memory.port.in.command.CreateStrokeCommand;
 import com.depromeet.memory.port.in.command.UpdateMemoryCommand;
 import com.depromeet.memory.port.in.command.UpdateStrokeCommand;
-import com.depromeet.reaction.domain.vo.ReactionCount;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Map;
 
 public class MemoryMapper {
     public static CreateStrokeCommand toCommand(StrokeCreateRequest request) {
@@ -80,36 +72,5 @@ public class MemoryMapper {
             return LocalTime.of(0, min, sec);
         }
         return null;
-    }
-
-    public static TimelineSliceResponse toSliceResponse(
-            Member member,
-            TimelineSlice timelineSlice,
-            List<ReactionCount> reactionCounts,
-            Map<Long, MemoryImageUrlVo> memoryImageUrls,
-            String imageOrigin) {
-        List<TimelineResponse> result =
-                timelineSlice.getTimelineContents().stream()
-                        .map(
-                                memory ->
-                                        TimelineResponse.mapToTimelineResponseDto(
-                                                memory,
-                                                reactionCounts,
-                                                memoryImageUrls,
-                                                imageOrigin))
-                        .toList();
-        return TimelineSliceResponse.builder()
-                .content(result)
-                .goal(member.getGoal())
-                .pageSize(timelineSlice.getPageSize())
-                .cursorRecordAt(getCursorRecordAtResponse(timelineSlice))
-                .hasNext(timelineSlice.isHasNext())
-                .build();
-    }
-
-    private static String getCursorRecordAtResponse(TimelineSlice timelineSlice) {
-        return timelineSlice.getCursorRecordAt() != null
-                ? timelineSlice.getCursorRecordAt().toString()
-                : null;
     }
 }

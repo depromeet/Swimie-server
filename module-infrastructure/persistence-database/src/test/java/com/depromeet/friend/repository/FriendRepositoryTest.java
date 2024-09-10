@@ -149,8 +149,6 @@ public class FriendRepositoryTest {
                                                 .friendId(friend.getId())
                                                 .memberId(friend.getMember().getId())
                                                 .name(friend.getMember().getNickname())
-                                                .hasFollowedBack(
-                                                        friend.getMember().getId() % 2 == 0)
                                                 .build())
                         .toList();
         List<String> expectedFollowerNames =
