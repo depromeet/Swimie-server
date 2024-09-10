@@ -32,7 +32,6 @@ import com.depromeet.pool.port.in.usecase.SearchLogUseCase;
 import com.depromeet.reaction.port.in.usecase.DeleteReactionUseCase;
 import com.depromeet.reaction.port.in.usecase.GetReactionUseCase;
 import com.depromeet.type.auth.AuthErrorType;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
@@ -136,7 +135,6 @@ public class AuthFacade {
                 getMemoryUseCase.findMemoryAndDetailIdsByMemberId(memberId);
         List<Long> memoryIds = memoryAndDetailId.memoryIds();
         List<Long> memoryDetailIds = memoryAndDetailId.memoryDetailIds();
-        memoryDetailIds.removeAll(Collections.singletonList(null));
         // Following memory log 삭제
         followingMemoryLogUseCase.deleteAllByMemoryIds(memoryIds);
         // Reaction 조회
