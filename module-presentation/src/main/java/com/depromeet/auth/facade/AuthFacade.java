@@ -85,7 +85,7 @@ public class AuthFacade {
     public JwtTokenResponse loginByApple(AppleLoginRequest request) {
         final AccountProfileResponse profile =
                 socialUseCase.getAppleAccountToken(
-                        AppleMapper.toCommand(request), "https://swimie.life");
+                        AppleMapper.toCommand(request), "https://patient-ocelot-accurate.ngrok-free.app");
         if (profile == null) {
             throw new NotFoundException(AuthErrorType.NOT_FOUND);
         }
@@ -98,7 +98,7 @@ public class AuthFacade {
         Member member = memberUseCase.findByProviderId(providerId);
         if (member == null) {
             // Email, Username 정보를 받아오지 못했으면 에러
-            checkRequiredFields(profile, provider);
+            checkRequiredFields(profile, providerId);
             isSignUpComplete = false;
             ThreadLocalRandom rand = ThreadLocalRandom.current();
             String defaultProfile = String.valueOf(rand.nextInt(4) + 1);
@@ -112,9 +112,9 @@ public class AuthFacade {
                 token, member.getNickname(), member.getProfileImageUrl(), isSignUpComplete);
     }
 
-    private void checkRequiredFields(AccountProfileResponse profile, String provider) {
+    private void checkRequiredFields(AccountProfileResponse profile, String providerId) {
         if (profile.name() == null || profile.email() == null) {
-            socialUseCase.revokeAccount(provider);
+            socialUseCase.revokeAccount(providerId);
             throw new UnauthorizedException(AuthErrorType.CANNOT_GET_USER_DETAIL);
         }
     }
