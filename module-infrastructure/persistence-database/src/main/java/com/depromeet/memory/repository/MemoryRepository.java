@@ -20,6 +20,7 @@ import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -209,7 +210,10 @@ public class MemoryRepository implements MemoryPersistencePort {
                         .fetch();
         List<Long> memoryIds = result.stream().map(r -> r.get(memory.id)).toList();
         List<Long> memoryDetailIds =
-                result.stream().map(r -> r.get(memory.memoryDetail.id)).toList();
+                result.stream()
+                        .map(r -> r.get(memory.memoryDetail.id))
+                        .filter(Objects::nonNull)
+                        .toList();
         return new MemoryAndDetailId(memoryIds, memoryDetailIds);
     }
 
