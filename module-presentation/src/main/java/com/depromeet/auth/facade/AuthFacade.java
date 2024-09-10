@@ -14,6 +14,7 @@ import com.depromeet.auth.vo.kakao.KakaoAccountProfile;
 import com.depromeet.blacklist.port.in.usecase.BlacklistQueryUseCase;
 import com.depromeet.dto.auth.AccountProfileResponse;
 import com.depromeet.exception.NotFoundException;
+import com.depromeet.exception.UnauthorizedException;
 import com.depromeet.followinglog.port.in.FollowingMemoryLogUseCase;
 import com.depromeet.friend.port.in.usecase.FollowUseCase;
 import com.depromeet.image.port.in.ImageUpdateUseCase;
@@ -31,6 +32,7 @@ import com.depromeet.pool.port.in.usecase.SearchLogUseCase;
 import com.depromeet.reaction.port.in.usecase.DeleteReactionUseCase;
 import com.depromeet.reaction.port.in.usecase.GetReactionUseCase;
 import com.depromeet.type.auth.AuthErrorType;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
@@ -96,6 +98,8 @@ public class AuthFacade {
         String providerId = provider + " " + profile.id();
         Member member = memberUseCase.findByProviderId(providerId);
         if (member == null) {
+            // Email, Username 정보를 받아오지 못했으면 에러
+            checkRequiredFields(profile, provider);
             isSignUpComplete = false;
             ThreadLocalRandom rand = ThreadLocalRandom.current();
             String defaultProfile = String.valueOf(rand.nextInt(4) + 1);
@@ -107,6 +111,13 @@ public class AuthFacade {
 
         return JwtTokenResponse.of(
                 token, member.getNickname(), member.getProfileImageUrl(), isSignUpComplete);
+    }
+
+    private void checkRequiredFields(AccountProfileResponse profile, String provider) {
+        if (profile.name() == null || profile.email() == null) {
+            socialUseCase.revokeAccount(provider);
+            throw new UnauthorizedException(AuthErrorType.CANNOT_GET_USER_DETAIL);
+        }
     }
 
     @Transactional(readOnly = true)
@@ -125,6 +136,7 @@ public class AuthFacade {
                 getMemoryUseCase.findMemoryAndDetailIdsByMemberId(memberId);
         List<Long> memoryIds = memoryAndDetailId.memoryIds();
         List<Long> memoryDetailIds = memoryAndDetailId.memoryDetailIds();
+        memoryDetailIds.removeAll(Collections.singletonList(null));
         // Following memory log 삭제
         followingMemoryLogUseCase.deleteAllByMemoryIds(memoryIds);
         // Reaction 조회
@@ -141,9 +153,7 @@ public class AuthFacade {
         // Memory 삭제
         deleteMemoryUseCase.deleteAllMemoryByMemberId(memberId);
         // MemoryDetail 삭제
-        if (memoryDetailIds != null && !memoryDetailIds.isEmpty()) {
-            deleteMemoryUseCase.deleteAllMemoryDetailById(memoryDetailIds);
-        }
+        deleteMemoryUseCase.deleteAllMemoryDetailById(memoryDetailIds);
         // Favorite pool 삭제
         favoritePoolUseCase.deleteAllFavoritePoolByMemberId(memberId);
         // Pool search 삭제
