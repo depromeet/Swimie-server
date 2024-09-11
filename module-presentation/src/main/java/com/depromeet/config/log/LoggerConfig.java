@@ -1,4 +1,4 @@
-package com.depromeet.config;
+package com.depromeet.config.log;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,7 +18,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Aspect
 @Configuration
 public class LoggerConfig {
-    @Around("@annotation(com.depromeet.config.Logging) && @annotation(logging)")
+    @Around("@annotation(com.depromeet.config.log.Logging) && @annotation(logging)")
     public Object aroundLogger(ProceedingJoinPoint joinPoint, Logging logging) throws Throwable {
         RequestLog requestLog = new RequestLog();
 

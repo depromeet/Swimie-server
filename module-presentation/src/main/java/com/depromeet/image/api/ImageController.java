@@ -2,7 +2,7 @@ package com.depromeet.image.api;
 
 import static com.depromeet.type.image.ImageSuccessType.*;
 
-import com.depromeet.config.Logging;
+import com.depromeet.config.log.Logging;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.image.dto.request.ImageIdsRequest;
 import com.depromeet.image.dto.request.ImageNameRequest;

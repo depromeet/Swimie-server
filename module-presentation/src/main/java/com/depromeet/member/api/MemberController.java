@@ -1,6 +1,6 @@
 package com.depromeet.member.api;
 
-import com.depromeet.config.Logging;
+import com.depromeet.config.log.Logging;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.member.domain.Member;
