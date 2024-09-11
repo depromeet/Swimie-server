@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "탈퇴 사유(Withdrawal Reason)")
 public interface WithdrawalReasonApi {
-    @Operation
+    @Operation(summary = "탈퇴 사유 제출")
     ApiResponse<?> create(@RequestBody WithdrawalReasonCreateRequest request);
 }
