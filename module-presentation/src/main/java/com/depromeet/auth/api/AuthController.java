@@ -6,7 +6,7 @@ import com.depromeet.auth.dto.request.KakaoLoginRequest;
 import com.depromeet.auth.dto.response.JwtAccessTokenResponse;
 import com.depromeet.auth.dto.response.JwtTokenResponse;
 import com.depromeet.auth.facade.AuthFacade;
-import com.depromeet.config.Logging;
+import com.depromeet.config.log.Logging;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.type.auth.AuthSuccessType;

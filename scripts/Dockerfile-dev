@@ -4,4 +4,4 @@ WORKDIR /app
 
 COPY module-presentation/build/libs/module-presentation.jar /app/appu.jar
 
-CMD ["java", "-Duser.timezone=Asia/Seoul", "-jar", "-Dspring.profiles.active=dev", "appu.jar"]
+CMD ["java", "-Djava.net.preferIPv4Stack=true", "-Duser.timezone=Asia/Seoul", "-Dspring.profiles.active=dev", "-jar", "appu.jar"]

@@ -2,7 +2,7 @@ package com.depromeet.followinglog.api;
 
 import static com.depromeet.type.followingLog.FollowingLogSuccessType.GET_FOLLOWING_LOGS_SUCCESS;
 
-import com.depromeet.config.Logging;
+import com.depromeet.config.log.Logging;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.followinglog.dto.response.FollowingLogSliceResponse;
 import com.depromeet.followinglog.facade.FollowingLogFacade;

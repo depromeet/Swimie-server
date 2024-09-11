@@ -4,4 +4,4 @@ WORKDIR /app
 
 COPY module-batch/build/libs/module-batch.jar /app/batch-image.jar
 
-CMD ["java", "-Duser.timezone=Asia/Seoul", "-jar", "-Dspring.profiles.active=batch", "batch-image.jar"]
+CMD ["java", "-Djava.net.preferIPv4Stack=true", "-Duser.timezone=Asia/Seoul", "-Dspring.profiles.active=batch", "-jar", "batch-image.jar"]

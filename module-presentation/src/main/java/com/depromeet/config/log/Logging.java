@@ -1,4 +1,4 @@
-package com.depromeet.config;
+package com.depromeet.config.log;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
