@@ -37,6 +37,13 @@ public class MemoryResponse {
     private Long prevId;
 
     @Schema(
+            description = "현재 Memory Rank",
+            example = "3",
+            type = "int",
+            requiredMode = Schema.RequiredMode.REQUIRED)
+    private Integer rank;
+
+    @Schema(
             description = "다음 Memory PK",
             example = "3",
             type = "long",
@@ -125,6 +132,7 @@ public class MemoryResponse {
     public MemoryResponse(
             Long id,
             Long prevId,
+            Integer rank,
             Long nextId,
             MemberSimpleResponse member,
             Pool pool,
@@ -155,6 +163,7 @@ public class MemoryResponse {
 
         this.id = id;
         this.prevId = prevId;
+        this.rank = rank;
         this.nextId = nextId;
         this.member = member;
         this.pool = pool;
@@ -232,7 +241,7 @@ public class MemoryResponse {
                 .build();
     }
 
-    public static MemoryResponse from(MemoryInfo memoryInfo) {
+    public static MemoryResponse from(MemoryInfo memoryInfo, int rank) {
         Memory memory = memoryInfo.memory();
         MemberSimpleResponse memberSimple =
                 new MemberSimpleResponse(
@@ -240,6 +249,7 @@ public class MemoryResponse {
         return MemoryResponse.builder()
                 .id(memory.getId())
                 .prevId(memoryInfo.prevId())
+                .rank(rank)
                 .nextId(memoryInfo.nextId())
                 .member(memberSimple)
                 .pool(memory.getPool())
