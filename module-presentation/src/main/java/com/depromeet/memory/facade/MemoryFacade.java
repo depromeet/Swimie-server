@@ -107,7 +107,10 @@ public class MemoryFacade {
 
     public MemoryResponse findById(Long requestMemberId, Long memoryId) {
         MemoryInfo memoryInfo = getMemoryUseCase.findByIdWithPrevNext(requestMemberId, memoryId);
-        return MemoryResponse.from(memoryInfo);
+        Long memoryMemberId = memoryInfo.memory().getMember().getId();
+        int month = memoryInfo.memory().getRecordAt().getMonth().getValue();
+        int rank = getMemoryUseCase.findOrderInMonth(memoryMemberId, memoryId, month);
+        return MemoryResponse.from(memoryInfo, rank);
     }
 
     public TimelineSliceResponse getTimelineByMemberIdAndCursorAndDate(
