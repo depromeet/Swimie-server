@@ -1,4 +1,4 @@
-package com.depromeet.config.correlationid;
+package com.depromeet.config.log.mdc;
 
 import jakarta.servlet.*;
 import java.io.IOException;
