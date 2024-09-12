@@ -6,14 +6,14 @@ spring:
     primary:
       hikari:
         driver-class-name: com.mysql.cj.jdbc.Driver
-        jdbc-url: ${PRIMARY_MYSQL_URL} # 환경변수에 값 추가하시면 됩니다.
+        jdbc-url: ${PRIMARY_MYSQL_URL}
         username: ${PRIMARY_MYSQL_USERNAME}
         password: ${PRIMARY_MYSQL_PASSWORD}
 
     secondary:
       hikari:
         driver-class-name: com.mysql.cj.jdbc.Driver
-        jdbc-url: ${SECONDARY_MYSQL_URL} # 환경변수에 값 추가하시면 됩니다.
+        jdbc-url: ${SECONDARY_MYSQL_URL}
         username: ${SECONDARY_MYSQL_USERNAME}
         password: ${SECONDARY_MYSQL_PASSWORD}
   data:
