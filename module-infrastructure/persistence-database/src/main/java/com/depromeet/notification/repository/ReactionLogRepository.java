@@ -54,9 +54,12 @@ public class ReactionLogRepository implements ReactionLogPersistencePort {
     }
 
     @Override
-    public void updateRead(Long memberId, Long reactionLogId) {
-        ReactionLogEntity reactionLogEntity = findByMemberIdAndLogId(memberId, reactionLogId);
-        reactionLogEntity.updateHasRead(true);
+    public void updateAllAsRead(Long memberId) {
+        queryFactory
+                .update(reactionLogEntity)
+                .where(memberEq(memberId), reactionLogEntity.hasRead.isFalse())
+                .set(reactionLogEntity.hasRead, true)
+                .execute();
     }
 
     @Override

@@ -1,24 +1,20 @@
 package com.depromeet.notification.facade;
 
-import com.depromeet.exception.BadRequestException;
 import com.depromeet.exception.InternalServerException;
 import com.depromeet.notification.domain.FollowLog;
 import com.depromeet.notification.domain.FollowType;
 import com.depromeet.notification.domain.ReactionLog;
-import com.depromeet.notification.dto.request.UpdateReadNotificationRequest;
 import com.depromeet.notification.dto.response.BaseNotificationResponse;
 import com.depromeet.notification.dto.response.FollowNotificationResponse;
 import com.depromeet.notification.dto.response.FriendNotificationResponse;
 import com.depromeet.notification.dto.response.NotificationResponse;
 import com.depromeet.notification.dto.response.ReactionNotificationResponse;
 import com.depromeet.notification.dto.response.UnreadNotificationCountResponse;
-import com.depromeet.notification.mapper.NotificationMapper;
 import com.depromeet.notification.port.in.usecase.GetFollowLogUseCase;
 import com.depromeet.notification.port.in.usecase.GetReactionLogUseCase;
 import com.depromeet.notification.port.in.usecase.UpdateFollowLogUseCase;
 import com.depromeet.notification.port.in.usecase.UpdateReactionLogUseCase;
 import com.depromeet.type.friend.FollowErrorType;
-import com.depromeet.type.notification.NotificationErrorType;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +36,7 @@ public class NotificationFacade {
     @Value("${cloud-front.domain}")
     private String profileImageOrigin;
 
+    @Transactional
     public NotificationResponse getNotifications(Long memberId, LocalDateTime cursorCreatedAt) {
         List<FollowLog> followLogs = getFollowLogUseCase.getFollowLogs(memberId, cursorCreatedAt);
         List<Long> friendList = new ArrayList<>();
@@ -96,15 +93,9 @@ public class NotificationFacade {
     }
 
     @Transactional
-    public void markAsReadNotification(Long memberId, UpdateReadNotificationRequest request) {
-        if (request.type().equals("CHEER")) {
-            updateReactionLogUseCase.markAsReadReactionLog(memberId, request.notificationId());
-        } else if (request.type().equals("FOLLOW") || request.type().equals("FRIEND")) {
-            updateFollowLogUseCase.markAsReadFollowLog(
-                    memberId, NotificationMapper.toCommand(request));
-        } else {
-            throw new BadRequestException(NotificationErrorType.INVALID_NOTIFICATION_TYPE);
-        }
+    public void markAsReadNotification(Long memberId) {
+        updateFollowLogUseCase.markAsReadFollowLogs(memberId);
+        updateReactionLogUseCase.markAsReadReactionLogs(memberId);
     }
 
     public UnreadNotificationCountResponse getUnreadNotificationCount(Long memberId) {

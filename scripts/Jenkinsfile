@@ -28,14 +28,12 @@ pipeline {
             steps {
                 sh 'chmod u+w ./module-presentation/src/main/resources/'
                 sh 'chmod +x ./gradlew'
-                sh './gradlew :module-presentation:build'
             }
         }
 
         stage('Docker 이미지 빌드') {
             steps {
                 script {
-                    sh 'cp ./module-presentation/build/libs/module-presentation.jar .'
                     dockerImage = docker.build(repository + ":latest", "-f ./scripts/Dockerfile-prod .")
                 }
             }
