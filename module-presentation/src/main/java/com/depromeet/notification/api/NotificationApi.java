@@ -2,7 +2,6 @@ package com.depromeet.notification.api;
 
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.member.annotation.LoginMember;
-import com.depromeet.notification.dto.request.UpdateReadNotificationRequest;
 import com.depromeet.notification.dto.response.NotificationResponse;
 import com.depromeet.notification.dto.response.UnreadNotificationCountResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,7 +9,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "알림(Notification)")
@@ -28,6 +26,5 @@ public interface NotificationApi {
             @LoginMember Long memberId);
 
     @Operation(summary = "알림 읽음 처리")
-    ApiResponse<?> markAsReadNotification(
-            @LoginMember Long memberId, @RequestBody UpdateReadNotificationRequest request);
+    ApiResponse<?> markAllAsReadNotification(@LoginMember Long memberId);
 }

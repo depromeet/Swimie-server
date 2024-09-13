@@ -47,8 +47,8 @@ public class ReactionLogService
 
     @Override
     @Transactional
-    public void markAsReadReactionLog(Long memberId, Long reactionLogId) {
-        reactionLogPersistencePort.updateRead(memberId, reactionLogId);
+    public void markAsReadReactionLogs(Long memberId) {
+        reactionLogPersistencePort.updateAllAsRead(memberId);
     }
 
     @Override

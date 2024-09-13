@@ -50,10 +50,10 @@ public class FollowLogRepository implements FollowLogPersistencePort {
     }
 
     @Override
-    public void updateRead(Long memberId, Long followLogId, FollowType type) {
+    public void updateAllAsRead(Long memberId) {
         queryFactory
                 .update(followLogEntity)
-                .where(memberEq(memberId), followLogEq(followLogId), followTypeEq(type))
+                .where(memberEq(memberId), followLogEntity.hasRead.eq(false))
                 .set(followLogEntity.hasRead, true)
                 .execute();
     }
