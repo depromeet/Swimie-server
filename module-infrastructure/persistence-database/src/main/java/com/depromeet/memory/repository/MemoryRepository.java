@@ -253,6 +253,23 @@ public class MemoryRepository implements MemoryPersistencePort {
                 + 1;
     }
 
+    @Override
+    public Optional<Memory> findLastByMemberId(Long memberId) {
+        MemoryEntity memoryEntity =
+                queryFactory
+                        .selectFrom(memory)
+                        .leftJoin(memory.pool, poolEntity)
+                        .fetchJoin()
+                        .where(memberEq(memberId))
+                        .orderBy(memory.updatedAt.desc())
+                        .limit(1)
+                        .fetchOne();
+        if (memoryEntity == null) {
+            return Optional.empty();
+        }
+        return Optional.of(memoryEntity.toModelForLastInfo());
+    }
+
     private BooleanExpression loeRecordAt(LocalDate recordAt) {
         if (recordAt == null) {
             return null;

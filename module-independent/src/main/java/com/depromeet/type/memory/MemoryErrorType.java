@@ -11,7 +11,8 @@ public enum MemoryErrorType implements ErrorType {
     NOT_FOUND_PREV("MEMORY_6", "이전 기록이 존재하지 않습니다"),
     NOT_FOUND_NEXT("MEMORY_7", "다음 기록이 존재하지 않습니다"),
     TIME_NOT_VALID("MEMORY_8", "시작 시간은 종료 시간을 역전할 수 없습니다"),
-    ONLY_OWNER_CAN_DELETE_MEMORY("MEMORY_9", "기록은 작성자만 삭제할 수 있습니다");
+    ONLY_OWNER_CAN_DELETE_MEMORY("MEMORY_9", "기록은 작성자만 삭제할 수 있습니다"),
+    NOT_FOUND_LAST("MEMORY_10", "직전 기록이 존재하지 않습니다");
 
     private final String code;
     private final String message;

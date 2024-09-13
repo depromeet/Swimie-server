@@ -85,4 +85,10 @@ public class MemoryController implements MemoryApi {
         memoryFacade.deleteById(memberId, memoryId);
         return ApiResponse.success(MemorySuccessType.DELETE_SUCCESS);
     }
+
+    @GetMapping("/last")
+    public ApiResponse<LastMemoryResponse> getLast(@LoginMember Long memberId) {
+        LastMemoryResponse response = memoryFacade.getLastMemoryByMemberId(memberId);
+        return ApiResponse.success(MemorySuccessType.GET_LAST_SUCCESS, response);
+    }
 }

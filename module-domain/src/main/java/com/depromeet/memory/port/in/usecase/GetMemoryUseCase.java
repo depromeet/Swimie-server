@@ -22,4 +22,6 @@ public interface GetMemoryUseCase {
     MemoryIdAndDiaryAndMember findIdAndNicknameById(Long memberId);
 
     int findDateOrderInMonth(Long memberId, Long memoryId, int month);
+
+    Memory findLastByMemberId(Long memberId);
 }
