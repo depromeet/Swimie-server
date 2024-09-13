@@ -55,4 +55,7 @@ public interface MemoryApi {
 
     @Operation(summary = "기록 단건 삭제")
     ApiResponse<?> delete(@LoginMember Long memberId, @PathVariable("memoryId") Long memoryId);
+
+    @Operation(summary = "직전 기록 조회")
+    ApiResponse<LastMemoryResponse> getLast(@LoginMember Long memberId);
 }

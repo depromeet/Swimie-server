@@ -4,6 +4,7 @@ import com.depromeet.image.domain.Image;
 import com.depromeet.member.domain.Member;
 import com.depromeet.pool.domain.Pool;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -23,6 +24,7 @@ public class Memory {
     private LocalTime endTime;
     private Short lane;
     private String diary;
+    private LocalDateTime updatedAt;
 
     @Builder
     public Memory(
@@ -36,7 +38,8 @@ public class Memory {
             LocalTime startTime,
             LocalTime endTime,
             Short lane,
-            String diary) {
+            String diary,
+            LocalDateTime updatedAt) {
         this.id = id;
         this.member = member;
         this.pool = pool;
@@ -48,6 +51,7 @@ public class Memory {
         this.endTime = endTime;
         this.lane = lane;
         this.diary = diary;
+        this.updatedAt = updatedAt;
     }
 
     public void setStrokes(List<Stroke> strokes) {
@@ -69,6 +73,7 @@ public class Memory {
                 .endTime(updateMemory.getEndTime())
                 .lane(updateMemory.getLane())
                 .diary(updateMemory.getDiary())
+                .updatedAt(LocalDateTime.now())
                 .build();
     }
 

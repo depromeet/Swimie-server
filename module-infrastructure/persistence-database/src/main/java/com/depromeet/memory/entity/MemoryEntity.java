@@ -10,6 +10,7 @@ import com.depromeet.pool.entity.PoolEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +18,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(
         name = "memory_entity",
@@ -59,6 +63,8 @@ public class MemoryEntity {
 
     @Column(columnDefinition = "TEXT")
     private String diary;
+
+    @Column @LastModifiedDate private LocalDateTime updatedAt;
 
     @Builder
     public MemoryEntity(
@@ -137,6 +143,7 @@ public class MemoryEntity {
                 .endTime(this.endTime)
                 .lane(this.lane)
                 .diary(this.diary)
+                .updatedAt(this.updatedAt)
                 .build();
     }
 
@@ -152,6 +159,7 @@ public class MemoryEntity {
                 .endTime(this.endTime)
                 .lane(this.lane)
                 .diary(this.diary)
+                .updatedAt(this.updatedAt)
                 .build();
     }
 
@@ -167,6 +175,7 @@ public class MemoryEntity {
                 .endTime(this.endTime)
                 .lane(this.lane)
                 .diary(this.diary)
+                .updatedAt(this.updatedAt)
                 .build();
     }
 
@@ -179,6 +188,7 @@ public class MemoryEntity {
                 .endTime(this.endTime)
                 .lane(this.lane)
                 .diary(this.diary)
+                .updatedAt(this.updatedAt)
                 .build();
     }
 
@@ -191,6 +201,16 @@ public class MemoryEntity {
                 .endTime(this.endTime)
                 .lane(this.lane)
                 .diary(this.diary)
+                .updatedAt(this.updatedAt)
+                .build();
+    }
+
+    public Memory toModelForLastInfo() {
+        return Memory.builder()
+                .pool(this.pool != null ? this.pool.toModel() : null)
+                .startTime(this.startTime)
+                .endTime(this.endTime)
+                .updatedAt(this.updatedAt)
                 .build();
     }
 
