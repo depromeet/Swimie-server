@@ -139,6 +139,7 @@ public class ReactionRepository implements ReactionPersistencePort {
                 .from(reactionEntity)
                 .join(reactionEntity.memory, memoryEntity)
                 .where(memoryEntity.id.in(memoryIds))
+                .groupBy(memoryEntity.id)
                 .fetch();
     }
 
