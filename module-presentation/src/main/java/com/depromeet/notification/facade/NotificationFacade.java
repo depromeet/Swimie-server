@@ -96,14 +96,6 @@ public class NotificationFacade {
     public void markAsReadNotification(Long memberId) {
         updateFollowLogUseCase.markAsReadFollowLogs(memberId);
         updateReactionLogUseCase.markAsReadReactionLogs(memberId);
-        // if (request.type().equals("CHEER")) {
-        //     updateReactionLogUseCase.markAsReadReactionLog(memberId, request.notificationId());
-        // } else if (request.type().equals("FOLLOW") || request.type().equals("FRIEND")) {
-        //     updateFollowLogUseCase.markAsReadFollowLog(
-        //             memberId, NotificationMapper.toCommand(request));
-        // } else {
-        //     throw new BadRequestException(NotificationErrorType.INVALID_NOTIFICATION_TYPE);
-        // }
     }
 
     public UnreadNotificationCountResponse getUnreadNotificationCount(Long memberId) {
