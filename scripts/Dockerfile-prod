@@ -17,4 +17,3 @@ WORKDIR /app
 COPY --from=build /home/gradle/src/module-presentation/build/libs/module-presentation.jar /app/appu.jar
 
 CMD ["java", "-Djava.net.preferIPv4Stack=true", "-Duser.timezone=Asia/Seoul", "-Dspring.profiles.active=prod", "-jar", "appu.jar"]
-
