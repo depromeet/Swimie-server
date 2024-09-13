@@ -100,7 +100,7 @@ public class MemoryRepository implements MemoryPersistencePort {
     }
 
     @Override
-    public int findOrderInMonth(Long memberId, Long memoryId, int month) {
+    public int findCreationOrderInMonth(Long memberId, Long memoryId, int month) {
         return queryFactory
                         .select(memory.id)
                         .from(memory)
@@ -239,6 +239,18 @@ public class MemoryRepository implements MemoryPersistencePort {
         return Optional.of(
                 new MemoryIdAndDiaryAndMember(
                         result.get(0, Long.class), result.get(1, String.class), member));
+    }
+
+    @Override
+    public int findDateOrderInMonth(Long memberId, Long memoryId, int month) {
+        return queryFactory
+                        .select(memory.id)
+                        .from(memory)
+                        .where(memberEq(memberId), memory.recordAt.month().eq(month))
+                        .orderBy(memory.recordAt.asc())
+                        .fetch()
+                        .indexOf(memoryId)
+                + 1;
     }
 
     private BooleanExpression loeRecordAt(LocalDate recordAt) {

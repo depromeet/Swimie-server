@@ -11,7 +11,7 @@ public interface GetMemoryUseCase {
 
     Memory findByIdWithMember(Long memoryId);
 
-    int findOrderInMonth(Long memberId, Long memoryId, int month);
+    int findCreationOrderInMonth(Long memberId, Long memoryId, int month);
 
     List<Memory> findByMemberId(Long memberId);
 
@@ -20,4 +20,6 @@ public interface GetMemoryUseCase {
     MemoryAndDetailId findMemoryAndDetailIdsByMemberId(Long memberId);
 
     MemoryIdAndDiaryAndMember findIdAndNicknameById(Long memberId);
+
+    int findDateOrderInMonth(Long memberId, Long memoryId, int month);
 }

@@ -18,7 +18,7 @@ public interface MemoryPersistencePort {
 
     Optional<Memory> update(Long memoryId, Memory updateMemory);
 
-    int findOrderInMonth(Long memberId, Long memoryId, int month);
+    int findCreationOrderInMonth(Long memberId, Long memoryId, int month);
 
     List<Memory> findPrevMemoryByMemberId(Long memberId, LocalDate cursorRecordAt);
 
@@ -39,4 +39,6 @@ public interface MemoryPersistencePort {
     void deleteById(Long memoryId);
 
     Optional<MemoryIdAndDiaryAndMember> findIdAndNicknameById(Long memberId);
+
+    int findDateOrderInMonth(Long memberId, Long memoryId, int month);
 }
