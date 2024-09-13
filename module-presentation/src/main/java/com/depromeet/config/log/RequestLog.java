@@ -1,4 +1,4 @@
-package com.depromeet.config;
+package com.depromeet.config.log;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

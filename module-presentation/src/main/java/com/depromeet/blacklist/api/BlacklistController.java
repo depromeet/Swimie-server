@@ -3,7 +3,7 @@ package com.depromeet.blacklist.api;
 import com.depromeet.blacklist.dto.request.BlackMemberRequest;
 import com.depromeet.blacklist.dto.response.BlackMemberResponse;
 import com.depromeet.blacklist.facade.BlacklistFacade;
-import com.depromeet.config.Logging;
+import com.depromeet.config.log.Logging;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.member.annotation.LoginMember;
 import com.depromeet.type.blacklist.BlacklistSuccessType;

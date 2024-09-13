@@ -1,6 +1,6 @@
 package com.depromeet.withdrawal.api;
 
-import com.depromeet.config.Logging;
+import com.depromeet.config.log.Logging;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.type.withdrawal.WithdrawalReasonSuccessType;
 import com.depromeet.withdrawal.dto.request.WithdrawalReasonCreateRequest;

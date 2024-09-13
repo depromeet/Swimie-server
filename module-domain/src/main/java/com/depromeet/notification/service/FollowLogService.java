@@ -4,7 +4,6 @@ import com.depromeet.friend.port.out.persistence.FriendPersistencePort;
 import com.depromeet.notification.domain.FollowLog;
 import com.depromeet.notification.domain.FollowType;
 import com.depromeet.notification.event.FollowLogEvent;
-import com.depromeet.notification.port.in.command.UpdateReadFollowLogCommand;
 import com.depromeet.notification.port.in.usecase.DeleteFollowLogUseCase;
 import com.depromeet.notification.port.in.usecase.GetFollowLogUseCase;
 import com.depromeet.notification.port.in.usecase.UpdateFollowLogUseCase;
@@ -72,8 +71,8 @@ public class FollowLogService
     }
 
     @Override
-    public void markAsReadFollowLog(Long memberId, UpdateReadFollowLogCommand command) {
-        followLogPersistencePort.updateRead(memberId, command.followLogId(), command.type());
+    public void markAsReadFollowLogs(Long memberId) {
+        followLogPersistencePort.updateAllAsRead(memberId);
     }
 
     @Override
