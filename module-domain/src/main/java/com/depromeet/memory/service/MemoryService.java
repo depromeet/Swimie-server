@@ -124,6 +124,13 @@ public class MemoryService
     }
 
     @Override
+    public Memory findLastByMemberId(Long memberId) {
+        return memoryPersistencePort
+                .findLastByMemberId(memberId)
+                .orElseThrow(() -> new NotFoundException(MemoryErrorType.NOT_FOUND_LAST));
+    }
+
+    @Override
     @Transactional
     public Memory update(Long memoryId, UpdateMemoryCommand command, List<Stroke> strokes) {
         Memory memory = findById(memoryId);

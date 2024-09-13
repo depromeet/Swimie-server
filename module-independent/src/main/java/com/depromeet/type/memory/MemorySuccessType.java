@@ -10,7 +10,8 @@ public enum MemorySuccessType implements SuccessType {
     GET_CALENDAR_SUCCESS("MEMORY_5", "캘린더 조회에 성공하였습니다"),
     GET_PREV_SUCCESS("MEMORY_6", "이전 수영 기록 조회에 성공하였습니다"),
     GET_NEXT_SUCCESS("MEMORY_7", "다음 수영 기록 조회에 성공하였습니다"),
-    DELETE_SUCCESS("MEMORY_8", "기록 삭제에 성공하였습니다");
+    DELETE_SUCCESS("MEMORY_8", "기록 삭제에 성공하였습니다"),
+    GET_LAST_SUCCESS("MEMORY_9", "직전 기록 정보 조회에 성공하였습니다");
 
     private final String code;
 

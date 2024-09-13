@@ -41,4 +41,6 @@ public interface MemoryPersistencePort {
     Optional<MemoryIdAndDiaryAndMember> findIdAndNicknameById(Long memberId);
 
     int findDateOrderInMonth(Long memberId, Long memoryId, int month);
+
+    Optional<Memory> findLastByMemberId(Long memberId);
 }

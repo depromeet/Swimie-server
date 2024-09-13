@@ -214,4 +214,9 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
     public int findDateOrderInMonth(Long memberId, Long memoryId, int month) {
         return 0;
     }
+
+    @Override
+    public Optional<Memory> findLastByMemberId(Long memberId) {
+        return data.stream().filter(item -> item.getMember().getId().equals(memberId)).findFirst();
+    }
 }
