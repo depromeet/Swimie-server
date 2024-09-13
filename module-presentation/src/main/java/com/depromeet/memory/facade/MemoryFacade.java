@@ -70,7 +70,7 @@ public class MemoryFacade {
         Memory newMemory = createMemoryUseCase.save(writer, MemoryMapper.toCommand(request));
         Long memoryId = newMemory.getId();
         int month = request.getRecordAt().getMonth().getValue();
-        int rank = getMemoryUseCase.findOrderInMonth(memberId, memoryId, month);
+        int rank = getMemoryUseCase.findCreationOrderInMonth(memberId, memoryId, month);
 
         List<CreateStrokeCommand> commands =
                 request.getStrokes().stream().map(MemoryMapper::toCommand).toList();
@@ -108,8 +108,10 @@ public class MemoryFacade {
     public MemoryResponse findById(Long requestMemberId, Long memoryId) {
         MemoryInfo memoryInfo = getMemoryUseCase.findByIdWithPrevNext(requestMemberId, memoryId);
         Long memoryMemberId = memoryInfo.memory().getMember().getId();
+
         int month = memoryInfo.memory().getRecordAt().getMonth().getValue();
-        int rank = getMemoryUseCase.findOrderInMonth(memoryMemberId, memoryId, month);
+        int rank = getMemoryUseCase.findDateOrderInMonth(memoryMemberId, memoryId, month);
+
         return MemoryResponse.from(memoryInfo, rank);
     }
 

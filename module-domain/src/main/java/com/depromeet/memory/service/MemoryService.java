@@ -84,8 +84,13 @@ public class MemoryService
     }
 
     @Override
-    public int findOrderInMonth(Long memberId, Long memoryId, int month) {
-        return memoryPersistencePort.findOrderInMonth(memberId, memoryId, month);
+    public int findCreationOrderInMonth(Long memberId, Long memoryId, int month) {
+        return memoryPersistencePort.findCreationOrderInMonth(memberId, memoryId, month);
+    }
+
+    @Override
+    public int findDateOrderInMonth(Long memberId, Long memoryId, int month) {
+        return memoryPersistencePort.findDateOrderInMonth(memberId, memoryId, month);
     }
 
     @Override

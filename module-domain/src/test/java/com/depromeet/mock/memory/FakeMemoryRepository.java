@@ -106,7 +106,7 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
     }
 
     @Override
-    public int findOrderInMonth(Long memberId, Long memoryId, int month) {
+    public int findCreationOrderInMonth(Long memberId, Long memoryId, int month) {
         return 0;
     }
 
@@ -208,5 +208,10 @@ public class FakeMemoryRepository implements MemoryPersistencePort {
                                         new MemberIdAndNickname(
                                                 item.getMember().getId(),
                                                 item.getMember().getNickname())));
+    }
+
+    @Override
+    public int findDateOrderInMonth(Long memberId, Long memoryId, int month) {
+        return 0;
     }
 }
