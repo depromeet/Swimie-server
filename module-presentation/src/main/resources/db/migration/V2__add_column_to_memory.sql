@@ -1,0 +1,2 @@
+ALTER TABLE memory_entity ADD updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+UPDATE memory_entity SET updated_at = DATE_FORMAT(record_at, "%Y-%m-%d");
