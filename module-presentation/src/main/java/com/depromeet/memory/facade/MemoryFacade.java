@@ -92,8 +92,10 @@ public class MemoryFacade {
         Memory memory = getMemoryUseCase.findById(memoryId);
         validatePermission(memory.getMember().getId(), memberId);
 
-        List<UpdateStrokeCommand> commands =
-                request.getStrokes().stream().map(MemoryMapper::toCommand).toList();
+        List<UpdateStrokeCommand> commands = null;
+        if (request.getStrokes() != null) {
+            commands = request.getStrokes().stream().map(MemoryMapper::toCommand).toList();
+        }
         List<Stroke> strokes = strokeUseCase.updateAll(memory, commands);
         UpdateMemoryCommand command = MemoryMapper.toCommand(request);
         return MemoryResponse.from(updateMemoryUseCase.update(memoryId, command, strokes));
@@ -173,5 +175,10 @@ public class MemoryFacade {
         } else {
             throw new BadRequestException(MemoryErrorType.ONLY_OWNER_CAN_DELETE_MEMORY);
         }
+    }
+
+    public LastMemoryResponse getLastMemoryByMemberId(Long memberId) {
+        Memory memory = getMemoryUseCase.findLastByMemberId(memberId);
+        return LastMemoryResponse.of(memory.getPool(), memory.getStartTime(), memory.getEndTime());
     }
 }
