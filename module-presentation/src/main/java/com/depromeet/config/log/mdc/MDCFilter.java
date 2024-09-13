@@ -15,8 +15,6 @@ public class MDCFilter implements Filter {
     public void doFilter(
             ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
-
-        String clientIp = servletRequest.getRemoteAddr();
         MDC.put("request_id", getClientIp(servletRequest));
         filterChain.doFilter(servletRequest, servletResponse);
         MDC.clear();
