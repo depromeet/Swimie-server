@@ -1,0 +1,27 @@
+spring:
+  config:
+    activate:
+      on-profile: prod-db
+  datasource:
+    primary:
+      hikari:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: ${PRIMARY_MYSQL_URL}
+        username: ${PRIMARY_MYSQL_USERNAME}
+        password: ${PRIMARY_MYSQL_PASSWORD}
+
+    secondary:
+      hikari:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: ${SECONDARY_MYSQL_URL}
+        username: ${SECONDARY_MYSQL_USERNAME}
+        password: ${SECONDARY_MYSQL_PASSWORD}
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PW}
+
+logging:
+  level:
+    org.springframework.orm.jpa: INFO

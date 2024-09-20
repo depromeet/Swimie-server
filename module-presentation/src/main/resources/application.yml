@@ -3,4 +3,4 @@ spring:
     active: local # default
     group:
       local: db, security, actuator, spreadsheet
-      prod: db, security, actuator, spreadsheet
+      prod: prod-db, security, actuator, spreadsheet
