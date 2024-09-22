@@ -2,6 +2,7 @@ package com.depromeet.followinglog.entity;
 
 import com.depromeet.basetime.BaseTimeEntity;
 import com.depromeet.followinglog.domain.FollowingMemoryLog;
+import com.depromeet.member.entity.MemberEntity;
 import com.depromeet.memory.entity.MemoryEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -22,16 +23,22 @@ public class FollowingMemoryLogEntity extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private MemoryEntity memory;
 
+    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private MemberEntity member;
+
     @Builder
-    public FollowingMemoryLogEntity(Long id, MemoryEntity memory) {
+    public FollowingMemoryLogEntity(Long id, MemoryEntity memory, MemberEntity member) {
         this.id = id;
         this.memory = memory;
+        this.member = member;
     }
 
     public static FollowingMemoryLogEntity from(FollowingMemoryLog followingMemoryLog) {
         return FollowingMemoryLogEntity.builder()
                 .id(followingMemoryLog.getId())
                 .memory(MemoryEntity.from(followingMemoryLog.getMemory()))
+                .member(MemberEntity.from(followingMemoryLog.getMember()))
                 .build();
     }
 
@@ -39,6 +46,7 @@ public class FollowingMemoryLogEntity extends BaseTimeEntity {
         return FollowingMemoryLog.builder()
                 .id(this.id)
                 .memory(this.memory.toModelForFollowingLog())
+                .member(this.member.toModel())
                 .createdAt(getCreatedAt())
                 .build();
     }
