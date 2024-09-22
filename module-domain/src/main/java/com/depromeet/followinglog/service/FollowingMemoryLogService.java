@@ -26,7 +26,6 @@ public class FollowingMemoryLogService implements FollowingMemoryLogUseCase {
     public void save(CreateFollowingMemoryCommand followingMemoryCommand) {
         Memory memory = followingMemoryCommand.memory();
         FollowingMemoryLog followingMemoryLog = FollowingMemoryLog.from(memory);
-
         followingMemoryLogPersistencePort.save(followingMemoryLog);
     }
 
