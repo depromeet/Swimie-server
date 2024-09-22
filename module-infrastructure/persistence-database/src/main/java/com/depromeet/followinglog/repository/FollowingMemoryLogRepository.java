@@ -1,14 +1,12 @@
 package com.depromeet.followinglog.repository;
 
-import static com.depromeet.member.entity.QMemberEntity.memberEntity;
-import static com.depromeet.memory.entity.QMemoryEntity.memoryEntity;
-import static com.depromeet.memory.entity.QStrokeEntity.strokeEntity;
+import static com.depromeet.friend.entity.QFriendEntity.friendEntity;
 
 import com.depromeet.followinglog.domain.FollowingMemoryLog;
 import com.depromeet.followinglog.entity.FollowingMemoryLogEntity;
 import com.depromeet.followinglog.entity.QFollowingMemoryLogEntity;
 import com.depromeet.followinglog.port.out.persistence.FollowingMemoryLogPersistencePort;
-import com.depromeet.friend.entity.QFriendEntity;
+import com.depromeet.memory.entity.QMemoryEntity;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -23,6 +21,7 @@ public class FollowingMemoryLogRepository implements FollowingMemoryLogPersisten
 
     private QFollowingMemoryLogEntity followingMemoryLog =
             QFollowingMemoryLogEntity.followingMemoryLogEntity;
+    private QMemoryEntity memoryEntity = QMemoryEntity.memoryEntity;
 
     @Override
     public Long save(FollowingMemoryLog followingMemoryLog) {
@@ -33,35 +32,20 @@ public class FollowingMemoryLogRepository implements FollowingMemoryLogPersisten
 
     @Override
     public List<FollowingMemoryLog> findLogsByMemberIdAndCursorId(Long memberId, Long cursorId) {
-        QFriendEntity friend = QFriendEntity.friendEntity;
-
         List<FollowingMemoryLogEntity> contents =
                 queryFactory
                         .selectFrom(followingMemoryLog)
-                        .join(followingMemoryLog.memory, memoryEntity)
+                        .join(friendEntity)
+                        .on(friendEntity.following.id.eq(followingMemoryLog.member.id))
                         .fetchJoin()
-                        .join(followingMemoryLog.memory.member, memberEntity)
+                        .join(followingMemoryLog.memory, memoryEntity)
                         .fetchJoin()
                         .leftJoin(followingMemoryLog.memory.memoryDetail)
                         .fetchJoin()
-                        .leftJoin(followingMemoryLog.memory.strokes, strokeEntity)
-                        .fetchJoin()
-                        .join(friend)
-                        .on(friend.following.eq(memberEntity))
-                        .fetchJoin()
-                        .where(friend.member.id.eq(memberId), cursorIdLt(cursorId))
+                        .where(friendEntity.member.id.eq(memberId), cursorIdLt(cursorId))
                         .limit(11)
                         .orderBy(followingMemoryLog.id.desc())
                         .fetch();
-        queryFactory
-                .selectFrom(followingMemoryLog)
-                .join(followingMemoryLog.memory, memoryEntity)
-                .fetchJoin()
-                .join(followingMemoryLog.memory.member, memberEntity)
-                .fetchJoin()
-                .leftJoin(followingMemoryLog.memory.images)
-                .fetchJoin()
-                .fetch();
         return contents.stream().map(FollowingMemoryLogEntity::toModel).toList();
     }
 
