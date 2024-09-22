@@ -5,7 +5,6 @@ import com.depromeet.followinglog.domain.vo.FollowingLogSlice;
 import com.depromeet.followinglog.port.in.FollowingMemoryLogUseCase;
 import com.depromeet.followinglog.port.in.command.CreateFollowingMemoryCommand;
 import com.depromeet.followinglog.port.out.persistence.FollowingMemoryLogPersistencePort;
-import com.depromeet.member.domain.Member;
 import com.depromeet.memory.domain.Memory;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +25,7 @@ public class FollowingMemoryLogService implements FollowingMemoryLogUseCase {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void save(CreateFollowingMemoryCommand followingMemoryCommand) {
         Memory memory = followingMemoryCommand.memory();
-        Member member = memory.getMember();
-        FollowingMemoryLog followingMemoryLog = FollowingMemoryLog.from(memory, member);
+        FollowingMemoryLog followingMemoryLog = FollowingMemoryLog.from(memory);
 
         followingMemoryLogPersistencePort.save(followingMemoryLog);
     }
