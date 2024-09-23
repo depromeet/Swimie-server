@@ -45,7 +45,9 @@ public class FollowFacade {
         }
 
         boolean isAdd = followUseCase.addOrDeleteFollow(member, following);
-        eventPublisher.publishEvent(FollowLogEvent.of(following, member));
+        if (isAdd) {
+            eventPublisher.publishEvent(FollowLogEvent.of(following, member));
+        }
 
         return isAdd;
     }
