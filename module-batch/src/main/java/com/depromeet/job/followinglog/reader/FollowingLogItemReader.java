@@ -34,6 +34,7 @@ public class FollowingLogItemReader implements ItemReader<FollowingMemoryLogEnti
     private void fetchNextPage() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime before100Days = now.minusDays(100);
+        currentIndex = 0;
 
         TypedQuery<FollowingMemoryLogEntity> query =
                 em.createQuery(
@@ -43,6 +44,5 @@ public class FollowingLogItemReader implements ItemReader<FollowingMemoryLogEnti
         query.setFirstResult(currentIndex);
         query.setMaxResults(PAGE_SIZE);
         followingMemoryLogEntities = query.getResultList();
-        currentIndex = 0;
     }
 }
