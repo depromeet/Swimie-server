@@ -21,7 +21,7 @@ public class FollowingLogItemReader implements ItemReader<FollowingMemoryLogEnti
     @Override
     public FollowingMemoryLogEntity read() {
         if (followingMemoryLogEntities == null
-                || currentIndex > followingMemoryLogEntities.size()) {
+                || currentIndex >= followingMemoryLogEntities.size()) {
             fetchNextPage();
         }
         if (followingMemoryLogEntities != null
