@@ -5,11 +5,13 @@ import com.depromeet.withdrawal.port.in.command.CreateWithdrawalReasonCommand;
 import com.depromeet.withdrawal.port.in.usecase.CreateWithdrawalReasonUseCase;
 import com.depromeet.withdrawal.port.out.persistence.WithdrawalReasonPort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
+@Profile("!batch")
 @RequiredArgsConstructor
 public class WithdrawalReasonService implements CreateWithdrawalReasonUseCase {
     private final WithdrawalReasonPort withdrawalReasonPort;
