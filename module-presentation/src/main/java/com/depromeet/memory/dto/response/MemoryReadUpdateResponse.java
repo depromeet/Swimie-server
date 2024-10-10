@@ -10,6 +10,7 @@ import com.depromeet.pool.domain.Pool;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -170,10 +171,8 @@ public class MemoryReadUpdateResponse {
     }
 
     private static LocalTime getDuration(LocalTime startTime, LocalTime endTime) {
-        return LocalTime.of(
-                endTime.minusHours(startTime.getHour()).getHour(),
-                endTime.minusMinutes(startTime.getMinute()).getMinute(),
-                0);
+        Duration duration = Duration.between(startTime, endTime);
+        return LocalTime.of(0, 0).plusSeconds(duration.getSeconds());
     }
 
     private static List<ImageSimpleResponse> getImageSource(List<Image> images) {
