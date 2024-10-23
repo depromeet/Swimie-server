@@ -2,5 +2,5 @@ spring:
   profiles:
     active: local # default
     group:
-      local: db, security, actuator, spreadsheet
-      prod: prod-db, security, actuator, spreadsheet
+      local: db, security, actuator, spreadsheet, ai
+      prod: prod-db, security, actuator, spreadsheet, ai

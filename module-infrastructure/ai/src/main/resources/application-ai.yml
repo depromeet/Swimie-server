@@ -1,0 +1,11 @@
+spring:
+  config:
+    activate:
+      on-profile: ai
+
+clova:
+  base-url: ${CLOVA_BASE_URL}
+  summary-api: ${CLOVA_SUMMARY_API}
+  chat-completions-api: ${CLOVA_CHAT_COMPLETIONS_API}
+  x-ncp-clovastudio-api-key: ${X_NCP_CLOVASTUDIO_API_KEY}
+  x-ncp-apigw-api-key: ${X_NCP_APIGW_API_KEY}
