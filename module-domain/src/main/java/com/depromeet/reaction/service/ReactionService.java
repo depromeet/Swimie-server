@@ -62,6 +62,7 @@ public class ReactionService
             throw new ForbiddenException(ReactionErrorType.FORBIDDEN_DELETE);
         }
 
+        reactionPersistencePort.deleteReactionLogsById(reactionId);
         reactionPersistencePort.deleteById(reactionId);
     }
 
