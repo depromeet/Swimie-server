@@ -2,6 +2,7 @@ package com.depromeet.reaction.repository;
 
 import static com.depromeet.member.entity.QMemberEntity.*;
 import static com.depromeet.memory.entity.QMemoryEntity.*;
+import static com.depromeet.notification.entity.QReactionLogEntity.*;
 import static com.depromeet.reaction.entity.QReactionEntity.*;
 
 import com.depromeet.member.entity.QMemberEntity;
@@ -68,6 +69,14 @@ public class ReactionRepository implements ReactionPersistencePort {
     @Override
     public void deleteAllById(List<Long> reactionIds) {
         queryFactory.delete(reactionEntity).where(reactionEntity.id.in(reactionIds)).execute();
+    }
+
+    @Override
+    public void deleteReactionLogsById(Long reactionId) {
+        queryFactory
+                .delete(reactionLogEntity)
+                .where(reactionLogEntity.reaction.id.eq(reactionId))
+                .execute();
     }
 
     @Override
