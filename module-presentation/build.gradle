@@ -8,6 +8,7 @@ dependencies {
     implementation project(':module-infrastructure:persistence-redis')
     implementation project(':module-infrastructure:persistence-database')
     implementation project(':module-infrastructure:google-spreadsheet')
+    implementation project(':module-infrastructure:ai')
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
