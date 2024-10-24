@@ -1,14 +1,14 @@
-package com.depromeet.type.ai;
+package com.depromeet.type.greeting;
 
 import com.depromeet.type.ErrorType;
 
-public class AIErrorType implements ErrorType {
+public class GreetingErrorType implements ErrorType {
     ;
 
     private final String code;
     private final String message;
 
-    public AIErrorType(String code, String message) {
+    public GreetingErrorType(String code, String message) {
         this.code = code;
         this.message = message;
     }

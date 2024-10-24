@@ -3,7 +3,7 @@ package com.depromeet.greeting.api;
 import com.depromeet.dto.response.ApiResponse;
 import com.depromeet.greeting.dto.response.GreetingResponse;
 import com.depromeet.greeting.facade.GreetingFacade;
-import com.depromeet.type.ai.AISuccessType;
+import com.depromeet.type.greeting.GreetingSuccessType;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.CacheControl;
@@ -21,7 +21,7 @@ public class GreetingController implements GreetingApi {
         GreetingResponse response = greetingFacade.getGreeting();
         CacheControl cacheControl = CacheControl.maxAge(Duration.ofHours(1)).cachePrivate();
         ApiResponse<GreetingResponse> apiResponse =
-                ApiResponse.success(AISuccessType.GET_RESPONSE_SUCCESS, response);
+                ApiResponse.success(GreetingSuccessType.GET_RESPONSE_SUCCESS, response);
         return ResponseEntity.ok().cacheControl(cacheControl).body(apiResponse);
     }
 }
