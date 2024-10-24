@@ -1,3 +1,3 @@
-package com.depromeet.ai.dto.request;
+package com.depromeet.greeting.dto.request;
 
 public record SummaryTextRequest(String text) {}
