@@ -1,3 +1,3 @@
-package com.depromeet.ai.port.in;
+package com.depromeet.greeting.port.in;
 
 public record CreateInputTextCommand(String text) {}
