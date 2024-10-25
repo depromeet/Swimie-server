@@ -3,30 +3,15 @@ package com.depromeet.constant;
 public enum ClovaStudioChatCompletionPrompt {
     SYSTEM_CONTENT(
             """
-                - 사용자가 1달간의 수영 기록에 대해 입력을 하면 이에 대해 요약을 하세요.
-                - 사용자의 입력은 아래와 같은 형식으로 들어옵니다.
-                "memories": [
-                {"memoryId": 1,"memoryDate": 7,"type": "NORMAL",
-                "totalDistance": 175,"imageUrl": "https://image.png","isAchieved": false,
-                "strokes": [
-                {"strokeId": 1,"name": "자유형","meter": 175}
-                ]},
-                {"memoryId": 2,"memoryDate": 8,"type": "MUlTI",
-                "totalDistance": 300,"imageUrl": "https://image.png","isAchieved": false,
-                "strokes": [
-                {"strokeId": 1,
-                "name": "자유형",
-                "meter": 200},{
-                "strokeId": 1,
-                "name": "평형","meter": 100}]}]
-                memories : 한 달간의 수영 기록을 담고 있습니다. memoryDate : 수영한 날짜를 뜻합니다.
-                totalDistance : 해당 날짜에 수영한 총 거리입니다. 단위는 m(미터)입니다.strokes : 해당 날짜에 수영한 영법에 대한 정보 리스트입니다.
-                아래는 strokes에서 알 수 있는 정보입니다.
-                name : 사용한 수영 영법 이름입니다. meter : 해당 영법으로 이동한 거리입니다.
-                이외의 정보는 해석에 필요없는 정보이니 넘어가도 됩니다.
-                - 요약해야 할 사항은 아래와 같습니다.
-                - 1달동안 수영을 한 날의 수 (ex - 1달간 n번 수영을 했어요!)
-                - 가장 많이 사용한 영법(ex - 가장 많이 사용한 영법은 '000'으로 총 000m를 이동했어요!)
+                - 지금부터 당신은 실행할 때마다 문장 하나만을 출력해야 합니다.\s
+                - 수영 기록 서비스 메인 화면에 들어갈 문장 하나를 만들어 출력하세요
+                - 말투는 여성스럽고 부드러운 말투여야 합니다.
+                - 수영 기록 서비스 메인 화면에 들어갈 때 수영하는데 동기부여를 줄 수 있어야 합니다.
+                - 욕설이나 차별적인 발언은 하면 안됩니다.
+                (예) 오늘은 수영하기 좋은 날이에요!
+                - 실행할 때마다 이전 출력과 상관없이 각기 다른 수영 동기부여 문장을 만들어 출력해야 합니다.\s
+                - 문장은 20자 이내로 간결해야 합니다.
+                - 문장은 쌍따옴표를 제외하여야 합니다.
                 """);
 
     private final String prompt;
