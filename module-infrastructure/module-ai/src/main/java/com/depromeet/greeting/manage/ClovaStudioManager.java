@@ -8,7 +8,6 @@ import com.depromeet.dto.ai.SummaryRequest;
 import com.depromeet.greeting.port.out.AIPort;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -16,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ClovaStudioManager implements AIPort {
