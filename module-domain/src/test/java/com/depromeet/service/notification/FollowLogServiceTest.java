@@ -85,4 +85,16 @@ public class FollowLogServiceTest {
         // then
         assertThat(unreadFollowLogCount).isEqualTo(0L);
     }
+
+    @Test
+    public void 팔로우_로그_삭제를_수행합니다() throws Exception {
+        // given
+        followLogService.deleteAllByMemberId(1L);
+
+        // when
+        List<FollowLog> followLogs = followLogService.getFollowLogs(1L, null);
+
+        // then
+        assertThat(followLogs.size()).isEqualTo(0);
+    }
 }
