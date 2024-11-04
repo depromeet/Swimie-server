@@ -64,4 +64,13 @@ public class FollowLogServiceTest {
         assertThat(followLogs.getFirst().getFollower().getId()).isEqualTo(2L);
         assertThat(followLogs.getFirst().getType()).isEqualTo(FollowType.FOLLOW);
     }
+
+    @Test
+    public void 미확인_팔로우_로그카운트를_조회합니다() throws Exception {
+        // when
+        Long unreadFollowLogCount = followLogService.getUnreadFollowLogCount(1L);
+
+        // then
+        assertThat(unreadFollowLogCount).isEqualTo(1L);
+    }
 }
