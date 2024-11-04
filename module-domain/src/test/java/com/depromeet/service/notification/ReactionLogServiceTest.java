@@ -71,4 +71,28 @@ public class ReactionLogServiceTest {
         // then
         assertThat(unreadReactionLogCount).isEqualTo(1L);
     }
+
+    @Test
+    public void 로그_조회_및_미확인_로그카운트_변경을_확인합니다() throws Exception {
+        // given
+        reactionLogService.markAsReadReactionLogs(2L);
+
+        // when
+        Long unreadReactionLogCount = reactionLogService.getUnreadReactionLogCount(2L);
+
+        // then
+        assertThat(unreadReactionLogCount).isEqualTo(0L);
+    }
+
+    @Test
+    public void 응원_로그_삭제를_수행합니다() throws Exception {
+        // given
+        reactionLogService.deleteAllByReactionId(List.of(1L));
+
+        // when
+        List<ReactionLog> reactionLogs = reactionLogService.getReactionsLogs(member2.getId(), null);
+
+        // then
+        assertThat(reactionLogs.size()).isEqualTo(0);
+    }
 }
