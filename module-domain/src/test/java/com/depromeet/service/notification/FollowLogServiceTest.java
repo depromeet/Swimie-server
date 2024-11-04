@@ -8,6 +8,7 @@ import com.depromeet.member.domain.Member;
 import com.depromeet.mock.friend.FakeFriendRepository;
 import com.depromeet.mock.notification.FakeFollowLogRepository;
 import com.depromeet.notification.domain.FollowLog;
+import com.depromeet.notification.domain.FollowType;
 import com.depromeet.notification.event.FollowLogEvent;
 import com.depromeet.notification.port.out.FollowLogPersistencePort;
 import com.depromeet.notification.service.FollowLogService;
@@ -50,5 +51,17 @@ public class FollowLogServiceTest {
         assertThat(followLogs.size()).isEqualTo(2);
         assertThat(followLogs.getLast().getReceiver().getId()).isEqualTo(1L);
         assertThat(followLogs.getLast().getFollower().getId()).isEqualTo(3L);
+    }
+
+    @Test
+    public void 팔로우_로그를_조회합니다() throws Exception {
+        // when
+        List<FollowLog> followLogs = followLogService.getFollowLogs(member1.getId(), null);
+
+        // then
+        assertThat(followLogs.size()).isEqualTo(1);
+        assertThat(followLogs.getFirst().getReceiver().getId()).isEqualTo(1L);
+        assertThat(followLogs.getFirst().getFollower().getId()).isEqualTo(2L);
+        assertThat(followLogs.getFirst().getType()).isEqualTo(FollowType.FOLLOW);
     }
 }
