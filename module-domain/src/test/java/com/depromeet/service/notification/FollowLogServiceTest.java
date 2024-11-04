@@ -73,4 +73,16 @@ public class FollowLogServiceTest {
         // then
         assertThat(unreadFollowLogCount).isEqualTo(1L);
     }
+
+    @Test
+    public void 팔로우_확인_및_로그카운트_변경을_확인합니다() throws Exception {
+        // given
+        followLogService.markAsReadFollowLogs(1L);
+
+        // when
+        Long unreadFollowLogCount = followLogService.getUnreadFollowLogCount(1L);
+
+        // then
+        assertThat(unreadFollowLogCount).isEqualTo(0L);
+    }
 }
