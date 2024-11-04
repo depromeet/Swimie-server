@@ -31,20 +31,24 @@ public class FollowLogServiceTest {
 
         member1 = MemberFixture.make(1L, "USER");
         member2 = MemberFixture.make(2L, "USER");
+
+        FollowLogEvent event = FollowLogEvent.of(member1, member2);
+        followLogService.save(event);
     }
 
     @Test
     void 팔로우_로그를_저장합니다() throws Exception {
         // given
-        FollowLogEvent event = FollowLogEvent.of(member1, member2);
+        Member member3 = MemberFixture.make(3L, "USER");
+        FollowLogEvent event = FollowLogEvent.of(member1, member3);
 
         // when
         followLogService.save(event);
 
         // then
         List<FollowLog> followLogs = followLogService.getFollowLogs(member1.getId(), null);
-        assertThat(followLogs.size()).isEqualTo(1);
-        assertThat(followLogs.getFirst().getReceiver().getId()).isEqualTo(1L);
-        assertThat(followLogs.getFirst().getFollower().getId()).isEqualTo(2L);
+        assertThat(followLogs.size()).isEqualTo(2);
+        assertThat(followLogs.getLast().getReceiver().getId()).isEqualTo(1L);
+        assertThat(followLogs.getLast().getFollower().getId()).isEqualTo(3L);
     }
 }
