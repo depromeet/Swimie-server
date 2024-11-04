@@ -62,4 +62,13 @@ public class ReactionLogServiceTest {
         assertThat(reactionLogs.getFirst().getReceiver().getId()).isEqualTo(2L);
         assertThat(reactionLogs.getFirst().getReaction().getMember().getId()).isEqualTo(1L);
     }
+
+    @Test
+    public void 미확인_로그_수를_확인합니다() throws Exception {
+        // when
+        Long unreadReactionLogCount = reactionLogService.getUnreadReactionLogCount(2L);
+
+        // then
+        assertThat(unreadReactionLogCount).isEqualTo(1L);
+    }
 }
