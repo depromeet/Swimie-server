@@ -23,4 +23,8 @@ public class ReactionLog {
         this.createdAt = createdAt;
         this.hasRead = hasRead;
     }
+
+    public void read() {
+        this.hasRead = true;
+    }
 }
