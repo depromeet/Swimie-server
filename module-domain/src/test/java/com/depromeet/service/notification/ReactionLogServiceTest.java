@@ -32,6 +32,9 @@ public class ReactionLogServiceTest {
         member2 = MemberFixture.make(2L, "USER");
         Memory memory = MemoryFixture.make(member2, null, null, null);
         reaction = ReactionFixture.make(member1, memory);
+
+        var event = ReactionLogEvent.of(member2, reaction);
+        reactionLogService.save(event);
     }
 
     @Test
@@ -44,6 +47,17 @@ public class ReactionLogServiceTest {
 
         // then
         List<ReactionLog> reactionLogs = reactionLogService.getReactionsLogs(member2.getId(), null);
+        assertThat(reactionLogs.size()).isEqualTo(2);
+        assertThat(reactionLogs.getFirst().getReceiver().getId()).isEqualTo(2L);
+        assertThat(reactionLogs.getFirst().getReaction().getMember().getId()).isEqualTo(1L);
+    }
+
+    @Test
+    public void 응원_로그를_조회합니다() throws Exception {
+        // when
+        List<ReactionLog> reactionLogs = reactionLogService.getReactionsLogs(member2.getId(), null);
+
+        // then
         assertThat(reactionLogs.size()).isEqualTo(1);
         assertThat(reactionLogs.getFirst().getReceiver().getId()).isEqualTo(2L);
         assertThat(reactionLogs.getFirst().getReaction().getMember().getId()).isEqualTo(1L);
