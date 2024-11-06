@@ -108,4 +108,16 @@ public class ReactionServiceTest {
         assertThat(reactionPage.getReactions().getFirst().getEmoji()).isEqualTo("🦭");
         assertThat(reactionPage.getReactions().getFirst().getComment()).isEqualTo("물개세요?");
     }
+
+    @Test
+    public void 기록의_총_응원수를_조회합니다() throws Exception {
+        // given
+        Long memoryId = memory.getId();
+
+        // when
+        Long reactionCount = reactionService.getDetailReactionsCount(memoryId);
+
+        // then
+        assertThat(reactionCount).isEqualTo(1L);
+    }
 }
