@@ -177,4 +177,17 @@ public class ReactionServiceTest {
         assertThat(ids.get(0)).isEqualTo(1L);
         assertThat(ids.get(1)).isEqualTo(2L);
     }
+
+    @Test
+    public void 기록으로_응원_아이디를_모두_조회합니다() throws Exception {
+        // given
+        Long memoryId = memory.getId();
+
+        // when
+        List<Long> ids = reactionService.findAllIdByMemoryId(memoryId);
+
+        // then
+        assertThat(ids.size()).isEqualTo(1);
+        assertThat(ids.getFirst()).isEqualTo(1L);
+    }
 }
