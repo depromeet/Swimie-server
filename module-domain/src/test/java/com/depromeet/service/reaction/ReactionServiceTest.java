@@ -21,6 +21,7 @@ public class ReactionServiceTest {
     private Member member1;
     private Member member2;
     private Memory memory;
+    private Reaction reaction;
 
     @BeforeEach
     void init() {
@@ -32,7 +33,7 @@ public class ReactionServiceTest {
         memory = MemoryFixture.make(1L, member1, null, null, null);
 
         var command = new CreateReactionCommand(memory.getId(), "🔥", "오늘도 힘내요!");
-        reactionService.save(member2.getId(), memory, command);
+        reaction = reactionService.save(member2.getId(), memory, command);
     }
 
     @Test
@@ -57,6 +58,16 @@ public class ReactionServiceTest {
     public void 응원을_삭제합니다() throws Exception {
         // when
         reactionService.deleteById(member1.getId(), 1L);
+
+        // then
+        List<Reaction> reactions = reactionService.getReactionsOfMemory(memory.getId());
+        assertThat(reactions.size()).isEqualTo(0);
+    }
+
+    @Test
+    public void 기록에_해당하는_응원을_모두_삭제합니다() throws Exception {
+        // when
+        reactionService.deleteAllById(List.of(reaction.getId()));
 
         // then
         List<Reaction> reactions = reactionService.getReactionsOfMemory(memory.getId());
