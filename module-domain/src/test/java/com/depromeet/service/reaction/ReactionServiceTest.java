@@ -143,4 +143,18 @@ public class ReactionServiceTest {
         assertThat(reactionCounts.getLast().getMemoryId()).isEqualTo(memory2.getId());
         assertThat(reactionCounts.getLast().getReactionCount()).isEqualTo(2L);
     }
+
+    @Test
+    public void 멤버와_기록으로_응원들을_조회합니다() throws Exception {
+        // given
+        Long memberId = member2.getId();
+        Long memoryId = memory.getId();
+
+        // when
+        List<Reaction> reactions =
+                reactionService.getReactionsByMemberAndMemory(memberId, memoryId);
+
+        // then
+        assertThat(reactions.size()).isEqualTo(1);
+    }
 }
