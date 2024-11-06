@@ -157,4 +157,24 @@ public class ReactionServiceTest {
         // then
         assertThat(reactions.size()).isEqualTo(1);
     }
+
+    @Test
+    public void 기록들과_멤버로_아이디를_조회합니다() throws Exception {
+        // given
+        var memory2 = MemoryFixture.make(2L, member1, null, null, null);
+        var command = new CreateReactionCommand(memory2.getId(), "💪🏻", "힘내자!");
+        var command2 = new CreateReactionCommand(memory2.getId(), "💪🏻", "힘내자!");
+        reactionService.save(member2.getId(), memory2, command);
+        reactionService.save(member2.getId(), memory2, command2);
+
+        // when
+        List<Long> ids =
+                reactionService.findAllIdByMemoryIdOrMemberId(
+                        List.of(memory.getId(), memory2.getId()), member2.getId());
+
+        // then
+        assertThat(ids.size()).isEqualTo(3);
+        assertThat(ids.get(0)).isEqualTo(1L);
+        assertThat(ids.get(1)).isEqualTo(2L);
+    }
 }
