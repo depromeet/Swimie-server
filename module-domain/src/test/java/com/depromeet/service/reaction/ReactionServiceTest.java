@@ -89,4 +89,23 @@ public class ReactionServiceTest {
         assertThat(reactions.getFirst().getEmoji()).isEqualTo("🔥");
         assertThat(reactions.getFirst().getComment()).isEqualTo("오늘도 힘내요!");
     }
+
+    @Test
+    public void 응원을_페이지_단위로_조회합니다() throws Exception {
+        // given
+        var command = new CreateReactionCommand(memory.getId(), "🦭", "물개세요?");
+        reactionService.save(member2.getId(), memory, command);
+
+        // when
+        var reactionPage = reactionService.getDetailReactions(memory.getId(), null);
+
+        // then
+        assertThat(reactionPage.getReactions().size()).isEqualTo(2);
+        assertThat(reactionPage.getReactions().getFirst().getMember().getId())
+                .isEqualTo(member2.getId());
+        assertThat(reactionPage.getReactions().getFirst().getMemory().getId())
+                .isEqualTo(memory.getId());
+        assertThat(reactionPage.getReactions().getFirst().getEmoji()).isEqualTo("🦭");
+        assertThat(reactionPage.getReactions().getFirst().getComment()).isEqualTo("물개세요?");
+    }
 }
