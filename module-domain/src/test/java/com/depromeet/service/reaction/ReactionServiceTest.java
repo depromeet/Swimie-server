@@ -30,6 +30,9 @@ public class ReactionServiceTest {
         member1 = MemberFixture.make(1L, "USER");
         member2 = MemberFixture.make(2L, "USER");
         memory = MemoryFixture.make(1L, member1, null, null, null);
+
+        var command = new CreateReactionCommand(memory.getId(), "🔥", "오늘도 힘내요!");
+        reactionService.save(member2.getId(), memory, command);
     }
 
     @Test
@@ -43,10 +46,20 @@ public class ReactionServiceTest {
         // then
         List<Reaction> reactions = reactionService.getReactionsOfMemory(memory.getId());
 
-        assertThat(reactions.size()).isEqualTo(1);
-        assertThat(reactions.getFirst().getMember().getId()).isEqualTo(member2.getId());
-        assertThat(reactions.getFirst().getMemory().getId()).isEqualTo(memory.getId());
-        assertThat(reactions.getFirst().getEmoji()).isEqualTo("🦭");
-        assertThat(reactions.getFirst().getComment()).isEqualTo("물개세요?");
+        assertThat(reactions.size()).isEqualTo(2);
+        assertThat(reactions.getLast().getMember().getId()).isEqualTo(member2.getId());
+        assertThat(reactions.getLast().getMemory().getId()).isEqualTo(memory.getId());
+        assertThat(reactions.getLast().getEmoji()).isEqualTo("🦭");
+        assertThat(reactions.getLast().getComment()).isEqualTo("물개세요?");
+    }
+
+    @Test
+    public void 응원을_삭제합니다() throws Exception {
+        // when
+        reactionService.deleteById(member1.getId(), 1L);
+
+        // then
+        List<Reaction> reactions = reactionService.getReactionsOfMemory(memory.getId());
+        assertThat(reactions.size()).isEqualTo(0);
     }
 }
