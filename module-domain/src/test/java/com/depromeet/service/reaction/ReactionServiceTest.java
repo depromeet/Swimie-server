@@ -120,4 +120,27 @@ public class ReactionServiceTest {
         // then
         assertThat(reactionCount).isEqualTo(1L);
     }
+
+    @Test
+    public void 여러_기록에_해당하는_응원수를_조회합니다() throws Exception {
+        // given
+        var memory2 = MemoryFixture.make(2L, member1, null, null, null);
+        var command = new CreateReactionCommand(memory2.getId(), "💪🏻", "힘내자!");
+        var command2 = new CreateReactionCommand(memory2.getId(), "💪🏻", "힘내자!");
+        reactionService.save(member2.getId(), memory2, command);
+        reactionService.save(member2.getId(), memory2, command2);
+
+        // when
+        var reactionCounts =
+                reactionService.getDetailReactionsCountByMemoryIds(
+                        List.of(memory.getId(), memory2.getId()));
+
+        // then
+        assertThat(reactionCounts.size()).isEqualTo(2);
+        assertThat(reactionCounts.getFirst().getMemoryId()).isEqualTo(memory.getId());
+        assertThat(reactionCounts.getFirst().getReactionCount()).isEqualTo(1L);
+
+        assertThat(reactionCounts.getLast().getMemoryId()).isEqualTo(memory2.getId());
+        assertThat(reactionCounts.getLast().getReactionCount()).isEqualTo(2L);
+    }
 }

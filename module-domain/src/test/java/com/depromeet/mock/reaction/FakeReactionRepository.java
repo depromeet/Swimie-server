@@ -67,19 +67,12 @@ public class FakeReactionRepository implements ReactionPersistencePort {
 
     @Override
     public List<ReactionCount> getAllCountByMemoryIds(List<Long> memoryIds) {
-        return reactionDatabase.values().stream()
-                .filter(reaction -> memoryIds.contains(reaction.getMemory().getId()))
-                .collect(
-                        Collectors.groupingBy(
-                                reaction -> reaction.getMemory().getId(), Collectors.counting()))
-                .entrySet()
-                .stream()
+        return memoryIds.stream()
                 .map(
-                        entry ->
-                                ReactionCount.builder()
-                                        .memoryId(entry.getKey())
-                                        .reactionCount(entry.getValue())
-                                        .build())
+                        memoryId -> {
+                            long count = getAllCountByMemoryId(memoryId);
+                            return new ReactionCount(memoryId, count);
+                        })
                 .collect(Collectors.toList());
     }
 
