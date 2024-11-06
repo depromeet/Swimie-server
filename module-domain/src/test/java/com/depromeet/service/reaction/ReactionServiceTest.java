@@ -73,4 +73,20 @@ public class ReactionServiceTest {
         List<Reaction> reactions = reactionService.getReactionsOfMemory(memory.getId());
         assertThat(reactions.size()).isEqualTo(0);
     }
+
+    @Test
+    public void 기록에_해당하는_응원을_모두_조회합니다() throws Exception {
+        // given
+        Long memoryId = memory.getId();
+
+        // when
+        List<Reaction> reactions = reactionService.getReactionsOfMemory(memoryId);
+
+        // then
+        assertThat(reactions.size()).isEqualTo(1);
+        assertThat(reactions.getFirst().getMember().getId()).isEqualTo(member2.getId());
+        assertThat(reactions.getFirst().getMemory().getId()).isEqualTo(memoryId);
+        assertThat(reactions.getFirst().getEmoji()).isEqualTo("🔥");
+        assertThat(reactions.getFirst().getComment()).isEqualTo("오늘도 힘내요!");
+    }
 }
