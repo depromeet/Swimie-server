@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class GreetingCacheService implements GreetingCachePort {
+public class GreetingCacheManager implements GreetingCachePort {
     private static final String GREETING_KEY = "greeting";
     private final RedisTemplate<String, String> redisTemplate;
 
