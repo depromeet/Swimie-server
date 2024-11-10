@@ -38,6 +38,19 @@ public class MemberFixture {
                 .build();
     }
 
+    public static Member make(Long userId, String role) {
+        return Member.builder()
+                .id(userId)
+                .nickname("member")
+                .providerId("google 1234")
+                .email("member@gmail.com")
+                .role(MemberRole.valueOf(role))
+                .profileImageUrl("image.png")
+                .introduction("test introduction")
+                .goal(1000)
+                .build();
+    }
+
     public static List<Member> makeMembers(int cnt) {
         List<Member> members = new ArrayList<>();
         for (int i = 0; i < cnt; i++) {
