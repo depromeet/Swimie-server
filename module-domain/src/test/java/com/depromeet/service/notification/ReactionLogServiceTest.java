@@ -28,8 +28,8 @@ public class ReactionLogServiceTest {
     void init() {
         reactionLogPersistencePort = new FakeReactionLogRepository();
         reactionLogService = new ReactionLogService(reactionLogPersistencePort);
-        member1 = MemberFixture.make(1L, "USER");
-        member2 = MemberFixture.make(2L, "USER");
+        member1 = MemberFixture.make(1L);
+        member2 = MemberFixture.make(2L);
         Memory memory = MemoryFixture.make(member2, null, null, null);
         reaction = ReactionFixture.make(member1, memory);
 

@@ -28,8 +28,8 @@ public class ReactionServiceTest {
         reactionPersistencePort = new FakeReactionRepository();
         reactionService = new ReactionService(reactionPersistencePort);
 
-        member1 = MemberFixture.make(1L, "USER");
-        member2 = MemberFixture.make(2L, "USER");
+        member1 = MemberFixture.make(1L);
+        member2 = MemberFixture.make(2L);
         memory = MemoryFixture.make(1L, member1, null, null, null);
 
         var command = new CreateReactionCommand(memory.getId(), "🔥", "오늘도 힘내요!");

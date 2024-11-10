@@ -25,8 +25,8 @@ class FollowServiceTest {
     @Test
     void 팔로우_추가() {
         // given
-        Member member = MemberFixture.make(1L, "USER");
-        Member following = MemberFixture.make(2L, "USER");
+        Member member = MemberFixture.make(1L);
+        Member following = MemberFixture.make(2L);
 
         // when
         boolean isFollowed = followService.addOrDeleteFollow(member, following);
@@ -38,8 +38,8 @@ class FollowServiceTest {
     @Test
     void 팔로우_취소() {
         // given
-        Member member = MemberFixture.make(1L, "USER");
-        Member following = MemberFixture.make(2L, "USER");
+        Member member = MemberFixture.make(1L);
+        Member following = MemberFixture.make(2L);
 
         // when
         followService.addOrDeleteFollow(member, following);
@@ -52,7 +52,7 @@ class FollowServiceTest {
     @Test
     void 자기_자신을_팔로우시_예외_처리() {
         // given
-        Member member = MemberFixture.make(1L, "USER");
+        Member member = MemberFixture.make(1L);
 
         // then
         assertThatThrownBy(() -> followService.addOrDeleteFollow(member, member))

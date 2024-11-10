@@ -47,7 +47,7 @@ public class TimelineServiceTest {
         strokeRepository = new FakeStrokeRepository();
 
         // member create
-        member = MemberFixture.make(memberId, "USER");
+        member = MemberFixture.make(memberId);
         memberRepository.save(member);
         timelineService = new TimelineService(memoryRepository);
 
