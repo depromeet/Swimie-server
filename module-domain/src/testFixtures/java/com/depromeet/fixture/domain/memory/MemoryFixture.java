@@ -8,12 +8,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class MemoryFixture {
-    public static Memory make(
-            Member member, Pool pool, MemoryDetail memoryDetail, LocalDate localDate) {
+    public static Memory make(Member member, LocalDate localDate) {
         return Memory.builder()
                 .member(member)
-                .pool(pool)
-                .memoryDetail(memoryDetail)
                 .recordAt(localDate)
                 .startTime(LocalTime.of(10, 0))
                 .endTime(LocalTime.of(11, 0))

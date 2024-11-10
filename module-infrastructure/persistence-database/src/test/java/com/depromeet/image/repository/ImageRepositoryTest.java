@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.depromeet.TestQueryDslConfig;
 import com.depromeet.fixture.domain.image.ImageFixture;
 import com.depromeet.fixture.domain.member.MemberFixture;
-import com.depromeet.fixture.domain.memory.MemoryDetailFixture;
 import com.depromeet.fixture.domain.memory.MemoryFixture;
 import com.depromeet.image.domain.Image;
 import com.depromeet.member.domain.Member;
@@ -13,10 +12,9 @@ import com.depromeet.member.port.out.persistence.MemberPersistencePort;
 import com.depromeet.member.repository.MemberJpaRepository;
 import com.depromeet.member.repository.MemberRepository;
 import com.depromeet.memory.domain.Memory;
-import com.depromeet.memory.domain.MemoryDetail;
-import com.depromeet.memory.port.out.persistence.MemoryDetailPersistencePort;
 import com.depromeet.memory.port.out.persistence.MemoryPersistencePort;
-import com.depromeet.memory.repository.*;
+import com.depromeet.memory.repository.MemoryJpaRepository;
+import com.depromeet.memory.repository.MemoryRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
@@ -41,8 +39,6 @@ public class ImageRepositoryTest {
     private MemoryPersistencePort memoryPersistencePort;
     @Autowired private MemberJpaRepository memberJpaRepository;
     private MemberPersistencePort memberPersistencePort;
-    @Autowired private MemoryDetailJpaRepository memoryDetailJpaRepository;
-    private MemoryDetailPersistencePort memoryDetailPersistencePort;
     private ImageRepository imageRepository;
 
     private Memory memory;
@@ -53,8 +49,6 @@ public class ImageRepositoryTest {
         imageRepository = new ImageRepository(em, queryFactory, imageJpaRepository);
         memberPersistencePort = new MemberRepository(queryFactory, memberJpaRepository);
         memoryPersistencePort = new MemoryRepository(em, queryFactory, memoryJpaRepository);
-        memoryDetailPersistencePort =
-                new MemoryDetailRepository(queryFactory, memoryDetailJpaRepository);
         member = memberPersistencePort.save(MemberFixture.make());
     }
 
@@ -62,7 +56,6 @@ public class ImageRepositoryTest {
     void clear() {
         imageJpaRepository.deleteAllInBatch();
         memoryJpaRepository.deleteAllInBatch();
-        memoryDetailJpaRepository.deleteAllInBatch();
     }
 
     @Test
@@ -120,11 +113,7 @@ public class ImageRepositoryTest {
     }
 
     void saveMemory() {
-        MemoryDetail memoryDetail = MemoryDetailFixture.make();
-        memoryDetail = memoryDetailPersistencePort.save(memoryDetail);
-        memory =
-                memoryPersistencePort.save(
-                        MemoryFixture.make(member, null, memoryDetail, LocalDate.of(2024, 7, 1)));
+        memory = memoryPersistencePort.save(MemoryFixture.make(member, LocalDate.of(2024, 7, 1)));
     }
 
     List<Image> saveImages(Memory memory) {

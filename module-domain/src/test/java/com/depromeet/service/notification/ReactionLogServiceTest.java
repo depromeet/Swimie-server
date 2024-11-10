@@ -30,7 +30,7 @@ public class ReactionLogServiceTest {
         reactionLogService = new ReactionLogService(reactionLogPersistencePort);
         member1 = MemberFixture.make(1L);
         member2 = MemberFixture.make(2L);
-        Memory memory = MemoryFixture.make(member2, null, null, null);
+        Memory memory = MemoryFixture.make(member2, null);
         reaction = ReactionFixture.make(member1, memory);
 
         var event = ReactionLogEvent.of(member2, reaction);
