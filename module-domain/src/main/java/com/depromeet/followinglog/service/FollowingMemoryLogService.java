@@ -46,13 +46,11 @@ public class FollowingMemoryLogService implements FollowingMemoryLogUseCase {
     }
 
     @Override
-    @Transactional
     public void deleteAllByMemoryIds(List<Long> memoryIds) {
         followingMemoryLogPersistencePort.deleteAllByMemoryIds(memoryIds);
     }
 
     @Override
-    @Transactional
     public void deleteAllByMemoryId(Long memoryId) {
         followingMemoryLogPersistencePort.deleteAllByMemoryId(memoryId);
     }
