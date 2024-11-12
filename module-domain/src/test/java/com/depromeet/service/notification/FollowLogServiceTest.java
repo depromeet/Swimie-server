@@ -30,8 +30,8 @@ public class FollowLogServiceTest {
 
         followLogService = new FollowLogService(followLogPersistencePort, friendPersistencePort);
 
-        member1 = MemberFixture.make(1L, "USER");
-        member2 = MemberFixture.make(2L, "USER");
+        member1 = MemberFixture.make(1L);
+        member2 = MemberFixture.make(2L);
 
         FollowLogEvent event = FollowLogEvent.of(member1, member2);
         followLogService.save(event);
@@ -40,7 +40,7 @@ public class FollowLogServiceTest {
     @Test
     void 팔로우_로그를_저장합니다() throws Exception {
         // given
-        Member member3 = MemberFixture.make(3L, "USER");
+        Member member3 = MemberFixture.make(3L);
         FollowLogEvent event = FollowLogEvent.of(member1, member3);
 
         // when

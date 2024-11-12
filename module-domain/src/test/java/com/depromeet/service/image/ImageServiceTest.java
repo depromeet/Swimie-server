@@ -5,9 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.depromeet.fixture.domain.clock.ClockFixture;
 import com.depromeet.fixture.domain.image.ImageFixture;
 import com.depromeet.fixture.domain.member.MemberFixture;
-import com.depromeet.fixture.domain.memory.MemoryDetailFixture;
 import com.depromeet.fixture.domain.memory.MemoryFixture;
-import com.depromeet.fixture.domain.pool.PoolFixture;
 import com.depromeet.image.domain.Image;
 import com.depromeet.image.domain.ImageUploadStatus;
 import com.depromeet.image.domain.vo.ImagePresignedUrlVo;
@@ -17,14 +15,10 @@ import com.depromeet.image.service.ImageUpdateService;
 import com.depromeet.image.service.ImageUploadService;
 import com.depromeet.member.domain.Member;
 import com.depromeet.memory.domain.Memory;
-import com.depromeet.memory.domain.MemoryDetail;
 import com.depromeet.mock.image.FakeImageRepository;
 import com.depromeet.mock.image.FakeS3ImageManager;
 import com.depromeet.mock.member.FakeMemberRepository;
-import com.depromeet.mock.memory.FakeMemoryDetailRepository;
 import com.depromeet.mock.memory.FakeMemoryRepository;
-import com.depromeet.mock.pool.FakePoolRepository;
-import com.depromeet.pool.domain.Pool;
 import com.depromeet.util.ImageNameUtil;
 import java.time.Clock;
 import java.time.LocalDate;
@@ -40,9 +34,7 @@ class ImageServiceTest {
     private FakeS3ImageManager s3ImageManager;
     private FakeImageRepository imageRepository;
     private FakeMemoryRepository memoryRepository;
-    private FakeMemoryDetailRepository memoryDetailRepository;
     private FakeMemberRepository memberRepository;
-    private FakePoolRepository poolRepository;
 
     private ImageGetService imageGetService;
     private ImageUploadService imageUploadService;
@@ -61,21 +53,13 @@ class ImageServiceTest {
         s3ImageManager = new FakeS3ImageManager();
         imageRepository = new FakeImageRepository();
         memoryRepository = new FakeMemoryRepository();
-        memoryDetailRepository = new FakeMemoryDetailRepository();
         memberRepository = new FakeMemberRepository();
-        poolRepository = new FakePoolRepository();
         clock = new ClockFixture();
 
         Member member = MemberFixture.make();
         member = memberRepository.save(member);
 
-        Pool pool = PoolFixture.make("testPool", "test address", 25);
-        pool = poolRepository.save(pool);
-
-        MemoryDetail memoryDetail = MemoryDetailFixture.make();
-        memoryDetail = memoryDetailRepository.save(memoryDetail);
-
-        memory = MemoryFixture.make(member, pool, memoryDetail, LocalDate.of(2024, 7, 1));
+        memory = MemoryFixture.make(member, LocalDate.of(2024, 7, 1));
         memory = memoryRepository.save(memory);
 
         imageGetService = new ImageGetService(imageRepository);

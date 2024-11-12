@@ -43,10 +43,10 @@ public class FriendRepositoryTest {
         memberRepository = new MemberRepository(queryFactory, memberJpaRepository);
         friendRepository = new FriendRepository(queryFactory, friendJpaRepository);
 
-        member = MemberFixture.make("user", "user@gmail.com", "google 1234");
+        member = MemberFixture.make();
         member = memberRepository.save(member);
 
-        following = MemberFixture.make("following", "following@gmail.com", "google 5678");
+        following = MemberFixture.make();
         following = memberRepository.save(following);
     }
 
