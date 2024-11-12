@@ -62,7 +62,7 @@ class FollowingMemoryLogServiceTest {
         assertThat(result.size()).isEqualTo(10);
         assertThat(followingMemoryLogIds).isSortedAccordingTo(Comparator.reverseOrder());
         assertThat(followingLogSlice.isHasNext()).isTrue();
-        assertThat(followingLogSlice.getCursorId()).isEqualTo(11L);
+        assertThat(followingLogSlice.getCursorId()).isEqualTo(10L);
     }
 
     @Test
@@ -72,7 +72,7 @@ class FollowingMemoryLogServiceTest {
 
         // when
         FollowingLogSlice followingLogSlice =
-                followingMemoryLogService.findLogsByMemberIdAndCursorId(memberId, 11L);
+                followingMemoryLogService.findLogsByMemberIdAndCursorId(memberId, 10L);
 
         // then
         List<FollowingMemoryLog> result = followingLogSlice.getContents();
@@ -100,7 +100,7 @@ class FollowingMemoryLogServiceTest {
     private List<Member> getMembers() {
         List<Member> members = new ArrayList<>();
         long followingMemberId = 2L;
-        for (int i = 2; i <= 20; i++) {
+        for (int i = 0; i < 19; i++) {
             Member followings = MemberFixture.make(followingMemberId++);
             members.add(followings);
         }
