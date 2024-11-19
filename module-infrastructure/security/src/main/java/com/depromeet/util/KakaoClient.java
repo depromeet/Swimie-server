@@ -65,24 +65,17 @@ public class KakaoClient implements KakaoPort {
 
     @Override
     public void revokeAccount(String providerId) {
-        // redis 에서 access token 가져오기
-        String accessToken = socialRedisPersistencePort.getATData(providerId);
-        if (accessToken.isEmpty() || accessToken.isBlank()) {
-            throw new NotFoundException(AuthErrorType.OAUTH_ACCESS_TOKEN_NOT_FOUND);
+        // redis 에서 refresh token 가져오기
+        String refreshToken = socialRedisPersistencePort.getRTData(providerId);
+        // refresh token 없으면 오류 (재로그인 필요)
+        if (refreshToken == null || refreshToken.isEmpty() || refreshToken.isBlank()) {
+            throw new NotFoundException(AuthErrorType.OAUTH_REFRESH_TOKEN_NOT_FOUND);
         }
+        // refresh token 으로 access token 재발급 하기
+        KakaoAccessTokenResponse kakaoTokenResponse = reissueKakaoAccessToken(refreshToken);
+        String accessToken = kakaoTokenResponse.accessToken();
         // access token 유효성 검사
         ResponseEntity<KakaoTokenInfoResponse> tokenInfoResponse = validateAccessToken(accessToken);
-        if (tokenInfoResponse.getStatusCode().equals(HttpStatus.UNAUTHORIZED)) {
-            // access token 만료되었으면 refresh token 가져오기
-            String refreshToken = socialRedisPersistencePort.getRTData(providerId);
-            // refresh token 없으면 오류 (재로그인 필요)
-            if (refreshToken == null || refreshToken.isEmpty() || refreshToken.isBlank()) {
-                throw new NotFoundException(AuthErrorType.OAUTH_REFRESH_TOKEN_NOT_FOUND);
-            }
-            // refresh token 으로 access token 재발급 하기
-            KakaoAccessTokenResponse kakaoTokenResponse = reissueKakaoAccessToken(refreshToken);
-            accessToken = kakaoTokenResponse.accessToken();
-        }
         KakaoTokenInfoResponse tokenInfo = tokenInfoResponse.getBody();
         if (tokenInfo == null) {
             throw new UnauthorizedException(AuthErrorType.INVALID_OAUTH_ACCESS_TOKEN);
