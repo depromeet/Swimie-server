@@ -3,7 +3,7 @@ package com.depromeet.type.greeting;
 import com.depromeet.type.SuccessType;
 
 public enum GreetingSuccessType implements SuccessType {
-    GET_RESPONSE_SUCCESS("AI_1", "AI 응답 받기에 성공하였습니다");
+    GET_RESPONSE_SUCCESS("GREETING_1", "인삿말 조회에 성공하였습니다");
 
     private final String code;
     private final String message;

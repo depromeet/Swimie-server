@@ -53,7 +53,7 @@ public class MemoryRepositoryTest {
         startRecordAt = LocalDate.of(2024, 7, 1);
         for (int i = 0; i < 30; i++) {
             MemoryDetail memoryDetail = memoryDetailRepository.save(memoryDetailList.get(i));
-            memoryRepository.save(MemoryFixture.make(member, null, memoryDetail, startRecordAt));
+            memoryRepository.save(MemoryFixture.make(member, startRecordAt));
             startRecordAt = startRecordAt.plusDays(1);
         }
         lastRecordAt = startRecordAt.minusDays(1);

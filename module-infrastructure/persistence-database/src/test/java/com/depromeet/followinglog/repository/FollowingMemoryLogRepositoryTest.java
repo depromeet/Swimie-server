@@ -19,10 +19,8 @@ import com.depromeet.member.repository.MemberJpaRepository;
 import com.depromeet.member.repository.MemberRepository;
 import com.depromeet.memory.domain.Memory;
 import com.depromeet.memory.domain.MemoryDetail;
-import com.depromeet.memory.port.out.persistence.MemoryDetailPersistencePort;
 import com.depromeet.memory.port.out.persistence.MemoryPersistencePort;
 import com.depromeet.memory.repository.MemoryDetailJpaRepository;
-import com.depromeet.memory.repository.MemoryDetailRepository;
 import com.depromeet.memory.repository.MemoryJpaRepository;
 import com.depromeet.memory.repository.MemoryRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -54,7 +52,6 @@ public class FollowingMemoryLogRepositoryTest {
     private MemberPersistencePort memberRepository;
     private FriendPersistencePort friendRepository;
     private MemoryPersistencePort memoryRepository;
-    private MemoryDetailPersistencePort memoryDetailRepository;
     private FollowingMemoryLogPersistencePort followingMemoryLogRepository;
 
     Member member;
@@ -65,8 +62,6 @@ public class FollowingMemoryLogRepositoryTest {
         memberRepository = new MemberRepository(queryFactory, memberJpaRepository);
         friendRepository = new FriendRepository(queryFactory, friendJpaRepository);
         memoryRepository = new MemoryRepository(em, queryFactory, memoryJpaRepository);
-        memoryDetailRepository =
-                new MemoryDetailRepository(queryFactory, memoryDetailJpaRepository);
         followingMemoryLogRepository =
                 new FollowingMemoryLogRepository(queryFactory, followingMemoryLogJpaRepository);
 
@@ -143,11 +138,8 @@ public class FollowingMemoryLogRepositoryTest {
     }
 
     private Memory saveMemory() {
-        MemoryDetail memoryDetail = MemoryDetailFixture.make();
-        memoryDetail = memoryDetailRepository.save(memoryDetail);
-
         LocalDate recordAt = LocalDate.of(2024, 7, 1);
-        Memory memory = MemoryFixture.make(member, null, memoryDetail, recordAt);
+        Memory memory = MemoryFixture.make(member, recordAt);
 
         return memoryRepository.save(memory);
     }
@@ -157,10 +149,7 @@ public class FollowingMemoryLogRepositoryTest {
         List<Memory> memories = new ArrayList<>();
 
         for (int i = 0; i < memoryDetails.size(); i++) {
-            MemoryDetail memoryDetail = memoryDetailRepository.save(memoryDetails.get(i));
-            Memory memory =
-                    MemoryFixture.make(
-                            members.get(i), null, memoryDetail, LocalDate.of(2024, 7, 1));
+            Memory memory = MemoryFixture.make(members.get(i), LocalDate.of(2024, 7, 1));
             memory = memoryRepository.save(memory);
             memories.add(memory);
         }
