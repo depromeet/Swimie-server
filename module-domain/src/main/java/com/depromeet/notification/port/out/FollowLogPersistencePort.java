@@ -18,4 +18,6 @@ public interface FollowLogPersistencePort {
     boolean existsByReceiverIdAndFollowerId(Long receiverId, Long followerId);
 
     List<Long> getFriendList(Long memberId, List<Long> followerIds);
+
+    void modifyFollowType(Long receiverId, Long followerId);
 }

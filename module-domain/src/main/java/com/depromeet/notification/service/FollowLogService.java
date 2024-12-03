@@ -42,6 +42,10 @@ public class FollowLogService
                         .orElse("FOLLOW");
         FollowType followType = FollowType.valueOf(typeString);
 
+        if (followType.equals(FollowType.FRIEND)) {
+            followLogPersistencePort.modifyFollowType(followerId, receiverId);
+        }
+
         FollowLog followLog =
                 FollowLog.builder()
                         .receiver(event.receiver())
