@@ -33,4 +33,8 @@ public class FollowLog {
     public void read() {
         this.hasRead = true;
     }
+
+    public void updateType(FollowType type) {
+        this.type = type;
+    }
 }

@@ -3,6 +3,7 @@ package com.depromeet.mock.notification;
 import com.depromeet.friend.domain.Friend;
 import com.depromeet.member.domain.Member;
 import com.depromeet.notification.domain.FollowLog;
+import com.depromeet.notification.domain.FollowType;
 import com.depromeet.notification.port.out.FollowLogPersistencePort;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -100,5 +101,15 @@ public class FakeFollowLogRepository implements FollowLogPersistencePort {
                 .filter(friend -> followerIds.contains(friend.getFollowing().getId()))
                 .map(friend -> friend.getFollowing().getId())
                 .toList();
+    }
+
+    @Override
+    public void modifyFollowType(Long receiverId, Long followerId) {
+        followLogDatabase.values().stream()
+                .filter(
+                        followLog ->
+                                followLog.getReceiver().getId().equals(receiverId)
+                                        && followLog.getFollower().getId().equals(followerId))
+                .forEach(followLog -> followLog.updateType(FollowType.FRIEND));
     }
 }

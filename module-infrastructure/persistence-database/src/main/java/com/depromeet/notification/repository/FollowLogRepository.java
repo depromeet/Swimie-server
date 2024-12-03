@@ -98,6 +98,15 @@ public class FollowLogRepository implements FollowLogPersistencePort {
                 .toList();
     }
 
+    @Override
+    public void modifyFollowType(Long receiverId, Long followerId) {
+        queryFactory
+                .update(followLogEntity)
+                .where(memberEq(receiverId), followerEq(followerId))
+                .set(followLogEntity.type, PersistenceFollowType.FRIEND)
+                .execute();
+    }
+
     private BooleanExpression isFriendMember(Long memberId) {
         return friendEntity.member.id.eq(memberId);
     }
