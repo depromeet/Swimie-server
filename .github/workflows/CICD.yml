@@ -1,0 +1,93 @@
+name: Github Actions CI/CD flow
+
+on:
+  push:
+    branches: ["main"]
+
+env:
+  DOCKER_USER: ${{ secrets.DOCKERHUB_USR }}
+  DOCKER_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  DOCKER_REPO: ${{ secrets.DOCKERHUB_REPO }}
+  HOST_USER: ${{secrets.HOST_USER}} # ec2 username
+  TARGET_HOST: ${{ secrets.TARGET_HOST }}
+  PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_ROLE: ${{ secrets.AWS_ROLE_ARN }} # AWS 보안 그룹 접근 Role
+  AWS_SG_ID: ${{ secrets.AWS_SG_ID }} # ec2 보안 그룹 ID
+
+permissions:
+  id-token: write
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to DockerHub # Dockerhub 로그인
+        uses: docker/login-action@v3
+        with:
+          username: ${{ env.DOCKER_USER }}
+          password: ${{ env.DOCKER_TOKEN }}
+
+      - name: Set up QEMU  # docker multiplatform 대응
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx # docker multiplatform 대응
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push # 도커 파일 빌드 및 도커허브로 푸시
+        uses: docker/build-push-action@v6
+        with:
+          file: ./scripts/Dockerfile-prod
+          push: true
+          tags: ${{ env.DOCKER_REPO }}:latest
+
+  CD:
+    needs: [CI] # CI 진행 후 실행
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Get Github Action IP # github actions 가 실행되는 IP 를 얻어옵니다
+        id: ip
+        uses: haythem/public-ip@v1.3
+
+      - name: Add Github Actions IP to SG # github actions 의  IP를 SG 에 추가하여 접근 가능하게끔 설정합니다.
+        run: |
+          aws ec2 authorize-security-group-ingress --group-id ${{ env.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+
+      - name: Send deploy.sh to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ env.TARGET_HOST }}
+          username: ${{ env.HOST_USER }}
+          key: ${{ env.PRIVATE_KEY }}
+          source: "scripts/shell/deploy.sh" # 배포 스크립트 위치
+          target: /home/ubuntu/deploy
+          strip_components: 2 # 숫자만큼 source의 선행 경로 제거
+
+
+      - name: Docker Image Pull and Container run # ssh 를 통해 원격서버에 명령어를 실행합니다.
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.TARGET_HOST }}
+          username: ${{ env.HOST_USER }}
+          key: ${{ env.PRIVATE_KEY }}
+          script: |
+            docker login -u ${{ env.DOCKER_USER }} -p ${{ env.DOCKER_TOKEN }}
+            cd /home/ubuntu/deploy
+            chmod +x deploy.sh
+            ./deploy.sh
+
+      - name: Remove Github Action IP from SG
+        run: |
+          aws ec2 revoke-security-group-ingress --group-id ${{ env.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
