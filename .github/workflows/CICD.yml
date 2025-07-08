@@ -2,7 +2,7 @@ name: Github Actions CI/CD flow
 
 on:
   push:
-    branches: ["develop"]
+    branches: ["main"]
 
 env:
   DOCKER_USER: ${{ secrets.DOCKERHUB_USR }}
@@ -69,26 +69,25 @@ jobs:
         uses: appleboy/scp-action@master
         with:
           host: ${{ env.TARGET_HOST }}
-          username: ${{ env.EC2_SSH_USER }}
+          username: ${{ env.HOST_USER }}
           key: ${{ env.PRIVATE_KEY }}
-          source: "./scripts/shell/deploy.sh" # 배포 스크립트 위치
-          target: "/home/ec2-user"
+          source: "scripts/shell/deploy.sh" # 배포 스크립트 위치
+          target: /home/ubuntu/deploy
           strip_components: 2 # 숫자만큼 source의 선행 경로 제거
-          overwrite: true
 
 
       - name: Docker Image Pull and Container run
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ env.EC2_HOST }}
-          username: ${{ env.EC2_SSH_USER }}
+          host: ${{ env.TARGET_HOST }}
+          username: ${{ env.HOST_USER }}
           key: ${{ env.PRIVATE_KEY }}
           script: |
-            cd /home/ec2-user
+            docker login -u ${{ env.DOCKER_USER }} -p ${{ env.DOCKER_TOKEN }}
+            cd /home/ubuntu/deploy
             chmod +x deploy.sh
             ./deploy.sh
 
       - name: Remove Github Action IP from SG
         run: |
           aws ec2 revoke-security-group-ingress --group-id ${{ env.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
-
